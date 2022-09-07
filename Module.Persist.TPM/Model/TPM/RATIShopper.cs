@@ -13,8 +13,9 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? DeletedDate { get; set; }
 
         public int Year { get; set; }
-        public virtual ClientTree ClientTree { get; set; }
-        public int ClientTreeId { get; set; }
         public float RATIShopperPercent { get; set; }
+
+        public int ClientTreeId { get; set; }
+        public virtual ClientTree ClientTree { get; set; }
     }
 }

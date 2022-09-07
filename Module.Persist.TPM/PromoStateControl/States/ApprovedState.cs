@@ -97,7 +97,7 @@ namespace Module.Persist.TPM.PromoStateControl
                         if (sendForApproval)
                         {
                             PromoStatus onApprovalStatus = _stateContext.dbContext.Set<PromoStatus>().First(n => n.SystemName == "OnApproval");
-                            Promo promoDraftPublished = new Promo(promoModel);
+                            Promo promoDraftPublished = AutomapperProfiles.PromoCopy(promoModel);
 
                             _stateContext.Model = promoDraftPublished;
                             promoModel.PromoStatusId = onApprovalStatus.Id;

@@ -126,13 +126,12 @@
     eventRenderer: function (event, resource, tplData, row, col, ds) {
         var bgColor = event.get('ColorSystemName');
         tplData.style = Ext.String.format('background: {0} !important; border-color: white;', bgColor || '#DDDDDD');
-        //debugger;
         return {
             headerText: event.get('Name'),
             statusColor: event.get('PromoStatusColor') || '#DDDDDD',
             display: event.data.IsGrowthAcceleration ? 'inline' : 'none',
             marginLeft: event.data.IsGrowthAcceleration ? '13px' : '0px',
-            opacity: event.data.MasterPromoId ? 0.3 : 1,
+            opacity: event.get('IsOnHold') ? 0.3 : 1,
             eventStatusBorderGrowthAcceleration:  event.data.IsGrowthAcceleration ? 'event-status-border-growth-acceleration' : ''
         };
     },
@@ -225,6 +224,10 @@
             supportedModels: [{
                 xclass: 'App.ExtSelectionFilterModel',
                 model: 'App.model.tpm.promo.PromoView',
+                modelId: 'efselectionmodel'
+            }, {
+                xclass: 'App.ExtSelectionFilterModel',
+                model: 'App.model.tpm.promo.PromoRSView',
                 modelId: 'efselectionmodel'
             }, {
                 xclass: 'App.ExtTextFilterModel',

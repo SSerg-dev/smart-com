@@ -7,7 +7,7 @@ namespace Module.Persist.TPM.Model.TPM {
     public class PromoDemandChangeIncident : IEntity<Guid> {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public Int32? PromoIntId { get; set; }
+        public int? PromoIntId { get; set; }
         [StringLength(255)]
         public string Name { get; set; }
 

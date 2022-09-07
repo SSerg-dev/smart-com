@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -17,15 +14,18 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         [Index("Unique_Mechanic", 2, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+
         [StringLength(255)]
         [Required]
         [Index("Unique_Mechanic", 3, IsUnique = true)]
         public string Name { get; set; }
-        [StringLength(255)] 
+        [StringLength(255)]
         public string SystemName { get; set; }
+
         [Index("Unique_Mechanic", 4, IsUnique = true)]
         public Guid? PromoTypesId { get; set; }
+        public PromoTypes PromoTypes { get; set; }
 
-        public virtual PromoTypes PromoTypes { get; set; }
+        public ICollection<NoneNego> NoneNegoes { get; set; }
     }
 }

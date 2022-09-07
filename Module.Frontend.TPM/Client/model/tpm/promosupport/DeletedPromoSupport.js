@@ -39,7 +39,8 @@
         {
             name: 'BudgetSubItemBudgetItemId', mapping: 'BudgetSubItem.BudgetItem.Id', defaultFilterConfig: { valueField: 'Id' },
             breezeEntityType: 'BudgetItem', hidden: true, isDefault: false
-        }
+        },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true }
     ],
     proxy: {
         type: 'breeze',

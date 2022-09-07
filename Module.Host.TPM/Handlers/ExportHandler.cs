@@ -22,6 +22,7 @@ using Persist;
 using System.Text.RegularExpressions;
 using LinqToQuerystring;
 using Core.Security;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -49,6 +50,7 @@ namespace Module.Host.TPM.Handlers
                 bool IsActuals = HandlerDataHelper.GetIncomingArgument<bool>("IsActuals", info.Data, throwIfNotExists: false);
                 string customFileName = HandlerDataHelper.GetIncomingArgument<string>("CustomFileName", info.Data, throwIfNotExists: false);
                 string url = HandlerDataHelper.GetIncomingArgument<string>("URL", info.Data, throwIfNotExists: false);
+                TPMmode tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data, throwIfNotExists: false);
 
                 var getColumnMethod = columnInstance.GetMethod(getColumnMethodName);
                 object[] columnsParam;
@@ -63,7 +65,7 @@ namespace Module.Host.TPM.Handlers
                 var columns = getColumnMethod.Invoke(null, columnsParam);
 
                 Type type = typeof(ExportAction<,>).MakeGenericType(tModel, tKey);
-                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, url, IsActuals, customFileName) as IAction;
+                IAction action = Activator.CreateInstance(type, userId, roleId, columns, sqlString, exportModel, simpleModel, url, IsActuals, customFileName, tPMmode) as IAction;
                 MethodInfo execute = type.GetMethod(nameof(action.Execute));
 
                 handlerLogger.Write(true, String.Format("Start of {0} export at {1:yyyy-MM-dd HH:mm:ss}", tModel.Name, ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");

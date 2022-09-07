@@ -25,7 +25,10 @@ namespace Module.Host.TPM.Actions
                         foreach (var item in queryToDifferrence)
                         {
                             var proxy = context.Set<PromoProductDifference>().Create<PromoProductDifference>();
-                            var result = (PromoProductDifference)Mapper.Map(item, proxy, typeof(PromoProductDifference), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                            var configuration = new MapperConfiguration(cfg =>
+                                cfg.CreateMap<PromoProductDifference, PromoProductDifference>().ReverseMap());
+                            var mapper = configuration.CreateMapper();
+                            var result = mapper.Map(item, proxy);
                             context.Set<PromoProductDifference>().Add(result);
                         }
 

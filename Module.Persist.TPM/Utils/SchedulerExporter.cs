@@ -22,7 +22,7 @@ namespace Module.Persist.TPM.Utils {
 
         public SchedulerExporter() {
             isYearExport = false;
-            Mapper.CreateMap<ClientTree, SchedulerClientTreeDTO>();
+            //Mapper.CreateMap<ClientTree, SchedulerClientTreeDTO>();
         }
 
         public SchedulerExporter(DateTime startDate, DateTime endDate) {

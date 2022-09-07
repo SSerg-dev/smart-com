@@ -2,13 +2,14 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
+    startEndModel: null,
+
     init: function () {
         this.listen({
             component: {
                 'btlpromo directorygrid': {
-                    selectionchange: this.onGridSelectionChange,
                     selectionchange: this.onGridSelectionChangeCustom,
-                    afterrender: this.onGridAfterrender,
+                    afterrender: this.onBTLPromoGridAfterrender,
                     extfilterchange: this.onExtFilterChange,
                     itemdblclick: this.onDetailButtonClick
                 },
@@ -40,7 +41,7 @@
                     click: this.onAddButtonClick
                 },
                 'btlpromo #deletebutton': {
-                    click: this.onDeleteButtonClick
+                    click: this.onDeleteBTLPromoButtonClick
                 },
                 'btlpromo #historybutton': {
                     click: this.onHistoryButtonClick
@@ -59,6 +60,95 @@
                 },
             }
         });
+    },
+
+    onBTLPromoGridAfterrender: function (grid) {
+        
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
+    },
+
+    onDeleteBTLPromoButtonClick: function (button) {
+
+        var grid = this.getGridByButton(button),
+            panel = grid.up('combineddirectorypanel'),
+            selModel = grid.getSelectionModel();
+
+        if (mode) {
+            if (mode.data.value == 1) {
+                if (selModel.hasSelection()) {
+                    Ext.Msg.show({
+                        title: l10n.ns('core').value('deleteWindowTitle'),
+                        msg: l10n.ns('core').value('deleteConfirmMessage'),
+                        fn: onMsgBoxClose,
+                        scope: this,
+                        icon: Ext.Msg.QUESTION,
+                        buttons: Ext.Msg.YESNO,
+                        buttonText: {
+                            yes: l10n.ns('core', 'buttons').value('delete'),
+                            no: l10n.ns('core', 'buttons').value('cancel')
+                        }
+                    });
+                } else {
+                    console.log('No selection');
+                }
+
+                function onMsgBoxClose(buttonId) {
+                    if (buttonId === 'yes') {
+                        var record = selModel.getSelection()[0],
+                            store = grid.getStore(),
+                            view = grid.getView(),
+                            currentIndex = store.indexOf(record),
+                            pageIndex = store.getPageFromRecordIndex(currentIndex),
+                            endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
+
+                        currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
+                        panel.setLoading(l10n.ns('core').value('deletingText'));
+
+
+                        $.ajax({
+                            type: "POST",
+                            cache: false,
+                            url: "/odata/BTLPromoes/BTLPromoDelete?key=" + record.data.Id,
+                            dataType: "json",
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                var result = Ext.JSON.decode(response.value);
+                                if (result.success) {
+                                    store.on('load', function () {
+                                        panel.setLoading(false);
+                                    });
+
+                                    store.load();
+                                } else {
+                                    App.Notify.pushError(result.message);
+                                    panel.setLoading(false);
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                App.Notify.pushError();
+                                panel.setLoading(false);
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                this.onDeleteButtonClick(button);
+            }
+        }
+        else {
+            this.onDeleteButtonClick(button);
+        }
     },
 
     onAddButtonClick: function (button) {
@@ -99,7 +189,7 @@
                 disabled: true
             }]
         });
-
+        
         var choosePromoWindowGrid = choosepromowindow.down('grid');
 
         choosepromowindow.show();
@@ -161,9 +251,13 @@
             },
             single: true
         });
+        //RS
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
         // Находим номера промо с прикреплёнными BTL, чтобы отфильровать их
         var params = {
-            eventId: btlRecord.get('EventId')
+            eventId: btlRecord.get('EventId'),
+            tPMmode: mode.data.value
         };
         App.Util.makeRequestWithCallback('BTLPromoes', 'GetPromoesWithBTL', params, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
@@ -215,7 +309,7 @@
         }
 
         if (closedPromo.length > 0) {
-            App.Notify.pushError('Closed promos cannot be deleted. Promo number: ' + closedPromo.join(", "));
+            App.Notify.pushError('Closed promoes cannot be deleted. Promo number: ' + closedPromo.join(", "));
         } else {
             if (window.btlId && window.btlGrid) {
                 // Привязка нескольких промо к существующему BTL (делается в мастер-детейл)
@@ -310,11 +404,13 @@
         }
     },
 
-    onGridSelectionChangeCustom: function (selModel, selected) {
-        if (selected[0] && selected[0].data.PromoStatusName != "Closed") {
-            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
-        } else {
-            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
-        }
+    onGridSelectionChangeCustom: function (selMode, selected) {
+        if (selected[0]) {
+            if (selected[0].data.PromoStatusName != "Closed") {
+                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
+            }
+        }        
     },
 });

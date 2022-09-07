@@ -134,7 +134,10 @@ namespace Module.Frontend.TPM.Controllers
             model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
             var proxy = Context.Set<NonPromoSupport>().Create<NonPromoSupport>();
-            var result = (NonPromoSupport)Mapper.Map(model, proxy, typeof(NonPromoSupport), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<NonPromoSupport, NonPromoSupport>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<NonPromoSupport>().Add(result);
             try
             {
@@ -503,7 +506,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }

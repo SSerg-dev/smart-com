@@ -1,7 +1,7 @@
 using Core.Data;
 using Module.Persist.TPM.Utils;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -13,9 +13,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("CX_ObjDate", 1, IsUnique = true)]
         public int ObjectId { get; set; }
         public int parentId { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid? TechnologyId { get; set; }
-        public virtual Technology Technology { get; set; }
+        public Guid? BrandId { get; set; } //чего он тут одинокий?
+
         public string Type { get; set; }
         public int depth { get; set; }
         public string Name { get; set; }
@@ -33,9 +32,15 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SpecialNotKeyProperty]
         public string FilterQuery { get; set; }
+
+        public Guid? TechnologyId { get; set; }
+        public Technology Technology { get; set; }
+
+        public ICollection<NoneNego> NoneNegoes { get; set; }
         public object Clone()
         {
-            var clonedProductTree = new ProductTree {
+            var clonedProductTree = new ProductTree
+            {
                 Id = this.Id,
                 ObjectId = this.ObjectId,
                 parentId = this.parentId,

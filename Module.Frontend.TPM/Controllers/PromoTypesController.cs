@@ -121,7 +121,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<PromoTypes>().Create<PromoTypes>();
-            var result = (PromoTypes)Mapper.Map(model, proxy, typeof(PromoTypes), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoTypes, PromoTypes>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<PromoTypes>().Add(result);
 
             try

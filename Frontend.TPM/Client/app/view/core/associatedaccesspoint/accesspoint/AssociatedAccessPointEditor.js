@@ -23,6 +23,12 @@
 			allowBlank: true,
 			allowOnlyWhitespace: true,
 			fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('Description')
+		},{ 
+			xtype: 'checkboxfield', 
+			allowBlank: true, 
+			allowOnlyWhitespace: true,
+			name: 'TPMmode',
+			fieldLabel: l10n.ns('core', 'AssociatedAccessPoint').value('TPMmode')
 		}]
 	}
 });

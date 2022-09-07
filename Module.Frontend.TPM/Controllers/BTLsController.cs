@@ -126,7 +126,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<BTL>().Create<BTL>();
-            var result = (BTL)Mapper.Map(model, proxy, typeof(BTL), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BTL, BTL>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<BTL>().Add(result);
 
             try
@@ -362,6 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 List<Event> events = await Context.Set<Event>()
                     .AsNoTracking()
+                    .Include(g=>g.BTLs)
                     .Where(g => !g.Disabled && g.EventType.National && (g.MarketSegment == marketSegment || string.IsNullOrEmpty(g.MarketSegment)) && !g.EventType.Disabled)
                     .ToListAsync();
                 //events = events.Where(g => g.BTLs.Any(f => (eventBTL.DurationDateStart <= f.StartDate && eventBTL.DurationDateEnd > f.StartDate) || (eventBTL.DurationDateStart >= f.StartDate && eventBTL.DurationDateStart > f.EndDate))).ToList();

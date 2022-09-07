@@ -1,41 +1,41 @@
 ﻿using AutoMapper;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using System.Net.Http.Headers;
-using Core.Settings;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System.Collections.Specialized;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Persist.ScriptGenerator.Filter;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Frontend.TPM.Util;
-using System.Web;
-using Module.Persist.TPM.CalculatePromoParametersModule;
+using System.Data.Entity;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -48,7 +48,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<IncrementalPromo> GetConstraintedQuery()
+        protected IQueryable<IncrementalPromo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -61,7 +61,7 @@ namespace Module.Frontend.TPM.Controllers
 
             IQueryable<IncrementalPromo> query = Context.Set<IncrementalPromo>().Where(e => !e.Disabled);
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
@@ -75,16 +75,20 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<IncrementalPromo> GetIncrementalPromoes()
+        public IQueryable<IncrementalPromo> GetIncrementalPromoes(TPMmode TPMmode)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<IncrementalPromo> GetFilteredData(ODataQueryOptions<IncrementalPromo> options)
         {
-            var query = GetConstraintedQuery();
+
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
             {
@@ -135,7 +139,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<IncrementalPromo>().Create<IncrementalPromo>();
-            var result = (IncrementalPromo)Mapper.Map(model, proxy, typeof(IncrementalPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<IncrementalPromo, IncrementalPromo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<IncrementalPromo>().Add(result);
             result.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 
@@ -157,10 +164,31 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<IncrementalPromo>().Find(key);
+                var model = Context.Set<IncrementalPromo>()
+                    .Include(x => x.Promo)
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
+                }
+
+                patch.TryGetPropertyValue("TPMmode", out object mode);
+
+                if ((int)mode == (int)TPMmode.RS)
+                {
+                    if (model.TPMmode == TPMmode.Current)
+                    {
+                        //нужно взять все причастные записи IncrementalPromo по promo
+                        List<IncrementalPromo> incrementalPromos = Context.Set<IncrementalPromo>()
+                            .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .Include(x => x.Promo.BTLPromoes)
+                            .Include(x => x.Promo.PromoProductTrees)
+                            .Include(x => x.Promo.PromoSupportPromoes)
+                            .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
+                            .ToList();
+                        List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
+                        model = resultIncrementalPromos.FirstOrDefault(g => g.Promo.Number == model.Promo.Number && !g.Disabled);
+                    }
                 }
 
                 patch.Patch(model);
@@ -221,25 +249,45 @@ namespace Module.Frontend.TPM.Controllers
 
         public static IEnumerable<Column> GetExportSettings()
         {
+            int orderNumber = 1;
             IEnumerable<Column> columns = new List<Column>()
             {
-                new Column() { Order = 0, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
-                new Column() { Order = 1, Field = "Product.ProductEN", Header = "Product Name", Quoting = false },
-                new Column() { Order = 2, Field = "Promo.ClientHierarchy", Header = "Client", Quoting = false },
-                new Column() { Order = 3, Field = "Promo.Number", Header = "Promo ID", Quoting = false, },
-                new Column() { Order = 4, Field = "Promo.Name", Header = "Promo Name", Quoting = false, },
-                new Column() { Order = 5, Field = "PlanPromoIncrementalCases", Header = "Plan Promo Incremental Cases", },
-                new Column() { Order = 6, Field = "CasePrice", Header = "Case Price", },
-                new Column() { Order = 7, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Product.ProductEN", Header = "Product Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Promo.ClientHierarchy", Header = "Client", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false, },
+                new Column { Order = orderNumber++, Field = "Promo.Name", Header = "Promo Name", Quoting = false, },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCases", Header = "Plan Promo Incremental Cases", },
+                new Column { Order = orderNumber++, Field = "CasePrice", Header = "Case Price", },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
+            };
+
+            return columns;
+        }
+
+        public static IEnumerable<Column> GetExportSettingsRS()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "TPMmode", Header = "Indicator", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Product.ProductEN", Header = "Product Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Promo.ClientHierarchy", Header = "Client", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false, },
+                new Column { Order = orderNumber++, Field = "Promo.Name", Header = "Promo Name", Quoting = false, },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCases", Header = "Plan Promo Incremental Cases", },
+                new Column { Order = orderNumber++, Field = "CasePrice", Header = "Case Price", },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false },
             };
 
             return columns;
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<IncrementalPromo> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<IncrementalPromo> options, [FromUri] TPMmode tPMmode)
         {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
+            IQueryable results = options.ApplyTo(GetConstraintedQuery(tPMmode).Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -254,7 +302,15 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(IncrementalPromo), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(IncrementalPromoesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                if (tPMmode == TPMmode.Current)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettingsRS), data, visible: false, throwIfNotExists: false);
+                }
+                
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -323,7 +379,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX()
+        public async Task<HttpResponseMessage> FullImportXLSX([FromUri] TPMmode tPMmode)
         {
             try
             {
@@ -335,8 +391,8 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-				NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
-				CreateImportTask(fileName, "FullXLSXUpdateImportIncrementalPromoHandler", form);
+                NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
+                CreateImportTask(fileName, "FullXLSXUpdateImportIncrementalPromoHandler", form, tPMmode);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -350,7 +406,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm)
+        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm, TPMmode tPMmode)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -369,10 +425,11 @@ namespace Module.Frontend.TPM.Controllers
                     Name = System.IO.Path.GetFileName(fileName),
                     DisplayName = System.IO.Path.GetFileName(fileName)
                 };
-				// Параметры импорта
-				HandlerDataHelper.SaveIncomingArgument("CrossParam.ClientFilter", new TextListModel(paramForm.GetStringValue("clientFilter")), data, throwIfNotExists: false);
+                // Параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("CrossParam.ClientFilter", new TextListModel(paramForm.GetStringValue("clientFilter")), data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, throwIfNotExists: false);
 
-				HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportIncrementalPromo), data, visible: false, throwIfNotExists: false);
@@ -401,11 +458,21 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX()
+        public IHttpActionResult DownloadTemplateXLSX([FromUri] TPMmode tPMmode)
         {
             try
             {
-                IEnumerable<Column> columns = GetExportSettings().Where(col => col.Field != "PlanPromoIncrementalLSV");
+                IEnumerable<Column> columns = new List<Column>();
+                columns = GetExportSettings().Where(col => col.Field != "PlanPromoIncrementalLSV");
+                //if (tPMmode == TPMmode.Current)
+                //{
+                //    columns = GetExportSettings().Where(col => col.Field != "PlanPromoIncrementalLSV");
+                //}
+                //if (tPMmode == TPMmode.RS)
+                //{
+                //    columns = GetExportSettingsRS().Where(col => col.Field != "PlanPromoIncrementalLSV");
+                //}
+                
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "IncrementalPromo");

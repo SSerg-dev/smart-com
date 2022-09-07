@@ -6,7 +6,8 @@ Ext.define('App.model.core.associatedaccesspoint.accesspoint.AssociatedAccessPoi
 		{ name: 'Id', hidden: true },
 		{ name: 'Resource', type: 'string', isDefault: true },
 		{ name: 'Action', type: 'string', isDefault: true },
-		{ name: 'Description', type: 'string', isDefault: true }
+		{ name: 'Description', type: 'string', isDefault: true },
+        { name: 'TPMmode', type: 'boolean', hidden: false, isDefault: true }
 	],
     proxy: {
         type: 'breeze',

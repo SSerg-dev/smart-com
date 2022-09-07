@@ -75,8 +75,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (promo.PromoStatus.Id != draftStatus.Id)
                 {
                     // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
-                    String formatStrPromoProduct = "INSERT INTO [DefaultSchemaSetting].[PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')";
-                    String formatStrIncremental = "INSERT INTO [DefaultSchemaSetting].[IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId]) VALUES ('{0}', 0, NULL, '{1}', '{2}')";
+                    String formatStrPromoProduct = "INSERT INTO [DefaultSchemaSetting].[PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN], [TPMmode]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')";
+                    String formatStrIncremental = "INSERT INTO [DefaultSchemaSetting].[IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [TPMmode]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}')";
                     foreach (IEnumerable<Product> items in resultProductList.Partition(100))
                     {
                         string insertScript = String.Empty;
@@ -102,7 +102,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     addedZREPs.Add(p.ZREP);
                                 }
 
-                                insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN);
+                                insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN, Convert.ToInt32(promo.TPMmode));
                                 needReturnToOnApprovalStatus = true;
                             }
 
@@ -127,7 +127,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 }
                                 else if (incrementalPromo == null)
                                 {
-                                    insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id);
+                                    insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id, Convert.ToInt32(promo.TPMmode));
                                     needReturnToOnApprovalStatus = true;
                                 }
                             }
@@ -271,7 +271,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 string message = null;
-                Promo promoCopy = new Promo(promo);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(promo);
 
                 if (promo.StartDate.HasValue && promo.EndDate.HasValue)
                 {
@@ -596,7 +596,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 productQuery = context.Set<Product>().Where(x => !x.Disabled);
             }
 
-            string time, time2;
             Stopwatch s = new Stopwatch();
             if (!String.IsNullOrEmpty(promo.InOutProductIds))
             {

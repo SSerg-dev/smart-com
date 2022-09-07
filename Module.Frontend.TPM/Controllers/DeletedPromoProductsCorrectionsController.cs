@@ -3,6 +3,7 @@ using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist.Model;
@@ -26,7 +27,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery()
+        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -37,16 +38,17 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>();
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoProductsCorrection> GetDeletedPromoProductsCorrections()
+        public IQueryable<PromoProductsCorrection> GetDeletedPromoProductsCorrections(TPMmode TPMmode)
         {
-            return GetConstraintedQuery().Where(e => e.Disabled && e.TempId == null);
+            return GetConstraintedQuery(TPMmode)
+                .Where(e => e.Disabled && e.TempId == null);
         }
 
         [ClaimsAuthorize]

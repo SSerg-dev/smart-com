@@ -34,6 +34,8 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Utils;
 using System.Web;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -46,7 +48,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<BTLPromo> GetConstraintedQuery()
+        protected IQueryable<BTLPromo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -57,8 +59,8 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
-            IQueryable<BTLPromo> query = Context.Set<BTLPromo>().Where(e => !e.Disabled);
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            IQueryable<BTLPromo> query = Context.Set<BTLPromo>();
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
@@ -72,17 +74,19 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<BTLPromo> GetBTLPromoes()
+        public IQueryable<BTLPromo> GetBTLPromoes(TPMmode TPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<BTLPromo> GetFilteredData(ODataQueryOptions<BTLPromo> options)
         {
-            var query = GetConstraintedQuery();
-
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
             var querySettings = new ODataQuerySettings
             {
                 EnsureStableOrdering = false,
@@ -133,7 +137,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<BTLPromo>().Create<BTLPromo>();
-            var result = (BTLPromo)Mapper.Map(model, proxy, typeof(BTLPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BTLPromo, BTLPromo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<BTLPromo>().Add(result);
 
             try
@@ -168,14 +175,20 @@ namespace Module.Frontend.TPM.Controllers
                     }
 
                     List<Guid> guidPromoIds = new List<Guid>();
-                    foreach (var id in promoIdsList) 
+                    foreach (var id in promoIdsList)
                     {
                         Guid promoId = Guid.Parse(id);
                         guidPromoIds.Add(promoId);
                     }
 
-                    List<Guid> addedBTLPromoIds = new List<Guid>();
-                    List<BTLPromo> bTLPromos = Context.Set<BTLPromo>().Where(n => n.BTLId == btlId && !n.Disabled).ToList();
+                    List<BTLPromo> bTLPromos = Context.Set<BTLPromo>()
+                        .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                        .Include(x => x.Promo.IncrementalPromoes)
+                        .Include(x => x.Promo.PromoProductTrees)
+                        .Include(x => x.Promo.PromoSupportPromoes)
+                        .Where(n => n.BTLId == btlId && !n.Disabled && !n.Promo.Disabled)
+                        .ToList();
+
                     foreach (var promoId in guidPromoIds)
                     {
                         Promo promo = Context.Set<Promo>().Find(promoId);
@@ -183,7 +196,7 @@ namespace Module.Frontend.TPM.Controllers
                         {
                             // Разница между промо в подстатье должно быть меньше 2 периодов (8 недель) уже 3
                             // если end date добавляемого промо лежит в 8 неделях от самого раннего start date, то всё ок, если более, то добавить промо нельзя.
-                            List<DateTimeOffset> endDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.EndDate.Value)) { promo.EndDate.Value }; 
+                            List<DateTimeOffset> endDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.EndDate.Value)) { promo.EndDate.Value };
                             List<DateTimeOffset> startDateList = new List<DateTimeOffset>(bTLPromos.Select(x => x.Promo.StartDate.Value)) { promo.StartDate.Value };
                             DateTimeOffset maxEnd = endDateList.Max();
                             DateTimeOffset minStart = startDateList.Min();
@@ -196,13 +209,14 @@ namespace Module.Frontend.TPM.Controllers
                                     throw new Exception("The difference between the dates of the promo should be less than 3 periods");
                             }
 
-                            bool isLinked = Context.Set<BTLPromo>().Any(x => x.PromoId == promoId && !x.Disabled && x.DeletedDate == null);
-                            if (!isLinked)
+                            BTLPromo bp = new BTLPromo
                             {
-                                BTLPromo bp = new BTLPromo(btlId, promoId, promo.ClientTreeKeyId.Value);
-                                Context.Set<BTLPromo>().Add(bp);
-                                bTLPromos.Add(bp);
-                            }
+                                BTLId = btlId,
+                                PromoId = promoId,
+                                ClientTreeId = promo.ClientTreeKeyId.Value,
+                            };
+                            Context.Set<BTLPromo>().Add(bp); //bTLPromos.Add(bp); так нельзя потому что делается прокси System.Data.Entity.DynamicProxies при lazyload
+
                         }
                     }
 
@@ -211,6 +225,7 @@ namespace Module.Frontend.TPM.Controllers
                     //    throw new Exception(String.Format("Promoes with numbers {0} are already attached to another BTL.", string.Join(",", linkedPromoes)));
 
                     Context.SaveChanges();
+
                     CalculateBTLBudgetsCreateTask(btlId.ToString());
 
                     transaction.Commit();
@@ -270,7 +285,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetPromoesWithBTL(string eventId)
+        public IHttpActionResult GetPromoesWithBTL(string eventId, TPMmode tPMmode)
         {
             try
             {
@@ -281,13 +296,13 @@ namespace Module.Frontend.TPM.Controllers
                 if (Guid.TryParse(eventId, out eventIdGuid))
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid)
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
                 else
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName))
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.TPMmode == tPMmode)
                     .Select(x => x.Promo.Number).Distinct();
                 }
 
@@ -313,7 +328,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { model.PromoId });
+                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { key });
                 Context.SaveChanges();
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -321,7 +336,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return GetErorrRequest(e);
             }
-        }    
+        }
 
         public static IEnumerable<Column> GetExportSettingsBTLPromo()
         {
@@ -422,6 +437,35 @@ namespace Module.Frontend.TPM.Controllers
 
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult BTLPromoDelete(Guid key)
+        {
+            try
+            {
+                var btlPromo = Context.Set<BTLPromo>()
+                    .Where(x => x.Id == key && !x.Disabled)
+                    .ToList();
+                if (btlPromo == null)
+                {
+                    return NotFound();
+                }
+
+
+                btlPromo[0].DeletedDate = System.DateTime.Now;
+                btlPromo[0].Disabled = true;
+
+                Context.SaveChanges();
+                CalculateBTLBudgetsCreateTask(btlPromo[0].BTLId.ToString(), new List<Guid>() { btlPromo[0].Id });
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
+            }
         }
     }
 }

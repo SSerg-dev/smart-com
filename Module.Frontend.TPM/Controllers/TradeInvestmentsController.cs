@@ -128,7 +128,10 @@ namespace Module.Frontend.TPM.Controllers {
             model.Year = model.StartDate.Value.Year;
 
             var proxy = Context.Set<TradeInvestment>().Create<TradeInvestment>();
-            var result = (TradeInvestment) Mapper.Map(model, proxy, typeof(TradeInvestment), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<TradeInvestment, TradeInvestment>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             //Проверка пересечения по времени на клиенте
             if (!DateCheck(result)) {

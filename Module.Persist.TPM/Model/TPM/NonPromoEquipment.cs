@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,10 +10,8 @@ namespace Module.Persist.TPM.Model.TPM
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
-
         [Index("Unique_NonPromoEquipment", 3, IsUnique = true)]
         public bool Disabled { get; set; }
-
         [Index("Unique_NonPromoEquipment", 4, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 
@@ -25,5 +24,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public Guid? BudgetItemId { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }
+
+        public ICollection<NonPromoSupport> NonPromoSupports { get; set; }
     }
 }

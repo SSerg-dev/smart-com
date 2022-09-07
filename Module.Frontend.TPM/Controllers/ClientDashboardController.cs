@@ -115,7 +115,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<ClientDashboard>().Create<ClientDashboard>();
-            var result = (ClientDashboard)Mapper.Map(model, proxy, typeof(ClientDashboard), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ClientDashboard, ClientDashboard>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<ClientDashboard>().Add(result);
 
             try

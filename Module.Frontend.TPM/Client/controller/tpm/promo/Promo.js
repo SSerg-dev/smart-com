@@ -34,7 +34,7 @@
                     click: this.onUpdateButtonClick
                 },
                 'promo #deletebutton': {
-                    click: this.onDeleteButtonClick
+                    click: this.onDeletePromoButtonClick
                 },
                 'promo #historybutton': {
                     click: this.onHistoryButtonClick
@@ -306,6 +306,9 @@
                 'promoproductchoosewindow #dateFilter': {
                     click: this.onProductDateFilterButtonClick
                 },
+                'choosepromo directorygrid': {
+                    afterrender: this.onGridChoosePromoAfterrender,
+                },
             }
         });
     },
@@ -333,8 +336,50 @@
             var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
             maButton.setDisabled(true);
         });
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var promogrid = Ext.getCmp('promoGrid').down('grid');
+                var indexh = this.getColumnIndex(promogrid, 'TPMmode')
+                promogrid.columnManager.getColumns()[indexh].hide();
+            }
+            else {
+                var promoGridViewStore = grid.getStore();
+                var promoGridViewStoreProxy = promoGridViewStore.getProxy();
+
+                promoGridViewStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
 
         this.onGridAfterrender(grid);
+    },
+
+    onGridChoosePromoAfterrender: function (grid) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        if (mode) {
+            if (mode.data.value != 1) {
+                var indexh = this.getColumnIndex(grid, 'TPMmode');
+                grid.columnManager.getColumns()[indexh].hide();                
+            }
+            else {
+                var promoGridStore = grid.getStore();
+                var promoGridStoreProxy = promoGridStore.getProxy();
+                promoGridStoreProxy.extraParams.TPMmode = 'RS';
+            }
+        }
+        this.onGridAfterrender(grid);
+    },
+
+    getColumnIndex: function (grid, dataIndex) {
+        gridColumns = grid.headerCt.getGridColumns();
+        for (var i = 0; i < gridColumns.length; i++) {
+            if (gridColumns[i].dataIndex == dataIndex) {
+                return i;
+            }
+        }
     },
 
     massApprovalButtonDisable: function (grid, store) {
@@ -1367,7 +1412,9 @@
     onCreateButtonClick: function (button, e, schedulerData, isInOutPromo, promotype) {
 
         var me = this;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         promoeditorcustom.isInOutPromo = isInOutPromo;
         promoeditorcustom.promotypeId = promotype.Id;
         promoeditorcustom.promotypeName = promotype.Name;
@@ -1375,6 +1422,15 @@
         promoeditorcustom.promotypeSystemName = promotype.SystemName;
         this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
+
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        if (promoeditorcustom.TPMmode == 1) {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                promoeditorcustom.rsStartEnd = returnValue;
+            });
+            this.showRSmodeLabel(true);
+        }
+
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
         promoeditorcustom.isFromSchedule = schedulerData;
@@ -1694,7 +1750,83 @@
         okButton.setText(l10n.ns('tpm', 'PromoType').value('ModalWindowOkButton'));
         window.selectedButton = null;
     },
+    onDeletePromoButtonClick: function (button) {
+        var grid = this.getGridByButton(button),
+            panel = grid.up('combineddirectorypanel'),
+            selModel = grid.getSelectionModel();
 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+
+
+        if (mode) {
+            if (mode.data.value == 1) {
+                if (selModel.hasSelection()) {
+                    Ext.Msg.show({
+                        title: l10n.ns('core').value('deleteWindowTitle'),
+                        msg: l10n.ns('core').value('deleteConfirmMessage'),
+                        fn: onMsgBoxClose,
+                        scope: this,
+                        icon: Ext.Msg.QUESTION,
+                        buttons: Ext.Msg.YESNO,
+                        buttonText: {
+                            yes: l10n.ns('core', 'buttons').value('delete'),
+                            no: l10n.ns('core', 'buttons').value('cancel')
+                        }
+                    });
+                } else {
+                    console.log('No selection');
+                }
+
+                function onMsgBoxClose(buttonId) {
+                    if (buttonId === 'yes') {
+                        var record = selModel.getSelection()[0],
+                            store = grid.getStore(),
+                            view = grid.getView(),
+                            currentIndex = store.indexOf(record),
+                            pageIndex = store.getPageFromRecordIndex(currentIndex),
+                            endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
+
+                        currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
+                        panel.setLoading(l10n.ns('core').value('deletingText'));
+
+
+                        $.ajax({
+                            type: "POST",
+                            cache: false,
+                            url: "/odata/Promoes/PromoRSDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                            dataType: "json",
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                var result = Ext.JSON.decode(response.value);
+                                if (result.success) {
+                                    store.on('load', function () {
+                                        panel.setLoading(false);
+                                    });
+
+                                    store.load();
+                                } else {
+                                    App.Notify.pushError(result.message);
+                                    panel.setLoading(false);
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                App.Notify.pushError();
+                                panel.setLoading(false);
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                this.onDeleteButtonClick(button);
+            }
+        }
+        else {
+            this.onDeleteButtonClick(button);
+        }
+    },
     onAllCreateButtonClick: function (button) {
 
         var supportType = Ext.widget('promotypewindow');
@@ -1755,6 +1887,7 @@
 
 
     },
+
     onUpdateButtonClick: function (button) {
         var me = this;
         var grid = this.getGridByButton(button);
@@ -1763,7 +1896,6 @@
         me.detailButton = null;
         var promoStatusName = null;
         var record = me.getRecord(promoeditorcustom);
-
         // Если запись обозначена
         if (button.assignedRecord) {
             promoeditorcustom.isCreating = false;
@@ -1780,6 +1912,7 @@
             var selectionModel = grid.getSelectionModel();
             if (selectionModel.hasSelection()) {
                 var record = selectionModel.getSelection()[0];
+                grid.promoStore.getProxy().extraParams.TPMmode = record.data.TPMmode;
                 grid.promoStore.load({
                     id: record.getId(),
                     scope: me,
@@ -1863,6 +1996,7 @@
             var selectionModel = grid.getSelectionModel();
             if (selectionModel.hasSelection()) {
                 var record = selectionModel.getSelection()[0];
+                grid.promoStore.getProxy().extraParams.TPMmode = record.data.TPMmode;
                 grid.promoStore.load({
                     id: record.getId(),
                     scope: me,
@@ -2096,7 +2230,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setDisabled(false);
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
-        
+
         //if (promoeditorcustom.isInExchange) {
         //    this.disableActualPanels(true);
         //}
@@ -2609,6 +2743,12 @@
         } else {
             record.data.NeedRecountUplift = true;
         }
+        if (window.TPMmode == 0) {
+            record.data.TPMmode = 'Current';
+        }
+        if (window.TPMmode == 1) {
+            record.data.TPMmode = 'RS';
+        }
         //record.data.PlanPromoBaselineLSV = promoActivityStep2.down('numberfield[name=PlanPromoBaselineLSV]').getValue();
         //record.data.PlanPromoIncrementalLSV = promoActivityStep2.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
         //record.data.PlanPromoLSV = promoActivityStep2.down('numberfield[name=PlanPromoLSV]').getValue();
@@ -2706,6 +2846,34 @@
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+        //rsmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        if (promoeditorcustom.TPMmode == 1) {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                promoeditorcustom.rsStartEnd = returnValue;
+                if (promoeditorcustom.rsStartEnd) {
+                    var RsStartDate = new Date(promoeditorcustom.rsStartEnd.StartDate);
+                    if (RsStartDate > record.data.DispatchesStart) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
+                    if (record.data.IsGrowthAcceleration || record.data.IsInExchange) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
+                }
+            });
+            var promoMechanics = promoeditorcustom.down('promomechanic');
+            var panelGA = promoMechanics.down('[name=panelGA]');
+            panelGA.setDisabled(true);
+        }
+        if (record.data.TPMmode == 'RS') {
+            this.showRSmodeLabel(true);
+        }
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
@@ -2741,7 +2909,7 @@
         promoeditorcustom.isInExchange = record.data.IsInExchange;
         var isInExchange = mechanic.down('checkboxfield[name=IsInExchangeCheckbox]');
         isInExchange.setValue(record.data.IsInExchange);
-        
+
         var gaReadOnlyStatuses = ['Approved', 'Planned', 'Started', 'Finished'];
         if (gaReadOnlyStatuses.indexOf(record.data.PromoStatusSystemName) != -1 && currentRole !== 'SupportAdministrator') {
             growthAccelerationCheckbox.setReadOnly(true);
@@ -3331,7 +3499,7 @@
             promoeditorcustom.down('[name=ApolloExportCheckbox]').setReadOnly(false);
         }
         if (promoeditorcustom.isInExchange) {
-        //    this.disableActualPanels(true);
+            //    this.disableActualPanels(true);
             var splitPublishBtn = Ext.ComponentQuery.query("#btn_splitpublish")[0];
             splitPublishBtn.setDisabled(true);
         }
@@ -3558,6 +3726,15 @@
 
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
+        //вырубает кнопки в RS режиме
+        if (promoeditorcustom.TPMmode == 1) {
+            toolbarbutton.items.items.forEach(function (item, i, arr) {
+                //  item.el.setStyle('backgroundColor', '#B53333');
+                if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+                    item.setDisabled(true);
+                }
+            });
+        }
         else if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
             promoeditorcustom.down('#btn_resetPromo').show();
@@ -3726,6 +3903,9 @@
         var window = button.up('promoeditorcustom');
 
         var isModelComplete = this.validatePromoModel(window);
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
 
         if (isModelComplete === '') {
             var record = this.getRecord(window);
@@ -3737,9 +3917,36 @@
                 this.setPromoTitle(window, window.promoName, window.promoStatusName);
             }
             var model = this.buildPromoModel(window, record);
-            this.saveModel(model, window, close, reloadForm);
+            if (mode) {
+                if (mode.data.value == 0) {
+                    this.saveModel(model, window, close, reloadForm);
+                }
+                if (mode.data.value == 1){
+                    this.savePublishClosePromo(model, window, close, reloadForm);
+                }
+            }
+            
         } else {
             App.Notify.pushInfo(isModelComplete);
+        }
+    },
+
+    savePublishClosePromo: function (model, window, close, reloadPromo) {
+        var checkValid = this.validatePromoModel(window);
+        if (checkValid === '') {
+            var record = this.getRecord(window);
+            
+            var btn_publish = window.down('button[itemId=btn_publish]');
+            window.previousStatusId = window.statusId;
+            window.statusId = btn_publish.statusId;
+            window.promoName = this.getPromoName(window);
+
+            var model = this.buildPromoModel(window, record);
+            this.saveModel(model, window, true, false);
+            this.updateStatusHistoryState();
+
+        } else {
+            App.Notify.pushInfo(checkValid);
         }
     },
 
@@ -5806,8 +6013,11 @@
                 instoreMechanicId.setDisabled(false);
                 actualMechanicId.setDisabled(false);
 
-                var panelGA = promoMechanics.down('[name=panelGA]');
-                panelGA.setDisabled(false);
+                if (promoeditorcustom.TPMmode == 0) {
+                    var panelGA = promoMechanics.down('[name=panelGA]');
+                    panelGA.setDisabled(false);
+                }
+
             }
         });
 
@@ -6664,6 +6874,35 @@
         }
     },
 
+    getRSmodeLabel: function () {
+        var rsModeComponent = Ext.ComponentQuery.query('#btn_promoIsRSmode')[0];
+        return rsModeComponent;
+    },
+
+    showRSmodeLabel: function (value) {
+        var rsModeLabel = this.getRSmodeLabel();
+        if (value) {
+            if (rsModeLabel) {
+                rsModeLabel.show();
+            }
+        } else {
+            if (rsModeLabel) {
+                rsModeLabel.hide();
+            }
+        }
+    },
+
+    changeRSmodeLabel: function (newValue) {
+        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
+        var promoController = App.app.getController('tpm.promo.Promo');
+
+        if (promoEditorCustom && newValue) {
+            promoController.showRSmodeLabel(true);
+        } else {
+            promoController.showRSmodeLabel(false);
+        }
+    },
+
     onExportButtonClick: function (button) {
         var me = this;
         var grid = me.getGridByButton(button);
@@ -6672,14 +6911,26 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
-
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var tpmmode;
+        if (mode) {
+            if (mode.data.value == 0) {
+                tpmmode = 'Current';
+            }
+            else {
+                tpmmode = 'RS';
+            }
+        }
         panel.setLoading(true);
 
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
-                $method: 'POST'
+                $method: 'POST',
+                TPMmode: tpmmode
             });
 
         query = me.buildQuery(query, store)

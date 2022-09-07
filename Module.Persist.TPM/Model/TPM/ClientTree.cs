@@ -1,9 +1,11 @@
 using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Module.Persist.TPM.Model.TPM {
+namespace Module.Persist.TPM.Model.TPM
+{
     public class ClientTree : IEntity<int>, ICloneable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -48,6 +50,19 @@ namespace Module.Persist.TPM.Model.TPM {
 
         public string SFAClientCode { get; set; }
 
+        public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
+        public ICollection<BudgetSubItemClientTree> BudgetSubItemClientTrees { get; set; }
+        public ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
+        public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
+        public ICollection<EventClientTree> EventClientTrees { get; set; }
+        public ICollection<MechanicType> MechanicTypes { get; set; }
+        public ICollection<NoneNego> NoneNegoes { get; set; }
+        public ICollection<NonPromoSupport> NonPromoSupports { get; set; }
+        public ICollection<Plu> Plus { get; set; }
+        public ICollection<PriceList> PriceLists { get; set; }
+        public ICollection<PromoSupport> PromoSupports { get; set; }
+        public ICollection<RATIShopper> RATIShoppers { get; set; }
+        public ICollection<TradeInvestment> TradeInvestments { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();

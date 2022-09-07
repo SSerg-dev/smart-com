@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using Newtonsoft.Json;
 using Persist;
 using System;
@@ -9,7 +10,7 @@ using System.Linq;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class Promo : IEntity<Guid>, IDeactivatable
+    public class Promo : IEntity<Guid>, IDeactivatable, IMode
     {
         [NotMapped]
         private Guid id;
@@ -27,26 +28,16 @@ namespace Module.Persist.TPM.Model.TPM
         }
 
         public bool Disabled { get; set; }
+        [Index("Unique_PromoNumber", 3, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+        [Index("Unique_PromoNumber", 2, IsUnique = true)]
+        public TPMmode TPMmode { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public DateTimeOffset? LastChangedDateDemand { get; set; }
         public DateTimeOffset? LastChangedDateFinance { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid? TechnologyId { get; set; }
-        public Guid? BrandTechId { get; set; }
-        public Guid? PromoStatusId { get; set; }
-        public Guid? MarsMechanicId { get; set; }
-        public Guid? MarsMechanicTypeId { get; set; }
-        public Guid? PromoTypesId { get; set; }
-        public Guid? PlanInstoreMechanicId { get; set; }
-        public Guid? PlanInstoreMechanicTypeId { get; set; }
-        public Guid? ColorId { get; set; }
-        public Guid? RejectReasonId { get; set; }
-        public Guid? EventId { get; set; }
-        public Guid? ActualInStoreMechanicId { get; set; }
-        public Guid? ActualInStoreMechanicTypeId { get; set; }
+
         public int? ClientTreeId { get; set; }
-        public int? ClientTreeKeyId { get; set; }
+
         public Guid? CreatorId { get; set; }
         public string CreatorLogin { get; set; }
 
@@ -58,8 +49,8 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? LastApprovedDate { get; set; }
 
         // Basic
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        [Index(IsUnique = true)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Index("Unique_PromoNumber", 1, IsUnique = true)]
         public int? Number { get; set; }
         [StringLength(255)]
         public string Name { get; set; }
@@ -234,27 +225,6 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? IsDemandFinanceApproved { get; set; }
         public bool? IsGAManagerApproved { get; set; }
 
-        public virtual Brand Brand { get; set; }
-        public virtual Technology Technology { get; set; }
-        public virtual BrandTech BrandTech { get; set; }
-        public virtual PromoStatus PromoStatus { get; set; }
-        [ForeignKey("MarsMechanicId")]
-        public virtual Mechanic MarsMechanic { get; set; }
-        [ForeignKey("PlanInstoreMechanicId")]
-        public virtual Mechanic PlanInstoreMechanic { get; set; }
-        [ForeignKey("MarsMechanicTypeId")]
-        public virtual MechanicType MarsMechanicType { get; set; }
-        [ForeignKey("PlanInstoreMechanicTypeId")]
-        public virtual MechanicType PlanInstoreMechanicType { get; set; }
-        [ForeignKey("PromoTypesId")]
-        public virtual PromoTypes PromoTypes { get; set; }
-        public virtual Color Color { get; set; }
-        public virtual RejectReason RejectReason { get; set; }
-        public virtual Event Event { get; set; }
-        [ForeignKey("ActualInStoreMechanicId")]
-        public virtual Mechanic ActualInStoreMechanic { get; set; }
-        [ForeignKey("ActualInStoreMechanicTypeId")]
-        public virtual MechanicType ActualInStoreMechanicType { get; set; }
         [StringLength(500)]
         public string ProductSubrangesList { get; set; }
         [StringLength(500)]
@@ -278,9 +248,6 @@ namespace Module.Persist.TPM.Model.TPM
         /// </summary>
         // Почему JSON? Привет ExtJS, Odata и Breeze за удобную работу с моделями
         public string PromoBasicProducts { get; set; }
-
-        [ForeignKey("ClientTreeKeyId")]
-        public virtual ClientTree ClientTree { get; set; }
 
         /// <summary>
         /// ID для обозначения операций над промо, позволяет избедать дубрирования в Raven
@@ -323,94 +290,149 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoIncrementalCOGSTn { get; set; }
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
+        // соединения к другим entity сначала с ключами, потом списки
+        public Guid? BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
+        public Guid? TechnologyId { get; set; }
+        public virtual Technology Technology { get; set; }
+        public Guid? BrandTechId { get; set; }
+        public virtual BrandTech BrandTech { get; set; }
+        public int? ClientTreeKeyId { get; set; }
+        [ForeignKey("ClientTreeKeyId")]
+        public virtual ClientTree ClientTree { get; set; }
+        public Guid? PromoStatusId { get; set; }
+        public virtual PromoStatus PromoStatus { get; set; }
+        public Guid? MarsMechanicId { get; set; }
+        [ForeignKey("MarsMechanicId")]
+        public virtual Mechanic MarsMechanic { get; set; }
+        public Guid? PlanInstoreMechanicId { get; set; }
+        [ForeignKey("PlanInstoreMechanicId")]
+        public virtual Mechanic PlanInstoreMechanic { get; set; }
+        public Guid? MarsMechanicTypeId { get; set; }
+        [ForeignKey("MarsMechanicTypeId")]
+        public virtual MechanicType MarsMechanicType { get; set; }
+        public Guid? PlanInstoreMechanicTypeId { get; set; }
+        [ForeignKey("PlanInstoreMechanicTypeId")]
+        public virtual MechanicType PlanInstoreMechanicType { get; set; }
+        public Guid? PromoTypesId { get; set; }
+        [ForeignKey("PromoTypesId")]
+        public virtual PromoTypes PromoTypes { get; set; }
+        public Guid? ColorId { get; set; }
+        public virtual Color Color { get; set; }
+        public Guid? RejectReasonId { get; set; }
+        public virtual RejectReason RejectReason { get; set; }
+        public Guid? EventId { get; set; }
+        public virtual Event Event { get; set; }
+        public Guid? ActualInStoreMechanicId { get; set; }
+        [ForeignKey("ActualInStoreMechanicId")]
+        public virtual Mechanic ActualInStoreMechanic { get; set; }
+        public Guid? ActualInStoreMechanicTypeId { get; set; }
+        [ForeignKey("ActualInStoreMechanicTypeId")]
+        public virtual MechanicType ActualInStoreMechanicType { get; set; }
         [ForeignKey("MasterPromo")]
         public Guid? MasterPromoId { get; set; }
         public virtual Promo MasterPromo { get; set; }
+        [ForeignKey("RollingScenario")]
+        public Guid? RollingScenarioId { get; set; }
+        public RollingScenario RollingScenario { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
-        public virtual ICollection<PromoProduct> PromoProducts { get; set; }
+        public ICollection<PromoProduct> PromoProducts { get; set; }
+        public ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
+        public ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
+        public ICollection<PromoProductTree> PromoProductTrees { get; set; }
+        public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
+        public ICollection<PromoSupportPromo> PromoSupportPromoes { get; set; }
+        public ICollection<PromoUpliftFailIncident> PromoUpliftFailIncidents { get; set; }
+        public ICollection<BTLPromo> BTLPromoes { get; set; }
+        public ICollection<PromoOnApprovalIncident> PromoOnApprovalIncidents { get; set; }
+        public ICollection<PromoOnRejectIncident> PromoOnRejectIncidents { get; set; }
+        public ICollection<PromoCancelledIncident> PromoCancelledIncidents { get; set; }
+        public ICollection<PromoApprovedIncident> PromoApprovedIncidents { get; set; }
+        public ICollection<CurrentDayIncremental> CurrentDayIncrementals { get; set; }
+
         /// <summary>
         /// Copy Constructor
         /// </summary>
         /// <param name="promoToCopy"></param>
-        public Promo(Promo promoToCopy)
-        {
-            Name = promoToCopy.Name;
-            Number = promoToCopy.Number;
-            ClientHierarchy = promoToCopy.ClientHierarchy;
-            ClientTreeId = promoToCopy.ClientTreeId;
-            PromoStatus = promoToCopy.PromoStatus;
-            BrandTech = promoToCopy.BrandTech;
-            MarsMechanic = promoToCopy.MarsMechanic;
-            MarsMechanicId = promoToCopy.MarsMechanicId;
-            MarsMechanicTypeId = promoToCopy.MarsMechanicTypeId;
-            MarsMechanicDiscount = promoToCopy.MarsMechanicDiscount;
-            PlanInstoreMechanic = promoToCopy.PlanInstoreMechanic;
-            PlanInstoreMechanicId = promoToCopy.PlanInstoreMechanicId;
-            PlanInstoreMechanicTypeId = promoToCopy.PlanInstoreMechanicTypeId;
-            PlanInstoreMechanicDiscount = promoToCopy.PlanInstoreMechanicDiscount;
-            StartDate = promoToCopy.StartDate;
-            EndDate = promoToCopy.EndDate;
-            DispatchesStart = promoToCopy.DispatchesStart;
-            DispatchesEnd = promoToCopy.DispatchesEnd;
-            BudgetYear = promoToCopy.BudgetYear;
-            PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
-            PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
-            ProductHierarchy = promoToCopy.ProductHierarchy;
-            PromoStatusId = promoToCopy.PromoStatusId;
-            NeedRecountUplift = promoToCopy.NeedRecountUplift;
-            InOut = promoToCopy.InOut;
-            InOutProductIds = promoToCopy.InOutProductIds;
-            InOutExcludeAssortmentMatrixProductsButtonPressed = promoToCopy.InOutExcludeAssortmentMatrixProductsButtonPressed;
-            IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
-            IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
-            IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
-            IsGAManagerApproved = promoToCopy.IsGAManagerApproved;
-            ActualPromoUpliftPercent = promoToCopy.ActualPromoUpliftPercent;
-            ActualPromoIncrementalBaseTI = promoToCopy.ActualPromoIncrementalBaseTI;
-            ActualPromoIncrementalCOGS = promoToCopy.ActualPromoIncrementalCOGS;
-            ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
-            ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
-            ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
-            ActualPromoIncrementalMACLSV = promoToCopy.ActualPromoIncrementalMACLSV;
-            ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
-            ActualPromoLSV = promoToCopy.ActualPromoLSV;
-            ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
-            ActualPromoLSVSO = promoToCopy.ActualPromoLSVSO;
-            ActualPromoLSVByCompensation = promoToCopy.ActualPromoLSVByCompensation;
-            PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
-            PlanPromoIncrementalBaseTI = promoToCopy.PlanPromoIncrementalBaseTI;
-            PlanPromoIncrementalCOGS = promoToCopy.PlanPromoIncrementalCOGS;
-            PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
-            PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
-            PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
-            PlanPromoIncrementalMACLSV = promoToCopy.PlanPromoIncrementalMACLSV;
-            PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
-            ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
-            PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
-            ActualAddTIShopper = promoToCopy.ActualAddTIShopper;
-            PlanAddTIShopperApproved = promoToCopy.PlanAddTIShopperApproved;
-            PlanAddTIShopperCalculated = promoToCopy.PlanAddTIShopperCalculated;
-            PlanPromoLSV = promoToCopy.PlanPromoLSV;
-            EventId = promoToCopy.EventId;
-            CalendarPriority = promoToCopy.CalendarPriority;
-            RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
-            IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
-            PromoTypesId = promoToCopy.PromoTypesId;
-            PlanTIBasePercent = promoToCopy.PlanTIBasePercent;
-            ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
-            PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
-            ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
-            PlanCOGSTn = promoToCopy.PlanCOGSTn;
-            ActualCOGSTn = promoToCopy.ActualCOGSTn;
-            IsOnInvoice = promoToCopy.IsOnInvoice;
-            IsApolloExport = promoToCopy.IsApolloExport;
-            ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
-            IsInExchange = promoToCopy.IsInExchange;
-            MasterPromoId = promoToCopy.MasterPromoId;
-        }
+        //public Promo(Promo promoToCopy)
+        //{
+        //    Name = promoToCopy.Name;
+        //    Number = promoToCopy.Number;
+        //    ClientHierarchy = promoToCopy.ClientHierarchy;
+        //    ClientTreeId = promoToCopy.ClientTreeId;
+        //    PromoStatus = promoToCopy.PromoStatus;
+        //    BrandTech = promoToCopy.BrandTech;
+        //    MarsMechanic = promoToCopy.MarsMechanic;
+        //    MarsMechanicId = promoToCopy.MarsMechanicId;
+        //    MarsMechanicTypeId = promoToCopy.MarsMechanicTypeId;
+        //    MarsMechanicDiscount = promoToCopy.MarsMechanicDiscount;
+        //    PlanInstoreMechanic = promoToCopy.PlanInstoreMechanic;
+        //    PlanInstoreMechanicId = promoToCopy.PlanInstoreMechanicId;
+        //    PlanInstoreMechanicTypeId = promoToCopy.PlanInstoreMechanicTypeId;
+        //    PlanInstoreMechanicDiscount = promoToCopy.PlanInstoreMechanicDiscount;
+        //    StartDate = promoToCopy.StartDate;
+        //    EndDate = promoToCopy.EndDate;
+        //    DispatchesStart = promoToCopy.DispatchesStart;
+        //    DispatchesEnd = promoToCopy.DispatchesEnd;
+        //    BudgetYear = promoToCopy.BudgetYear;
+        //    PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
+        //    PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
+        //    ProductHierarchy = promoToCopy.ProductHierarchy;
+        //    PromoStatusId = promoToCopy.PromoStatusId;
+        //    NeedRecountUplift = promoToCopy.NeedRecountUplift;
+        //    InOut = promoToCopy.InOut;
+        //    InOutProductIds = promoToCopy.InOutProductIds;
+        //    InOutExcludeAssortmentMatrixProductsButtonPressed = promoToCopy.InOutExcludeAssortmentMatrixProductsButtonPressed;
+        //    IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
+        //    IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
+        //    IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
+        //    ActualPromoUpliftPercent = promoToCopy.ActualPromoUpliftPercent;
+        //    ActualPromoIncrementalBaseTI = promoToCopy.ActualPromoIncrementalBaseTI;
+        //    ActualPromoIncrementalCOGS = promoToCopy.ActualPromoIncrementalCOGS;
+        //    ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
+        //    ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
+        //    ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
+        //    ActualPromoIncrementalMACLSV = promoToCopy.ActualPromoIncrementalMACLSV;
+        //    ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
+        //    ActualPromoLSV = promoToCopy.ActualPromoLSV;
+        //    ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
+        //    ActualPromoLSVSO = promoToCopy.ActualPromoLSVSO;
+        //    ActualPromoLSVByCompensation = promoToCopy.ActualPromoLSVByCompensation;
+        //    PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
+        //    PlanPromoIncrementalBaseTI = promoToCopy.PlanPromoIncrementalBaseTI;
+        //    PlanPromoIncrementalCOGS = promoToCopy.PlanPromoIncrementalCOGS;
+        //    PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
+        //    PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
+        //    PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
+        //    PlanPromoIncrementalMACLSV = promoToCopy.PlanPromoIncrementalMACLSV;
+        //    PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
+        //    ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
+        //    PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
+        //    ActualAddTIShopper = promoToCopy.ActualAddTIShopper;
+        //    PlanAddTIShopperApproved = promoToCopy.PlanAddTIShopperApproved;
+        //    PlanAddTIShopperCalculated = promoToCopy.PlanAddTIShopperCalculated;
+        //    PlanPromoLSV = promoToCopy.PlanPromoLSV;
+        //    EventId = promoToCopy.EventId;
+        //    CalendarPriority = promoToCopy.CalendarPriority;
+        //    RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
+        //    IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
+        //    PromoTypesId = promoToCopy.PromoTypesId;
+        //    PlanTIBasePercent = promoToCopy.PlanTIBasePercent;
+        //    ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
+        //    PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
+        //    ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
+        //    PlanCOGSTn = promoToCopy.PlanCOGSTn;
+        //    ActualCOGSTn = promoToCopy.ActualCOGSTn;
+        //    IsOnInvoice = promoToCopy.IsOnInvoice;
+        //    IsApolloExport = promoToCopy.IsApolloExport;
+        //    ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
+        //    IsInExchange = promoToCopy.IsInExchange;
+        //    MasterPromoId = promoToCopy.MasterPromoId;
+        //    TPMmode = promoToCopy.TPMmode;
+        //}
 
-        public Promo() { }
+        //public Promo() { }
 
         private void GetCalculationStatus()
         {
@@ -439,19 +461,20 @@ namespace Module.Persist.TPM.Model.TPM
 
                     if (products.Length > 0)
                     {
-                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct();
-
-                        // выбранные узлы
-                        promoBasicProducts.ProductsChoosen = products.Select(n => new
+                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct
                         {
-                            ObjectId = n.ObjectId,
-                            Name = n.Name,
-                            Type = n.Type,
-                            FullPathName = n.FullPathName,
-                            Abbreviation = n.Abbreviation,
-                            LogoFileName = n.LogoFileName,
-                            Filter = n.Filter
-                        }).ToArray();
+                            // выбранные узлы
+                            ProductsChoosen = products.Select(n => new
+                            {
+                                n.ObjectId,
+                                n.Name,
+                                n.Type,
+                                n.FullPathName,
+                                n.Abbreviation,
+                                n.LogoFileName,
+                                n.Filter
+                            }).ToArray()
+                        };
 
                         // формируем название Brand и Technology
                         ProductTree currentNode = products[0];
@@ -476,7 +499,7 @@ namespace Module.Persist.TPM.Model.TPM
                             currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
                         }
 
-                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     }
                 }
             }

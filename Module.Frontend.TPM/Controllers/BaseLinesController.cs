@@ -143,7 +143,10 @@ namespace Module.Frontend.TPM.Controllers
             model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
 
             var proxy = Context.Set<BaseLine>().Create<BaseLine>();
-            var result = (BaseLine)Mapper.Map(model, proxy, typeof(BaseLine), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<BaseLine, BaseLine>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<BaseLine>().Add(result);
             result.LastModifiedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
 

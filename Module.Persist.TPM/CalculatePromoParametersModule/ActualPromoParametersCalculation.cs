@@ -25,7 +25,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 PromoStatus finishedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "finished" && !x.Disabled).FirstOrDefault();
                 PromoStatus closedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "closed" && !x.Disabled).FirstOrDefault();
-                Promo promoCopy = new Promo(promo);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(promo);
 
                 bool isActualPromoBaseLineLSVChangedByDemand = promo.PromoStatusId == closedStatus.Id ||
                                                             (promo.PromoStatusId == finishedStatus.Id

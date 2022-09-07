@@ -118,7 +118,10 @@ namespace Module.Frontend.TPM.Controllers
 			var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));
 			var rpaType = currentRequest.Params.Get("RPAType");
 			var proxy = Context.Set<RPA>().Create<RPA>();
-			var result = (RPA)Mapper.Map(rpaModel, proxy, typeof(RPA), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+			var configuration = new MapperConfiguration(cfg =>
+				cfg.CreateMap<RPA, RPA>().ReverseMap());
+			var mapper = configuration.CreateMapper();
+			var result = mapper.Map(rpaModel, proxy);
 			Context.Set<RPA>().Add(result);
 			try
             {
@@ -484,7 +487,7 @@ namespace Module.Frontend.TPM.Controllers
 				}
 				return result;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				return new HttpResponseMessage(HttpStatusCode.Accepted);
 			}

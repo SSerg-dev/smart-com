@@ -11,6 +11,7 @@ namespace Module.Persist.TPM.Model.TPM
         public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
+
         [StringLength(255)]
         [Index(IsUnique = true)]
         [Required]

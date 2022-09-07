@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         [Index("Unique_Name", 3, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+
         [StringLength(255)]
         [Index("Unique_Name", 1, IsUnique = true)]
         [Required]
@@ -20,5 +22,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string Glyph { get; set; }
         [StringLength(255)]
         public string SystemName { get; set; }
+
+        public ICollection<Mechanic> Mechanics { get; set; }
     }
 }

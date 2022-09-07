@@ -177,7 +177,7 @@
         'MailNotificationSettingItem': 'Настройки почтовых уведомлений',
         'RPASettingItem': 'Настройки RPA',
         'RPAItem': 'RPA',
-        'SystemDirectories': 'Системные справочники'
+        'SystemDirectories': 'Системные справочники',
     },
 
     'compositePanelTitles': {
@@ -525,7 +525,8 @@
     'AccessPoint': {
         'Resource': 'Ресурс',
         'Action': 'Действие',
-        'Description': 'Описание'
+        'Description': 'Описание',
+        'TPMmode': 'Индикатор',
     },
     'HistoricalAccessPoint': ['AccessPoint', 'BaseHistoryEntity'],
     'DeletedAccessPoint': ['AccessPoint', 'BaseDeletedEntity'],

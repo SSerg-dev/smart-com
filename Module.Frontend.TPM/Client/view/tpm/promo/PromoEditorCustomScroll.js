@@ -47,6 +47,7 @@
 
     model: null,
     isCreating: true,
+    TPMmode: null,
 
     promoId: null,
     statusId: null,
@@ -68,6 +69,8 @@
     isInExchange: null,
 
     readOnly: null,
+
+    rsStartEnd: null,
 
     initComponent: function () {
         this.callParent(arguments);

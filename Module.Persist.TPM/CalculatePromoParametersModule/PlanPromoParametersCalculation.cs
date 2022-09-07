@@ -19,7 +19,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             try
             {
                 Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-                Promo promoCopy = new Promo(promo);
 
                 ResetValues(promo, context);
                 double? sumPlanProductBaseLineLSV = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineLSV);

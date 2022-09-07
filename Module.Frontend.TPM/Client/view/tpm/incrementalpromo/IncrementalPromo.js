@@ -27,7 +27,7 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf220,
-                    itemgroup: 'loadimportbutton',
+                    itemId: 'loadimportipbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
                     resource: '{0}',
@@ -35,16 +35,16 @@
                     allowFormat: ['zip', 'xlsx']
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'loadimporttemplatexlsxbutton',
+                    itemId: 'customloadimporttemplatebutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
                     action: 'DownloadTemplateXLSX'
                 }, {
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-                    action: 'ExportXLSX'
+                    //action: 'ExportXLSX'
                 }]
             }
         }
@@ -85,6 +85,22 @@
                 minWidth: 110
             },
             items: [{
+                text: l10n.ns('tpm', 'IncrementalPromo').value('TPMmode'),
+                dataIndex: 'TPMmode',
+                renderer: function (value) {
+                    return value;
+                },
+                xtype: 'booleancolumn',
+                trueText: 'RS',
+                falseText: 'Current',
+                filter: {
+                    type: 'bool',
+                    store: [
+                        [0, 'Current'],
+                        [1, 'RS']
+                    ]
+                }
+            }, {
                 text: l10n.ns('tpm', 'IncrementalPromo').value('ProductZREP'),
                 dataIndex: 'ProductZREP',
                 filter: {

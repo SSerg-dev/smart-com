@@ -1,37 +1,36 @@
 ﻿using AutoMapper;
+using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
+using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.IO;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using Newtonsoft.Json;
-using System.Data.Entity;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Core.Settings;
-using Core.Dependency;
-using Module.Frontend.TPM.Util;
-using System.Web;
-using Module.Persist.TPM.Utils;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -44,7 +43,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoSupportPromo> GetConstraintedQuery()
+        protected IQueryable<PromoSupportPromo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -52,9 +51,21 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IQueryable<PromoSupportPromo> query = Context.Set<PromoSupportPromo>().Where(e => !e.Disabled);
+            IQueryable<PromoSupportPromo> query = Context.Set<PromoSupportPromo>();
 
-            return query;
+            switch (TPMmode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    //query = query.ToList().AsQueryable();
+                    //var deletedRSPromoes
+                    break;
+            }
+            return query.Where(q => !q.Disabled);
+
         }
 
         [ClaimsAuthorize]
@@ -66,16 +77,16 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoSupportPromo> GetPromoSupportPromoes()
+        public IQueryable<PromoSupportPromo> GetPromoSupportPromoes(TPMmode TPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoSupportPromo> GetPromoSupportPromoes([FromODataUri] string PromoId)
+        public IQueryable<PromoSupportPromo> GetPromoSupportPromoes([FromODataUri] string PromoId, TPMmode TPMmode = TPMmode.Current)
         {
-            var promosupports = GetConstraintedQuery();
+            var promosupports = GetConstraintedQuery(TPMmode);
             var promoNumber = int.Parse(PromoId);
             var promo = Context.Set<Promo>().Where(x => x.Number == promoNumber).FirstOrDefault();
             var result = promosupports.Where(x => x.PromoId == promo.Id);
@@ -86,7 +97,10 @@ namespace Module.Frontend.TPM.Controllers
         [HttpPost]
         public IQueryable<PromoSupportPromo> GetFilteredData(ODataQueryOptions<PromoSupportPromo> options)
         {
-            var query = GetConstraintedQuery();
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
             {
@@ -137,7 +151,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<PromoSupportPromo>().Create<PromoSupportPromo>();
-            var result = (PromoSupportPromo)Mapper.Map(model, proxy, typeof(PromoSupportPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<PromoSupportPromo>().Add(result);
 
             try
@@ -165,7 +182,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult PromoSuportPromoPost(Guid promoSupportId)
+        public IHttpActionResult PromoSuportPromoPost(Guid promoSupportId, TPMmode TPMmode)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
@@ -187,26 +204,100 @@ namespace Module.Frontend.TPM.Controllers
                         guidPromoIds.Add(promoId);
                     }
 
+                    List<PromoSupportPromo> promoSupportPromoes = Context.Set<PromoSupportPromo>()
+                        .Include(g => g.PromoSupport)
+                        .Include(g => g.Promo.BTLPromoes)
+                        .Include(g => g.Promo.IncrementalPromoes)
+                        .Include(g => g.Promo.PromoProductTrees)
+                        .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                        .Where(psp => psp.PromoSupportId == promoSupportId && !psp.Disabled)
+                        .ToList();
+                    bool isAllCurrent = promoSupportPromoes.All(g => g.TPMmode == TPMmode.Current);
+                    bool isAllRS = promoSupportPromoes.All(g => g.TPMmode == TPMmode.RS);
+                    if (TPMmode == TPMmode.RS && isAllCurrent)
+                    {
+                        promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
+                    }
+                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
+                    {
+                        // убираем RSы
+                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                    }
+                    else
+                    {
+                        // убираем currentы
+                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
+                    }
                     foreach (var id in guidPromoIds)
                     {
                         Promo promo = Context.Set<Promo>().Find(id);
                         // закрытые не берем
-                        if (promo.PromoStatus.SystemName.ToLower().IndexOf("close") < 0)
+                        if (promo.PromoStatus.SystemName != "Closed")
                         {
                             // разница между промо в подстатье должно быть меньше 2 периодов (8 недель)
-                            bool bigDifference = Context.Set<PromoSupportPromo>().Any(n => n.PromoSupportId == promoSupportId
-                                    && DbFunctions.DiffDays(n.Promo.StartDate.Value, promo.EndDate.Value).Value > diffBetweenPromoInDays && !n.Disabled);
+                            bool bigDifference = promoSupportPromoes.Any(n => (promo.EndDate.Value - n.Promo.StartDate.Value).Days > diffBetweenPromoInDays);
 
                             if (bigDifference)
                                 throw new Exception("The difference between the dates of the promo should be less than 3 periods");
-
-                            PromoSupportPromo psp = new PromoSupportPromo(promoSupportId, id);
-                            Context.Set<PromoSupportPromo>().Add(psp);
-                            Context.SaveChanges();
+                            if (TPMmode == TPMmode.RS)
+                            {
+                                if (promo.TPMmode == TPMmode.Current)
+                                {
+                                    promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = promo.Id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    promo.PromoSupportPromoes.Add(psp);
+                                }
+                                else
+                                {
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    Context.Set<PromoSupportPromo>().Add(psp);
+                                }
+                            }
+                            else
+                            {
+                                Promo promoMode = Context.Set<Promo>()
+                                    .Include(g => g.PromoSupportPromoes)
+                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
+                                PromoSupportPromo psp = new PromoSupportPromo
+                                {
+                                    PromoSupportId = promoSupportId,
+                                    PromoId = id,
+                                    TPMmode = promo.TPMmode
+                                };
+                                Context.Set<PromoSupportPromo>().Add(psp);
+                                if (promoMode != null)
+                                {
+                                    if (promoMode.PromoSupportPromoes.Any(g => g.PromoSupportId == promoSupportId && !g.Disabled))
+                                    {
+                                        //по идее надо - CalculateBudgetsCreateTask но это тормознет сохранение в Current
+                                    }
+                                    else
+                                    {
+                                        PromoSupportPromo psp1 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promoMode.Id,
+                                            TPMmode = promo.TPMmode
+                                        };
+                                        Context.Set<PromoSupportPromo>().Add(psp1);
+                                    }
+                                }
+                            }
                         }
                     }
+                    Context.SaveChanges();
 
-                    CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId });
+                    CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, null, TPMmode);
 
                     transaction.Commit();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -305,7 +396,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 CalculateBudgetsCreateTask(new List<Guid>() { promoSupportId }, deletedPromoIds);
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, list = newList }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
             catch (Exception e)
             {
@@ -365,7 +456,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 Context.SaveChanges();
 
-                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { model.PromoId });
+                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { key });
                 //CalculateBudgetsCreateTask(key.ToString(), true, true, true, true);
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -427,7 +518,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         tmp = JsonConvert.DeserializeObject<List<string>>(subItemsIds);
                     }
-                    tmp.ForEach(id => 
+                    tmp.ForEach(id =>
                     {
                         Guid itemId = Guid.Parse(id);
                         subItemsIdsList.Add(itemId);
@@ -514,7 +605,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="calculateFactCostTE">Необходимо ли пересчитывать значения фактические Cost TE</param>
         /// <param name="calculatePlanCostProd">Необходимо ли пересчитывать значения плановые Cost Production</param>
         /// <param name="calculateFactCostProd">Необходимо ли пересчитывать значения фактические Cost Production</param>
-        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null)
+        private void CalculateBudgetsCreateTask(List<Guid> promoSupportIds, List<Guid> unlinkedPromoIds = null, TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -529,6 +620,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("UnlinkedPromoIds", unlinkedPromoIdsString, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
 
             bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Budgets, data, Context);
 
@@ -614,7 +706,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = 2, Field = "Promo.BrandTech.BrandsegTechsub", Header = "Brandtech", Quoting = false },
                 new Column() { Order = 2, Field = "PlanCalculation", Header = "Plan Cost TE Total", Quoting = false },
                 new Column() { Order = 2, Field = "FactCalculation", Header = "Actual Cost TE Total", Quoting = false },
-                new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },                
+                new Column() { Order = 3, Field = "Promo.EventName", Header = "Event", Quoting = false },
                 new Column() { Order = 4, Field = "Promo.StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 5, Field = "Promo.EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 6, Field = "Promo.PromoStatus.Name", Header = "Status", Quoting = false },
@@ -642,8 +734,8 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoSupportPromo> options, string section = "")
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-            string getColumnMethod = section == "ticosts" 
-                                        ? nameof(PromoSupportPromoesController.GetExportSettingsTICosts) 
+            string getColumnMethod = section == "ticosts"
+                                        ? nameof(PromoSupportPromoesController.GetExportSettingsTICosts)
                                         : nameof(PromoSupportPromoesController.GetExportSettingsCostProd);
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -701,6 +793,42 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 return InternalServerError(e);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoSupportPromoDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                var supportPromos = Context.Set<PromoSupportPromo>()
+                    .Where(x => x.Id == key && !x.Disabled)
+                    .ToList();
+
+                if (supportPromos == null)
+                {
+                    return NotFound();
+                }
+
+                if (TPMmode == TPMmode.RS && supportPromos[0].TPMmode == TPMmode.Current) //фильтр промо
+                {
+                    RSmodeHelper.EditToPromoSupportPromoRS(Context, supportPromos, true, System.DateTime.Now);
+                }
+                else
+                {
+                    supportPromos[0].DeletedDate = System.DateTime.Now;
+                    supportPromos[0].Disabled = true;
+                }
+                Context.SaveChanges();
+
+                CalculateBudgetsCreateTask(new List<Guid>() { supportPromos[0].PromoSupportId }, new List<Guid>() { supportPromos[0].PromoId });
+                Context.SaveChanges();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
             }
         }
     }

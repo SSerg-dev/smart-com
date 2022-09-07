@@ -186,8 +186,10 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
+        'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
-        'EventType': 'Event Types'
+        'EventType': 'Event Types',
+        'RSmode': 'RS'
     },
 
     'text': {
@@ -967,7 +969,9 @@
 
         'SelectPromo': 'Select Promo',
         'LinkedPromoes': 'Linked Promoes',
-        'MasterPromoNumber': 'Master Promo Number'
+        'MasterPromoNumber': 'Master Promo Number',
+
+        'TPMmode': 'Indicator'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1292,6 +1296,7 @@
         'PlanProdCost': 'Plan Prod Cost',
         'ActualProdCost': 'Actual Prod Cost',
         'OffAllocation': 'Off allocation by LSV',
+        'TPMmode': 'Indicator'
     },
     'HistoricalPromoSupport': {
         'Number': 'ID',
@@ -1806,6 +1811,8 @@
         'PlanCalculation': 'Plan Cost TE Total',
         'FactCalculation': 'Actual Cost TE Total',
         'EquipmentType': 'Equipment Type',
+
+        'TPMmode': 'Indicator'
     },
 
     'PromoSupportPromoCostProd': {
@@ -2215,6 +2222,7 @@
         'ActualPromoVolume': 'Actual Promo Volume',
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
+        'TPMmode': 'Indicator'
     },
 
     'PromoActivity': {
@@ -2493,6 +2501,7 @@
 
     'IncrementalPromo': {
         'ProductZREP': 'ZREP',
+        'TPMmode': 'Indicator',
         'ProductName': 'Product EN',
         'PromoClient': 'Client',
         'PromoNumber': 'Promo ID',
@@ -2525,6 +2534,7 @@
         'UserName': 'User Name',
         'GreaterThanZero': 'Uplift must be greater than zero',
         'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
     },
     'PreviousDayIncremental': {
         'ZREP': 'ZREP',
@@ -2538,6 +2548,29 @@
     },
     'HistoricalPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseHistoryEntity'],
     'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
+
+    'PromoProductCorrectionView': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'BrandTechName': 'BrandTech',
+        'ClientHierarchy': 'Client',
+        'EventName': 'Event',
+        'MarsMechanicName': 'Mars Mechanic',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'PromoStatusSystemName': 'Promo Status',
+        'ProductSubrangesList': 'Subranges',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
+        'CreateDate': 'Create Date',
+        'ChangeDate': 'Last Change Date',
+        'UserName': 'User Name',
+        'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
+    },
 
     'ActualLSV': {
         'ActualLSV': 'Actual LSV',
@@ -2721,6 +2754,7 @@
         'PromoStatusName': 'Status',
         'ActualPromoBTL': 'Actual Promo BTL',
         'PlanPromoBTL': 'Plan Promo BTL',
+        'TPMmode': 'Indicator'
     },
 
     'BTL': {
@@ -2741,6 +2775,7 @@
         'ActualBTLTotal': 'Actual BTL Total',
         'ActualPromoBTL': 'Actual Promo BTL',
         'PlanPromoBTL': 'Plan Promo BTL',
+        'TPMmode': 'Indicator',
     },
 
     'HistoricalBTL': {
@@ -2818,4 +2853,13 @@
     },
     'HistoricalCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseHistoryEntity'],
     'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
+
+    'RSmode': {
+        'RSId': 'RS ID',
+        'ClientTreeFullPathName': 'Client',
+        'ExpirationDate': 'Expiration Date',
+        'StartDate': 'Start Date',
+        'EndDate': 'End Date',
+        'PromoStatusName': 'Status',
+    }
 });

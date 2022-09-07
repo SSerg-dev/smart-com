@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Persist.TPM.Model.DTO {
     public class PromoGridView : IEntity<Guid> {
@@ -18,6 +19,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public bool? IsCMManagerApproved { get; set; }
         public bool? IsGAManagerApproved { get; set; }
         public double? PlanInstoreMechanicDiscount { get; set; }
+        public TPMmode TPMmode { get; set; }
 
         public DateTimeOffset? LastChangedDate { get; set; }
         public DateTimeOffset? LastChangedDateDemand { get; set; }

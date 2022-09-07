@@ -134,7 +134,10 @@ namespace Module.Frontend.TPM.Controllers
                 model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
 
                 var proxy = Context.Set<CompetitorPromo>().Create<CompetitorPromo>();
-                var result = (CompetitorPromo)Mapper.Map(model, proxy, typeof(CompetitorPromo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                var configuration = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<CompetitorPromo, CompetitorPromo>().ReverseMap());
+                var mapper = configuration.CreateMapper();
+                var result = mapper.Map(model, proxy);
                 //Установка дат в Mars формате
                 SetPromoMarsDates(result);
                 

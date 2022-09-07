@@ -191,6 +191,8 @@
         { name: 'IsInExchange', type: 'boolean', useNull: true, hidden: false, isDefault: false, defaultValue: null },
         { name: 'LinkedPromoes', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
         { name: 'MasterPromoNumber', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
+
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

@@ -83,7 +83,10 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
             var proxy = Context.Set<RPASetting>().Create<RPASetting>();
-            var result = (RPASetting)Mapper.Map(model, proxy, typeof(RPASetting), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<RPASetting, RPASetting>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<RPASetting>().Add(result);
 
             try

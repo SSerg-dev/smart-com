@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Core.Data;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Core.Data;
 
 namespace Module.Persist.TPM.Model.TPM
 {

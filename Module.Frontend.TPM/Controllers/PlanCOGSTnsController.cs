@@ -137,7 +137,10 @@ namespace Module.Frontend.TPM.Controllers
             model.Year = model.StartDate.Value.Year;
 
             var proxy = Context.Set<PlanCOGSTn>().Create<PlanCOGSTn>();
-            var result = (PlanCOGSTn)Mapper.Map(model, proxy, typeof(PlanCOGSTn), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PlanCOGSTn, PlanCOGSTn>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             //Проверка пересечения по времени на клиенте
             if (!DateCheck(result))

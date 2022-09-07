@@ -104,7 +104,6 @@ namespace Module.Frontend.TPM.Controllers
         {
             int? parentId;
             ProductTree root = null;
-            Object result;
             // Получаем записи у которых родительский элемент = разворачиваемому
             if (node == "root")
             {
@@ -126,6 +125,8 @@ namespace Module.Frontend.TPM.Controllers
             foreach (ProductTree treeNode in activeTreeList)
             {
                 bool leaf = !activeTree.Any(x => x.parentId == treeNode.ObjectId);
+                treeNode.Technology = null; // из-за loopreference, нужно чтобы Context был в приложении а не ядре
+                treeNode.TechnologyId = null; //
                 rootChilds.Add(new ProductTreeNode(treeNode, false, leaf, false));
             }
 
@@ -139,18 +140,21 @@ namespace Module.Frontend.TPM.Controllers
                     rootNode.AddChild(rootChilds);
                 }
 
-                result = rootNode;
+                return Json(new
+                {
+                    success = true,
+                    children = rootNode
+                });
             }
             else
             {
-                result = rootChilds;
+                return Json(new
+                {
+                    success = true,
+                    children = rootChilds
+                });
             }
 
-            return Json(new
-            {
-                success = true,
-                children = result
-            });
         }
 
         /// <summary>
@@ -342,7 +346,17 @@ namespace Module.Frontend.TPM.Controllers
                 branch = new ProductTreeNode(rootNode, true, false, true);
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
-
+            var config = new MapperConfiguration(cfg => {
+                cfg.AllowNullCollections = true; // потому что в children должен быть null а не пустая коллекция
+                cfg.CreateMap<ProductTreeNode, ProductTreeNode>();
+                cfg.CreateMap<Technology, Technology>()
+                .ForMember(pTo => pTo.BrandTeches, opt => opt.Ignore());
+                cfg.CreateMap<ProductTree, ProductTree>()
+                .ForMember(pTo => pTo.NoneNegoes, opt => opt.Ignore())
+                .MaxDepth(1);
+            });
+            var mapper = config.CreateMapper();
+            var branchMap = mapper.Map<ProductTreeNode>(branch);
             if (branch == null)
             {
                 return GetTreeForLevel("root");
@@ -351,9 +365,9 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Json(new
                 {
-                    success = branch != null,
-                    children = branch
-                });
+                    success = branchMap != null,
+                    children = branchMap
+                }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
         }
 
@@ -379,7 +393,10 @@ namespace Module.Frontend.TPM.Controllers
             model.FullPathName = fullPathClientName;
 
             var proxy = Context.Set<ProductTree>().Create<ProductTree>();
-            var result = (ProductTree)Mapper.Map(model, proxy, typeof(ProductTree), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ProductTree, ProductTree>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             result.ObjectId = new int();
             Context.Set<ProductTree>().Add(result);
@@ -694,7 +711,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return FileUtility.DownloadFile(directory, fileName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
@@ -799,6 +816,10 @@ namespace Module.Frontend.TPM.Controllers
             this.leaf = leaf;
             this.loaded = loaded;
             this.Target = target;
+        }
+
+        public ProductTreeNode()
+        {
         }
 
         /// <summary>

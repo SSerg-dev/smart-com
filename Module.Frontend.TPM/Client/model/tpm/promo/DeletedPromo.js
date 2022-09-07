@@ -186,7 +186,8 @@
             convert: function (value) {
                 return value * 100;
             }
-        }
+        },
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
@@ -198,7 +199,8 @@
         },
         extraParams: {
             //Id промо для метода GetById в истории
-            promoIdHistory: null
+            promoIdHistory: null,
+            TPMmode: 'Current'
         }
     }
 });

@@ -123,7 +123,10 @@ namespace Module.Frontend.TPM.Controllers {
             model.Year = model.StartDate.Value.Year;
 
             var proxy = Context.Set<COGS>().Create<COGS>();
-            var result = (COGS) Mapper.Map(model, proxy, typeof(COGS), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<COGS, COGS>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             //Проверка пересечения по времени на клиенте
             if (!DateCheck(result)) {

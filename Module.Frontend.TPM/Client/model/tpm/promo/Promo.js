@@ -256,6 +256,7 @@
 
         { name: 'IsSplittable', type: 'boolean', hidden: false, isDefault: false },
 
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
     ],
     //hasMany: [
     //    //{
@@ -283,7 +284,8 @@
         },
         extraParams: {
             // параметр указывающий на то, нужно ли фильтровать записи по признаку возможности перевода в другой статус
-            canChangeStateOnly: false
+            canChangeStateOnly: false,
+            TPMmode: 'Current'
         }
     }
 });

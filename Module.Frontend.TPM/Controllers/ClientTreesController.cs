@@ -618,7 +618,10 @@ namespace Module.Frontend.TPM.Controllers
                                                 : 0;
 
             var proxy = Context.Set<ClientTree>().Create<ClientTree>();
-            var result = (ClientTree)Mapper.Map(model, proxy, typeof(ClientTree), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ClientTree, ClientTree>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             //Проверка DemandCode
             if (!CheckDemandCode(model)) {
@@ -1045,7 +1048,7 @@ namespace Module.Frontend.TPM.Controllers
                 return FileUtility.DownloadFile(directory, fileName);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }

@@ -23,10 +23,13 @@ namespace Module.Frontend.TPM.Controllers {
     /// </summary>
     public class SchedulerClientTreeDTOsController : EFContextController {
         private readonly IAuthorizationManager authorizationManager;
+        private readonly IMapper mapper;
 
         public SchedulerClientTreeDTOsController(IAuthorizationManager authorizationManager) {
             this.authorizationManager = authorizationManager;
-            Mapper.CreateMap<ClientTree, SchedulerClientTreeDTO>();
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<ClientTree, SchedulerClientTreeDTO>().ReverseMap());
+            mapper = configuration.CreateMapper();
         }
 
         protected IQueryable<ClientTree> GetConstraintedQuery() {
@@ -78,7 +81,7 @@ namespace Module.Frontend.TPM.Controllers {
                 //result.Add(clientOtherType);
                 //result.Add(clientCompetitor);
 
-                SchedulerClientTreeDTO prevRow = Mapper.Map<SchedulerClientTreeDTO>(client);
+                SchedulerClientTreeDTO prevRow = mapper.Map<SchedulerClientTreeDTO>(client);
                 string stringId = prevRow.Id.ToString();
 
                 var competitors = Context.Set<Competitor>().Where(x => !x.Disabled).Select(x => x.Name);
@@ -116,7 +119,7 @@ namespace Module.Frontend.TPM.Controllers {
             int sort = 1;
             foreach (ClientTree client in GetConstraintedQuery())
             {
-                SchedulerClientTreeDTO prevRow = Mapper.Map<SchedulerClientTreeDTO>(client);
+                SchedulerClientTreeDTO prevRow = mapper.Map<SchedulerClientTreeDTO>(client);
                 string stringId = prevRow.Id.ToString();
 
                 var competitors = Context.Set<Competitor>().Where(x => !x.Disabled).Select(x => x.Name);

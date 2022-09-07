@@ -124,7 +124,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             var proxy = Context.Set<CompetitorBrandTech>().Create<CompetitorBrandTech>();
-            var result = (CompetitorBrandTech)Mapper.Map(model, proxy, typeof(CompetitorBrandTech), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<CompetitorBrandTech, CompetitorBrandTech>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
 
             Context.Set<CompetitorBrandTech>().Add(result);
 

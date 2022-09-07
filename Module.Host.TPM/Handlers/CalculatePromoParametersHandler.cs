@@ -65,12 +65,12 @@ namespace Module.Host.TPM.Handlers
 					if (promoId != nullGuid)
 					{
                         var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
-                        bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator") ? true : false;
+                        bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator");
                         Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
-                        promoCopy = new Promo(promo);
+                        promoCopy = AutomapperProfiles.PromoCopy(promo);
 
-						//добавление номера рассчитываемого промо в лог
-						handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
+                        //добавление номера рассчитываемого промо в лог
+                        handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
 						handlerLogger.Write(true, "");
 
                         //статусы, в которых не должен производиться пересчет плановых параметров промо

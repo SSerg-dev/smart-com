@@ -519,8 +519,35 @@
     text-overflow: ellipsis;
 }
 
-/* Security Buttons  */
+/* ModeSwitcher */
+.modelswitchercheckbox {
+    -webkit-appearance: none;
+    width: 40px;
+    padding-left: 18px;
+    margin: 0;
+    border-radius: 8px;
+    background: radial-gradient(circle 6px, white 100%, transparent calc(100% + 1px)) #ccc -10px;
+    /*transition: 0.3s ease-in-out;*/
+}
 
+    .modelswitchercheckbox::before {
+        content: "OFF";
+        font: bold 8px/16px Verdana;
+        color: white;
+        text-shadow: 0 1px black;
+    }
+
+:checked {
+    padding-left: 4px;
+    background-color: #66bb6a;
+    background-position: 10px;
+}
+
+    :checked::before {
+        content: "ON";
+    }
+
+/* Security Buttons  */
 .rolebutton .securitybutton-text {
     font-weight: bold;
 }
@@ -1125,9 +1152,11 @@ a.x-monthpicker-item-inner:hover,
     background-repeat: no-repeat;
     padding: 8px;
 }
+
 .over_all {
     z-index: 99999 !important;
 }
+
 .x-column-header-inner {
     padding: 5px 4px !important;
     text-overflow: ellipsis

@@ -32,7 +32,7 @@
                 xtype: 'customheadermenu',
                 items: [{
                     glyph: 0xf21d,
-                    itemId: 'exportxlsxbutton',
+                    itemId: 'exportbutton',
                     exactlyModelCompare: true,
                     text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
                     action: 'ExportXLSX'
@@ -279,13 +279,32 @@
                 renderer: function (value) {
                     return renderWithDelimiter(value, ' > ', '  ');
                 }
-            }, {
+                },
+                {
+                    text: l10n.ns('tpm', 'Promo').value('TPMmode'),
+                    dataIndex: 'TPMmode',
+                    renderer: function (value) {
+                        return value;
+                    },
+                    xtype: 'booleancolumn',
+                    trueText: 'RS',
+                    falseText: 'Current',
+                    filter: {
+                        type: 'bool',
+                        store: [
+                            [0, 'Current'],
+                            [1, 'RS']
+                        ]
+                    }
+                },
+            {
                 text: l10n.ns('tpm', 'Promo').value('InOut'),
                 dataIndex: 'InOut',
                 renderer: function (value) {
                     return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                 }
-            }, {
+            },
+            {
                 text: l10n.ns('tpm', 'Promo').value('InvoiceType'),
                 dataIndex: 'IsOnInvoice',
                 width: 100,

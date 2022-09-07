@@ -90,7 +90,7 @@ namespace Module.Host.TPM.Actions
         private PromoStateContext GetPromoStateContext(DatabaseContext context, ref Promo promo)
         {
             //Переводим в статус и делаем копию промо из-за особой механики работы изменения статусов
-            Promo promoCopy = new Promo(promo);
+            Promo promoCopy = AutomapperProfiles.PromoCopy(promo);
             var approvedStatus = context.Set<PromoStatus>().Where(x => x.SystemName == "Approved" && !x.Disabled).FirstOrDefault();
             promo.PromoStatus = approvedStatus;
             promo.PromoStatusId = approvedStatus.Id;

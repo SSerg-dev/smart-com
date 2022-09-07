@@ -13,9 +13,6 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_BaseLine", 1, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
 
-        [Index("Unique_BaseLine", 2, IsUnique = true)]
-        public Guid ProductId { get; set; }
-
         [Index("Unique_BaseLine", 3, IsUnique = true)]
         [Required]
         public DateTimeOffset? StartDate { get; set; }
@@ -40,6 +37,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public DateTimeOffset? LastModifiedDate { get; set; }
 
+        [Index("Unique_BaseLine", 2, IsUnique = true)]
+        public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
 
         public object Clone()

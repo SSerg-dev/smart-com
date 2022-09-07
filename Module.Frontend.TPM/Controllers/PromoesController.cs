@@ -1,43 +1,47 @@
 ﻿using AutoMapper;
 using Core.Data;
+using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.MarsCalendar;
-using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Core.Settings;
-using Module.Persist.TPM.PromoStateControl;
 using System.Web.Http.Results;
-using System.IO;
-using Persist.ScriptGenerator.Filter;
-using System.Net.Http.Headers;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.SimpleModel;
-using System.Web;
+using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -53,7 +57,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, bool withDeleted = false)
+        protected IQueryable<Promo> GetConstraintedQuery(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current, bool withDeleted = false)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -65,7 +69,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -85,16 +89,16 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false)
+        public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false)
+        public IQueryable<Promo> GetCanChangeStatePromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
-            return GetConstraintedQuery(canChangeStateOnly);
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
@@ -104,7 +108,7 @@ namespace Module.Frontend.TPM.Controllers
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             string filter = HttpContext.Current.Request.QueryString["$filter"];
             bool IsMasterFiltered = filter == null ? false : filter.Contains("MasterPromoId");
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), IsMasterFiltered);
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"), IsMasterFiltered);
 
             var querySettings = new ODataQuerySettings
             {
@@ -261,7 +265,10 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             Promo proxy = Context.Set<Promo>().Create<Promo>();
-            Promo result = (Promo)Mapper.Map(model, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<Promo, Promo>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            Promo result = mapper.Map(model, proxy);
 
             if (result.CreatorId == null)
             {
@@ -314,7 +321,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 // Добавить запись в таблицу PromoProduct при сохранении.
                 string error;
-                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == result.Number).Id, Context, out error, true, promoProductTrees);
+                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out error, true, promoProductTrees);
                 // Создаём инцидент для draft сразу
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
             }
@@ -333,7 +340,10 @@ namespace Module.Frontend.TPM.Controllers
 
             result.LastChangedDate = ChangedDate;
             Context.SaveChanges();
-
+            if (result.TPMmode == TPMmode.RS)
+            {
+                RSPeriodHelper.CreateRSPeriod(result, Context);
+            }
             return result;
         }
 
@@ -343,7 +353,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                Promo model = Context.Set<Promo>().Find(key);
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -365,8 +381,28 @@ namespace Module.Frontend.TPM.Controllers
                 patch.CopyChangedValues(ChangePromo);
                 IEnumerable<string> ChangedList = patch.GetChangedPropertyNames();
 
-                Promo promoCopy = new Promo(model);
+                //Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
+                if (model.TPMmode == TPMmode.Current)
+                {
+                    if (model.TPMmode != ChangePromo.TPMmode)
+                    {
+                        model = RSmodeHelper.EditToPromoRS(Context, model);
+                    }
+                    else
+                    {
+                        Promo promoRS = Context.Set<Promo>().FirstOrDefault(f => f.Number == model.Number && f.TPMmode == TPMmode.RS);
+                        if (promoRS != null)
+                        {
+                            Context.Set<Promo>().Remove(promoRS);
+                            Context.SaveChanges();
+                            patch.Patch(model);
+                            RSmodeHelper.EditToPromoRS(Context, model);
+                        }                        
+                    }
+                }
                 patch.Patch(model);
+
                 model.DeviationCoefficient /= 100;
                 if (!String.IsNullOrEmpty(model.AdditionalUserTimestamp))
                     FixateTempPromoProductsCorrections(model.Id, model.AdditionalUserTimestamp);
@@ -982,7 +1018,7 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
 
                 model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
@@ -1043,7 +1079,56 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e);
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoRSDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                Promo model = Context.Set<Promo>()
+                    .Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .FirstOrDefault(g=>g.Id == key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+                if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
+                }
+                if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
+                {
+                    List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
+                    if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                    }
+                    Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
+                    if (presentRsPromo is null)
+                    {
+                        model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                    }
+                    //создавать удаленную копию PromoRS c сущностями, если ее нет
+                }
+                else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                {
+                    // удалить PromoRS  c сущностями
+                    model = RSmodeHelper.DeleteToPromoRS(Context, model);
+                }
 
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
+            }
+        }
         private void DeletePromo(Guid key)
         {
             try
@@ -1054,7 +1139,7 @@ namespace Module.Frontend.TPM.Controllers
                     throw new Exception("NotFound");
                 }
 
-                Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
 
                 model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
@@ -1420,7 +1505,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (item is IEntity<Guid>)
                 {
-                    Promo result = (Promo)Mapper.Map(item, proxy, typeof(Promo), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+                    var configuration = new MapperConfiguration(cfg =>
+                        cfg.CreateMap<Promo, Promo>().ReverseMap());
+                    var mapper = configuration.CreateMapper();
+                    Promo result = mapper.Map(item, proxy);
                     castedPromoes.Add(result);
                 }
                 else if (item is ISelectExpandWrapper)
@@ -1745,8 +1833,8 @@ namespace Module.Frontend.TPM.Controllers
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
                 IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
                 IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
-                promo.ProductSubrangesList = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
-                promo.ProductSubrangesListRU = String.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
+                promo.ProductSubrangesList = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
+                promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
 
                 int objectId = product.ProductTreeObjectId;
                 ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
@@ -2113,7 +2201,8 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         Id = Guid.NewGuid(),
                         ProductTreeObjectId = objectId,
-                        Promo = promo
+                        Promo = promo,
+                        TPMmode = promo.TPMmode
                     };
 
                     currentProducTrees.Add(promoProductTree);
@@ -2427,22 +2516,36 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 var inOutProductIds = data["InOutProductIds"] as IEnumerable<string>;
+                var productIds = new List<Guid>();
                 var products = new List<Product>();
 
                 inOutProductIds.ToList().ForEach(productId =>
                 {
-                    Guid productGuidId;
-                    if (Guid.TryParse(productId, out productGuidId))
+                    if (Guid.TryParse(productId, out Guid productGuidId))
                     {
-                        var productForAdding = Context.Set<Product>().FirstOrDefault(product => product.Id == productGuidId);
-                        if (productForAdding != null)
-                        {
-                            products.Add(productForAdding);
-                        }
+                        productIds.Add(productGuidId);
                     }
                 });
 
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(products, new JsonSerializerSettings{ ReferenceLoopHandling = ReferenceLoopHandling.Ignore}) }));
+                products = Context.Set<Product>().Where(g => productIds.Contains(g.Id)).ToList();
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<Product, Product>()
+                        .ForMember(pTo => pTo.AssortmentMatrices, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.BaseLines, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PriceLists, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.ProductChangeIncidents, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.RollingVolumes, opt => opt.Ignore());
+                });
+                var mapper = config.CreateMapper();
+                var productsMap = mapper.Map<List<Product>>(products);
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = productsMap }, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
             }
             catch (Exception e)
             {
@@ -2464,6 +2567,14 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { isCreator = isCreator }));
+        }
+        [HttpPost]
+        [ClaimsAuthorize]
+        public IHttpActionResult GetRSPeriod()
+        {
+            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, startEndModel }));
         }
         public void FixateTempPromoProductsCorrections(Guid promoId, string tempEditUpliftId)
         {

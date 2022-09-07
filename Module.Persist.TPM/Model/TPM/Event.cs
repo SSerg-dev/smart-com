@@ -14,6 +14,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         [Index("Event_index", 2, IsUnique = true)]
         public DateTimeOffset? DeletedDate { get; set; }
+
         [StringLength(255)]
         [Index("Event_index", 3, IsUnique = true)]
         [Required]
@@ -26,6 +27,7 @@ namespace Module.Persist.TPM.Model.TPM
         public System.Guid EventTypeId { get; set; }
         public EventType EventType { get; set; }
 
-        public virtual ICollection<BTL> BTLs { get; set; }
+        public ICollection<BTL> BTLs { get; set; }
+        public ICollection<EventClientTree> EventClientTrees { get; set; }
     }
 }

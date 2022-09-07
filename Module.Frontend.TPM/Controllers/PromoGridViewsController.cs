@@ -1,41 +1,38 @@
 ﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.Utils;
+using Persist;
 using Persist.Model;
+using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Module.Persist.TPM.PromoStateControl;
-using Module.Frontend.TPM.Util;
-using Frontend.Core.Extensions.Export;
-using System.Web.Http.OData.Query;
-using Persist.ScriptGenerator.Filter;
-using System.Web;
-using System.Web.Http.OData.Extensions;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Dynamic;
-using Looper.Core;
-using Persist;
-using Looper.Parameters;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
     public class PromoGridViewsController : EFContextController
     {
         private readonly UserInfo user;
         private readonly string role;
         private readonly Guid? roleId;
 
-        public PromoGridViewsController(IAuthorizationManager authorizationManager) {
+        public PromoGridViewsController(IAuthorizationManager authorizationManager)
+        {
             user = authorizationManager.GetCurrentUser();
             var roleInfo = authorizationManager.GetCurrentRole();
             role = roleInfo.SystemName;
@@ -49,7 +46,7 @@ namespace Module.Frontend.TPM.Controllers {
             roleId = RoleId;
         }
 
-        public IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false, DatabaseContext localContext = null)
+        public IQueryable<PromoGridView> GetConstraintedQuery(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current, DatabaseContext localContext = null)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -63,10 +60,11 @@ namespace Module.Frontend.TPM.Controllers {
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<PromoGridView> query = localContext.Set<PromoGridView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator" && role != "SupportAdministrator") {
+            if (role != "Administrator" && role != "SupportAdministrator")
+            {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
             logger.Stop();
@@ -91,16 +89,18 @@ namespace Module.Frontend.TPM.Controllers {
             return query;
         }
 
-        [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<PromoGridView> GetPromoGridView([FromODataUri] Guid key) {
-            return SingleResult.Create(GetConstraintedQuery());
-        }
+        //[ClaimsAuthorize]
+        //[EnableQuery(MaxNodeCount = int.MaxValue)]
+        //public SingleResult<PromoGridView> GetPromoGridView([FromODataUri] Guid key)
+        //{
+        //    return SingleResult.Create(GetConstraintedQuery());
+        //}
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoGridView> GetPromoGridViews(bool canChangeStateOnly = false) {
-            return GetConstraintedQuery(canChangeStateOnly);
+        public IQueryable<PromoGridView> GetPromoGridViews(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
+        {
+            return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
         [ClaimsAuthorize]
@@ -108,7 +108,7 @@ namespace Module.Frontend.TPM.Controllers {
         public IQueryable<PromoGridView> GetFilteredData(ODataQueryOptions<PromoGridView> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"));
+            var query = GetConstraintedQuery(Helper.GetValueIfExists<bool>(bodyText, "canChangeStateOnly"), JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"));
 
             var querySettings = new ODataQuerySettings
             {
@@ -121,14 +121,17 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] Guid key) {
-            try {
+        public IHttpActionResult Delete([FromODataUri] Guid key)
+        {
+            try
+            {
                 var model = Context.Set<Promo>().Find(key);
-                if (model == null) {
+                if (model == null)
+                {
                     return NotFound();
                 }
 
-                Promo promoCopy = new Promo(model);
+                Promo promoCopy = AutomapperProfiles.PromoCopy(model);
 
                 model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
@@ -141,7 +144,8 @@ namespace Module.Frontend.TPM.Controllers {
                 PromoStateContext promoStateContext = new PromoStateContext(Context, promoCopy);
                 bool status = promoStateContext.ChangeState(model, userRole, out message);
 
-                if (!status) {
+                if (!status)
+                {
                     return InternalServerError(new Exception(message));
                 }
                 List<PromoProduct> promoProductToDeleteList = Context.Set<PromoProduct>().Where(x => x.PromoId == model.Id && !x.Disabled).ToList();
@@ -175,17 +179,21 @@ namespace Module.Frontend.TPM.Controllers {
                 }
 
                 return StatusCode(HttpStatusCode.OK);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return InternalServerError(e);
             }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options) 
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options, [FromUri] TPMmode tPMmode)
         {
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            //TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             var url = HttpContext.Current.Request.Url.AbsoluteUri;
-            var results = options.ApplyTo(GetConstraintedQuery()).Cast<PromoGridView>()
+            var results = options.ApplyTo(GetConstraintedQuery(false, tPMmode)).Cast<PromoGridView>()
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id)
                                                 .ToList();
@@ -203,9 +211,17 @@ namespace Module.Frontend.TPM.Controllers {
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoGridView), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
+                if (tPMmode == TPMmode.Current)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettingsRS), data, visible: false, throwIfNotExists: false);
+                }
                 HandlerDataHelper.SaveIncomingArgument("SqlString", fullResults.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {

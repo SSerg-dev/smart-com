@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Module.Persist.TPM.Model.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,6 +9,7 @@ namespace Module.Persist.TPM.Model.DTO
     public class PromoROIReport : IEntity<Guid>
     {
         public Guid Id { get; set; }
+        public TPMmode TPMmode { get; set; }
         public bool? InOut { get; set; }
         public int? ClientTreeId { get; set; }
         public int? ClientTreeKeyId { get; set; }
@@ -204,5 +206,6 @@ namespace Module.Persist.TPM.Model.DTO
         public double? ActualPromoVolume { get; set; }
         public double? ActualPromoIncrementalVolume { get; set; }
         public double? ActualPromoNetIncrementalVolume { get; set; }
+        public bool Disabled { get; set; }
     }
 }

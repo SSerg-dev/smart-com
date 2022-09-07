@@ -6,6 +6,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
@@ -34,7 +35,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoROIReport> GetConstraintedQuery()
+        protected IQueryable<PromoROIReport> GetConstraintedQuery(TPMmode tPMmode = TPMmode.Current)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -45,7 +46,7 @@ namespace Module.Frontend.TPM.Controllers
 
             IQueryable<PromoROIReport> query = Context.Set<PromoROIReport>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters);
 
             return query;
         }
@@ -59,9 +60,9 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null)
+        public IQueryable<PromoROIReport> GetPromoROIReports(ODataQueryOptions<PromoROIReport> queryOptions = null, TPMmode tPMmode = TPMmode.Current)
         {
-            IQueryable<PromoROIReport> query = GetConstraintedQuery();
+            IQueryable<PromoROIReport> query = GetConstraintedQuery(tPMmode);
             return query;
         }
 
@@ -82,9 +83,11 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoROIReport> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoROIReport> options, [FromUri] TPMmode tPMmode)
         {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery());
+            string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
+            var url = HttpContext.Current.Request.Url.AbsoluteUri;
+            IQueryable results = options.ApplyTo(GetConstraintedQuery(tPMmode)).Cast<PromoROIReport>();
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
@@ -96,10 +99,18 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoROIReport), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoROIReportsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStatic), data, visible: false, throwIfNotExists: false);
+                if (tPMmode == TPMmode.Current)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStatic), data, visible: false, throwIfNotExists: false);
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStaticRS), data, visible: false, throwIfNotExists: false);
+                }
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -124,7 +135,7 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, "success");
         }
 
-        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole, bool yearInName = false)
+        public static string ExportXLSXYearStatic(DatabaseContext databaseContext, User user, int year, Role defaultRole, TPMmode tPMmode = TPMmode.Current, bool yearInName = false)
         {
             try
             {
@@ -138,7 +149,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     var constraints = databaseContext.Constraints.Where(x => x.UserRole.UserId.Equals(user.Id) && x.UserRole.Role.SystemName == defaultRoleSystemName).ToList();
                     IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                    results = ModuleApplyFilterHelper.ApplyFilter(results, hierarchy, filters);
+                    results = ModuleApplyFilterHelper.ApplyFilter(results, hierarchy, tPMmode, filters);
                 }
 
                 var columns = GetPromoROIExportSettingsStatic();
@@ -155,7 +166,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 return fileName;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -166,6 +177,154 @@ namespace Module.Frontend.TPM.Controllers
             int orderNumber = 1;
             var columns = new List<Column>()
             {
+                new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
+                new Column { Order = orderNumber++, Field = "Client2LevelName", Header = "Client Group", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ClientName", Header = "Client", Quoting = false },
+                new Column { Order = orderNumber++, Field = "BrandName", Header = "Brand", Quoting = false },
+                new Column { Order = orderNumber++, Field = "TechnologyName", Header = "Technology", Quoting = false },
+                new Column { Order = orderNumber++, Field = "SubName", Header = "Sub", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ProductSubrangesList", Header = "Subrange", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanicName", Header = "Mars mechanic", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanicTypeName", Header = "Mars mechanic type", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MarsMechanicDiscount", Header = "Mars mechanic discount, %", Quoting = false },
+                new Column { Order = orderNumber++, Field = "MechanicComment", Header = "Mechanic comment", Quoting = false },
+                new Column { Order = orderNumber++, Field = "StartDate", Header = "Start date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column { Order = orderNumber++, Field = "EndDate", Header = "End date", Quoting = false, Format = "dd.MM.yyyy"  },
+                new Column { Order = orderNumber++, Field = "BudgetYear", Header = "Budget year", Quoting = false, Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PromoDuration", Header = "Promo duration", Quoting = false , Format = "0"},
+                new Column { Order = orderNumber++, Field = "EventName", Header = "Event", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PromoStatusName", Header = "Status", Quoting = false },
+                new Column { Order = orderNumber++, Field = "InOut", Header = "In Out", Quoting = false },
+                new Column { Order = orderNumber++, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanicName", Header = "Plan Instore Mechanic Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanicTypeName", Header = "Plan Instore Mechanic Type Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "PlanInstoreMechanicDiscount", Header = "Plan Instore Mechanic Discount", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "PlanInStoreShelfPrice", Header = "Plan Instore Shelf Price", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PCPrice", Header = "PC Price", Quoting = false, Format = "0.00" },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaselineVolume", Header = "Plan Promo Baseline Volume", Quoting = false, Format = "0.00" },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalVolume", Header = "Plan Promo Incremental Volume", Quoting = false, Format = "0.00" },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalVolume", Header = "Plan Promo Net Incremental Volume", Quoting = false, Format = "0.00" },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaselineLSV", Header = "Plan Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalLSV", Header = "Plan Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoLSV", Header = "Plan Promo LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoUpliftPercent", Header = "Plan Promo Uplift %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTIShopper", Header = "Plan Promo TI Shopper", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTIMarketing", Header = "Plan Promo TI Marketing", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoXSites", Header = "Plan Promo X-Sites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCatalogue", Header = "Plan Promo Catalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPOSMInClient", Header = "Plan Promo POSM In Client", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBranding", Header = "Plan Promo Branding", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBTL", Header = "Plan Promo BTL", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProduction", Header = "Plan Promo Cost Production", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdXSites", Header = "Plan PromoCostProdXSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdCatalogue", Header = "Plan PromoCostProdCatalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCostProdPOSMInClient", Header = "Plan PromoCostProdPOSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoCost", Header = "Plan Promo Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "TIBasePercent", Header = "TI Base", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalBaseTI", Header = "Plan Promo Incremental Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalBaseTI", Header = "Plan Promo Net Incremental Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "COGSPercent", Header = "COGS", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "COGSTn", Header = "COGS/Tn", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCOGS", Header = "Plan Promo Incremental COGS LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalCOGS", Header = "Plan Promo Net Incremental COGS LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalCOGSTn", Header = "Plan Promo Incremental COGS/tn", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalCOGSTn", Header = "Plan Promo Net Incremental COGS/tn", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalEarningsLSV", Header = "Plan Promo Incremental Earnings LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalEarningsLSV", Header = "Plan Promo Net Incremental Earnings LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalEarningsLSV", Header = "Actual Promo Incremental  Earnings LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarningsLSV", Header = "Actual Promo Net Incremental  Earnings LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoROIPercentLSV", Header = "Plan Promo ROI % LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetROIPercentLSV", Header = "Plan Promo Net ROI % LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoROIPercentLSV", Header = "Actual Promo ROI % LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercentLSV", Header = "Actual Promo Net ROI % LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoTotalCost", Header = "Plan Promo Total Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoPostPromoEffectLSV", Header = "Plan Post Promo Effect LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalLSV", Header = "Plan Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetLSV", Header = "PlanPromo Net LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaselineBaseTI", Header = "Plan Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoBaseTI", Header = "Plan Promo Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetBaseTI", Header = "Plan Promo Net Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNSV", Header = "Plan Promo NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetNSV", Header = "Plan Promo Net NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalNSV", Header = "Plan Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalNSV", Header = "Plan Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMAC", Header = "Plan Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalMACLSV", Header = "Plan Promo Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMAC", Header = "Plan Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalMACLSV", Header = "Plan Promo Net Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoIncrementalEarnings", Header = "Plan Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetIncrementalEarnings", Header = "Plan Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoROIPercent", Header = "Plan Promo ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetROIPercent", Header = "Plan Promo Net ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanPromoNetUpliftPercent", Header = "Plan Promo Net Uplift %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanAddTIShopperApproved", Header = "Plan Add TI Shopper Approved", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanAddTIShopperCalculated", Header = "Plan Add TI Shopper Calculated", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanAddTIMarketingApproved", Header = "Plan Add TI Marketing Approved", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreMechanicName", Header = "Actual InStore Mechanic Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ActualInStoreMechanicTypeName", Header = "Actual InStore Mechanic Type Name", Quoting = false  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreDiscount", Header = "Actual InStore Mechanic Discount", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualInStoreShelfPrice", Header = "Actual Instore Shelf Price", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "InvoiceNumber", Header = "Invoice number", Quoting = false },
+                new Column { Order = orderNumber++, Field = "ActualPromoVolume", Header = "Actual Promo Volume", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalVolume", Header = "Actual Promo Incremental Volume", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalVolume", Header = "Actual Promo Net Incremental Volume", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaselineLSV", Header = "Actual Promo Baseline LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalLSV", Header = "Actual Promo Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoLSVByCompensation", Header = "Actual PromoLSV By Compensation", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoLSV", Header = "Actual Promo LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoUpliftPercent", Header = "Actual Promo Uplift %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetUpliftPercent", Header = "Actual Promo Net Uplift Percent", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTIShopper", Header = "Actual Promo TI Shopper", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTIMarketing", Header = "Actual Promo TI Marketing", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoXSites", Header = "Actual Promo Prod XSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCatalogue", Header = "Actual Promo Prod Catalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPOSMInClient", Header = "Actual Promo Prod POSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBranding", Header = "Actual Promo Branding", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBTL", Header = "Actual Promo BTL", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProduction", Header = "Actual Promo Cost Production", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdXSites", Header = "Actual Promo CostProdXSites", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdCatalogue", Header = "Actual Promo Cost ProdCatalogue", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCostProdPOSMInClient", Header = "Actual Promo Cost ProdPOSMInClient", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoCost", Header = "Actual Promo Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalBaseTI", Header = "Actual Promo Incremental BaseTI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalBaseTI", Header = "Actual Promo Net Incremental BaseTI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalCOGS", Header = "Actual Promo Incremental COGS LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalCOGS", Header = "Actual Promo Net Incremental COGS LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalCOGSTn", Header = "Actual Promo Incremental COGS/tn", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalCOGSTn", Header = "Actual Promo Net Incremental COGS/tn", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoTotalCost", Header = "Actual Promo Total Cost", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoPostPromoEffectLSV", Header = "Actual Post Promo Effect LSV", Quoting = false,  Format = "0"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalLSV", Header = "Actual Promo Net Incremental LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetLSV", Header = "Actual Promo Net LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalNSV", Header = "Actual Promo Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalNSV", Header = "Actual Promo Net Incremental NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaselineBaseTI", Header = "Actual Promo Baseline Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoBaseTI", Header = "Actual Promo Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetBaseTI", Header = "Actual Promo Net Base TI", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNSV", Header = "Actual Promo NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetNSV", Header = "Actual Promo Net NSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalMAC", Header = "Actual Promo Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalMACLSV", Header = "Actual Promo Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalMAC", Header = "Actual Promo Net Incremental MAC", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalMACLSV", Header = "Actual Promo Net Incremental MAC LSV", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoIncrementalEarnings", Header = "Actual Promo Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetIncrementalEarnings", Header = "Actual Promo Net Incremental Earnings", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoROIPercent", Header = "Actual Promo ROI, %", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualPromoNetROIPercent", Header = "Actual Promo Net ROI%", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualAddTIShopper", Header = "Actual Add TI Shopper", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "ActualAddTIMarketing", Header = "Actual Add TI Marketing", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PromoTypesName", Header = "Promo Type Name", Quoting = false },
+                new Column { Order = orderNumber++, Field = "SumInvoice", Header = "Sum In Invoice", Quoting = false,  Format = "0.00"  },
+            };
+            return columns;
+        }
+        public static IEnumerable<Column> GetPromoROIExportSettingsStaticRS()
+        {
+            int orderNumber = 1;
+            var columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "TPMmode", Header = "Indicator", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Number", Header = "Promo ID", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Client1LevelName", Header = "NA/RKA", Quoting = false },
                 new Column { Order = orderNumber++, Field = "Client2LevelName", Header = "Client Group", Quoting = false },

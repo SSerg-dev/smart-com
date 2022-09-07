@@ -132,7 +132,10 @@ namespace Module.Frontend.TPM.Controllers
             model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
             var proxy = Context.Set<PromoSupport>().Create<PromoSupport>();
-            var result = (PromoSupport)Mapper.Map(model, proxy, typeof(PromoSupport), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
+            var configuration = new MapperConfiguration(cfg =>
+                cfg.CreateMap<PromoSupport, PromoSupport>().ReverseMap());
+            var mapper = configuration.CreateMapper();
+            var result = mapper.Map(model, proxy);
             Context.Set<PromoSupport>().Add(result);
 
             try
@@ -462,7 +465,7 @@ namespace Module.Frontend.TPM.Controllers
                 string userTimestamp = (user.Login.Split('\\').Last() + timeFormat).Replace(" ", "");
                 return Json(new { success = true, userTimestamp });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Json(new { success = false });
             }
@@ -554,7 +557,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }

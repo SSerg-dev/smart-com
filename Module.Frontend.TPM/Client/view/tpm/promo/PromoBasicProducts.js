@@ -204,19 +204,19 @@
         this.treesChangingBlockDate = treesChangingBlockDate;
         this.promoProductRecord = promoBasicProductJSON ? JSON.parse(promoBasicProductJSON) : null;
 
-		if (this.promoProductRecord) {
-			this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
-			this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
-		} else {
-			// Переделать. Нужно вынести BrandAbbreviation и TechnologyAbbreviation в модель промо, 
-			// чтобы информация о них не удалялась при удалении узла продукта (!!!)
-			var brandTechName = record.data.BrandTechName;
-			var brandName = record.data.BrandName;
-			var techName = brandTechName.replace(brandName + ' ', '');
+        if (this.promoProductRecord) {
+            this.brandAbbreviation = this.promoProductRecord.BrandAbbreviation;
+            this.technologyAbbreviation = this.promoProductRecord.TechnologyAbbreviation;
+        } else {
+            // Переделать. Нужно вынести BrandAbbreviation и TechnologyAbbreviation в модель промо, 
+            // чтобы информация о них не удалялась при удалении узла продукта (!!!)
+            var brandTechName = record.data.BrandTechName;
+            var brandName = record.data.BrandName;
+            var techName = brandTechName.replace(brandName + ' ', '');
 
-			this.brandAbbreviation = brandName;
-			this.technologyAbbreviation = techName;
-		}
+            this.brandAbbreviation = brandName;
+            this.technologyAbbreviation = techName;
+        }
 
         this.fillMainInfo(record);
     },
@@ -232,18 +232,18 @@
                 ProductsChoosen: []
             };
 
-			nodesProductTree.forEach(function (node) {
+            nodesProductTree.forEach(function (node) {
                 if (node) {
                     me.promoProductRecord.ProductsChoosen.push({
-						ObjectId: node.get('ObjectId'),
-						Name: node.get('Name'),
-						Type: node.get('Type'),
-						LogoFileName: node.get('LogoFileName'),
-						FullPathName: node.get('FullPathName'),
-						Filter: node.get('Filter'),
-					});
-				}
-			});
+                        ObjectId: node.get('ObjectId'),
+                        Name: node.get('Name'),
+                        Type: node.get('Type'),
+                        LogoFileName: node.get('LogoFileName'),
+                        FullPathName: node.get('FullPathName'),
+                        Filter: node.get('Filter'),
+                    });
+                }
+            });
 
             var current = nodesProductTree[0];
             while (current && current.data.root !== true) {
@@ -286,19 +286,19 @@
 
             this.down('[name=PromoProductBrand]').setValue(this.promoProductRecord.Brand);
             this.down('[name=PromoProductTechnology]').setValue(this.promoProductRecord.Technology);
-		} else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
-			var brandTechName = record.data.BrandTechName;
-			var brandName = record.data.BrandName;
-			var techName = brandTechName.replace(brandName + ' ', '');
+        } else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
+            var brandTechName = record.data.BrandTechName;
+            var brandName = record.data.BrandName;
+            var techName = brandTechName.replace(brandName + ' ', '');
 
-			chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
-			chooseBtn.setGlyph();
-			chooseBtn.setIcon(iconSrc);
-			chooseBtn.setIconCls('promoClientChooseBtnIcon');
+            chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
+            chooseBtn.setGlyph();
+            chooseBtn.setIcon(iconSrc);
+            chooseBtn.setIconCls('promoClientChooseBtnIcon');
 
-			this.down('[name=PromoProductBrand]').setValue(brandName);
-			this.down('[name=PromoProductTechnology]').setValue(techName);
-		} else {
+            this.down('[name=PromoProductBrand]').setValue(brandName);
+            this.down('[name=PromoProductTechnology]').setValue(techName);
+        } else {
             chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoBasicProducts').value('ChooseProduct') + '<br/>...</b>');
             chooseBtn.setIcon();
             chooseBtn.setIconCls('x-btn-glyph materialDesignIcons');
@@ -363,153 +363,155 @@
                     }
                     promoEditorCustom.GetIfAllProductsInSubrange = true;
                     var query = breeze.EntityQuery
-                    .from('Products')
-                    .withParameters({
-                        $actionName: 'GetIfAllProductsInSubrange',
-                        $method: 'POST',
-                        $data: {
-                            PromoId: promoEditorCustom.promoId || (record && record.data && record.data.Id),
-                            ProductIds: inOutProductIdsString + ";!;" + NodesIds,
-                            ClientTreeKeyId: promoEditorCustom.clientTreeKeyId ? promoEditorCustom.clientTreeKeyId.toString() : null,
-                            DispatchesStart: promoEditorCustom.down('[name=DispatchStartDate]').getValue(),
-                            DispatchesEnd: promoEditorCustom.down('[name=DispatchEndDate]').getValue()
-                        }
-                    })
-                    .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
-                    .execute()
-                    .then(function (data) {
-                        if (!promoEditorCustom.isDestroyed) {
-                            var result = Ext.JSON.decode(data.httpResponse.data.value);
-                            var isTechologySplittable = false;
-                            var allIncluded = true;
-                            if (result.success) {
-                                result.answer.forEach(function (item) {
-                                    isTechologySplittable = item.Item3;
-                                    choosenNodes.forEach(function (node) {
-                                        if (node.ObjectId == item.Item1) {
-                                            node.isAllChecked = item.Item2;
-                                            if (node.isAllChecked == false && allIncluded != false) {
-                                                allIncluded = false;
+                        .from('Products')
+                        .withParameters({
+                            $actionName: 'GetIfAllProductsInSubrange',
+                            $method: 'POST',
+                            $data: {
+                                PromoId: promoEditorCustom.promoId || (record && record.data && record.data.Id),
+                                ProductIds: inOutProductIdsString + ";!;" + NodesIds,
+                                ClientTreeKeyId: promoEditorCustom.clientTreeKeyId ? promoEditorCustom.clientTreeKeyId.toString() : null,
+                                DispatchesStart: promoEditorCustom.down('[name=DispatchStartDate]').getValue(),
+                                DispatchesEnd: promoEditorCustom.down('[name=DispatchEndDate]').getValue()
+                            }
+                        })
+                        .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+                        .execute()
+                        .then(function (data) {
+                            if (!promoEditorCustom.isDestroyed) {
+                                var result = Ext.JSON.decode(data.httpResponse.data.value);
+                                var isTechologySplittable = false;
+                                var allIncluded = true;
+                                if (result.success) {
+                                    result.answer.forEach(function (item) {
+                                        isTechologySplittable = item.Item3;
+                                        choosenNodes.forEach(function (node) {
+                                            if (node.ObjectId == item.Item1) {
+                                                node.isAllChecked = item.Item2;
+                                                if (node.isAllChecked == false && allIncluded != false) {
+                                                    allIncluded = false;
+                                                }
                                             }
-                                        }
-                                    })
-                                });
+                                        })
+                                    });
 
-                                if (!allIncluded) {
-                                    excludedMessage.show();
-                                } else {
-                                    excludedMessage.hide();
-                                }
-
-                                var glyphCode;
-                                var toolTipText;
-                                choosenNodes.forEach(function (item, index) {
-                                    var partial = false;
-                                    me.choosenProductObjectIds.push(item.ObjectId);
-                                    // парсим фильтр из Json
-                                    item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
-                                    if (item.isAllChecked) {
-                                        glyphCode = null;
-                                        toolTipText = null;
+                                    if (!allIncluded) {
+                                        excludedMessage.show();
                                     } else {
-                                        glyphCode = 0xFAC5;
-                                        toolTipText = l10n.ns('tpm', 'PromoBasicProducts').value('PartialSelection');
+                                        excludedMessage.hide();
                                     }
-                                    // фильтруем только с типом subrange (можно же выбрать просто технологию например)
-                                    if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
-                                        //проверить 
-                                        var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
-                                        var butt = {
-                                            xtype: 'container',
-                                            layout: {
-                                                type: 'vbox',
-                                                align: 'middle',
-                                                pack: 'center'
-                                            },
-                                            cls: 'subranges-container cursor-pointer',
-                                            items: [{
+
+                                    var glyphCode;
+                                    var toolTipText;
+                                    choosenNodes.forEach(function (item, index) {
+                                        var partial = false;
+                                        me.choosenProductObjectIds.push(item.ObjectId);
+                                        // парсим фильтр из Json
+                                        item.Filter = item.Filter && item.Filter.length > 0 ? JSON.parse(item.Filter) : null;
+                                        if (item.isAllChecked) {
+                                            glyphCode = null;
+                                            toolTipText = null;
+                                        } else {
+                                            glyphCode = 0xFAC5;
+                                            toolTipText = l10n.ns('tpm', 'PromoBasicProducts').value('PartialSelection');
+                                        }
+                                        // фильтруем только с типом subrange (можно же выбрать просто технологию например)
+                                        if (item.Type.toLowerCase().indexOf('subrange') >= 0) {
+                                            //проверить 
+                                            var iconSrc = item.LogoFileName ? '/odata/ProductTrees/DownloadLogoFile?fileName=' + encodeURIComponent(item.LogoFileName) : '/bundles/style/images/swith-glyph-gray.png';
+                                            var butt = {
                                                 xtype: 'container',
                                                 layout: {
-                                                    type: 'hbox',
+                                                    type: 'vbox',
                                                     align: 'middle',
                                                     pack: 'center'
                                                 },
-                                                cls: 'subranges-inner-container cursor-pointer',
+                                                cls: 'subranges-container cursor-pointer',
                                                 items: [{
-                                                    xtype: 'button',
-                                                    cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
-                                                    width: 20,
-                                                    height: 63,
-                                                    style: 'padding: 0px; margin: 0px'
+                                                    xtype: 'container',
+                                                    layout: {
+                                                        type: 'hbox',
+                                                        align: 'middle',
+                                                        pack: 'center'
+                                                    },
+                                                    cls: 'subranges-inner-container cursor-pointer',
+                                                    items: [{
+                                                        xtype: 'button',
+                                                        cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
+                                                        width: 20,
+                                                        height: 63,
+                                                        style: 'padding: 0px; margin: 0px'
+                                                    }, {
+                                                        xtype: 'button',
+                                                        scale: 'large',
+                                                        width: 58,
+                                                        height: 63,
+                                                        iconAlign: 'top',
+                                                        icon: iconSrc,
+                                                        iconCls: 'promoClientChooseBtnIcon',
+                                                        text: '<b>' + '</b>',
+                                                        cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
+                                                        disabled: true,
+                                                        disabledCls: '',
+                                                        style: 'padding: 0px; margin: 0px; opacity: 1.0 !important; cursor: default',
+                                                    }, {
+                                                        cls: 'subrange-glyph noborder',
+                                                        xtype: 'button',
+                                                        glyph: glyphCode,
+                                                        width: 20,
+                                                        height: 63,
+                                                        tooltip: toolTipText,
+                                                        style: 'padding: 0px; margin: 0px'
+                                                    }]
                                                 }, {
-                                                    xtype: 'button',
-                                                    scale: 'large',
-                                                    width: 58,
-                                                    height: 63,
-                                                    iconAlign: 'top',
-                                                    icon: iconSrc,
-                                                    iconCls: 'promoClientChooseBtnIcon',
-                                                    text: '<b>' + '</b>',
-                                                    cls: 'promobasic-choose-btn custom-event-button noborder cursor-pointer',
-                                                    disabled: true,
-                                                    disabledCls: '',
-                                                    style: 'padding: 0px; margin: 0px; opacity: 1.0 !important; cursor: default',
-                                                }, {
-                                                    cls: 'subrange-glyph noborder',
-                                                    xtype: 'button',
-                                                    glyph: glyphCode,
-                                                    width: 20,
-                                                    height: 63,
-                                                    tooltip: toolTipText,
-                                                    style: 'padding: 0px; margin: 0px'
+                                                    xtype: 'label',
+                                                    header: {},
+                                                    cls: 'cursor-pointer',
+                                                    width: 98,
+                                                    height: 30,
+                                                    cls: 'subrange-text',
+                                                    style: 'padding: 0px; margin: 0px',
+                                                    text: item.Name,
                                                 }]
-                                            }, {
-                                                xtype: 'label',
-                                                header: {},
-                                                cls: 'cursor-pointer',
-                                                width: 98,
-                                                height: 30,
-                                                cls: 'subrange-text',
-                                                style: 'padding: 0px; margin: 0px',
-                                                text: item.Name,
-                                            }]
-                                        };
-                                        subrangeBtns.push(butt);
-                                    }
-                                });
-                                subrangePanel.add(subrangeBtns);
-                                //Activate button "Split and publish"
-                                if (subrangeBtns.length < 2) {//should be more than one subrange
-                                    splitPublishBtn.setDisabled(true);
-                                } else {
-                                    if (isTechologySplittable === false) {
+                                            };
+                                            subrangeBtns.push(butt);
+                                        }
+                                    });
+                                    subrangePanel.add(subrangeBtns);
+                                    //Activate button "Split and publish"
+                                    if (subrangeBtns.length < 2) {//should be more than one subrange
                                         splitPublishBtn.setDisabled(true);
                                     } else {
-                                        splitPublishBtn.setDisabled(false);
-                                    }                                    
+                                        if (isTechologySplittable === false) {
+                                            splitPublishBtn.setDisabled(true);
+                                        } else {
+                                            splitPublishBtn.setDisabled(false);
+                                        }
+                                    }
+                                    if (promoEditorCustom.isInExchange) {
+                                        splitPublishBtn.setDisabled(true);
+                                    }
+                                    //Activate button "Send for approval"
+                                    if (promoEditorCustom.TPMmode == 0) {
+                                        var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                                        sendForApproval.setDisabled(false);
+                                    }
+                                    //Activate button "Approve"
+                                    var approve = Ext.ComponentQuery.query("#btn_approve")[0];
+                                    approve.setDisabled(false);
                                 }
-                                if (promoEditorCustom.isInExchange) {
-                                    splitPublishBtn.setDisabled(true);
-                                }
-                                //Activate button "Send for approval"
-                                var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
-                                sendForApproval.setDisabled(false);
-                                //Activate button "Approve"
-                                var approve = Ext.ComponentQuery.query("#btn_approve")[0];
-                                approve.setDisabled(false);
-                            }
 
-                            var promoProductsForm = promoEditorCustom.down('promobasicproducts');
-                            App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
-                        }
-                        promoEditorCustom.setLoading(false);
-                        promoEditorCustom.GetIfAllProductsInSubrange = false;
-                    })
-                    .fail(function (data) {
-                        promoEditorCustom.setLoading(false);
-                        promoEditorCustom.GetIfAllProductsInSubrange = false;
-                        App.Notify.pushError(data.message);
-                    })
+                                var promoProductsForm = promoEditorCustom.down('promobasicproducts');
+                                App.app.getController('tpm.promo.Promo').setInfoPromoBasicStep2(promoProductsForm);
+                            }
+                            promoEditorCustom.setLoading(false);
+                            promoEditorCustom.GetIfAllProductsInSubrange = false;
+                        })
+                        .fail(function (data) {
+                            promoEditorCustom.setLoading(false);
+                            promoEditorCustom.GetIfAllProductsInSubrange = false;
+                            App.Notify.pushError(data.message);
+                        })
                 }
             }
             if (isInOutPromo) {
@@ -534,7 +536,7 @@
                     .then(function (data) {
                         if (!promoEditorCustom.isDestroyed) {
                             var result = Ext.JSON.decode(data.httpResponse.data.value);
-                            result = Ext.JSON.decode(result.data);
+                            result = result.data;
 
                             if (result.length > 0) {
                                 result.forEach(function (product) {
@@ -559,8 +561,11 @@
                         App.Notify.pushError(data.message);
                     })
                 //Activate button "Send for approval"
-                var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
-                sendForApproval.setDisabled(false);
+                if (promoEditorCustom.TPMmode == 0) {
+                    var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
+                    sendForApproval.setDisabled(false);
+                }
+
                 //Activate button "Approve"
                 var approve = Ext.ComponentQuery.query("#btn_approve")[0];
                 approve.setDisabled(false);

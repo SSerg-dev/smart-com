@@ -18,7 +18,7 @@
         { name: 'BudgetSubItemName', isDefault: false, mapping: 'PromoSupport.BudgetSubItem.Name', hidden: true },
         { name: 'BudgetItemName', isDefault: false, mapping: 'PromoSupport.BudgetSubItem.BudgetItem.Name', hidden: true },
 
-        { name: 'PlanCalculation', type: 'float', isDefault: false, hidden: true },
+        { name: 'PlanCalculation', type: 'float', isDefault: false, hidden: true }
     ],
     proxy: {
         type: 'breeze',

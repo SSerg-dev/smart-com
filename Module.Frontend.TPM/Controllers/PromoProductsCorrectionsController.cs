@@ -8,11 +8,14 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using Persist.ScriptGenerator.Filter;
@@ -40,24 +43,43 @@ namespace Module.Frontend.TPM.Controllers
 {
     public class PromoProductsCorrectionsController : EFContextController
     {
-        private readonly IAuthorizationManager authorizationManager;
+        private readonly UserInfo user;
+        private readonly Role role;
+        private readonly Guid? roleId;
 
         public PromoProductsCorrectionsController(IAuthorizationManager authorizationManager)
         {
-            this.authorizationManager = authorizationManager;
+            user = authorizationManager.GetCurrentUser();
+            var roleInfo = authorizationManager.GetCurrentRole();
+            role = new Role { Id = roleInfo.Id.Value, SystemName = roleInfo.SystemName };
+            roleId = role.Id;
         }
-        protected IQueryable<PromoProductsCorrection> GetConstraintedQuery()
+
+        public PromoProductsCorrectionsController()
         {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string role = authorizationManager.GetCurrentRoleName();
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
-                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+        }
+
+        public PromoProductsCorrectionsController(UserInfo user, Role role, Guid? roleId)
+        {
+            this.user = user;
+            this.role = role;
+            this.roleId = roleId;
+        }
+
+        public IQueryable<PromoProductsCorrection> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current, DatabaseContext localContext = null)
+        {
+            if (localContext == null)
+            {
+                localContext = Context;
+            }
+            IList<Constraint> constraints = user.Id.HasValue ? localContext.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role.SystemName))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().Where(e => !e.Disabled && e.TempId == null);
+            IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
+            IQueryable<PromoProductsCorrection> query = localContext.Set<PromoProductsCorrection>().Where(e => e.TempId == null);
 
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
 
             return query;
         }
@@ -70,16 +92,19 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections()
+        public IQueryable<PromoProductsCorrection> GetPromoProductsCorrections(TPMmode TPMmode)
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(TPMmode);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<PromoProductsCorrection> GetFilteredData(ODataQueryOptions<PromoProductsCorrection> options)
         {
-            var query = GetConstraintedQuery();
+            var bodyText = HttpContext.Current.Request.GetRequestBody();
+            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
+                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
+                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
             {
@@ -137,10 +162,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 model.TempId = null;
             }
-            UserInfo user = authorizationManager.GetCurrentUser();
 
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
-            var item = Context.Set<PromoProductsCorrection>().FirstOrDefault(x => x.PromoProductId == model.PromoProductId && x.TempId == model.TempId && !x.Disabled);
+            var item = Context.Set<PromoProductsCorrection>()
+                .FirstOrDefault(x => x.PromoProductId == model.PromoProductId && x.TempId == model.TempId && !x.Disabled);
 
             if (item != null)
             {
@@ -172,8 +197,12 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
-                var result = (PromoProductsCorrection)Mapper.Map(model, proxy, typeof(PromoProductsCorrection), proxy.GetType(), opts => opts.CreateMissingTypeMaps = true);
-                var promoProduct = Context.Set<PromoProduct>().FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
+                var configuration = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>().ReverseMap());
+                var mapper = configuration.CreateMapper();
+                var result = mapper.Map(model, proxy);
+                var promoProduct = Context.Set<PromoProduct>()
+                    .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
 
                 if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
                 {
@@ -210,14 +239,34 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                UserInfo user = authorizationManager.GetCurrentUser();
-                var model = Context.Set<PromoProductsCorrection>().Find(key);
-                string role = authorizationManager.GetCurrentRoleName();
+                var model = Context.Set<PromoProductsCorrection>()
+                    .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                    .Include(g => g.PromoProduct.Promo.BTLPromoes)
+                    .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                    .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                    .FirstOrDefault(x => x.Id == key);
 
                 if (model == null)
                 {
                     return NotFound();
                 }
+                var promoStatus = model.PromoProduct.Promo.PromoStatus.SystemName;
+
+                patch.TryGetPropertyValue("TPMmode", out object mode);
+
+                if ((int)model.TPMmode != (int)mode)
+                {
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.BTLPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number);
+                }
+
                 patch.Patch(model);
                 model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.UserId = user.Id;
@@ -227,7 +276,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     model.TempId = null;
                 }
-                var promoStatus = model.PromoProduct.Promo.PromoStatus.SystemName;
+              
 
                 ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                 string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
@@ -297,10 +346,12 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(e.InnerException);
             }
         }
+        
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
         }
+        
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
@@ -314,134 +365,6 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(e);
             }
-        }
-        [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductsCorrection> options)
-        {
-            IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductsCorrection), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsCorrectionsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsCorrectionsController.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
-
-            return Content(HttpStatusCode.OK, "success");
-        }
-
-        public static IEnumerable<Column> GetPromoProductCorrectionExportSettings()
-        {
-            int orderNumber = 1;
-            IEnumerable<Column> columns = new List<Column>
-            {
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ClientTree.FullPathName", Header = "Client", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.BrandTech.Name", Header = "BrandTech", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.ProductSubrangesList", Header = "Subranges", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Mechanic", Header = "Mars Mechanic", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.Event.Name", Header = "Event", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.PromoStatus.SystemName", Header = "Promo Status", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsStartDate", Header = "Mars Start Date", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.Promo.MarsEndDate", Header = "Mars End Date", Quoting = false },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductIncrementalLSV", Header = "Plan Product Incremental LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.PlanProductLSV", Header = "Plan Product LSV", Quoting = false,  Format = "0.00" },
-                 new Column { Order = orderNumber++, Field = "PromoProduct.ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercentCorrected", Header = "Plan Product Uplift Percent Corrected", Quoting = false,  Format = "0.00"  },
-                 new Column { Order = orderNumber++, Field = "CreateDate", Header = "CreateDate", Quoting = false,Format = "dd.MM.yyyy"},
-                 new Column { Order = orderNumber++, Field = "ChangeDate", Header = "ChangeDate", Quoting = false,Format = "dd.MM.yyyy"},
-                 new Column { Order = orderNumber++, Field = "UserName", Header = "UserName", Quoting = false }
-
-            };
-
-            return columns;
-        }
-        [ClaimsAuthorize]
-        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductsCorrection> options)
-        {
-            List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
-            IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
-                .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
-            //IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsCorrectionsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsCorrectionsController.GetExportCorrectionSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
-
-            return Content(HttpStatusCode.OK, "success");
-        }
-
-        public static IEnumerable<Column> GetExportCorrectionSettings()
-        {
-            int orderNumber = 1;
-            IEnumerable<Column> columns = new List<Column>()
-            {
-                new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
-                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
-                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
-            };
-            return columns;
         }
 
         [ClaimsAuthorize]
@@ -473,10 +396,8 @@ namespace Module.Frontend.TPM.Controllers
 
         private void CreateImportTask(string fileName, string importHandler)
         {
-            var userInfo = authorizationManager.GetCurrentUser();
-            var userId = userInfo == null ? Guid.Empty : (userInfo.Id.HasValue ? userInfo.Id.Value : Guid.Empty);
-            var role = authorizationManager.GetCurrentRole();
-            var roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
+            var roleId = role.Id;
 
             using (var databaseContext = new DatabaseContext())
             {
@@ -570,6 +491,40 @@ namespace Module.Frontend.TPM.Controllers
                 DeletedDate = null,
                 Disabled = false
             });
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoProductCorrectionDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductsCorrection>().Find(key);
+                var promoId = key;
+                var promoProductsCorrection = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProductId == model.PromoProductId && !x.Disabled);
+                var promoProductsCorrectionCopied = promoProductsCorrection.Any(x => x.TPMmode == TPMmode.RS);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                {
+                    var promo = RSmodeHelper.EditToPromoRS(Context, model.PromoProduct.Promo);
+                    var promoProductCorrection = promo.PromoProducts
+                        .SelectMany(x => x.PromoProductsCorrections)
+                        .Where(y => y.PromoProduct.ProductId == model.PromoProduct.ProductId && !y.Disabled).FirstOrDefault();
+                    model = promoProductCorrection;
+                }                
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;                
+                Context.SaveChanges();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
+            }
         }
     }
 }
