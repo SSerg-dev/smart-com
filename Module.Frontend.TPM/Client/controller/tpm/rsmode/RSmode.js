@@ -136,30 +136,45 @@
         });
     },
     onApproveButtonClick: function (button) {
-        var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
-        grid.setLoading(l10n.ns('core').value('savingText'));
-        var selected = grid.getSelectionModel().getSelection()[0];
-        $.ajax({
-            dataType: 'json',
-            url: '/odata/RollingScenarios/Approve?rollingScenarioId=' + selected.data.Id,
-            type: 'POST',
-            success: function (response) {
-                var data = Ext.JSON.decode(response.value);
-                if (data.success) {
-                    grid.getStore().load();
-                    grid.setLoading(false);
-                }
-                else {
-                    grid.setLoading(false);
-                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
-                }
+        Ext.Msg.show({
+            title: l10n.ns('tpm', 'text').value('Confirmation'),
+            msg: 'Warning! After scenario approving, an irreversible synchronization with the production calendar will occur.',
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
+                    grid.setLoading(l10n.ns('core').value('savingText'));
+                    var selected = grid.getSelectionModel().getSelection()[0];
+                    $.ajax({
+                        dataType: 'json',
+                        url: '/odata/RollingScenarios/Approve?rollingScenarioId=' + selected.data.Id,
+                        type: 'POST',
+                        success: function (response) {
+                            var data = Ext.JSON.decode(response.value);
+                            if (data.success) {
+                                grid.getStore().load();
+                                grid.setLoading(false);
+                            }
+                            else {
+                                grid.setLoading(false);
+                                App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+                            }
 
+                        },
+                        error: function (data) {
+                            grid.setLoading(false);
+                            App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                        }
+                    });
+                }
             },
-            error: function (data) {
-                grid.setLoading(false);
-                App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                yes: l10n.ns('tpm', 'button').value('confirm'),
+                no: l10n.ns('tpm', 'button').value('cancel')
             }
         });
+
     },
     onMassApproveButtonClick: function (button) {
         debugger;
