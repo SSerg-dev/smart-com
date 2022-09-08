@@ -496,7 +496,7 @@ namespace Module.Persist.TPM.Utils
                     break;
                 case TPMmode.RS:
                     query = query.Where(x => !x.Disabled);
-                    query = query.GroupBy(x => new { x.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.GroupBy(x => new { x.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     break;
             }
             return query;
