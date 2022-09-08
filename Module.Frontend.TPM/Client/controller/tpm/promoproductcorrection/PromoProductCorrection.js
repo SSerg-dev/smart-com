@@ -581,7 +581,8 @@
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) {
+            if (tpmMode == 1) 
+            {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
@@ -606,6 +607,12 @@
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
                 }
+            }else if (selected[0].data.PromoStatusName != 'Closed') {
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
             }
         }
     },
