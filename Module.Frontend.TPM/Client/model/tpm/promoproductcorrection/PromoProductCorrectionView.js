@@ -24,9 +24,10 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'Id', hidden: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
-        { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: false },
-        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false },
-        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false },
+        { name: 'PromoDispatchStartDate', type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone, isDefault: true },
+        { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: true  },
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: true },
+        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: true },
     ],
 
     proxy: {

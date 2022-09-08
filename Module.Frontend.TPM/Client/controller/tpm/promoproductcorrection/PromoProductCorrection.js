@@ -578,7 +578,6 @@
     },
 
     onPromoProductCorrectionGridSelectionChange: function (selMode, selected) {
-        this.onGridSelectionChange(selMode, selected);
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
@@ -601,15 +600,11 @@
                         !selected[0].data.IsInExchange
                     )
                    ) {
-                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                    updBtn.setDisabled(false);
-                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                    delBtn.setDisabled(false);
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
                 } else {
-                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                    updBtn.setDisabled(true);
-                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                    delBtn.setDisabled(true);
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
                 }
             }
         }
