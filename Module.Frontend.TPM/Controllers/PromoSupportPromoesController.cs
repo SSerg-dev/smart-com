@@ -214,12 +214,14 @@ namespace Module.Frontend.TPM.Controllers
                         .ToList();
                     bool isAllCurrent = promoSupportPromoes.All(g => g.TPMmode == TPMmode.Current);
                     bool isAllRS = promoSupportPromoes.All(g => g.TPMmode == TPMmode.RS);
+                    List<PromoSupportPromo> promoSupportPromoesRS = new List<PromoSupportPromo>();
                     if (TPMmode == TPMmode.RS && isAllCurrent)
                     {
                         promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
                     }
                     if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
                     {
+                        promoSupportPromoesRS = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
                         // убираем RSы
                         promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
                     }
@@ -291,6 +293,32 @@ namespace Module.Frontend.TPM.Controllers
                                         };
                                         Context.Set<PromoSupportPromo>().Add(psp1);
                                     }
+                                }
+                                else if (promoSupportPromoesRS.Count > 0)
+                                {
+                                    Promo promoRS = Context.Set<Promo>().FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
+                                    if (promoRS != null)
+                                    {
+                                        PromoSupportPromo psp1 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promoRS.Id,
+                                            TPMmode = TPMmode.RS
+                                        };
+                                        Context.Set<PromoSupportPromo>().Add(psp1);
+                                    }
+                                    else
+                                    {
+                                        promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                        PromoSupportPromo psp2 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promo.Id,
+                                            TPMmode = promo.TPMmode
+                                        };
+                                        promo.PromoSupportPromoes.Add(psp2);
+                                    }
+
                                 }
                             }
                         }
@@ -443,9 +471,12 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         public IHttpActionResult Delete([FromODataUri] System.Guid key)
         {
+            //считаем что в этот метод только из Current попадает
             try
             {
-                var model = Context.Set<PromoSupportPromo>().Find(key);
+                var model = Context.Set<PromoSupportPromo>()
+                    .Include(g => g.Promo)
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -459,6 +490,15 @@ namespace Module.Frontend.TPM.Controllers
                 CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { key });
                 //CalculateBudgetsCreateTask(key.ToString(), true, true, true, true);
 
+                PromoSupportPromo promoSupportPromoRS = Context.Set<PromoSupportPromo>()
+                    .Include(g => g.Promo)
+                    .FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.TPMmode == TPMmode.RS);
+                if (promoSupportPromoRS != null)
+                {
+                    promoSupportPromoRS.DeletedDate = System.DateTime.Now;
+                    promoSupportPromoRS.Disabled = true;
+                    Context.SaveChanges();
+                }
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
