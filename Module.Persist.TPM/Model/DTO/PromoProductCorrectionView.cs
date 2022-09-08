@@ -31,5 +31,7 @@ namespace Module.Persist.TPM.Model.DTO
         public Guid? PromoProductId { get; set; }
         public Guid? UserId { get; set; }
 
+        public long row_number { get; set; }
+
     }
 }

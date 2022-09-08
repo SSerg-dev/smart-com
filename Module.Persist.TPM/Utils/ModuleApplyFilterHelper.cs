@@ -458,17 +458,15 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.PromoProduct.Promo.ClientTree.ObjectId));
             }
-            query = query.Where(x => !x.Disabled || x.TPMmode == TPMmode.RS);
+
             switch (mode)
             {
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS:
-                    query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                case TPMmode.RS: //медленно
+                    query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProduct.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     query = query.Where(x => !x.Disabled);
-                    //query = query.ToList().AsQueryable();
-                    //var deletedRSPromoes
                     break;
             }
             return query;
@@ -494,9 +492,8 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS:                    
-                    query = query.GroupBy(x => new { x.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    query = query.Where(x => !x.Disabled);
+                case TPMmode.RS: 
+                    query = query.Where(x => x.row_number == 1 && !x.Disabled);
                     break;
             }
             return query;
