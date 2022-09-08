@@ -494,9 +494,9 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS:
-                    query = query.Where(x => !x.Disabled);
+                case TPMmode.RS:                    
                     query = query.GroupBy(x => new { x.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
                     break;
             }
             return query;
