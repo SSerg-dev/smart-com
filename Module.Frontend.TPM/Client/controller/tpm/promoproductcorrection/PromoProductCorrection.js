@@ -95,7 +95,10 @@
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();                
+                grid.columnManager.getColumns()[indexh].hide();
+                var promoProductCorrectionGridStore = grid.getStore();
+                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
+                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'Current';                
             }
             else {
                 RSmodeController.getRSPeriod(function (returnValue) {
@@ -293,20 +296,22 @@
 
     getAndSaveFormData: function() {
         var form = this.editor.down('editorform').getForm();
-        record = form.getRecord();
+        record = form.getRecord();        
     
         if (!form.isValid()) {
             return;
         }
 
-        form.updateRecord();
+        form.updateRecord(record);
         var errors = record.validate();
 
         if (!errors.isValid()) {
             form.markInvalid(errors);
         }
 
-        
+        values = form.getValues();
+        record.set(values);
+
         this.saveModelPatch(record);
     },
 
@@ -318,10 +323,13 @@
         var isCreate = model.phantom;
         grid = this.editor.grid;
         this.editor.setLoading(l10n.ns('core').value('savingText'));
-
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        model.set('TPMmode', mode.data.value);
+
+
+        var tPMmode = mode.data.value === 1? 'RS' : 'Current';
+
+        model.set('TPMmode', tPMmode);
 
         model.save({
             scope: this,

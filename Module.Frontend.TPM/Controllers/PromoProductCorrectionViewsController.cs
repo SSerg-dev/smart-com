@@ -214,7 +214,7 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult Post(PromoProductCorrectionView model)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
-            TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
+            TPMmode tPMmode = model.TPMmode;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -236,11 +236,11 @@ namespace Module.Frontend.TPM.Controllers
                 .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
                 .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
                 .Include(g => g.PromoProduct.Promo.PromoProductTrees)
-                .FirstOrDefault(x => x.PromoProductId == modelMapp.PromoProductId && x.TempId == modelMapp.TempId && !x.Disabled);
+                .FirstOrDefault(x => x.PromoProductId == modelMapp.PromoProductId && x.TempId == modelMapp.TempId && !x.Disabled && x.TPMmode == tPMmode);
 
             if (item != null)
             {
-                if ((int)model.TPMmode != (int)tPMmode)
+                if (tPMmode == TPMmode.RS)
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
@@ -251,6 +251,7 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
                     item = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == item.PromoProduct.ZREP);
                 }
+
                 if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
@@ -315,19 +316,65 @@ namespace Module.Frontend.TPM.Controllers
                     cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>().ReverseMap());
                 var mapper = configuration.CreateMapper();
                 var result = mapper.Map(model, proxy);
-                var promoProduct = Context.Set<PromoProduct>()
-                    .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
-
-                if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                
+                if (tPMmode == TPMmode.Current)
                 {
-                    return InternalServerError(new Exception("Promo Locked Update"));
-                }
-                result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                result.UserId = user.Id;
-                result.UserName = user.Login;
+                    var promoProduct = Context.Set<PromoProduct>()
+                    .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled && x.TPMmode == tPMmode);
 
-                Context.Set<PromoProductsCorrection>().Add(result);
+                    if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                    {
+                        return InternalServerError(new Exception("Promo Locked Update"));
+                    }
+                    result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.UserId = user.Id;
+                    result.UserName = user.Login;
+
+                    Context.Set<PromoProductsCorrection>().Add(result);
+                }
+                if (tPMmode == TPMmode.RS)
+                {
+                    var promoProduct = Context.Set<PromoProduct>()
+                                        .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled && x.TPMmode == tPMmode);
+
+                    if(promoProduct == null)
+                    {
+                        var currentPromo = Context.Set<Promo>()
+                            .Include(g => g.BTLPromoes)
+                            .Include(g => g.PromoSupportPromoes)
+                            .Include(g => g.PromoProductTrees)
+                            .Include(g => g.IncrementalPromoes)
+                            .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .FirstOrDefault(p => p.Number == model.Number && p.TPMmode == TPMmode.Current);
+
+                        var ProductId = currentPromo.PromoProducts
+                            .FirstOrDefault(pp => pp.ZREP == model.ZREP).ProductId;
+
+                        var promoRS = RSmodeHelper.EditToPromoRS(Context, currentPromo);
+
+                        promoProduct = promoRS.PromoProducts
+                            .FirstOrDefault(p => p.ProductId == ProductId && p.TPMmode == tPMmode);
+
+                        if(promoProduct == null)
+                        {
+                            
+                        }
+                    }
+
+                    if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                    {
+                        return InternalServerError(new Exception("Promo Locked Update"));
+                    }
+                    result.PromoProduct = promoProduct;
+                    result.PromoProductId = promoProduct.Id;
+                    result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.UserId = user.Id;
+                    result.UserName = user.Login;
+
+                    Context.Set<PromoProductsCorrection>().Add(result);
+                }  
 
                 try
                 {

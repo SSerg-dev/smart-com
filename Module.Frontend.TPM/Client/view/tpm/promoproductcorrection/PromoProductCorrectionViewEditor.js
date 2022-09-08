@@ -306,6 +306,10 @@
                 xtype: 'singlelinedisplayfield',
                 name: 'UserName',
                 fieldLabel: l10n.ns('tpm', 'PromoProductCorrection').value('UserName'), 
-            },]
+            },
+            {
+                xtype: 'hiddenfield',
+                dataIndex: 'TPMmode'
+            }]
     }
 });

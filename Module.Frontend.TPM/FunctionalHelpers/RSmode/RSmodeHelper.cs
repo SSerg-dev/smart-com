@@ -326,6 +326,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     //.ForMember(pTo => pTo.Promo, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     //.ForMember(pTo => pTo.PromoId, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<Promo, Promo>()
                     .ForMember(pTo => pTo.BTLPromoes, opt => opt.Ignore())
@@ -383,7 +384,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             var mapper = configuration.CreateMapper();
             List<PromoProductsCorrection> promoProductsCorrectionsRS = mapper.Map<List<PromoProductsCorrection>>(promoProductsCorrections);
 
-            Context.Set<List<PromoProductsCorrection>>().Add(promoProductsCorrectionsRS);
+            Context.Set<PromoProductsCorrection>().AddRange(promoProductsCorrectionsRS);
             Context.SaveChanges();
             RSPeriodHelper.CreateRSPeriod(promoProductsCorrectionsRS.Select(g=>g.PromoProduct.Promo).ToList(), Context);
             return promoProductsCorrectionsRS;
