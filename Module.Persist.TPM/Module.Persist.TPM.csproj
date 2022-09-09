@@ -3187,6 +3187,10 @@
     <Compile Include="Migrations\202209071059010_EmptyMerge0709.Designer.cs">
       <DependentUpon>202209071059010_EmptyMerge0709.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209071934114_Add_ModifiedDate_Field.cs" />
+    <Compile Include="Migrations\202209071934114_Add_ModifiedDate_Field.Designer.cs">
+      <DependentUpon>202209071934114_Add_ModifiedDate_Field.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6019,6 +6023,9 @@
     <EmbeddedResource Include="Migrations\202209071059010_EmptyMerge0709.resx">
       <DependentUpon>202209071059010_EmptyMerge0709.cs</DependentUpon>
     </EmbeddedResource>
+	<EmbeddedResource Include="Migrations\202209071934114_Add_ModifiedDate_Field.resx">
+	  <DependentUpon>202209071934114_Add_ModifiedDate_Field.cs</DependentUpon>
+	</EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
