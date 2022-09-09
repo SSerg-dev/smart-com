@@ -543,7 +543,7 @@
                         $.ajax({
                             type: "POST",
                             cache: false,
-                            url: "/odata/PromoProductsCorrections/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                            url: "/odata/PromoProductCorrectionViews/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
                             dataType: "json",
                             contentType: false,
                             processData: false,
