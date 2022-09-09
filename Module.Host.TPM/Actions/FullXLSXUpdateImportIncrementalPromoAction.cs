@@ -1,9 +1,12 @@
 ﻿using Core.Data;
+using Core.Extensions;
+using Core.Settings;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Parameters;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Host.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
@@ -16,9 +19,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Utility;
+using Utility.FileWorker;
 using Utility.Import;
 
 namespace Module.Host.TPM.Actions
@@ -37,7 +42,91 @@ namespace Module.Host.TPM.Actions
             ErrorMessageScaffold = "FullImportAction failed: {0}";
             FileParseErrorMessage = "An error occurred while parsing the import file";
         }
+        public override void Execute()
+        {
+            logger.Trace("Begin");
+            try
+            {
+                ResultStatus = null;
+                HasErrors = false;
 
+                var sourceRecords = ParseImportFile();
+
+                int successCount;
+                int warningCount;
+                int errorCount;
+
+                var resultFilesModel = ApplyImport(sourceRecords, out successCount, out warningCount, out errorCount);
+
+                // Сохранить выходные параметры
+                Results["ImportSourceRecordCount"] = sourceRecords.Count();
+                Results["ImportResultRecordCount"] = successCount;
+                Results["ErrorCount"] = errorCount;
+                Results["WarningCount"] = warningCount;
+                Results["ImportResultFilesModel"] = resultFilesModel;
+
+            }
+            catch (Exception e)
+            {
+                HasErrors = true;
+                string message = String.Format("FullImportAction failed: {0}", e.ToString());
+                logger.Error(message);
+
+                if (e.IsUniqueConstraintException())
+                {
+                    message = "This entry already exists in the database.";
+                }
+                else
+                {
+                    message = e.ToString();
+                }
+
+                Errors.Add(message);
+                ResultStatus = ImportUtility.StatusName.ERROR;
+            }
+            finally
+            {
+                // информация о том, какой долен быть статус у задачи
+                Results["ImportResultStatus"] = ResultStatus;
+                logger.Debug("Finish");
+            }
+        }
+
+        private IList<IEntity<Guid>> ParseImportFile()
+        {
+            var fileDispatcher = new FileDispatcher();
+            string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
+            string importFilePath = Path.Combine(importDir, ImportFile.Name);
+            if (!fileDispatcher.IsExists(importDir, ImportFile.Name))
+            {
+                throw new Exception("Import File not found");
+            }
+
+            var builder = ImportModelFactory.GetCSVImportModelBuilder(ImportType);
+            var validator = ImportModelFactory.GetImportValidator(ImportType);
+            int sourceRecordCount;
+            List<string> errors;
+            IList<Tuple<string, string>> buildErrors;
+            IList<Tuple<IEntity<Guid>, string>> validateErrors;
+            logger.Trace("before parse file");
+
+            IList<IEntity<Guid>> records = ImportUtilityTPM.ParseXLSXFile(importFilePath, null, builder, validator, Separator, Quote, HasHeader, out sourceRecordCount, out errors, out buildErrors, out validateErrors);
+
+            logger.Trace("after parse file");
+
+            // Обработать ошибки
+            foreach (string err in errors)
+            {
+                Errors.Add(err);
+            }
+            if (errors.Any())
+            {
+                HasErrors = true;
+                throw new ImportException("An error occurred while parsing the import file.");
+            }
+
+            return records;
+        }
         protected override ImportResultFilesModel ApplyImport(IList<IEntity<Guid>> sourceRecords, out int successCount, out int warningCount, out int errorCount)
         {
 
