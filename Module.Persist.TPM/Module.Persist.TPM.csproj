@@ -3147,6 +3147,10 @@
     <Compile Include="Migrations\202209082151080_Update_PromoProductCorrectionView.Designer.cs">
       <DependentUpon>202209082151080_Update_PromoProductCorrectionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209090601447_Add_AP_PromoProductCorrectionViews.cs" />
+    <Compile Include="Migrations\202209090601447_Add_AP_PromoProductCorrectionViews.Designer.cs">
+      <DependentUpon>202209090601447_Add_AP_PromoProductCorrectionViews.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5944,6 +5948,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209082151080_Update_PromoProductCorrectionView.resx">
       <DependentUpon>202209082151080_Update_PromoProductCorrectionView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209090601447_Add_AP_PromoProductCorrectionViews.resx">
+      <DependentUpon>202209090601447_Add_AP_PromoProductCorrectionViews.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

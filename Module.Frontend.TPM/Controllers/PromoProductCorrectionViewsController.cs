@@ -15,6 +15,7 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -520,6 +521,40 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return InternalServerError(e.InnerException);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoProductCorrectionDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductsCorrection>().Find(key);
+                var promoId = key;
+                var promoProductsCorrection = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProductId == model.PromoProductId && !x.Disabled);
+                var promoProductsCorrectionCopied = promoProductsCorrection.Any(x => x.TPMmode == TPMmode.RS);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                {
+                    var promo = RSmodeHelper.EditToPromoRS(Context, model.PromoProduct.Promo);
+                    var promoProductCorrection = promo.PromoProducts
+                        .SelectMany(x => x.PromoProductsCorrections)
+                        .Where(y => y.PromoProduct.ProductId == model.PromoProduct.ProductId && !y.Disabled).FirstOrDefault();
+                    model = promoProductCorrection;
+                }
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;
+                Context.SaveChanges();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
             }
         }
 
