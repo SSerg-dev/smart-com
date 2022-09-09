@@ -584,6 +584,43 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult PromoProductCorrectionDelete(Guid key, TPMmode TPMmode)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductsCorrection>().Find(key);
+                var promoId = key;
+                var promoProductsCorrection = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProductId == model.PromoProductId && !x.Disabled);
+                var promoProductsCorrectionCopied = promoProductsCorrection.Any(x => x.TPMmode == TPMmode.RS);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                {
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
+                }
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;
+                Context.SaveChanges();
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
+            }
+        }
+
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи

@@ -492,39 +492,6 @@ namespace Module.Frontend.TPM.Controllers
                 Disabled = false
             });
         }
-
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult PromoProductCorrectionDelete(Guid key, TPMmode TPMmode)
-        {
-            try
-            {
-                var model = Context.Set<PromoProductsCorrection>().Find(key);
-                var promoId = key;
-                var promoProductsCorrection = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProductId == model.PromoProductId && !x.Disabled);
-                var promoProductsCorrectionCopied = promoProductsCorrection.Any(x => x.TPMmode == TPMmode.RS);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-
-                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
-                {
-                    var promo = RSmodeHelper.EditToPromoRS(Context, model.PromoProduct.Promo);
-                    var promoProductCorrection = promo.PromoProducts
-                        .SelectMany(x => x.PromoProductsCorrections)
-                        .Where(y => y.PromoProduct.ProductId == model.PromoProduct.ProductId && !y.Disabled).FirstOrDefault();
-                    model = promoProductCorrection;
-                }                
-                model.DeletedDate = System.DateTime.Now;
-                model.Disabled = true;                
-                Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-            }
-            catch (Exception e)
-            {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
-            }
-        }
+        
     }
 }
