@@ -601,11 +601,14 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
                 {
-                    var promo = RSmodeHelper.EditToPromoRS(Context, model.PromoProduct.Promo);
-                    var promoProductCorrection = promo.PromoProducts
-                        .SelectMany(x => x.PromoProductsCorrections)
-                        .Where(y => y.PromoProduct.ProductId == model.PromoProduct.ProductId && !y.Disabled).FirstOrDefault();
-                    model = promoProductCorrection;
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
                 }
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;

@@ -812,8 +812,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("ExportCorrectionXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");
-            builder.Entity<PromoProductsCorrection>().Collection.Action("PromoProductCorrectionDelete");
+            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");            
             builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
             builder.Entity<HistoricalPromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
 
@@ -1219,6 +1218,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("ExportCorrectionXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductCorrectionView>().Collection.Action("PromoProductCorrectionDelete");
         }
 
 
