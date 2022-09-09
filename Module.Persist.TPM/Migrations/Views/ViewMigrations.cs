@@ -588,7 +588,7 @@
 			return CreatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
         }
 		private static string CreatePromoProductCorrectionViewSqlString = @"
-			CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
+			CREATE OR ALTER VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
 			AS
 			SELECT
 				ppc.Id AS Id,
@@ -972,7 +972,9 @@
 				ppc.TempId AS TempId,
 				ps.Name AS PromoStatusName,
 				pr.IsGrowthAcceleration AS IsGrowthAcceleration,
-				pr.IsInExchange AS IsInExchange
+				pr.IsInExchange AS IsInExchange,
+				pr.DispatchesStart AS PromoDispatchStartDate,
+				ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) AS row_number
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN

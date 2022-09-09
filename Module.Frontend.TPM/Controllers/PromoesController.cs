@@ -67,9 +67,16 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<Promo> query = Context.Set<Promo>().Where(e => !e.Disabled || withDeleted);
+            IQueryable<Promo> query = Context.Set<Promo>();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
+            if (withDeleted)
+            {
+                query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.None, canChangeStateOnly ? role : String.Empty);
+            }
+            else
+            {
+                query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
+            }            
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")

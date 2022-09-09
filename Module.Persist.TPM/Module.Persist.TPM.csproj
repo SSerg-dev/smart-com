@@ -3195,6 +3195,14 @@
     <Compile Include="Migrations\202209090705122_EmptyMerge0909.Designer.cs">
       <DependentUpon>202209090705122_EmptyMerge0909.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209082015266_Add_row_number_PromoProductCorrection.cs" />
+    <Compile Include="Migrations\202209082015266_Add_row_number_PromoProductCorrection.Designer.cs">
+      <DependentUpon>202209082015266_Add_row_number_PromoProductCorrection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209082151080_Update_PromoProductCorrectionView.cs" />
+    <Compile Include="Migrations\202209082151080_Update_PromoProductCorrectionView.Designer.cs">
+      <DependentUpon>202209082151080_Update_PromoProductCorrectionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6011,6 +6019,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209070539379_Change_RS_Additional.resx">
       <DependentUpon>202209070539379_Change_RS_Additional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209082015266_Add_row_number_PromoProductCorrection.resx">
+      <DependentUpon>202209082015266_Add_row_number_PromoProductCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209082151080_Update_PromoProductCorrectionView.resx">
+      <DependentUpon>202209082151080_Update_PromoProductCorrectionView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209010707260_EmptyMergeRS.resx">
       <DependentUpon>202209010707260_EmptyMergeRS.cs</DependentUpon>

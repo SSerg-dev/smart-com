@@ -198,9 +198,11 @@
                 disabled: true                   
             }]
         });
-
+        debugger;
         var choosePromoWindowGrid = choosepromowindow.down('grid');
-
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        choosePromoWindowGrid.getStore().getProxy().extraParams.TPMmode = mode.data.value;
         var editor = promoLinkedGrid.up('custompromosupporteditor');
         var prefilter = {
             operator: "and",

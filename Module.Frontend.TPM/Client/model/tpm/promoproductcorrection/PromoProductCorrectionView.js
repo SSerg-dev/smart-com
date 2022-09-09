@@ -3,7 +3,7 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
     idProperty: 'Id',
     breezeEntityType: 'PromoProductCorrectionView',
     fields: [
-        { name: 'Number', type: 'int', hidden: false, isDefault: true, isKey: true },
+        { name: 'Number', type: 'int', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' } },
         { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true  },
         { name: 'BrandTechName', type: 'string', mapping: 'BrandTechName', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
         { name: 'ProductSubrangesList', type:'string', hidden: false, isDefault: true },
@@ -19,14 +19,15 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'PlanProductUpliftPercentCorrected', type: 'float', hidden: false, isDefault: true  },
         { name: 'CreateDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
-        { name: 'UserName', ype:'string', hidden: false, isDefault: true },
+        { name: 'UserName', type:'string', hidden: false, isDefault: true },
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
         { name: 'Id', hidden: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
-        { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: false },
-        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false },
-        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false },
+        { name: 'PromoDispatchStartDate', type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone, isDefault: true },
+        { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: true  },
+        { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: true },
+        { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: true },
     ],
 
     proxy: {

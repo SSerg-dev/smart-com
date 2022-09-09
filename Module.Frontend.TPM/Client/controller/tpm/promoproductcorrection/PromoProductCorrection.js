@@ -95,7 +95,10 @@
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();                
+                grid.columnManager.getColumns()[indexh].hide();
+                var promoProductCorrectionGridStore = grid.getStore();
+                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
+                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'Current';                
             }
             else {
                 RSmodeController.getRSPeriod(function (returnValue) {
@@ -293,20 +296,22 @@
 
     getAndSaveFormData: function() {
         var form = this.editor.down('editorform').getForm();
-        record = form.getRecord();
+        record = form.getRecord();        
     
         if (!form.isValid()) {
             return;
         }
 
-        form.updateRecord();
+        form.updateRecord(record);
         var errors = record.validate();
 
         if (!errors.isValid()) {
             form.markInvalid(errors);
         }
 
-        
+        values = form.getValues();
+        record.set(values);
+
         this.saveModelPatch(record);
     },
 
@@ -318,10 +323,13 @@
         var isCreate = model.phantom;
         grid = this.editor.grid;
         this.editor.setLoading(l10n.ns('core').value('savingText'));
-
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        model.set('TPMmode', mode.data.value);
+
+
+        var tPMmode = mode.data.value === 1? 'RS' : 'Current';
+
+        model.set('TPMmode', tPMmode);
 
         model.save({
             scope: this,
@@ -535,7 +543,7 @@
                         $.ajax({
                             type: "POST",
                             cache: false,
-                            url: "/odata/PromoProductsCorrections/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                            url: "/odata/PromoProductCorrectionViews/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
                             dataType: "json",
                             contentType: false,
                             processData: false,
@@ -570,11 +578,11 @@
     },
 
     onPromoProductCorrectionGridSelectionChange: function (selMode, selected) {
-        this.onGridSelectionChange(selMode, selected);
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) {
+            if (tpmMode == 1) 
+            {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
@@ -593,16 +601,18 @@
                         !selected[0].data.IsInExchange
                     )
                    ) {
-                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                    updBtn.setDisabled(false);
-                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                    delBtn.setDisabled(false);
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
                 } else {
-                    updBtn = thisGrid.up().down('custombigtoolbar').down('#updatebutton');
-                    updBtn.setDisabled(true);
-                    delBtn = thisGrid.up().down('custombigtoolbar').down('#deletebutton');
-                    delBtn.setDisabled(true);
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
                 }
+            }else if (selected[0].data.PromoStatusName != 'Closed') {
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
+            } else {
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
+                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
             }
         }
     },

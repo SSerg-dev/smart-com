@@ -31,5 +31,13 @@ namespace Module.Persist.TPM.Model.DTO
         public Guid? PromoProductId { get; set; }
         public Guid? UserId { get; set; }
 
+        public DateTimeOffset? PromoDispatchStartDate { get; set; }
+        public string PromoStatusName { get; set; }
+
+        public bool IsGrowthAcceleration { get; set; }
+		public bool IsInExchange { get; set; }
+
+        public long row_number { get; set; }
+
     }
 }
