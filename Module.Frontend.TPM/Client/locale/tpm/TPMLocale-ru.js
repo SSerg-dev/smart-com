@@ -2155,6 +2155,7 @@
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
         'Price': 'Price',
+        "FuturePriceMarker": 'Future Price Marker'
     },
 
     'CoefficientSI2SO': {

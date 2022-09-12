@@ -34,6 +34,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PriceList", 5, IsUnique = true)]
         public Guid ProductId { get; set; }
 
+        public bool FuturePriceMarker { get; set; }
+
         public virtual ClientTree ClientTree { get; set; }
         public virtual Product Product { get; set; }
 

@@ -3159,6 +3159,10 @@
     <Compile Include="Migrations\202209121104505_Add_ClientDashboardRSViews_AP.Designer.cs">
       <DependentUpon>202209121104505_Add_ClientDashboardRSViews_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.cs" />
+    <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
+      <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5836,6 +5840,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.resx">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.resx">
+      <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202207061101557_Add_Mode.resx">
       <DependentUpon>202207061101557_Add_Mode.cs</DependentUpon>
