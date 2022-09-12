@@ -137,6 +137,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<BTLPromo>();
             modelBuilder.Entity<ClientDashboard>();
             modelBuilder.Entity<ClientDashboardView>().ToTable("ClientDashboardView");
+            modelBuilder.Entity<ClientDashboardRSView>().ToTable("ClientDashboardRSView");
             modelBuilder.Entity<PriceList>();
             modelBuilder.Entity<CoefficientSI2SO>();
             modelBuilder.Entity<PromoProductDifference>();
@@ -1152,6 +1153,11 @@ namespace Module.Persist.TPM
             builder.Entity<ClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardView>("ClientDashboardViews");
             builder.EntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
             builder.Entity<HistoricalClientDashboardView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientDashboardView>("HistoricalClientDashboards");
+
+            builder.EntitySet<ClientDashboardRSView>("ClientDashboardRSViews");
+            builder.Entity<ClientDashboardRSView>().Collection.Action("ExportXLSX");
+            builder.Entity<ClientDashboardRSView>().Collection.Action("GetAllYEEF");
+            builder.Entity<ClientDashboardRSView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientDashboardRSView>("ClientDashboardRSViews");
 
             // Calendar Competitors Entities
             builder.EntitySet<Competitor>("Competitors").HasManyBinding(g => g.CompetitorBrandTechs, "CompetitorBrandTechs");

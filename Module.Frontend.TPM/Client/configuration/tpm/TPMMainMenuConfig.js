@@ -4,14 +4,14 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('ClientDashboard'),
         scale: 'medium',
         glyph: 0xF56E,
-        rsMode: false,
+        rsMode: true,
         currentMode: true,
         children: [
             {
                 text: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
                 glyph: 0xFA1C,
-                rsMode: false,
+                rsMode: true,
                 currentMode: true,
                 widget: 'clientdashboard'
             },
@@ -19,10 +19,18 @@
                 text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
                 glyph: 0xF572,
-                rsMode: false,
+                rsMode: true,
                 currentMode: true,
                 widget: 'clientkpidata'
-            }
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdataRS'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdataRS'),
+                glyph: 0xF572,
+                rsMode: true,
+                currentMode: false,
+                widget: 'clientkpidata'
+            },
         ]
     },
     {

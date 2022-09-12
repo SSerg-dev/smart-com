@@ -81,6 +81,7 @@
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
         'ClientKPIdata': 'Client KPI Data',
+        'ClientKPIdataRS': 'Client KPI Data RS',
         'ActualLSV': 'Actual LSV',
         'NonPromoEquipment': 'Non-Promo Equipment',
         'PromoTypes': 'Promo Types',
