@@ -564,6 +564,7 @@ namespace Module.Host.TPM.Actions
                             promoProductRS = promoRS.PromoProducts
                                 .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
                         }
+                        importedPromoProductCorrection.TPMmode = TPMmode.RS;
                         importedPromoProductCorrection.PromoProduct = promoProductRS;
                         importedPromoProductCorrection.PromoProductId = promoProductRS.Id;
                         importedPromoProductCorrection.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
