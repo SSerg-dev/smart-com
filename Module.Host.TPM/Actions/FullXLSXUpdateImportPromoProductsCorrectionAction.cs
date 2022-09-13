@@ -59,7 +59,7 @@ namespace Module.Host.TPM.Actions
             Separator = settings.Separator;
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
-            
+
             AllowPartialApply = false;
 
             TPMmode = tPMmode;
@@ -90,9 +90,11 @@ namespace Module.Host.TPM.Actions
         /// <summary>
         /// Выполнить разбор source-данных в импорт-модели и сохранить в БД
         /// </summary>
-        public override void Execute() {
+        public override void Execute()
+        {
             logger.Trace("Begin");
-            try {
+            try
+            {
                 ResultStatus = null;
                 HasErrors = false;
 
@@ -110,19 +112,25 @@ namespace Module.Host.TPM.Actions
                 Results["WarningCount"] = warningCount;
                 Results["ImportResultFilesModel"] = resultFilesModel;
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 HasErrors = true;
                 string msg = String.Format(ErrorMessageScaffold, e.ToString());
                 logger.Error(msg);
                 string message;
-                if (e.IsUniqueConstraintException()) {
+                if (e.IsUniqueConstraintException())
+                {
                     message = UniqueErrorMessage;
-                } else {
+                }
+                else
+                {
                     message = e.ToString();
                 }
                 Errors.Add(message);
                 ResultStatus = ImportUtility.StatusName.ERROR;
-            } finally
+            }
+            finally
             {
                 if (HasErrors)
                 {
@@ -143,7 +151,8 @@ namespace Module.Host.TPM.Actions
         /// Выполнить разбор файла импорта
         /// </summary>
         /// <returns></returns>
-        protected virtual IList<IEntity<Guid>> ParseImportFile() {
+        protected virtual IList<IEntity<Guid>> ParseImportFile()
+        {
             var fileDispatcher = new FileDispatcher();
             string importDir = AppSettingsManager.GetSetting<string>("IMPORT_DIRECTORY", "ImportFiles");
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
@@ -163,10 +172,12 @@ namespace Module.Host.TPM.Actions
             logger.Trace("after parse file");
 
             // Обработать ошибки
-            foreach (string err in errors) {
+            foreach (string err in errors)
+            {
                 Errors.Add(err);
             }
-            if (errors.Any()) {
+            if (errors.Any())
+            {
                 HasErrors = true;
                 throw new ImportException(FileParseErrorMessage);
             }
@@ -183,12 +194,14 @@ namespace Module.Host.TPM.Actions
         /// <param name="warningCount"></param>
         /// <param name="errorCount"></param>
         /// <returns></returns>
-        protected virtual ImportResultFilesModel ApplyImport(IList<IEntity<Guid>> sourceRecords, out int successCount, out int warningCount, out int errorCount) {
+        protected virtual ImportResultFilesModel ApplyImport(IList<IEntity<Guid>> sourceRecords, out int successCount, out int warningCount, out int errorCount)
+        {
 
             // Логика переноса данных из временной таблицы в постоянную
             // Получить записи текущего импорта
-            using (DatabaseContext context = new DatabaseContext()) {
-                
+            using (DatabaseContext context = new DatabaseContext())
+            {
+
                 var records = new List<PromoProductsCorrection>();
                 ConcurrentBag<IEntity<Guid>> successList = new ConcurrentBag<IEntity<Guid>>();
                 ConcurrentBag<Tuple<IEntity<Guid>, string>> errorRecords = new ConcurrentBag<Tuple<IEntity<Guid>, string>>();
@@ -285,7 +298,8 @@ namespace Module.Host.TPM.Actions
                 context.Imports.Add(importModel);
 
                 bool hasSuccessList = AllowPartialApply || !HasErrors;
-                if (hasSuccessList) {
+                if (hasSuccessList)
+                {
                     // Закончить импорт
                     var items = BeforeInsert(records, context).ToList();
                     resultRecordCount = InsertDataToDatabase(items, context, ref warningRecords);
@@ -329,20 +343,29 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-         protected string GetImportStatus() {
-            if (HasErrors) {
-                if (AllowPartialApply) {
+        protected string GetImportStatus()
+        {
+            if (HasErrors)
+            {
+                if (AllowPartialApply)
+                {
                     return ImportUtility.StatusName.PARTIAL_COMPLETE;
-                } else {
+                }
+                else
+                {
                     return ImportUtility.StatusName.ERROR;
                 }
-            } else {
+            }
+            else
+            {
                 return ImportUtility.StatusName.COMPLETE;
             }
         }
 
-        protected virtual ScriptGenerator GetScriptGenerator() {
-            if (_generator == null) {
+        protected virtual ScriptGenerator GetScriptGenerator()
+        {
+            if (_generator == null)
+            {
                 _generator = new ScriptGenerator(ModelType);
             }
             return _generator;
@@ -350,7 +373,7 @@ namespace Module.Host.TPM.Actions
 
         protected ScriptGenerator _generator { get; set; }
 
-        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections,  out IList<string> errors, List<PromoProduct> promoProducts)
+        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProduct> promoProducts)
         {
             errors = new List<string>();
             var promoProduct = promoProducts.Where(x => x.ZREP == item.ProductZREP && x.Promo.Number == item.PromoNumber).FirstOrDefault();
@@ -382,19 +405,23 @@ namespace Module.Host.TPM.Actions
         //    item.ErrorMessage = hasError ? String.Join(Environment.NewLine, errors) : null;
         //}
 
-        protected virtual void Fail() {
+        protected virtual void Fail()
+        {
 
         }
 
-        protected virtual void Success() {
+        protected virtual void Success()
+        {
 
         }
 
-        protected virtual void Complete() {
+        protected virtual void Complete()
+        {
 
         }
 
-        protected virtual IEnumerable<PromoProductsCorrection> BeforeInsert(IEnumerable<PromoProductsCorrection> records, DatabaseContext context) {
+        protected virtual IEnumerable<PromoProductsCorrection> BeforeInsert(IEnumerable<PromoProductsCorrection> records, DatabaseContext context)
+        {
             return records;
         }
 
@@ -415,11 +442,11 @@ namespace Module.Host.TPM.Actions
                 var promoProduct = databaseContext.Set<PromoProduct>()
                         .FirstOrDefault(x => x.Id == importedPromoProductCorrection.PromoProductId && !x.Disabled);
                 var promo = promoes.FirstOrDefault(q => promoProduct != null && q.Id == promoProduct.PromoId);
-                
+
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
                     warningRecords.Add(new Tuple<IEntity<Guid>, string>(importedPromoProductCorrection, $"Promo Product Correction was not imported for In-Out promo №{promo.Number}"));
-                    handlerLogger.Write(true , $"Promo Product Correction was not imported for In-Out promo №{promo.Number}", "Warning");
+                    handlerLogger.Write(true, $"Promo Product Correction was not imported for In-Out promo №{promo.Number}", "Warning");
                     continue;
                 }
 
@@ -447,7 +474,7 @@ namespace Module.Host.TPM.Actions
                     {
                         throw new ImportException("Promo Locked Update");
                     }
-                    
+
                     currentPromoProductCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
                     currentPromoProductCorrection.ChangeDate = DateTimeOffset.Now;
                     currentPromoProductCorrection.UserId = this._userId;
@@ -477,7 +504,7 @@ namespace Module.Host.TPM.Actions
                             promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
                         }
                     }
-                    
+
                     promoProductsCorrectionChangeIncidents.Add(currentPromoProductCorrection);
                 }
                 else

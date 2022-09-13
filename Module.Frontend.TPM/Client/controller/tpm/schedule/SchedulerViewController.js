@@ -2146,7 +2146,7 @@
             callback: function (records, operation, success) {
                 if (StartDateRS) {
                     records = records.map(function (record) {
-                        if (record.data.DispatchesStart < StartDateRS && EndDateRS > record.data.DispatchesStart) {
+                        if (record.data.DispatchesStart < StartDateRS || EndDateRS < record.data.DispatchesStart) {
                             record.set('IsOnHold', true);
                         }
                         if (record.data.MasterPromoId) {
