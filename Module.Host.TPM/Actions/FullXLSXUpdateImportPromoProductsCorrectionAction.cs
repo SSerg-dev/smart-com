@@ -504,7 +504,6 @@ namespace Module.Host.TPM.Actions
                             promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
                         }
                     }
-
                     promoProductsCorrectionChangeIncidents.Add(currentPromoProductCorrection);
                 }
                 else
@@ -550,10 +549,8 @@ namespace Module.Host.TPM.Actions
                     }
                     if (TPMmode == TPMmode.RS)
                     {
-                        var item = importedPromoProductCorrection;
                         var promoProductRS = databaseContext.Set<PromoProduct>()
                                         .FirstOrDefault(x => x.Promo.Number == promoProduct.Promo.Number && x.ZREP == promoProduct.ZREP && !x.Disabled && x.TPMmode == TPMmode.RS);
-                        //to do передавать mode при запросе промо в searchfield
                         if (promoProductRS == null)
                         {
                             var currentPromo = databaseContext.Set<Promo>()
@@ -564,26 +561,16 @@ namespace Module.Host.TPM.Actions
                                 .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                                 .FirstOrDefault(p => p.Number == promo.Number && p.TPMmode == TPMmode.Current);
                             var promoRS = RSmodeHelper.EditToPromoRS(databaseContext, currentPromo);
-                            item = promoRS.PromoProducts
-                                .FirstOrDefault(x => x.ZREP == promoProduct.ZREP).PromoProductsCorrections.FirstOrDefault();
-
-                            item.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
-                            item.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            importedPromoProductCorrection.UserId = this._userId;
-                            importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
+                            promoProductRS = promoRS.PromoProducts
+                                .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
                         }
-                        else
-                        {
-                            item.PromoProduct = promoProductRS;
-                            item.PromoProductId = promoProductRS.Id;
-                            item.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
-                            item.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            importedPromoProductCorrection.UserId = this._userId;
-                            importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
-                            databaseContext.Set<PromoProductsCorrection>().Add(item);
-                        }
+                        importedPromoProductCorrection.PromoProduct = promoProductRS;
+                        importedPromoProductCorrection.PromoProductId = promoProductRS.Id;
+                        importedPromoProductCorrection.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        importedPromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        importedPromoProductCorrection.UserId = this._userId;
+                        importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
+                        databaseContext.Set<PromoProductsCorrection>().Add(importedPromoProductCorrection);
                     };
                 }
             }
