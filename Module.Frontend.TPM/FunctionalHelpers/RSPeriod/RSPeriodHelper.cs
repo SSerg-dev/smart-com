@@ -311,7 +311,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                         {
                             IncrementalPromo incrementalPromo = promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == incrementalPromoRS.ProductId);
                             mapperIncrementalPromoBack.Map(incrementalPromoRS, incrementalPromo);
-
+                            MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(IncrementalPromo), incrementalPromo.Id, incrementalPromoRS.Id);
                         }
                         else // новый IncrementalPromo
                         {
@@ -344,6 +344,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             {
                                 PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault();
                                 mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                                MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
                                 //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
                                 Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
                             }
@@ -398,21 +399,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
             Context.SaveChanges();
         }
-        public static void ChangeStatusOnApproval(DatabaseContext context, Promo promo)
+        public static void MoveFromRSChangesIncident(DbSet<ChangesIncident> changesIncidents, string directoryName, Guid id, Guid oldId)
         {
-            using (PromoStateContext promoStateContext = new PromoStateContext(context, promo))
+            List<ChangesIncident> changesIncidents1 = changesIncidents.Where(g => g.ItemId == oldId.ToString() && g.DirectoryName == directoryName).ToList();
+            foreach (var item in changesIncidents1)
             {
-                var status = promoStateContext.ChangeState(promo, PromoStates.OnApproval, "System", out string message);
-                if (status)
-                {
-                    //Сохранение изменения статуса
-                    var promoStatusChange = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                    promoStatusChange.PromoId = promo.Id;
-                    promoStatusChange.StatusId = promo.PromoStatusId;
-                    promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
-
-                    context.Set<PromoStatusChange>().Add(promoStatusChange);
-                }
+                item.ItemId = id.ToString();
             }
         }
     }
