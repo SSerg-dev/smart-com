@@ -425,6 +425,7 @@
     <Compile Include="Controllers\ActualCOGSTnsController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
     <Compile Include="Controllers\BTLsController.cs" />
+    <Compile Include="Controllers\ClientDashboardRSViewsController.cs" />
     <Compile Include="Controllers\CompetitorPromoesController.cs" />
     <Compile Include="Controllers\CompetitorsController.cs" />
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
