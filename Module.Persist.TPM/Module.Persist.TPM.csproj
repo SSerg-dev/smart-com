@@ -3223,6 +3223,10 @@
     <Compile Include="Migrations\202209121104505_Add_ClientDashboardRSViews_AP.Designer.cs">
       <DependentUpon>202209121104505_Add_ClientDashboardRSViews_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209130252075_Merge1309.cs" />
+    <Compile Include="Migrations\202209130252075_Merge1309.Designer.cs">
+      <DependentUpon>202209130252075_Merge1309.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6081,6 +6085,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209121104505_Add_ClientDashboardRSViews_AP.resx">
       <DependentUpon>202209121104505_Add_ClientDashboardRSViews_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209130252075_Merge1309.resx">
+      <DependentUpon>202209130252075_Merge1309.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

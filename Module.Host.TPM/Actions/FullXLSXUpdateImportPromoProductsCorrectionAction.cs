@@ -33,6 +33,8 @@ using Utility.Import.ModelBuilder;
 using Utility.LogWriter;
 using Module.Host.TPM.Util;
 using AutoMapper;
+using Module.Persist.TPM.Model.SimpleModel;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 
 namespace Module.Host.TPM.Actions
 {
@@ -211,6 +213,15 @@ namespace Module.Host.TPM.Actions
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(promo, $"Can't create corrections for Promo {promo.Number}"));
                     }
+                    else if (TPMmode == TPMmode.RS)
+                    {
+                        StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
+                        if (promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < promo.EndDate)
+                        {
+                            HasErrors = true;
+                            errorRecords.Add(new Tuple<IEntity<Guid>, string>(promo, $"Promo number:{promo.Number} is not in the RS period"));
+                        }
+                    }
                 }
 
                 if (!HasErrors)
@@ -218,8 +229,6 @@ namespace Module.Host.TPM.Actions
                     //AplyFilter for products AplyFilter for correction
                     var promoProducts = context.Set<PromoProduct>().Where(x => sourceRecordsPromoNumbers.Contains(x.Promo.Number)).ToList();
                     var filterPromoProducts = ApplyFilterForProduct(promoProducts.AsQueryable(), TPMmode).ToList();
-                    var promoProductCorrections = context.Set<PromoProductsCorrection>().ToList();
-                    var filterPromoProductCorrections = ApplyFilterForCorrection(promoProductCorrections.AsQueryable(), TPMmode).ToList();
 
                     foreach (var item in convertedSourceRecords)
                     {
