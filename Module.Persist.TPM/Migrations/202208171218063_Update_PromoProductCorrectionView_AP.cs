@@ -74,31 +74,7 @@ namespace Module.Persist.TPM.Migrations
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
                 GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CustomerMarketing');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CMManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SuperReader');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'KeyAccountManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'DemandFinance');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Put'))
-                GO
+                
                 DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SupportAdministrator');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
@@ -119,31 +95,6 @@ namespace Module.Persist.TPM.Migrations
 				(0, 'PromoProductCorrectionViews',	'Post', 1)
                 GO
 				DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'Administrator');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CustomerMarketing');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CMManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SuperReader');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'KeyAccountManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'DemandFinance');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Post'))
@@ -172,31 +123,6 @@ namespace Module.Persist.TPM.Migrations
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
                 GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CustomerMarketing');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CMManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SuperReader');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'KeyAccountManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'DemandFinance');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Patch'))
-                GO
                 DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SupportAdministrator');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
@@ -217,31 +143,6 @@ namespace Module.Persist.TPM.Migrations
 				(0, 'PromoProductCorrectionViews',	'Delete', 1)
                 GO
 				DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'Administrator');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CustomerMarketing');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'CMManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'SuperReader');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'KeyAccountManager');
-                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
-                (RoleId, AccessPointId) values
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
-                GO
-                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'DemandFinance');
                 INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductCorrectionViews' and [Action]='Delete'))
