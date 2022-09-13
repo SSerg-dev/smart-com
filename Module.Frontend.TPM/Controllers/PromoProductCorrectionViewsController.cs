@@ -483,8 +483,8 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
 
-                patch.TryGetPropertyValue("TPMmode", out object mode);
-
+                patch.TryGetPropertyValue("TPMmode", out object mode1);
+                TPMmode mode = (TPMmode)mode1;
                 var config = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<PromoProductsCorrection, PromoProductCorrectionView>();
@@ -493,6 +493,7 @@ namespace Module.Frontend.TPM.Controllers
                 var modelMapp = mapperPromoProductCorrection.Map<PromoProductCorrectionView>(model);
 
                 patch.Patch(modelMapp);
+                modelMapp.TPMmode = model.TPMmode;
                 var config2 = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>()
@@ -503,7 +504,7 @@ namespace Module.Frontend.TPM.Controllers
                 var mapperPromoProductCorrection2 = config2.CreateMapper();
                 mapperPromoProductCorrection2.Map<PromoProductCorrectionView, PromoProductsCorrection>(modelMapp, model);
 
-                if ((int)mode == (int)TPMmode.Current && tPMmode == TPMmode.Current)
+                if (mode == TPMmode.Current && tPMmode == TPMmode.Current)
                 {
                     var promoRS = Context.Set<Promo>()
                         .FirstOrDefault(x => x.Number == model.PromoProduct.Promo.Number && x.TPMmode == TPMmode.RS);
@@ -526,7 +527,7 @@ namespace Module.Frontend.TPM.Controllers
                         promoProductsCorrection.UserName = user.Login;
                     }
                 }
-                else if (model.TPMmode != tPMmode)
+                else if (mode != tPMmode)
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)

@@ -554,7 +554,6 @@ namespace Module.Host.TPM.Actions
                         if (promoProductRS == null)
                         {
                             var currentPromo = databaseContext.Set<Promo>()
-                                .Include(g => g.BTLPromoes)
                                 .Include(g => g.PromoSupportPromoes)
                                 .Include(g => g.PromoProductTrees)
                                 .Include(g => g.IncrementalPromoes)
@@ -564,14 +563,12 @@ namespace Module.Host.TPM.Actions
                             promoProductRS = promoRS.PromoProducts
                                 .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
                         }
-                        importedPromoProductCorrection.TPMmode = TPMmode.RS;
-                        importedPromoProductCorrection.PromoProduct = promoProductRS;
-                        importedPromoProductCorrection.PromoProductId = promoProductRS.Id;
-                        importedPromoProductCorrection.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                        importedPromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                        importedPromoProductCorrection.UserId = this._userId;
-                        importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
-                        databaseContext.Set<PromoProductsCorrection>().Add(importedPromoProductCorrection);
+
+                        var newcorrectionRS = promoProductRS.PromoProductsCorrections.FirstOrDefault();
+                        newcorrectionRS.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                        newcorrectionRS.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        newcorrectionRS.UserId = this._userId;
+                        newcorrectionRS.UserName = currentUser?.Name ?? string.Empty;
                     };
                 }
             }
