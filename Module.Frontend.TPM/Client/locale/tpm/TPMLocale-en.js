@@ -180,6 +180,7 @@
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
         'ClientKPIData': 'Client KPI Data',
+        'ClientKPIdataRS': 'Client KPI Data RS',
         'NonPromoLinked': "Non-Promo Linked",
         'PreviousDayIncremental': 'Previous Day Incremental',
         'PriceList': 'Price list',

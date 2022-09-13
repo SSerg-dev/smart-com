@@ -133,8 +133,15 @@
             }, {
                 text: l10n.ns('tpm', 'PriceList').value('FuturePriceMarker'),
                 dataIndex: 'FuturePriceMarker',
-                renderer: function (value) {
-                    return value === true? 'Yes': 'No'
+                xtype: 'booleancolumn',
+                trueText: 'Yes',
+                falseText: 'No',
+                filter: {
+                    type: 'bool',
+                    store: [
+                        [false, 'No'],
+                        [true, 'Yes']
+                    ]
                 }
             }]
         }

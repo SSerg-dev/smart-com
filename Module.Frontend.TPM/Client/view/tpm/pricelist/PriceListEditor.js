@@ -52,6 +52,13 @@
             xtype: 'numberfield',
             name: 'Price',
             fieldLabel: l10n.ns('tpm', 'PriceList').value('Price'),
+        }, {
+            xtype: 'booleancombobox',
+            store: {
+                type: 'booleannonemptystore'
+            },
+            name: 'FuturePriceMarker',
+            fieldLabel: l10n.ns('tpm', 'PriceList').value('FuturePriceMarker')
         }]
     }
 });     
