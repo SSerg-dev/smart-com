@@ -144,8 +144,24 @@
         var dispatchesStart = record.get('DispatchesStart');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
+        var calcDispatchesStart = dragContext.startDate.setDate(dragContext.startDate.getDate() - 15);
         if (calendarGrid.length > 0) {
             me.calendarSheduler = calendarGrid[0];
+        }
+        if (mode) {
+            if (mode.data.value == 1) {
+                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    StartDateRS = new Date(returnValue.StartDate);
+                    EndDateRS = new Date(returnValue.EndDate);
+                });
+
+            } 
+            if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
+                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                dragContext.finalize(false);
+                return false;
+            }
         }
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
@@ -154,20 +170,6 @@
             App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongStartDate'));
             dragContext.finalize(false);
             return false;
-        } else if (mode) {
-                    if (mode.data.value == 1) {
-                        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-                        RSmodeController.getRSPeriod(function (returnValue) {
-                            StartDateRS = new Date(returnValue.StartDate);
-                            EndDateRS = new Date(returnValue.EndDate);
-                        });
-
-                    }
-                    if (record.data.DispatchesStart < StartDateRS || EndDateRS < record.data.DispatchesStart) {
-                        App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
-                        dragContext.finalize(false);
-                        return false;
-                    }
         } else {
             //Ext.WindowMgr.zseed = 10000000;
             var confWindow = Ext.Msg.show({
