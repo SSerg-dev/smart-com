@@ -12,7 +12,6 @@
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'Price', type: 'float', hidden: false, isDefault: true },
-        { name: 'FuturePriceMarker', type: 'boolean', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',
