@@ -445,12 +445,26 @@ namespace Module.Host.TPM.Actions
 
                     if (TPMmode == TPMmode.Current)
                     {
-                        var itemRS = databaseContext.Set<PromoProductsCorrection>()
-                        .FirstOrDefault(x => x.PromoProduct.Promo.Number == currentPromoProductCorrection.PromoProduct.Promo.Number && 
-                            x.PromoProduct.ZREP == currentPromoProductCorrection.PromoProduct.ZREP && x.TPMmode == TPMmode.RS && !x.Disabled);
-                        if (itemRS != null)
+                        var promoRS = databaseContext.Set<Promo>()
+                        .Include(x => x.PromoProducts)
+                        .FirstOrDefault(x => x.Number == promoProduct.Promo.Number && x.TPMmode == TPMmode.RS && !x.Disabled);
+                        if (promoRS != null)
                         {
-                            itemRS.PlanProductUpliftPercentCorrected = currentPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                            databaseContext.Set<Promo>().Remove(promoRS);
+                            databaseContext.SaveChanges();
+
+                            var currentPromoProductsCorrections = databaseContext.Set<PromoProductsCorrection>()
+                                .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                                .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                                .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                                .Where(x => x.PromoProduct.PromoId == promoProduct.PromoId && !x.Disabled)
+                                .ToList();
+                            currentPromoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(databaseContext, currentPromoProductsCorrections);
+                            var promoProductsCorrection = currentPromoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == promoProduct.ZREP);
+                            promoProductsCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                            promoProductsCorrection.ChangeDate = DateTimeOffset.Now;
+                            promoProductsCorrection.UserId = this._userId;
+                            promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
                         }
                     }
                     
