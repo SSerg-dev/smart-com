@@ -207,6 +207,7 @@
         'failedLoadData': 'Failed to load data.',
         'changeHistoryIsEmpty': 'The change history contains no entries',
         'wrongStartDate': 'New start date must be after current date.',
+        'wrongRSPeriodDates': 'Invalid promo dates for current RS period.',
         'completeSteps': 'Complete the remaining steps.',
         'dateOfChange': 'Date of change',
 
