@@ -976,6 +976,7 @@
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
     'PromoView': ['.tpm.Promo'],
+    'PromoRSView': ['.tpm.Promo'],
     'PromoGridView': ['.tpm.Promo'],
 
     'Demand': {
