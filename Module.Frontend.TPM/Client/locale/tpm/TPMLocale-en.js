@@ -144,6 +144,7 @@
         'RetailType': 'Retail type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
+        'IncreaseBaseLine': 'Increase Base Line',
         'ClientTreeBrandTech': 'Clients shares',
         'PromoSupport': 'PromoSupport',
         'NonPromoSupport': 'Non-promo Support',
@@ -1621,6 +1622,22 @@
     },
     'HistoricalBaseLine': ['.tpm.BaseLine', '.core.BaseHistoryEntity'],
     'DeletedBaseLine': ['.tpm.BaseLine', '.core.BaseDeletedEntity'],
+
+    'IncreaseBaseLine': {
+        'ProductZREP': 'ZREP',
+        'ClientTreeDemandCode': 'Client Demand code',
+        'DemandCode': 'Demand code',
+        'StartDate': 'Start date',
+        'InputBaselineQTY': 'Input Baseline QTY',
+        'SellInBaselineQTY': 'Sell In Baseline QTY',
+        'SellOutBaselineQTY': 'Sell Out Baseline QTY',
+        'Type': 'Type',
+        'importParam': {
+            'startDate': 'Start date',
+            'endDate': 'End date',
+            'clearTable': 'Clear table'
+        }
+    },
 
     'ChangeHistoryWindow': {
         'ChangeHistoryTitle': 'Change history',

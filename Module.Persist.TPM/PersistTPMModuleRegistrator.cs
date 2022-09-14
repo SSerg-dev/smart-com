@@ -84,6 +84,7 @@ namespace Module.Persist.TPM
 
 
             modelBuilder.Entity<BaseLine>().HasRequired(g => g.Product).WithMany(f => f.BaseLines);
+            modelBuilder.Entity<IncreaseBaseLine>().HasRequired(g => g.Product).WithMany(f => f.IncreaseBaseLines);
             modelBuilder.Entity<ClientTreeSharesView>().ToTable("ClientTreeSharesView");
             modelBuilder.Entity<ProductChangeIncident>();
             modelBuilder.Entity<ClientTreeHierarchyView>();
@@ -772,6 +773,16 @@ namespace Module.Persist.TPM
             builder.Entity<BaseLine>().Collection.Action("ExportXLSX");
             builder.Entity<BaseLine>().Collection.Action("FullImportXLSX");
             builder.Entity<BaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BaseLine>("BaseLines");
+            builder.Entity<HistoricalBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBaseLine>("HistoricalBaseLines");
+
+            builder.EntitySet<IncreaseBaseLine>("IncreaseBaseLines");
+            builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines");
+            builder.EntitySet<IncreaseBaseLine>("IncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<HistoricalIncreaseBaseLine>("HistoricalBaseLines");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("ExportXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("FullImportXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<IncreaseBaseLine>("IncreaseBaseLines");
             builder.Entity<HistoricalBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBaseLine>("HistoricalBaseLines");
 
             builder.EntitySet<RetailType>("RetailTypes");

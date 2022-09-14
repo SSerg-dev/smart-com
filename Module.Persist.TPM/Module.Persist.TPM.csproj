@@ -3167,7 +3167,12 @@
     <Compile Include="Migrations\202209131057274_IncreaseBaseLine_Create.Designer.cs">
       <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209141354054_Update_StoredProcedure_SI_Calculation.cs" />
+    <Compile Include="Migrations\202209141354054_Update_StoredProcedure_SI_Calculation.Designer.cs">
+      <DependentUpon>202209141354054_Update_StoredProcedure_SI_Calculation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
@@ -3192,6 +3197,7 @@
     <Compile Include="Model\History\HistoricalClientDashboardView.cs" />
     <Compile Include="Model\History\HistoricalClientTreeBrandTech.cs" />
     <Compile Include="Model\History\HistoricalCoefficientSI2SO.cs" />
+    <Compile Include="Model\History\HistoricalIncreaseBaseLine.cs" />
     <Compile Include="Model\History\HistoricalNonPromoEquipment.cs" />
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
@@ -3291,6 +3297,7 @@
     <Compile Include="Model\Import\ImportPromo.cs" />
     <Compile Include="Model\Import\DemandComparer.cs" />
     <Compile Include="Model\Import\ImportProduct.cs" />
+    <Compile Include="Model\Import\IncreaseBaseLineComparer.cs" />
     <Compile Include="Model\Import\PromoSalesComparer.cs" />
     <Compile Include="Model\Import\PromoComparer.cs" />
     <Compile Include="Model\Import\ImportTradeInvestment.cs" />
@@ -5980,6 +5987,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209131057274_IncreaseBaseLine_Create.resx">
       <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209141354054_Update_StoredProcedure_SI_Calculation.resx">
+      <DependentUpon>202209141354054_Update_StoredProcedure_SI_Calculation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

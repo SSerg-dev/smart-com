@@ -2540,6 +2540,7 @@ namespace Module.Frontend.TPM.Controllers
                     cfg.CreateMap<Product, Product>()
                         .ForMember(pTo => pTo.AssortmentMatrices, opt => opt.Ignore())
                         .ForMember(pTo => pTo.BaseLines, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.IncreaseBaseLines, opt => opt.Ignore())
                         .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
                         .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                         .ForMember(pTo => pTo.PriceLists, opt => opt.Ignore())
