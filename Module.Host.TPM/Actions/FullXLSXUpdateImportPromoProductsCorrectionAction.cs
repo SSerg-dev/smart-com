@@ -562,13 +562,16 @@ namespace Module.Host.TPM.Actions
                             var promoRS = RSmodeHelper.EditToPromoRS(databaseContext, currentPromo);
                             promoProductRS = promoRS.PromoProducts
                                 .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
+                            //add
                         }
 
-                        var newcorrectionRS = promoProductRS.PromoProductsCorrections.FirstOrDefault();
-                        newcorrectionRS.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
-                        newcorrectionRS.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                        newcorrectionRS.UserId = this._userId;
-                        newcorrectionRS.UserName = currentUser?.Name ?? string.Empty;
+                        importedPromoProductCorrection.PromoProduct = promoProductRS;
+                        importedPromoProductCorrection.PromoProductId = promoProductRS.Id;
+                        importedPromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        importedPromoProductCorrection.UserId = this._userId;
+                        importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
+
+                        databaseContext.Set<PromoProductsCorrection>().Add(importedPromoProductCorrection);
                     };
                 }
             }
