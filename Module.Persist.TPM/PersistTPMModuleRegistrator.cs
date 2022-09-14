@@ -349,6 +349,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.AssortmentMatrices, "AssortmentMatrices");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.BaseLines, "BaseLines");
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.BaseLines, "BaseLines");
+            builder.EntitySet<Product>("Products").HasManyBinding(e => e.IncreaseBaseLines, "IncreaseBaseLines");
+            builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.IncreaseBaseLines, "IncreaseBaseLines");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.IncrementalPromoes, "IncrementalPromoes");
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.IncrementalPromoes, "IncrementalPromoes");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.PreviousDayIncrementals, "PreviousDayIncrementals");
@@ -779,11 +781,11 @@ namespace Module.Persist.TPM
             builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines");
             builder.EntitySet<IncreaseBaseLine>("IncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
             builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
-            builder.EntitySet<HistoricalIncreaseBaseLine>("HistoricalBaseLines");
+            builder.EntitySet<HistoricalIncreaseBaseLine>("HistoricalIncreaseBaseLines");
             builder.Entity<IncreaseBaseLine>().Collection.Action("ExportXLSX");
             builder.Entity<IncreaseBaseLine>().Collection.Action("FullImportXLSX");
             builder.Entity<IncreaseBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<IncreaseBaseLine>("IncreaseBaseLines");
-            builder.Entity<HistoricalBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBaseLine>("HistoricalBaseLines");
+            builder.Entity<HistoricalIncreaseBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalIncreaseBaseLine>("HistoricalIncreaseBaseLines");
 
             builder.EntitySet<RetailType>("RetailTypes");
             builder.EntitySet<RetailType>("DeletedRetailTypes");
@@ -1064,6 +1066,7 @@ namespace Module.Persist.TPM
 
             //Загрузка шаблонов
             builder.Entity<BaseLine>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Product>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Brand>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<NonPromoEquipment>().Collection.Action("DownloadTemplateXLSX");

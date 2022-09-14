@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Module.Persist.TPM.Model.History
 {
     [AssociatedWith(typeof(IncreaseBaseLine))]
-    class HistoricalIncreaseBaseLine
+    public class HistoricalIncreaseBaseLine: BaseHistoricalEntity<System.Guid>
     {
         public string ProductZREP { get; set; }
         public string DemandCode { get; set; }

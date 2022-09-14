@@ -3171,6 +3171,14 @@
     <Compile Include="Migrations\202209141354054_Update_StoredProcedure_SI_Calculation.Designer.cs">
       <DependentUpon>202209141354054_Update_StoredProcedure_SI_Calculation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209141755586_Add_IncreaseBaseLine_AP.cs" />
+    <Compile Include="Migrations\202209141755586_Add_IncreaseBaseLine_AP.Designer.cs">
+      <DependentUpon>202209141755586_Add_IncreaseBaseLine_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.cs" />
+    <Compile Include="Migrations\202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.Designer.cs">
+      <DependentUpon>202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -5990,6 +5998,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209141354054_Update_StoredProcedure_SI_Calculation.resx">
       <DependentUpon>202209141354054_Update_StoredProcedure_SI_Calculation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209141755586_Add_IncreaseBaseLine_AP.resx">
+      <DependentUpon>202209141755586_Add_IncreaseBaseLine_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.resx">
+      <DependentUpon>202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

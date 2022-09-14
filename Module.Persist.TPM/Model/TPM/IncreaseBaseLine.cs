@@ -22,6 +22,10 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_BaseLine", 2, IsUnique = true)]
         public Guid ProductId { get; set; }
 
+        [Index("Unique_BaseLine", 3, IsUnique = true)]
+        [Required]
+        public DateTimeOffset? StartDate { get; set; }
+
         [StringLength(255)]
         [Index("Unique_BaseLine", 4, IsUnique = true)]
         public string DemandCode { get; set; }

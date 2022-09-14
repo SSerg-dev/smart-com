@@ -432,6 +432,7 @@
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedIncreaseBaseLine.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
@@ -452,9 +453,11 @@
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
     <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
+    <Compile Include="Controllers\HistoricalIncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\HistoricalPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
+    <Compile Include="Controllers\IncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
