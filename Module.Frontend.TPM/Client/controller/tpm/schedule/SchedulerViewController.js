@@ -925,9 +925,25 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var calcDispatchesStart = createContext.startDate.setDate(createContext.startDate.getDate() - 15);
         if (createContext.resourceRecord.get('TypeName') == 'Competitor') {
             createContext.finalize(false);
             return false;
+        }
+        if (mode) {
+            if (mode.data.value == 1) {
+                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    StartDateRS = new Date(returnValue.StartDate);
+                    EndDateRS = new Date(returnValue.EndDate);
+                });
+
+            }
+            if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
+                return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+            }
         }
         if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
             var schedulerData,
@@ -1192,6 +1208,9 @@
 
     onEventResize: function (s, resizeContext) {
         var me = this;
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var calcDispatchesStart = esizeContext.eventRecord.start.setDate(esizeContext.eventRecord.start.getDate() - 15);
         if (resizeContext.eventRecord.get('TypeName') == 'Competitor') {
             me.__resizeContext.finalize(false);
             return false;
@@ -1206,6 +1225,24 @@
                 calendarGrid[0].resourceStore.load();
             }
             return false;
+        }
+        if (mode) {
+            if (mode.data.value == 1) {
+                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+                RSmodeController.getRSPeriod(function (returnValue) {
+                    StartDateRS = new Date(returnValue.StartDate);
+                    EndDateRS = new Date(returnValue.EndDate);
+                });
+
+            }
+            if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
+                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                resizeContext.finalize(false);
+                rif(calendarGrid.length > 0) {
+                    calendarGrid[0].resourceStore.load();
+                }
+                return false;
+            }
         }
 
         var system = Ext.ComponentQuery.query('system')[0];
