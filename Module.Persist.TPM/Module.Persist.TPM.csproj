@@ -3163,6 +3163,10 @@
     <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
       <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209131057274_IncreaseBaseLine_Create.cs" />
+    <Compile Include="Migrations\202209131057274_IncreaseBaseLine_Create.Designer.cs">
+      <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -3300,6 +3304,7 @@
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
+    <Compile Include="Model\TPM\IncreaseBaseLine.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
@@ -5972,6 +5977,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209121104505_Add_ClientDashboardRSViews_AP.resx">
       <DependentUpon>202209121104505_Add_ClientDashboardRSViews_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209131057274_IncreaseBaseLine_Create.resx">
+      <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
