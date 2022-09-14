@@ -38,6 +38,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Required]
         public int? Type { get; set; }
 
+        public DateTimeOffset? LastModifiedDate { get; set; }
+
         public virtual Product Product { get; set; }
 
         public object Clone()
@@ -53,8 +55,9 @@ namespace Module.Persist.TPM.Model.TPM
                 SellInBaselineQTY = this.SellInBaselineQTY,
                 SellOutBaselineQTY = this.SellOutBaselineQTY,
                 Type = this.Type,
+                LastModifiedDate = this.LastModifiedDate,
                 Disabled = this.Disabled
-            }
+            };
         }
     }
 }

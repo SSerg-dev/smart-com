@@ -23,6 +23,7 @@ namespace Module.Persist.TPM.Migrations
                      SellInBaseLineQty = c.Double(nullable: false),
                      SellOutBaseLineQty = c.Double(nullable: false),
                      Type = c.Int(nullable: false),
+                     LastModifiedDate = c.DateTimeOffset(precision: 7)
                  })
                  .PrimaryKey(t => t.Id)
                  .Index(t => new { t.DemandCode, t.StartDate, t.DeletedDate, t.ProductId }, unique: true, name: "Unique_IncreaseBaseLine");
