@@ -320,6 +320,16 @@
                 widget: 'baseline'
             },
             {
+                text: l10n.ns('tpm', 'mainmenu').value('IncreaseBaseLineItem'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('IncreaseBaseLineItem'),
+                glyph: 0xf127,
+                rsMode: false,
+                currentMode: true,
+                scale: 'medium',
+                //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
+                widget: 'increasebaseline'
+            },
+            {
                 text: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 glyph: 0xf127,

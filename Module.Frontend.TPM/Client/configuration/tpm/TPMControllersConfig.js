@@ -217,6 +217,11 @@
     'tpm.baseline.DeletedBaseLine',
     'tpm.baseline.HistoricalBaseLine',
 
+    //IncreaseBaseLine
+    'tpm.increasebaseline.IncreaseBaseLine',
+    'tpm.increasebaseline.DeletedIncreaseBaseLine',
+    'tpm.increasebaseline.HistoricalIncreaseBaseLine',
+    
     //ClientTreeBrandTech
     'tpm.clienttreebrandtech.ClientTreeBrandTech',
     'tpm.clienttreebrandtech.HistoricalClientTreeBrandTech',

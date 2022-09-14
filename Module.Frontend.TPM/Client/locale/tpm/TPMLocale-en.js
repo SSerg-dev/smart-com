@@ -50,6 +50,7 @@
         'PromoProductCorection': 'Promo product correction',
         'PreviousDayIncremental': 'Previous Day Incremental',
         'BaseLineItem': 'Base Line',
+        'IncreaseBaseLineItem': 'Increase Base Line',
         'ClientTreeBrandTech': 'Clients Share',
         'PromoSupport': 'Support',
         'NonPromoSupport': 'Non-Promo Support',
@@ -1638,6 +1639,9 @@
             'clearTable': 'Clear table'
         }
     },
+
+    'HistoricalIncreaseBaseLine': ['.tpm.IncreaseBaseLine', '.core.BaseHistoryEntity'],
+    'DeletedIncreaseBaseLine': ['.tpm.IncreaseBaseLine', '.core.BaseDeletedEntity'],
 
     'ChangeHistoryWindow': {
         'ChangeHistoryTitle': 'Change history',
