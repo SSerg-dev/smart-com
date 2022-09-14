@@ -562,7 +562,6 @@ namespace Module.Host.TPM.Actions
                             var promoRS = RSmodeHelper.EditToPromoRS(databaseContext, currentPromo);
                             promoProductRS = promoRS.PromoProducts
                                 .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
-                            //add
                         }
 
                         importedPromoProductCorrection.PromoProduct = promoProductRS;
