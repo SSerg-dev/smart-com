@@ -572,6 +572,8 @@ namespace Module.Host.TPM.Actions
                         importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
 
                         databaseContext.Set<PromoProductsCorrection>().Add(importedPromoProductCorrection);
+                        promoProductsCorrections.Add(importedPromoProductCorrection);
+                        promoProductsCorrectionChangeIncidents.Add(importedPromoProductCorrection);                        
                     };
                 }
             }

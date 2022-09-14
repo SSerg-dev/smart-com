@@ -343,10 +343,20 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections.ToList())
                             {
                                 PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled);
-                                mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
-                                MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
-                                //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
-                                Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                if (promoProductsCorrection != null)
+                                {
+                                    mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                                    MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
+                                    //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
+                                    Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                }
+                                else
+                                {
+                                    promoProductsCorrectionRS.TPMmode = TPMmode.Current;
+                                    promoProductsCorrectionRS.PromoProductId = promoProduct.Id;
+                                    promoProductsCorrectionRS.PromoProduct = promoProduct;
+                                }
+                                
                             }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
                             //promoRS.PromoProducts.Remove(promoProductRS);
