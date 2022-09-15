@@ -174,8 +174,17 @@ namespace Module.Frontend.TPM.Controllers
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
+                .Where(g => stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
                 .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
+            if (tPMmode == TPMmode.Current)
+            {
+                results = results.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+            }
+            else if (tPMmode == TPMmode.RS)
+            {
+                results = results.GroupBy(x => new { x.Promo.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                results = results.Where(x => !x.Disabled);
+            }
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             using (DatabaseContext context = new DatabaseContext())
