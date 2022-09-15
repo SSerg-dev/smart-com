@@ -377,6 +377,8 @@
     <Content Include="Client\view\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ImportActualCOGSTnParamForm.js" />
     <Content Include="Client\view\tpm\clientdashboard\AccountInformationRS.js" />
+    <Content Include="Client\view\tpm\clientdashboard\PromoWeeksPanelRS.js" />
+    <Content Include="Client\view\tpm\clientdashboard\PromoWeeksRS.js" />
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRSEditor.js" />
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRS.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />

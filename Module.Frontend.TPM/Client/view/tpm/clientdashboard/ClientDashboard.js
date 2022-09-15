@@ -59,7 +59,7 @@
                             glyph: 0xF420,
                             text: 'Account Information RS',
                             itemId: 'accountInformationRSButton',
-                            cls: 'approval-status-history-btn client-dashboard-toolbar-button client-dashboard-toolbar-button-selected',
+                            cls: 'approval-status-history-btn client-dashboard-toolbar-button',
                             active: false,
                             listeners: {
                                 beforerender: function (button) {
@@ -85,7 +85,8 @@
                     ]
                 }]
             }]
-        }, {
+        },
+        {
             xtype: 'container',
             flex: 1,
             cls: 'client-dashboard-selected-container',
@@ -102,8 +103,17 @@
                 {
                     xtype: 'promoweeks',
                     hidden: true
-                }
+                },
+                {
+                    xtype: 'accountinformationrs',
+                    hidden: true
+                },
+                {
+                    xtype: 'promoweeksrs',
+                    hidden: true
+                },
             ]
-        }]
+        }
+        ]
     }]
 });

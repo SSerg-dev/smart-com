@@ -1,7 +1,7 @@
 ﻿Ext.define('App.view.tpm.clientdashboard.AccountInformationRS', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.accountinformationrs',
-    itemId: 'accountinformation',
+    itemId: 'accountinformationrs',
     cls: 'client-dashboard promo-weeks-panels-container',
     layout: 'fit',
 
@@ -46,7 +46,7 @@
                             "border": "1px solid #ccc !Important",
                         },
                         cls: ['panel-account-information-left', 'client-dashboard-account-panel-button-panel'],
-                        itemId: 'panelButton',
+                        itemId: 'panelButtonRS',
                         width: '100%',
                         items: [{
                             xtype: 'panel',
@@ -90,7 +90,7 @@
                             }, {
                                 xtype: 'label',
                                 text: '',
-                                itemId: 'accountInformationClientText',
+                                itemId: 'accountInformationClientTextRS',
                               //  width: '60%',
                                 style: 'padding-top: 0.6ex',
                                 cls: 'client-dashboard-account-panel-button-client-value'
@@ -107,7 +107,7 @@
                                 items: [{
                                     xtype: 'label',
                                     text: '',
-                                    itemId: 'accountInformationClientType',
+                                    itemId: 'accountInformationClientTypeRS',
                                     //  width: '60%',
                                     style: 'padding-left:10px; padding-top: 0.6ex',
                                     cls: 'client-dashboard-account-panel-button-year-label'
@@ -131,7 +131,7 @@
                             }, {
                                 xtype: 'label',
                                 text: new Date().getFullYear(),
-                                itemId: 'accountInformationYearText',
+                                itemId: 'accountInformationYearTextRS',
                                     style: 'padding-top: 0.6ex;text-align: left;',
                                 cls: 'client-dashboard-account-panel-button-year-value'
                             }]
@@ -221,14 +221,14 @@
                                     type: 'vbox',
                                 },
                                 width: '100%',
-                                itemId: 'panelShoMarkFirst',
+                                itemId: 'panelShoMarkFirstRS',
                                 items: [{
                                     xtype: 'container',
                                     layout: {
                                         type: 'hbox',
                                         align: 'middle'
                                     },
-                                    itemId: 'panelShoMarkFirst1',
+                                    itemId: 'panelShoMarkFirst1RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'fieldset',
@@ -290,7 +290,7 @@
                                     layout: {
                                         type: 'hbox',
                                     },
-                                    itemId: 'panelShoMarkFirst2',
+                                    itemId: 'panelShoMarkFirst2RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'label',
@@ -373,14 +373,14 @@
                                     type: 'vbox',
                                 },
                                 width: '100%',
-                                itemId: 'panelShoMarkSecond',
+                                itemId: 'panelShoMarkSecondRS',
                                 items: [{
                                     xtype: 'container',
                                     layout: {
                                         type: 'hbox',
                                         align: 'middle'
                                     },
-                                    itemId: 'panelShoMarkSecond1',
+                                    itemId: 'panelShoMarkSecond1RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'fieldset',
@@ -440,7 +440,7 @@
                                     layout: {
                                         type: 'hbox',
                                     },
-                                    itemId: 'panelShoMarkSecond2',
+                                    itemId: 'panelShoMarkSecond2RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'label',
@@ -503,7 +503,7 @@
                                 align: 'top'
                             },
                             width: '100%',
-                            itemId: 'panelShoMarkButton',
+                            itemId: 'panelShoMarkButtonRS',
                             items: [{
                                 height: '100%',
                                 cls: 'button-account-information-client',
@@ -553,14 +553,14 @@
                                 xtype: 'container',
                                 layout: 'vbox',
                                 width: '100%',
-                                itemId: 'panelPBBFirst',
+                                itemId: 'panelPBBFirstRS',
                                 items: [{
                                     xtype: 'container',
                                     layout: {
                                         type: 'hbox',
                                         align: 'middle'
                                     },
-                                    itemId: 'panelPBBFirst1',
+                                    itemId: 'panelPBBFirst1RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'fieldset',
@@ -620,7 +620,7 @@
                                         type: 'hbox',
                                         //align: 'middle'
                                     },
-                                    itemId: 'panelPBBFirst2',
+                                    itemId: 'panelPBBFirst2RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'label',
@@ -702,14 +702,14 @@
                                     type: 'vbox',
                                 },
                                 width: '100%',
-                                itemId: 'panelPBBSecond',
+                                itemId: 'panelPBBSecondRS',
                                 items: [{
                                     xtype: 'container',
                                     layout: {
                                         type: 'hbox',
                                         align: 'middle'
                                     },
-                                    itemId: 'panelPBBSecond1',
+                                    itemId: 'panelPBBSecond1RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'fieldset',
@@ -769,7 +769,7 @@
                                         type: 'hbox',
                                         //align: 'middle'
                                     },
-                                    itemId: 'panelPBBSecond2',
+                                    itemId: 'panelPBBSecond2RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'label',
@@ -851,14 +851,14 @@
                                     type: 'vbox',
                                 },
                                 width: '100%',
-                                itemId: 'panelPBBThreth',
+                                itemId: 'panelPBBThrethRS',
                                 items: [{
                                     xtype: 'container',
                                     layout: {
                                         type: 'hbox',
                                         align: 'middle'
                                     },
-                                    itemId: 'panelPBBThreth1',
+                                    itemId: 'panelPBBThreth1RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'fieldset',
@@ -917,7 +917,7 @@
                                     layout: {
                                         type: 'hbox',
                                     },
-                                    itemId: 'panelPBBThreth2',
+                                    itemId: 'panelPBBThreth2RS',
                                     width: '100%',
                                     items: [{
                                         xtype: 'label',
@@ -1004,7 +1004,7 @@
                             },
 
                             width: '50%',
-                            itemId: 'ROIContainer',
+                            itemId: 'ROIContainerRS',
                             items: [{
                                 flex: 1,
                                 height: '100%',
@@ -1013,7 +1013,7 @@
                                     type: 'hbox',
                                     align: 'bottom'
                                 },
-                                itemId: 'ROIHeader',
+                                itemId: 'ROIHeaderRS',
                                 width: '100%',
                                 items: [{
                                     xtype: 'fieldset',
@@ -1027,14 +1027,14 @@
                                     type: 'hbox',
                                     align: 'middle'
                                 },
-                                itemId: 'ROIChartPanel',
+                                itemId: 'ROIChartPanelRS',
                             }, {
                                 flex: 0.2,
                                 layout: {
                                     type: 'hbox',
                                     align: 'middle'
                                 },
-                                itemId: 'ROILegendPanel',
+                                itemId: 'ROILegendPanelRS',
                             }]
                         }, {
                             //панели LSV
@@ -1051,7 +1051,7 @@
                             },
                             cls: 'panel-vertical-account-information-right-second',
                             width: '100%',
-                            itemId: 'panelInformationRightSecond1',
+                            itemId: 'panelInformationRightSecond1RS',
                             items: [{
                                 flex: 3,
                                 xtype: 'panel',
@@ -1059,7 +1059,7 @@
                                     type: 'hbox',
                                     align: 'bottom'
                                 },
-                                itemId: 'panelInformationRightSecond11',
+                                itemId: 'panelInformationRightSecond11RS',
                                 width: '100%',
                                 items: [{
                                     xtype: 'fieldset',
@@ -1154,7 +1154,7 @@
                             type: 'vbox',
                             align: 'stretch'
                         },
-                        itemId: 'panelInformationRightSecond',
+                        itemId: 'panelInformationRightSecondRS',
                         bodyStyle: {
                             "border": "1px solid #ccc !Important",
                         },
@@ -1168,7 +1168,7 @@
                                 align: 'bottom'
                             },
                             width: '100%',
-                            itemId: 'panelIncPromoTitle',
+                            itemId: 'panelIncPromoTitleRS',
                             cls: 'client-dashboard-account-panel-label',
                             items: [{
                                 xtype: 'label',
@@ -1222,7 +1222,7 @@
                                 type: 'vbox',
                                 align: 'stretch'
                             },
-                            itemId: 'panelIncPromoFirst',
+                            itemId: 'panelIncPromoFirstRS',
                             items: [{
                                 flex: 1,
                                 xtype: 'container',
@@ -1246,7 +1246,7 @@
                                 layout: {
                                     type: 'hbox',
                                 },
-                                itemId: 'panelIncPromoFirst2',
+                                itemId: 'panelIncPromoFirst2RS',
                                 width: '100%',
                                 items: [{
                                     itemId: 'incrementalMlnLabel',
@@ -1279,7 +1279,7 @@
                             },
                             width: '100%',
                             height: '100%',
-                            itemId: 'panelIncPromoSecond',
+                            itemId: 'panelIncPromoSecondRS',
                             items: [{
                                 flex: 1,
                                 xtype: 'container',
@@ -1288,7 +1288,7 @@
                                     type: 'hbox',
                                     align: 'middle'
                                 },
-                                itemId: 'panelIncPromoSecond1',
+                                itemId: 'panelIncPromoSecond1RS',
                                 width: '100%',
                                 items: [{
                                     xtype: 'fieldset',
@@ -1302,7 +1302,7 @@
                                 layout: {
                                     type: 'hbox',
                                 },
-                                itemId: 'panelIncPromoSecond2',
+                                itemId: 'panelIncPromoSecond2RSRS',
                                 width: '100%',
                                 items: [{
                                     xtype: 'label',
