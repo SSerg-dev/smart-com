@@ -20,11 +20,17 @@
                 'accountinformation #detailsButton': {
                     click: this.onDetailButtonClick
                 },
+                'accountinformationrs': {
+                    show: this.onAccountInformationRSShow
+                },
                 'accountinformationrs #panelButtonRS': {
                     afterrender: this.onClientTreePanelAfterRender
                 },
                 'accountinformationrs #detailsButton': {
                     click: this.onDetailButtonClick
+                },
+                'promoweeksrs': {
+                    beforeshow: this.onPromoWeeksRSShow
                 },
             }
         });
@@ -152,7 +158,7 @@
         var clientDashboardController = App.app.getController('tpm.clientdashboard.ClientDashboard');
         var clientDashboard = Ext.ComponentQuery.query('clientdashboard')[0];
 
-        clientDashboardController.loadStoreWithFilters(clientDashboard, clientDashboardController.fillAccountInformationCallback, clientDashboardController.fillPromoWeeksCallback, clientDashboardController.fillAccountInformationRSCallback, clientDashboardController.fillPromoWeeksRSCallback, true);
+        clientDashboardController.loadStoreWithFilters(clientDashboard, clientDashboardController.fillAccountInformationCallback, clientDashboardController.fillPromoWeeksCallback, true);
     },
 
     onClientDashboardClientYearWindowChooseButtonClick: function (button) {
@@ -197,7 +203,7 @@
             accountInformationRS.down('#accountInformationClientTextRS').setText(selectedClientRecord.data.Name);
             accountInformationRS.down('#accountInformationYearTextRS').setText(selectedYear);
 
-            clientDashboardController.loadStoreWithFilters(clientDashboard, clientDashboardController.fillAccountInformationCallback, clientDashboardController.fillPromoWeeksCallback, clientDashboardController.fillAccountInformationRSCallback, clientDashboardController.fillPromoWeeksRSCallback, false);
+            clientDashboardController.loadStoreWithFilters(clientDashboard, clientDashboardController.fillAccountInformationCallback, clientDashboardController.fillPromoWeeksCallback, false);
             button.up('window').close();
         }
     },
@@ -705,6 +711,12 @@
         promoWeeks.addPromoWeeksPanels(promoWeeksPanels);
     },
 
+    onAccountInformationRSShow: function (accountinformationrs) {
+        var store = Ext.data.StoreManager.lookup('clientKPIDataRSStoreId');
+        var records = store.getRange(0, store.count()); // returns array of items
+        var clientDashboard = Ext.ComponentQuery.query('clientdashboard')[0];
+        this.fillAccountInformationRSCallback(records, clientDashboard, accountinformationrs.allYEEF);
+    },
     fillAccountInformationRSCallback: function (records, clientDashboard, YtdYee) {
         var controller = App.app.getController('tpm.clientdashboard.ClientDashboard');
         var accountinformationrs = clientDashboard.down('accountinformationrs');
@@ -955,15 +967,15 @@
             { name: 'YTD', value: incYTD || 0 },
             { name: 'YEE', value: incYEE || 0 }
         ]
-        
+
         if (incrementalNSV.items.length > 1) { // Больше 1, потому что там всегда есть 1 элемент – label
             var NSVChart = incrementalNSV.down('nsvchart');
             if (NSVChart) {
                 NSVChart.destroy();
             }
-            NSVChart = controller.createNSVChartRS(incrementalNSV, incChartData, NSVChartFields, originalData);
+            NSVChart = controller.createNSVChart(incrementalNSV, incChartData, NSVChartFields, originalData);
         } else {
-            var NSVChart = controller.createNSVChartRS(incrementalNSV, incChartData, NSVChartFields, originalData);
+            var NSVChart = controller.createNSVChart(incrementalNSV, incChartData, NSVChartFields, originalData);
         }
 
         var promoNSVPlan = (promoNSVPlanMln / 1000000).toFixed(1),
@@ -985,9 +997,9 @@
             if (promoNSVChart) {
                 promoNSVChart.destroy();
             }
-            controller.createNSVChartRS(promoNSV, promoNSVChartData, NSVChartFields, originalData);
+            controller.createNSVChart(promoNSV, promoNSVChartData, NSVChartFields, originalData);
         } else {
-            controller.createNSVChartRS(promoNSV, promoNSVChartData, NSVChartFields, originalData);
+            controller.createNSVChart(promoNSV, promoNSVChartData, NSVChartFields, originalData);
         }
 
         var incrementalMlnLabel = accountinformationrs.down('#incrementalMlnLabel');
@@ -1027,8 +1039,14 @@
         });
     },
 
+    onPromoWeeksRSShow: function () {
+        var store = Ext.data.StoreManager.lookup('clientKPIDataRSStoreId');
+        var records = store.getRange(0, store.count()); // returns array of items
+        var clientDashboard = Ext.ComponentQuery.query('clientdashboard')[0];
+        this.fillPromoWeeksRSCallback(records, clientDashboard);
+    },
+
     fillPromoWeeksRSCallback: function (records, clientDashboard) {
-        debugger;
         var promoWeeks = clientDashboard.query('promoweeksrs')[0];
         promoWeeks.removePromoWeeksPanels();
         var promoWeeksPanels = [];
@@ -1051,18 +1069,9 @@
         promoWeeks.addPromoWeeksPanels(promoWeeksPanels);
     },
 
-    loadStoreWithFilters: function (clientDashboard, fillAccountInformationCallback, fillPromoWeeksCallback, fillAccountInformationRSCallback, fillPromoWeeksRSCallback, refresh) {
+    loadStoreWithFilters: function (clientDashboard, fillAccountInformationCallback, fillPromoWeeksCallback, refresh) {
         var clientKPIDataStore = Ext.create('App.store.core.DirectoryStore', {
             model: 'App.model.tpm.clientkpidata.ClientKPIData',
-            autoLoad: false,
-            sorters: [{
-                property: 'BrandsegTechsubName',
-                direction: 'ASC'
-            }],
-        })
-
-        var clientKPIDataRSStore = Ext.create('App.store.core.DirectoryStore', {
-            model: 'App.model.tpm.clientkpidata.ClientKPIDataRS',
             autoLoad: false,
             sorters: [{
                 property: 'BrandsegTechsubName',
@@ -1123,6 +1132,7 @@
                 }
             });
 
+            var clientKPIDataRSStore = Ext.data.StoreManager.lookup('clientKPIDataRSStoreId');
             clientKPIDataRSStore.setSeveralFixedFilters(filtersIds, filters, false);
 
             clientKPIDataRSStore.on({
@@ -1135,27 +1145,26 @@
                         if (params.clientTreeId) {
                             App.Util.makeRequestWithCallback('ClientDashboardRSViews', 'GetAllYEEF', params, function (data) {
                                 var result = Ext.JSON.decode(data.httpResponse.data.value);
-                                if (!refresh) {
-                                    if (fillAccountInformationRSCallback) {
-                                        fillAccountInformationRSCallback(records, clientDashboard, result);
-                                    }
-                                    if (fillPromoWeeksRSCallback) {
-                                        fillPromoWeeksRSCallback(records, clientDashboard);
-                                    }
-                                    //clientDashboard.setLoading(false);
-                                } else {
-                                    if (fillAccountInformationRSCallback && clientDashboard.down('#accountInformationRSButton').active) {
-                                        fillAccountInformationRSCallback(records, clientDashboard, result);
-                                    }
-                                    if (fillPromoWeeksRSCallback && clientDashboard.down('#promoWeeksRSButton').active) {
-                                        fillPromoWeeksRSCallback(records, clientDashboard, result);
+                                Ext.ComponentQuery.query('accountinformationrs')[0].allYEEF = result;
+                                //if (!refresh) {
+                                //    if (fillAccountInformationRSCallback) {
+                                //        fillAccountInformationRSCallback(records, clientDashboard, result);
+                                //    }
+                                //    if (fillPromoWeeksRSCallback) {
+                                //        fillPromoWeeksRSCallback(records, clientDashboard);
+                                //    }
+                                //    //clientDashboard.setLoading(false);
+                                //} else {
+                                //    if (fillAccountInformationRSCallback && clientDashboard.down('#accountInformationRSButton').active) {
+                                //        fillAccountInformationRSCallback(records, clientDashboard, result);
+                                //    }
+                                //    if (fillPromoWeeksRSCallback && clientDashboard.down('#promoWeeksRSButton').active) {
+                                //        fillPromoWeeksRSCallback(records, clientDashboard, result);
 
-                                    }
-                                    //clientDashboard.setLoading(false);
-                                }
+                                //    }
+                                //    //clientDashboard.setLoading(false);
+                                //}
                             });
-                        } else {
-                            //clientDashboard.setLoading(false);
                         }
                     },
                     single: true
@@ -1329,32 +1338,6 @@
                 data: data,
             })
         });
-        debugger;
-        var minValue = Math.min(data[0].value, data[1].value, data[2].value);
-        NSVChart.axes.items[0].maximum = Math.max(data[0].value, data[1].value, data[2].value);
-        NSVChart.axes.items[0].minimum = minValue > 0 ? 0 : minValue;
-        NSVChart.redraw();
-
-        controller.setNSVChartZeroLine(NSVChart.axes.items[0]);
-        controller.setNSVChartSeriesLabels(NSVChart);
-        NSVChart.created = true;
-        return NSVChart;
-    },
-
-    createNSVChartRS: function (container, data, fields, originalData) {
-        var controller = App.app.getController('tpm.clientdashboard.ClientDashboard');
-        var NSVChart = container.add({
-            width: '64%',
-            height: '95%',
-            xtype: 'nsvchart',
-            originalData: originalData,
-            store: Ext.create('Ext.data.Store', {
-                storeId: 'incrementalNSVstoreRS',
-                fields: fields,
-                data: data,
-            })
-        });
-        debugger;
         var minValue = Math.min(data[0].value, data[1].value, data[2].value);
         NSVChart.axes.items[0].maximum = Math.max(data[0].value, data[1].value, data[2].value);
         NSVChart.axes.items[0].minimum = minValue > 0 ? 0 : minValue;

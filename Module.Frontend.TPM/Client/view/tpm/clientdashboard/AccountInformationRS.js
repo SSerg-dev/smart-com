@@ -5,6 +5,17 @@
     cls: 'client-dashboard promo-weeks-panels-container',
     layout: 'fit',
 
+    allYEEF: null,
+    clientKPIDataRSStore: Ext.create('App.store.core.DirectoryStore', {
+        model: 'App.model.tpm.clientkpidata.ClientKPIDataRS',
+        storeId: 'clientKPIDataRSStoreId',
+        autoLoad: false,
+        sorters: [{
+            property: 'BrandsegTechsubName',
+            direction: 'ASC'
+        }],
+    }),
+
     items: [{
         xtype: 'container',
         layout: {
@@ -1302,7 +1313,7 @@
                                 layout: {
                                     type: 'hbox',
                                 },
-                                itemId: 'panelIncPromoSecond2RSRS',
+                                itemId: 'panelIncPromoSecond2RS',
                                 width: '100%',
                                 items: [{
                                     xtype: 'label',
