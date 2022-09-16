@@ -3179,6 +3179,10 @@
     <Compile Include="Migrations\202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.Designer.cs">
       <DependentUpon>202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209160719344_PriceList_FDM_Add_Realease_Status.cs" />
+    <Compile Include="Migrations\202209160719344_PriceList_FDM_Add_Realease_Status.Designer.cs">
+      <DependentUpon>202209160719344_PriceList_FDM_Add_Realease_Status.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6004,6 +6008,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.resx">
       <DependentUpon>202209141956481_Add_Historical_Deleted_IncreaseBaseLine_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209160719344_PriceList_FDM_Add_Realease_Status.resx">
+      <DependentUpon>202209160719344_PriceList_FDM_Add_Realease_Status.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

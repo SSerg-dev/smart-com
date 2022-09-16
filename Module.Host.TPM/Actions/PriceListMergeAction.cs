@@ -230,7 +230,8 @@ namespace Module.Host.TPM.Actions
                             ClientTreeId = baseClientTree.Id,
                             ProductId = product.Id,
                             ClientTree = baseClientTree,
-                            Product = product
+                            Product = product,
+                            FuturePriceMarker = priceListFDM.RELEASE_STATUS == "A" ? true : false
                         };
 
                         newPriceListRecord.StartDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.StartDate);
