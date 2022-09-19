@@ -76,7 +76,7 @@ gulp.task("min:app", function () {
 gulp.task("min:resource", function () {
     return gulp.src(config.resourceFiles)
         .pipe(concat(paths.concatResDest))
-        .pipe(_if(!isDebug, uglify()))
+        //.pipe(_if(!isDebug, uglify()))
         .pipe(gulp.dest("."));
 });
 
