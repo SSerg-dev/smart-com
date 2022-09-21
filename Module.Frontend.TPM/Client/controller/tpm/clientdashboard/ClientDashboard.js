@@ -24,7 +24,7 @@
                     show: this.onAccountInformationRSShow
                 },
                 'accountinformationrs #panelButtonRS': {
-                    afterrender: this.onClientTreePanelAfterRender
+                    afterrender: this.onClientTreePanelRSAfterRender
                 },
                 'accountinformationrs #detailsButton': {
                     click: this.onDetailButtonClick
@@ -348,6 +348,40 @@
         var yearField = clientDashboardClientYearWindowChoose.down('#YearField');
 
         var accountInformationYearText = panel.down('#accountInformationYearText');
+
+        var clientTreeRecord = clientDashboard['choosenClientTreeRecord'];
+        if (clientTreeRecord) {
+            clientTreeField.setValue(new App.model.tpm.clienttree.ClientTree({
+                Id: clientTreeRecord.data.Id,
+                Name: clientTreeRecord.data.Name,
+                ObjectId: clientTreeRecord.data.ObjectId,
+                IsOnInvoice: clientTreeRecord.data.IsOnInvoice,
+            }));
+            clientDashboard['choosenClientTreeRecord'] = clientTreeRecord;
+            clientDashboard['choosenYear'] = accountInformationYearText.text;
+        }
+
+        clientDashboardClientYearWindowChoose.down('#choose').addListener('click', clientDashboardController.onClientDashboardClientYearWindowChooseButtonClick);
+        clientDashboardClientYearWindowChoose.show();
+
+        yearField.setValue(accountInformationYearText.text);
+    },
+
+    onClientTreePanelRSAfterRender: function (panel) {
+        var clientDashboardController = App.app.getController('tpm.clientdashboard.ClientDashboard');
+        panel.body.addListener('click', function () {
+            clientDashboardController.onClientYearPanelRSClick(panel);
+        });
+    },
+
+    onClientYearPanelRSClick: function (panel) {
+        var clientDashboardController = App.app.getController('tpm.clientdashboard.ClientDashboard');
+        var clientDashboard = panel.up('clientdashboard');
+        var clientDashboardClientYearWindowChoose = Ext.widget('clientdashboardclientyearchoosewindow');
+        var clientTreeField = clientDashboardController.getClientTreeField(clientDashboardClientYearWindowChoose);
+        var yearField = clientDashboardClientYearWindowChoose.down('#YearField');
+
+        var accountInformationYearText = panel.down('#accountInformationYearTextRS');
 
         var clientTreeRecord = clientDashboard['choosenClientTreeRecord'];
         if (clientTreeRecord) {
