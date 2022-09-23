@@ -63,7 +63,8 @@ namespace Module.Persist.TPM.Model.TPM
                 x.EndDate == y.EndDate &&
                 x.Price == y.Price &&
                 x.ClientTreeId == y.ClientTreeId &&
-                x.ProductId == y.ProductId;
+                x.ProductId == y.ProductId &&
+                x.FuturePriceMarker == y.FuturePriceMarker;
         }
 
         public int GetHashCode(PriceList obj)
