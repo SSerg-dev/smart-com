@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Migrations
         public override void Up()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            AddColumn($"{defaultSchema}.PRICELIST_FDM", "RELEASE_STATUS ", c => c.String(nullable: false));
+            AddColumn($"{defaultSchema}.PRICELIST_FDM", "RELEASE_STATUS", c => c.String(nullable: false));
         }
         
         public override void Down()

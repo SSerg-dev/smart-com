@@ -231,7 +231,7 @@ namespace Module.Host.TPM.Actions
                             ProductId = product.Id,
                             ClientTree = baseClientTree,
                             Product = product,
-                            FuturePriceMarker = priceListFDM.RELEASE_STATUS == "A" ? true : false
+                            FuturePriceMarker = priceListFDM.RELEASE_STATUS == "A"
                         };
 
                         newPriceListRecord.StartDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.StartDate);
@@ -253,7 +253,7 @@ namespace Module.Host.TPM.Actions
             foreach (var baseClient in baseClients)
             {
                 var hierarchyForBaseClient = GetHierarhcy(clientTrees, baseClient);
-                if (hierarchyForBaseClient.Any(x => !String.IsNullOrEmpty(x.GHierarchyCode) && x.GHierarchyCode.TrimStart('0') == priceListFDM.G_HIERARCHY_ID))
+                if (hierarchyForBaseClient.Any(x => !string.IsNullOrEmpty(x.GHierarchyCode) && x.GHierarchyCode.TrimStart('0') == priceListFDM.G_HIERARCHY_ID))
                 {
                     baseClientsForCurrentPriceListFDM.Add(baseClient);
                 }
