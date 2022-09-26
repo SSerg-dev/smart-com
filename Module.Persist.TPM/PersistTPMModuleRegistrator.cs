@@ -79,7 +79,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProduct2Plu>();
             modelBuilder.Entity<PLUDictionary>();
 
-            modelBuilder.Entity<PromoProduct>().HasMany(p =>p.PromoProductsCorrections).WithRequired(p=>p.PromoProduct).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProduct>().HasMany(p => p.PromoProductsCorrections).WithRequired(p => p.PromoProduct).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
 
 
@@ -165,6 +165,11 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<RollingScenario>();
             modelBuilder.Entity<PromoProductCorrectionView>();
+
+            modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithOptional(g => g.PromoProductPriceIncrease);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithOptional(g => g.PromoProductPriceIncrease);
+            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g=>g.PromoProductPriceIncrease).WithOptional(g=>g.ProductCorrectionPriceIncrease);
         }
 
 
@@ -207,7 +212,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Event>("Events").HasRequiredBinding(e => e.EventType, "EventTypes");
             builder.EntitySet<Event>("Events").HasManyBinding(e => e.BTLs, "BTLs");
-            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");            
+            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");
             builder.EntitySet<Event>("DeletedEvents");
             builder.EntitySet<Event>("DeletedEvents").HasRequiredBinding(e => e.EventType, "EventTypes");
             builder.EntitySet<Event>("DeletedEvents").HasManyBinding(e => e.BTLs, "BTLs");
@@ -826,7 +831,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("ExportCorrectionXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");            
+            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");
             builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
             builder.Entity<HistoricalPromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
 
