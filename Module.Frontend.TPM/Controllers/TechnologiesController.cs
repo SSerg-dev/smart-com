@@ -121,12 +121,14 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             model.Name = model.Name.Trim();
-            model.Tech_code = model.Tech_code?.Trim();
-            model.SubBrand = model.SubBrand?.Trim();
-            model.SubBrand_code = model.SubBrand_code?.Trim();
+
+            model.Tech_code = model.Tech_code == null ? null
+                                        : model.Tech_code.Trim();
+
 
             model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
             model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
+
             if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code && !t.Disabled))
             {
                 var errorText = !String.IsNullOrEmpty(model.SubBrand_code) ?
@@ -150,7 +152,7 @@ namespace Module.Frontend.TPM.Controllers
             var configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<Technology, Technology>().ReverseMap());
             var mapper = configuration.CreateMapper();
-            var result = mapper.Map(model, proxy);
+            var result = mapper.Map(model, proxy); 
             Context.Set<Technology>().Add(result);
 
             try
@@ -178,11 +180,6 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 var patchModel = patch.GetEntity();
-                patchModel.Name = patchModel.Name ?? patchModel.Name?.Trim();
-                patchModel.Tech_code = patchModel.Tech_code ?? patchModel.Tech_code?.Trim();
-                patchModel.SubBrand = patchModel.SubBrand ?? patchModel.SubBrand?.Trim();
-                patchModel.SubBrand_code = patchModel.SubBrand_code ?? patchModel.SubBrand_code?.Trim();
-                patchModel.IsSplittable = patchModel.IsSplittable;
 
                 var oldTC = model.Tech_code;
                 var oldTN = model.Name;
@@ -190,6 +187,11 @@ namespace Module.Frontend.TPM.Controllers
                 var oldName = model.Name;
                 var oldIsSplittable = model.IsSplittable;
                 patch.Patch(model);
+
+                model.Tech_code = String.IsNullOrWhiteSpace(model.Tech_code) ? null : model.Tech_code;
+                model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
+                model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
+                model.Description_ru = String.IsNullOrWhiteSpace(model.Description_ru) ? null : model.Description_ru;
 
                 var newName = model.Name;
                 if (!String.IsNullOrEmpty(model.SubBrand))
