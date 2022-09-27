@@ -18,21 +18,22 @@
                     return this.up('toolbar');
                 },
             },
-            {
-                itemId: 'updatebutton',
-                action: 'Patch',
-                glyph: 0xf64f,
-                text: l10n.ns('core', 'crud').value('updateButtonText'),
-                tooltip: l10n.ns('core', 'crud').value('updateButtonText')
-            },
-            {
-                itemId: 'historybutton',
-                resource: 'HistoricalClientDashboards',
-                action: 'GetHistoricalClientDashboards',
-                glyph: 0xf2da,
-                text: l10n.ns('core', 'crud').value('historyButtonText'),
-                tooltip: l10n.ns('core', 'crud').value('historyButtonText')
-            }, '-',
+            //{
+            //    itemId: 'updatebutton',
+            //    action: 'Patch',
+            //    glyph: 0xf64f,
+            //    text: l10n.ns('core', 'crud').value('updateButtonText'),
+            //    tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+            //},
+            //{
+            //    itemId: 'historybutton',
+            //    resource: 'HistoricalClientDashboards',
+            //    action: 'GetHistoricalClientDashboards',
+            //    glyph: 0xf2da,
+            //    text: l10n.ns('core', 'crud').value('historyButtonText'),
+            //    tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+            //},
+            '-',
             {
                 itemId: 'extfilterbutton',
                 glyph: 0xf349,
@@ -77,27 +78,31 @@
 
             menu: {
                 xtype: 'customheadermenu',
-                items: [{
-                    glyph: 0xf220,
-                    itemId: 'customloadimportbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
-                    resource: 'ClientDashboardViews',
-                    action: 'FullImportXLSX',
-                    allowFormat: ['zip', 'xlsx']
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'customloadimporttemplatebutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
-                    action: 'DownloadTemplateXLSX'
-                }, {
-                    glyph: 0xf21d,
-                    itemId: 'customexportbutton',
-                    exactlyModelCompare: true,
-                    text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
-                    action: 'ExportXLSX'
-                }]
+                items: [
+                    //{
+                    //    glyph: 0xf220,
+                    //    itemId: 'customloadimportbutton',
+                    //    exactlyModelCompare: true,
+                    //    text: l10n.ns('core', 'additionalMenu').value('fullImportXLSX'),
+                    //    resource: 'ClientDashboardViews',
+                    //    action: 'FullImportXLSX',
+                    //    allowFormat: ['zip', 'xlsx']
+                    //},
+                    //{
+                    //    glyph: 0xf21d,
+                    //    itemId: 'customloadimporttemplatebutton',
+                    //    exactlyModelCompare: true,
+                    //    text: l10n.ns('core', 'additionalMenu').value('importTemplateXLSX'),
+                    //    action: 'DownloadTemplateXLSX'
+                    //},
+                    {
+                        glyph: 0xf21d,
+                        itemId: 'customexportrsbutton',
+                        exactlyModelCompare: true,
+                        text: l10n.ns('core', 'additionalMenu').value('exportXLSX'),
+                        action: 'ExportXLSX'
+                    }
+                ]
             }
         }
     ],
@@ -111,8 +116,8 @@
             //Что бы не ломался скролл при быстром прокручивании
             pageSize: 20000,
             type: 'directorystore',
-            model: 'App.model.tpm.clientkpidata.ClientKPIData',
-            storeId: 'clientkpidatastore',
+            model: 'App.model.tpm.clientkpidata.ClientKPIDataRS',
+            storeId: 'clientkpidatarsstore',
             sorters: [{
                 property: 'Year',
                 direction: 'DESC'
@@ -127,7 +132,7 @@
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.clientkpidata.ClientKPIData',
+                    model: 'App.model.tpm.clientkpidata.ClientKPIDataRS',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
