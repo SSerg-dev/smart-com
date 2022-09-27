@@ -3227,6 +3227,10 @@
     <Compile Include="Migrations\202209130252075_Merge1309.Designer.cs">
       <DependentUpon>202209130252075_Merge1309.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209271116333_EmptyMerge2709.cs" />
+    <Compile Include="Migrations\202209271116333_EmptyMerge2709.Designer.cs">
+      <DependentUpon>202209271116333_EmptyMerge2709.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6088,6 +6092,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209130252075_Merge1309.resx">
       <DependentUpon>202209130252075_Merge1309.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209271116333_EmptyMerge2709.resx">
+      <DependentUpon>202209271116333_EmptyMerge2709.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
