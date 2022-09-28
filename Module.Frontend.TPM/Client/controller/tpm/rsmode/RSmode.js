@@ -218,7 +218,7 @@
                     Ext.ComponentQuery.query('button[itemId=declinebutton]')[0].setDisabled(data.Decline);
                 }
                 else {
-                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+                    //App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
                 }
 
             },
