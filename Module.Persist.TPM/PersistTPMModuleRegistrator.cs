@@ -170,6 +170,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithOptional(g => g.PromoProductPriceIncrease);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithOptional(g => g.PromoProductPriceIncrease);
             modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g=>g.PromoProductPriceIncrease).WithOptional(g=>g.ProductCorrectionPriceIncrease);
+            modelBuilder.Entity<PromoProductCorrectionPriceIncreacseView>();
         }
 
 
@@ -1244,6 +1245,14 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("PromoProductCorrectionDelete");
+
+            builder.EntitySet<PromoProductCorrectionPriceIncreacseView>("PromoProductCorrectionPriceIncreaseViews");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionPriceIncreacseView>("PromoProductCorrectionPriceIncreaseViews");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("ExportCorrectionXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreacseView>().Collection.Action("PromoProductCorrectionDelete");
         }
 
 

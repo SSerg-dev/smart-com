@@ -463,6 +463,7 @@
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
+    <Compile Include="Controllers\PromoProductCorrectionPriceIncreaseViewsController.cs" />
     <Compile Include="Controllers\PromoProductCorrectionViewsController.cs" />
     <Compile Include="Controllers\PromoRSViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />

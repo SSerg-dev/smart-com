@@ -5,7 +5,7 @@ using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Persist.TPM.Model.DTO
 {
-    public class PromoProductCorrectionView: IEntity<Guid>
+    public class PromoProductCorrectionPriceIncreacseView : IEntity<Guid>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -37,8 +37,6 @@ namespace Module.Persist.TPM.Model.DTO
 
         public bool IsGrowthAcceleration { get; set; }
 		public bool IsInExchange { get; set; }
-
-        public long row_number { get; set; }
 
     }
 }

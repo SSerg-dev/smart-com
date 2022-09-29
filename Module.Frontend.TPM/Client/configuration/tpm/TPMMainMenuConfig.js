@@ -291,7 +291,15 @@
                 rsMode: true,
                 currentMode: true,
                 widget: 'promoproductcorrection'
-            }
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+                glyph: 0xf619,
+                rsMode: false,
+                currentMode: true,
+                widget: 'promoproductcorrection'
+            },
         ]
     },
     {

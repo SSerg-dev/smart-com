@@ -91,6 +91,7 @@
         'Competitor': 'Competitors list',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBrandTech': 'Competitor BrandTech',
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction',
     },
 
     'compositePanelTitles': {
