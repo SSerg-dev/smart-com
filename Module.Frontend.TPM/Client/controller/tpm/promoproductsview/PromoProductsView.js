@@ -219,6 +219,10 @@
             record = form.getRecord(),
             oldUpliftPercent = record.data.PlanProductUpliftPercent;
 
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         if (!form.isValid()) {
@@ -242,6 +246,7 @@
                 PromoProductId: record.data.Id,
                 PlanProductUpliftPercentCorrected: newUpliftPercent,
                 TempId: Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId,
+                TPMmode: mode.data.value,
             });
             Ext.ComponentQuery.query('promoeditorcustom')[0].productUpliftChanged = true;
             this.createPromoProductCorrection(_promoProductCorrection);
