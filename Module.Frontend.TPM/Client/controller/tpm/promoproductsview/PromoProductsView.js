@@ -98,7 +98,13 @@
             promoProductsView.isReadable = true
         }
 
-
+        // RSmode
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        var model = Ext.ComponentQuery.query('promoeditorcustom')[0].model;
+        if (mode.data.value == 1 && model.data.TPMmode == 'Current') {
+            promoProductsView.isReadable = true;
+        }
         var sg = Ext.ComponentQuery.query('[itemId=GlyphLock]');
         // если грид открывается для чтения
         if (promoProductsView.isReadable || Ext.ComponentQuery.query('[itemId=GlyphLock]')[0].disabled) {
@@ -111,7 +117,7 @@
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemgroup=customloadimportbutton]').setVisible(false);
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemId=customloadimporttemplatexlsxbutton]').setVisible(false);
         };
-        
+
     },
 
 
