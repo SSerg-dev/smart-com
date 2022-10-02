@@ -120,7 +120,6 @@
 
     },
 
-
     onUpdateButtonClick: function (button) {
         var grid = button.up('promoproductsview').down('directorygrid');
         var selModel = grid.getSelectionModel();
