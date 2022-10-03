@@ -39,7 +39,7 @@ namespace Module.Host.TPM.Actions
             Promo promo = databaseContext.Set<Promo>().Find(promoId);
             // все PromoProductsCorrections для текущего промо
             // и все PromoProducts для текущего проммо
-            var promoProductCorrections = databaseContext.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == this.promoId /*&& x.TempId == this.TempId*/).ToList();
+            var promoProductCorrections = databaseContext.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == this.promoId && x.TempId == this.TempId).ToList();
             var promoProducts = databaseContext.Set<PromoProduct>().Where(x => x.PromoId == this.promoId).ToList();
             // все импортируемые PromoProductsUplift
             var importedPromoProductViews = importedRecords.Cast<PromoProductsView>();
