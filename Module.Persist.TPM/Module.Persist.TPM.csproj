@@ -3167,6 +3167,10 @@
     <Compile Include="Migrations\202209301056482_Fix_PromoProductsViews_Patch_AP.Designer.cs">
       <DependentUpon>202209301056482_Fix_PromoProductsViews_Patch_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210030254423_NightRecalc_Proc.cs" />
+    <Compile Include="Migrations\202210030254423_NightRecalc_Proc.Designer.cs">
+      <DependentUpon>202210030254423_NightRecalc_Proc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -5979,6 +5983,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209301056482_Fix_PromoProductsViews_Patch_AP.resx">
       <DependentUpon>202209301056482_Fix_PromoProductsViews_Patch_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210030254423_NightRecalc_Proc.resx">
+      <DependentUpon>202210030254423_NightRecalc_Proc.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
