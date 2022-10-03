@@ -397,10 +397,12 @@ namespace Module.Host.TPM.Handlers
         private Guid promoId;
         private Guid userId;
         private string TempId;
+        private TPMmode TPMmode;
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             promoId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            TPMmode = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data, false);
             userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
             TempId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<string>("TempId", info.Data, false);
             base.Action(info, data);
@@ -408,7 +410,7 @@ namespace Module.Host.TPM.Handlers
 
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXUpdateImportPromoProductsUpliftAction(settings, promoId, userId, TempId);
+            return new FullXLSXUpdateImportPromoProductsUpliftAction(settings, promoId, userId, TempId, TPMmode);
         }
     }
 

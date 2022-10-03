@@ -31,6 +31,7 @@ using System.Data.SqlClient;
 using Newtonsoft.Json;
 using Module.Frontend.TPM.Util;
 using System.Web;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers {
     public class PromoProductsViewsController : EFContextController {
@@ -198,7 +199,7 @@ namespace Module.Frontend.TPM.Controllers {
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX([FromODataUri] Guid promoId, string tempEditUpliftId)
+        public async Task<HttpResponseMessage> FullImportXLSX([FromODataUri] Guid promoId, string tempEditUpliftId, TPMmode tPMmode)
         {
             try
             {
@@ -210,7 +211,7 @@ namespace Module.Frontend.TPM.Controllers {
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsUpliftHandler", promoId, tempEditUpliftId);
+                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsUpliftHandler", promoId, tempEditUpliftId, tPMmode);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -255,7 +256,7 @@ namespace Module.Frontend.TPM.Controllers {
             return columns;
         }
 
-        private void CreateImportTask(string fileName, string importHandler, Guid promoId, string tempEditUpliftId)
+        private void CreateImportTask(string fileName, string importHandler, Guid promoId, string tempEditUpliftId, TPMmode tPMmode)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -277,6 +278,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TempId", tempEditUpliftId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
