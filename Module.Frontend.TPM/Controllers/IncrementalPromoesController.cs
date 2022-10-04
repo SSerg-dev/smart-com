@@ -194,7 +194,7 @@ namespace Module.Frontend.TPM.Controllers
                             .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
                             .ToList();
                         List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
-                        model = resultIncrementalPromos.FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.Product.ZREP == model.Product.ZREP && !g.Disabled);
+                        model = resultIncrementalPromos.FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.ProductId == model.ProductId && !g.Disabled);
                     }
                 }
 
