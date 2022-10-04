@@ -169,7 +169,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 var model = Context.Set<IncrementalPromo>()
                     .Include(x => x.Promo)
-                    .FirstOrDefault(g => g.Id == key && g.TPMmode == ChangeIncrementalPromo.TPMmode);
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -213,17 +213,20 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         IncrementalPromo modelRS = ipromoes
                             .FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.TPMmode == TPMmode.RS);
-                        Context.Set<Promo>().Remove(modelRS.Promo);
-                        Context.SaveChanges();
-                        //нужно взять все причастные записи IncrementalPromo по promo
-                        List<IncrementalPromo> incrementalPromos = Context.Set<IncrementalPromo>()
-                            .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
-                            .Include(x => x.Promo.BTLPromoes)
-                            .Include(x => x.Promo.PromoProductTrees)
-                            .Include(x => x.Promo.PromoSupportPromoes)
-                            .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
-                            .ToList();
-                        List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
+                        if (modelRS != null)
+                        {
+                            Context.Set<Promo>().Remove(modelRS.Promo);
+                            Context.SaveChanges();
+                            //нужно взять все причастные записи IncrementalPromo по promo
+                            List<IncrementalPromo> incrementalPromos = Context.Set<IncrementalPromo>()
+                                .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                                .Include(x => x.Promo.BTLPromoes)
+                                .Include(x => x.Promo.PromoProductTrees)
+                                .Include(x => x.Promo.PromoSupportPromoes)
+                                .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
+                                .ToList();
+                            List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
+                        }
                     }
                 }
 
