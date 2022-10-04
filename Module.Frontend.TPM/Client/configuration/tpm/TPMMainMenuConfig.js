@@ -298,7 +298,7 @@
                 glyph: 0xf619,
                 rsMode: false,
                 currentMode: true,
-                widget: 'promoproductcorrection'
+                widget: 'promoproductcorrectionpriceincreace'
             },
         ]
     },

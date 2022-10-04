@@ -238,12 +238,10 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
 
-        public PromoProductPriceIncrease PromoProductPriceIncrease { get; set; }
-
         public PromoProduct2Plu Plu { get; set; } //view
 
         public ICollection<PromoProductsCorrection> PromoProductsCorrections { get; set; }
-        
+        public ICollection<PromoProductPriceIncrease> PromoProductPriceIncreases { get; set; }
 
         public object Clone()
         {

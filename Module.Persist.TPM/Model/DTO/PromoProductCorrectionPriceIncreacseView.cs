@@ -26,7 +26,6 @@ namespace Module.Persist.TPM.Model.DTO
         public DateTimeOffset? CreateDate { get; set; }
         public DateTimeOffset? ChangeDate { get; set; }
         public string UserName { get; set; }
-        public TPMmode TPMmode { get; set; }
         public int? ClientTreeId { get; set; }
         public bool Disabled { get; set; }
         public Guid? PromoProductId { get; set; }

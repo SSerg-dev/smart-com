@@ -229,6 +229,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanProductPostPromoEffectVolume { get; set; }
         public double? ActualProductQtySO { get; set; }
 
+        public Guid PromoProductId { get; set; }
         public PromoProduct PromoProduct { get; set; }
         public PromoPriceIncrease PromoPriceIncrease { get; set; }
         public PromoProductCorrectionPriceIncrease ProductCorrectionPriceIncrease { get; set; }
