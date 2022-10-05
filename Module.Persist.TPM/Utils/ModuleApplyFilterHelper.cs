@@ -500,12 +500,12 @@ namespace Module.Persist.TPM.Utils
         }
 
         /// <summary>
-        /// Применить фильтр по клиентам к PromoProductCorrectionPriceIncreacseView
+        /// Применить фильтр по клиентам к PromoProductCorrectionPriceIncreaseView
         /// </summary>
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<PromoProductCorrectionPriceIncreacseView> ApplyFilter(IQueryable<PromoProductCorrectionPriceIncreacseView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filters = null)
+        public static IQueryable<PromoProductCorrectionPriceIncreaseView> ApplyFilter(IQueryable<PromoProductCorrectionPriceIncreaseView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filters = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
             if (clientFilter.Any())

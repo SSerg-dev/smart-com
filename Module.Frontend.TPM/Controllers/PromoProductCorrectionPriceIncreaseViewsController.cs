@@ -63,7 +63,7 @@ namespace Module.Frontend.TPM.Controllers
             roleId = RoleId;
         }
 
-        public IQueryable<PromoProductCorrectionPriceIncreacseView> GetConstraintedQuery(DatabaseContext localContext = null)
+        public IQueryable<PromoProductCorrectionPriceIncreaseView> GetConstraintedQuery(DatabaseContext localContext = null)
         {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
@@ -72,7 +72,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                     .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<PromoProductCorrectionPriceIncreacseView> query = localContext.Set<PromoProductCorrectionPriceIncreacseView>().AsNoTracking();
+            IQueryable<PromoProductCorrectionPriceIncreaseView> query = localContext.Set<PromoProductCorrectionPriceIncreaseView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = localContext.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
             logger.Stop();
@@ -94,14 +94,14 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoProductCorrectionPriceIncreacseView> GetPromoProductCorrectionPriceIncreaseViews()
+        public IQueryable<PromoProductCorrectionPriceIncreaseView> GetPromoProductCorrectionPriceIncreaseViews()
         {
             return GetConstraintedQuery();
         }
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IQueryable<PromoProductCorrectionPriceIncreacseView> GetFilteredData(ODataQueryOptions<PromoProductCorrectionPriceIncreacseView> options)
+        public IQueryable<PromoProductCorrectionPriceIncreaseView> GetFilteredData(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             var query = GetConstraintedQuery();
@@ -110,19 +110,19 @@ namespace Module.Frontend.TPM.Controllers
                 EnsureStableOrdering = false,
                 HandleNullPropagation = HandleNullPropagationOption.False
             };
-            var optionsPost = new ODataQueryOptionsPost<PromoProductCorrectionPriceIncreacseView>(options.Context, Request, HttpContext.Current.Request);
-            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProductCorrectionPriceIncreacseView>;
+            var optionsPost = new ODataQueryOptionsPost<PromoProductCorrectionPriceIncreaseView>(options.Context, Request, HttpContext.Current.Request);
+            return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProductCorrectionPriceIncreaseView>;
 
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreacseView> options)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             //TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             var url = HttpContext.Current.Request.Url.AbsoluteUri;
-            var results = options.ApplyTo(GetConstraintedQuery()).Cast<PromoProductCorrectionPriceIncreacseView>()
+            var results = options.ApplyTo(GetConstraintedQuery()).Cast<PromoProductCorrectionPriceIncreaseView>()
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id);
 
@@ -163,7 +163,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreacseView> options)
+        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
@@ -218,7 +218,7 @@ namespace Module.Frontend.TPM.Controllers
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<PromoProductCorrectionPriceIncreacseView, PromoProductsCorrection>();
+                cfg.CreateMap<PromoProductCorrectionPriceIncreaseView, PromoProductsCorrection>();
             });
 
             var mapperPromoProductCorrection = config.CreateMapper();
@@ -330,7 +330,7 @@ namespace Module.Frontend.TPM.Controllers
                         ;
                 });
                 var mapperPromoProductCorrectionView = configViewMapping.CreateMapper();
-                var viewMapp = mapperPromoProductCorrectionView.Map<PromoProductCorrectionPriceIncreacseView>(item);
+                var viewMapp = mapperPromoProductCorrectionView.Map<PromoProductCorrectionPriceIncreaseView>(item);
 
                 return Updated(viewMapp);
             }
@@ -338,7 +338,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 var proxy = Context.Set<PromoProductsCorrection>().Create<PromoProductsCorrection>();
                 var configuration = new MapperConfiguration(cfg =>
-                    cfg.CreateMap<PromoProductCorrectionPriceIncreacseView, PromoProductsCorrection>().ReverseMap());
+                    cfg.CreateMap<PromoProductCorrectionPriceIncreaseView, PromoProductsCorrection>().ReverseMap());
                 var mapper = configuration.CreateMapper();
                 var result = mapper.Map(model, proxy);
 
@@ -441,7 +441,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncreacseView> patch)
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncreaseView> patch)
         {
             try
             {
@@ -483,18 +483,18 @@ namespace Module.Frontend.TPM.Controllers
                     cfg.CreateMap<PromoProductsCorrection, PromoProductCorrectionView>();
                 });
                 var mapperPromoProductCorrection = config.CreateMapper();
-                var modelMapp = mapperPromoProductCorrection.Map<PromoProductCorrectionPriceIncreacseView>(model);
+                var modelMapp = mapperPromoProductCorrection.Map<PromoProductCorrectionPriceIncreaseView>(model);
 
                 patch.Patch(modelMapp);
                 var config2 = new MapperConfiguration(cfg =>
                 {
-                    cfg.CreateMap<PromoProductCorrectionPriceIncreacseView, PromoProductsCorrection>()
+                    cfg.CreateMap<PromoProductCorrectionPriceIncreaseView, PromoProductsCorrection>()
                     .ForMember(pTo => pTo.Id, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore());
                 });
                 var mapperPromoProductCorrection2 = config2.CreateMapper();
-                mapperPromoProductCorrection2.Map<PromoProductCorrectionPriceIncreacseView, PromoProductsCorrection>(modelMapp, model);
+                mapperPromoProductCorrection2.Map<PromoProductCorrectionPriceIncreaseView, PromoProductsCorrection>(modelMapp, model);
 
                 if ((int)mode == (int)TPMmode.Current && tPMmode == TPMmode.Current)
                 {

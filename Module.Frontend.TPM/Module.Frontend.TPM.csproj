@@ -353,6 +353,8 @@
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincreace\PromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincreace\PromoProductCorrectionView.js" />
     <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
     <Content Include="Client\model\tpm\promo\PromoRSView.js" />
@@ -1735,9 +1737,7 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Client\model\tpm\promoproductcorrectionpriceincreace\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

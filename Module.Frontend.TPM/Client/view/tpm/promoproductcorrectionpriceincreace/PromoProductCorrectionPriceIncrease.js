@@ -4,7 +4,7 @@
     title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProductCorrection'),
     baseModel: Ext.ModelManager.getModel('App.model.tpm.promoproductcorrection.PromoProductCorrection'),
     getDefaultResource: function () {
-        return 'PromoProductCorrectionViews';
+        return 'PromoProductCorrectionPriceIncreaseView';
     },
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {

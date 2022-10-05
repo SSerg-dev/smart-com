@@ -5,7 +5,7 @@ using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Persist.TPM.Model.DTO
 {
-    public class PromoProductCorrectionPriceIncreacseView : IEntity<Guid>
+    public class PromoProductCorrectionPriceIncreaseView : IEntity<Guid>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }

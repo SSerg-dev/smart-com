@@ -989,12 +989,12 @@
 		GO
 		";
 
-		public static string UpdatePromoProductCorrectionPriceIncreacseViewString(string defaultSchema)
+		public static string UpdatePromoProductCorrectionPriceIncreaseViewString(string defaultSchema)
 		{
-			return UpdatePromoProductCorrectionPriceIncreacseViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+			return UpdatePromoProductCorrectionPriceIncreaseViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
-		private static string UpdatePromoProductCorrectionPriceIncreacseViewSqlString = @"
-				CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreacseView]
+		private static string UpdatePromoProductCorrectionPriceIncreaseViewSqlString = @"
+				CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
 			AS
 			SELECT
 				ppcpi.Id AS Id,

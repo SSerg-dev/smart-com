@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.Migrations
             AddColumn($"{defaultSchema}.PromoProductPriceIncrease", "PromoProductId", c => c.Guid(nullable: false));
             CreateIndex($"{defaultSchema}.PromoProductPriceIncrease", "PromoProductId");
             AddForeignKey($"{defaultSchema}.PromoProductPriceIncrease", "PromoProductId", $"{defaultSchema}.PromoProduct", "Id");
-            Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreacseViewString(defaultSchema));
+            Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreaseViewString(defaultSchema));
         }
         
         public override void Down()

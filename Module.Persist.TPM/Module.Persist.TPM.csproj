@@ -3195,12 +3195,16 @@
     <Compile Include="Migrations\202210041209062_Add_PromoProductCorrectionPriceIncreacseView.Designer.cs">
       <DependentUpon>202210041209062_Add_PromoProductCorrectionPriceIncreacseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210050635326_empty__05102022.cs" />
+    <Compile Include="Migrations\202210050635326_empty__05102022.Designer.cs">
+      <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
-    <Compile Include="Model\DTO\PromoProductCorrectionPriceIncreacseView.cs" />
+    <Compile Include="Model\DTO\PromoProductCorrectionPriceIncreaseView.cs" />
     <Compile Include="Model\DTO\PromoProductCorrectionView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
@@ -6036,6 +6040,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210041209062_Add_PromoProductCorrectionPriceIncreacseView.resx">
       <DependentUpon>202210041209062_Add_PromoProductCorrectionPriceIncreacseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210050635326_empty__05102022.resx">
+      <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
