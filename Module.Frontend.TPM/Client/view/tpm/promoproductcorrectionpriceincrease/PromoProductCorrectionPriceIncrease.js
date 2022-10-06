@@ -136,7 +136,6 @@
         store: {
             type: 'directorystore',
             model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncreaseView',
-            storeId: 'promoproductcorrectionstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
@@ -167,23 +166,6 @@
                 minWidth: 100
             },
             items: [
-                {
-                    text: l10n.ns('tpm', 'PromoProductCorrection').value('TPMmode'),
-                    dataIndex: 'TPMmode',
-                    renderer: function (value) {
-                        return value;
-                    },
-                    xtype: 'booleancolumn',
-                    trueText: 'RS',
-                    falseText: 'Current',
-                    filter: {
-                        type: 'bool',
-                        store: [
-                            [0, 'Current'],
-                            [1, 'RS']
-                        ]
-                    }
-                },
                 {
 
                     text: l10n.ns('tpm', 'PromoProductCorrection').value('Number'),

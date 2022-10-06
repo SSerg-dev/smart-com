@@ -10,8 +10,8 @@
                     itemdblclick: this.onDetailButtonClick
                 },
                 'promoproductcorrectionpriceincrease directorygrid': {
-                    selectionchange: this.onPromoProductCorrectionGridSelectionChange,
-                    afterrender: this.onGridPromoProductCorrectionAfterrender,
+                    selectionchange: this.onPromoProductCorrectionPIGridSelectionChange,
+                    afterrender: this.onGridPromoProductCorrectionPIAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
                 'promoproductcorrectionpriceincrease #datatable': {
@@ -45,7 +45,7 @@
                     click: this.onUpdateButtonClick
                 },
                 'promoproductcorrectionpriceincrease #deletebutton': {
-                    click: this.onDeletePromoProductCorrectionButtonClick
+                    click: this.onDeletePromoProductCorrectionPIButtonClick
                 },
                 'promoproductcorrectionpriceincrease #historybutton': {
                     click: this.onHistoryButtonClick
@@ -73,7 +73,7 @@
                     click: this.onApplyImportButtonClick
                 },
                 'promoproductcorrectionpriceincrease #exportcorrectionxlsxbutton': {
-                    click: this.onExportCorrectionButtonClick
+                    click: this.onExportCorrectionPIButtonClick
                 },                
                 '#ppcuploadfilewindow #userOk': {
                     click: this.onUploadFileOkButtonClick
@@ -83,7 +83,7 @@
     },
 
 
-    onGridPromoProductCorrectionAfterrender: function (grid) {
+    onGridPromoProductCorrectionPIAfterrender: function (grid) {
 
         this.onGridAfterrender(grid);
     },
@@ -94,11 +94,11 @@
         model = Ext.create(Ext.ModelManager.getModel(store.model)),
         this.startCreateRecord(model, grid);
 
-        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
-        var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
-        var changeDate = promoproductcorrectioneditor.down('[name=ChangeDate]');
-        var userName = promoproductcorrectioneditor.down('[name=UserName]');
-        var number = promoproductcorrectioneditor.down('[name=Number]');
+        var promoproductcorrectionpriceincreaseeditor = Ext.ComponentQuery.query('promoproductcorrectionpriceincreaseeditor')[0];
+        var createDate = promoproductcorrectionpriceincreaseeditor.down('[name=CreateDate]');
+        var changeDate = promoproductcorrectionpriceincreaseeditor.down('[name=ChangeDate]');
+        var userName = promoproductcorrectionpriceincreaseeditor.down('[name=UserName]');
+        var number = promoproductcorrectionpriceincreaseeditor.down('[name=Number]');
         userName.setValue(App.UserInfo.getUserName());
         number.isCreate = true;
 
@@ -110,7 +110,7 @@
     },
 
     onUpdateButtonClick: function (button) {
-        var grid = button.up('promoproductcorrection').down('directorygrid');
+        var grid = button.up('promoproductcorrectionpriceincrease').down('directorygrid');
         var selModel = grid.getSelectionModel();
         if (selModel.hasSelection()) {
             var selected = selModel.getSelection()[0];
@@ -119,7 +119,7 @@
     },
 
     onDetailButtonClick: function (button) {
-        var grid = button.up('promoproductcorrection').down('directorygrid');
+        var grid = button.up('promoproductcorrectionpriceincrease').down('directorygrid');
         selModel = grid.getSelectionModel();
 
         if (selModel.hasSelection()) {
@@ -372,20 +372,20 @@
                 if (result.success) {
 
                     if (result.models.length !== 0) {
-                        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
-                        var promoProductId = promoproductcorrectioneditor.down('[name=PromoProductId]');
+                        var promoproductcorrectionpriceincreaseeditor = Ext.ComponentQuery.query('promoproductcorrectionpriceincreaseeditor')[0];
+                        var promoProductId = promoproductcorrectionpriceincreaseeditor.down('[name=PromoProductId]');
 
-                        var clientHierarchy = promoproductcorrectioneditor.down('[name=ClientHierarchy]');
-                        var brandTech = promoproductcorrectioneditor.down('[name=BrandTechName]');
-                        var productSubrangesList = promoproductcorrectioneditor.down('[name=ProductSubrangesList]');
-                        var event = promoproductcorrectioneditor.down('[name=EventName]');
-                        var status = promoproductcorrectioneditor.down('[name=PromoStatusSystemName]');
-                        var marsStartDate = promoproductcorrectioneditor.down('[name=MarsStartDate]');
-                        var marsEndDate = promoproductcorrectioneditor.down('[name=MarsEndDate]');
-                        var planProductBaselineLSV = promoproductcorrectioneditor.down('[name=PlanProductBaselineLSV]');
-                        var planProductIncrementalLSV = promoproductcorrectioneditor.down('[name=PlanProductIncrementalLSV]');
-                        var planProductLSV = promoproductcorrectioneditor.down('[name=PlanProductLSV]');
-                        var mechanic = promoproductcorrectioneditor.down('[name=MarsMechanicName]');
+                        var clientHierarchy = promoproductcorrectionpriceincreaseeditor.down('[name=ClientHierarchy]');
+                        var brandTech = promoproductcorrectionpriceincreaseeditor.down('[name=BrandTechName]');
+                        var productSubrangesList = promoproductcorrectionpriceincreaseeditor.down('[name=ProductSubrangesList]');
+                        var event = promoproductcorrectionpriceincreaseeditor.down('[name=EventName]');
+                        var status = promoproductcorrectionpriceincreaseeditor.down('[name=PromoStatusSystemName]');
+                        var marsStartDate = promoproductcorrectionpriceincreaseeditor.down('[name=MarsStartDate]');
+                        var marsEndDate = promoproductcorrectionpriceincreaseeditor.down('[name=MarsEndDate]');
+                        var planProductBaselineLSV = promoproductcorrectionpriceincreaseeditor.down('[name=PlanProductBaselineLSV]');
+                        var planProductIncrementalLSV = promoproductcorrectionpriceincreaseeditor.down('[name=PlanProductIncrementalLSV]');
+                        var planProductLSV = promoproductcorrectionpriceincreaseeditor.down('[name=PlanProductLSV]');
+                        var mechanic = promoproductcorrectionpriceincreaseeditor.down('[name=MarsMechanicName]');
 
                         promoProductId.setValue(result.models.Id);
                         clientHierarchy.setValue(result.models.Promo.ClientHierarchy);
@@ -413,7 +413,7 @@
 
     },
 
-    onExportCorrectionButtonClick: function (button) {
+    onExportCorrectionPIButtonClick: function (button) {
         var actionName = button.action || 'ExportCorrectionXLSX';
         this.ExportPromoProductCorrection(actionName, button);
     },
@@ -466,7 +466,7 @@
         this.editor = null;
         this.detailMode = null;
     },
-    onDeletePromoProductCorrectionButtonClick: function(button) {
+    onDeletePromoProductCorrectionPIButtonClick: function(button) {
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
@@ -544,42 +544,16 @@
         }
     },
 
-    onPromoProductCorrectionGridSelectionChange: function (selMode, selected) {
+    onPromoProductCorrectionPIGridSelectionChange: function (selMode, selected) {
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) 
-            {
-                if (
-                    (
-                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
-                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
-                    ) &&
-                    (
-                        selected[0].data.PromoStatusName != "Draft" &&
-                        selected[0].data.PromoStatusName != "Planned" &&
-                        selected[0].data.PromoStatusName != "Started" &&
-                        selected[0].data.PromoStatusName != "Finished" &&
-                        selected[0].data.PromoStatusName != "Closed" &&
-                        selected[0].data.PromoStatusName != "Cancelled"
-                    ) &&
-                    (
-                        !selected[0].data.IsGrowthAcceleration ||
-                        !selected[0].data.IsInExchange
-                    )
-                   ) {
-                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
-                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
-                } else {
-                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
-                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
-                }
-            }else if (selected[0].data.PromoStatusName != 'Closed') {
-                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
-                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
+            if (selected[0].data.PromoStatusName != 'Closed') {
+                Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#updatebutton').enable();
+                Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#deletebutton').enable();
             } else {
-                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
-                Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
+                Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#updatebutton').disable();
+                Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#deletebutton').disable();
             }
         }
     },

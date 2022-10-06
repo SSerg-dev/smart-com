@@ -1028,7 +1028,7 @@
 			FROM 
 				[DefaultSchemaSetting].PromoProductCorrectionPriceIncrease AS ppcpi INNER JOIN
                 [DefaultSchemaSetting].PromoProductPriceIncrease AS pppi ON ppcpi.Id = pppi.Id INNER JOIN
-				[DefaultSchemaSetting].PromoProduct AS pp ON pp.Id = pppi.Id INNER JOIN
+				[DefaultSchemaSetting].PromoProduct AS pp ON pp.Id = pppi.PromoProductId INNER JOIN
                 [DefaultSchemaSetting].PromoPriceIncrease AS prpi ON pppi.Id = prpi.Id INNER JOIN
 				[DefaultSchemaSetting].Promo AS pr ON pr.Id = prpi.Id INNER JOIN
                 [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
