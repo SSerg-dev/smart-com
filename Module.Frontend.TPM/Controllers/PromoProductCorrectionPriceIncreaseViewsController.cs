@@ -79,19 +79,6 @@ namespace Module.Frontend.TPM.Controllers
             return query;
         }
 
-        protected IQueryable<PromoProductsCorrection> GetFullConstraintedQuery()
-        {
-            IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
-                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-                .ToList() : new List<Constraint>();
-            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<PromoProductsCorrection> query = Context.Set<PromoProductsCorrection>().AsNoTracking();
-            IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters);
-
-            return query;
-        }
-
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<PromoProductCorrectionPriceIncreaseView> GetPromoProductCorrectionPriceIncreaseViews()
@@ -113,6 +100,242 @@ namespace Module.Frontend.TPM.Controllers
             var optionsPost = new ODataQueryOptionsPost<PromoProductCorrectionPriceIncreaseView>(options.Context, Request, HttpContext.Current.Request);
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoProductCorrectionPriceIncreaseView>;
 
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncrease> patch)
+        {
+            var model = Context.Set<PromoProductCorrectionPriceIncrease>().Find(key);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            patch.Put(model);
+
+            try
+            {
+                var saveChangesResult = Context.SaveChanges();
+                if (saveChangesResult > 0)
+                {
+                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                    Context.SaveChanges();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Updated(model);
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Post(PromoProductCorrectionPriceIncrease model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (model.TempId == "")
+            {
+                model.TempId = null;
+            }
+
+            // если существует коррекция на данный PromoProduct, то не создаем новый объект
+            var item = Context.Set<PromoProductCorrectionPriceIncrease>()
+                .Include(g => g.PromoProductPriceIncrease)
+                .FirstOrDefault(x => x.PromoProductPriceIncrease.PromoProductId == model.PromoProductPriceIncrease.PromoProductId && x.TempId == model.TempId && !x.Disabled);
+
+            if (item != null)
+            {
+                if (item.PromoProductPriceIncrease.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                item.PlanProductUpliftPercentCorrected = model.PlanProductUpliftPercentCorrected;
+                item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                item.UserId = user.Id;
+                item.UserName = user.Login;
+
+                try
+                {
+                    var saveChangesResult = Context.SaveChanges();
+                    if (saveChangesResult > 0)
+                    {
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return GetErorrRequest(e);
+                }
+
+                return Created(model);
+            }
+            else
+            {
+                var proxy = Context.Set<PromoProductCorrectionPriceIncrease>().Create<PromoProductCorrectionPriceIncrease>();
+                var configuration = new MapperConfiguration(cfg =>
+                    cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>().ReverseMap());
+                var mapper = configuration.CreateMapper();
+                var result = mapper.Map(model, proxy);
+                var promoProduct = Context.Set<PromoProduct>()
+                    .FirstOrDefault(x => x.Id == result.PromoProductPriceIncrease.PromoProductId && !x.Disabled);
+
+                if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                result.UserId = user.Id;
+                result.UserName = user.Login;
+
+                Context.Set<PromoProductCorrectionPriceIncrease>().Add(result);
+
+                try
+                {
+                    var saveChangesResult = Context.SaveChanges();
+                    if (saveChangesResult > 0)
+                    {
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), result);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return GetErorrRequest(e);
+                }
+
+                return Created(result);
+            }
+        }
+
+        [ClaimsAuthorize]
+        [AcceptVerbs("PATCH", "MERGE")]
+        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncrease> patch)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductCorrectionPriceIncrease>()
+                    .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.IncrementalPromoes)
+                    .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.BTLPromoes)
+                    .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.PromoSupportPromoes)
+                    .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.PromoProductTrees)
+                    .FirstOrDefault(x => x.Id == key);
+
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                var promoStatus = model.PromoProductPriceIncrease.PromoProduct.Promo.PromoStatus.SystemName;
+
+                patch.Patch(model);
+                model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                model.UserId = user.Id;
+                model.UserName = user.Login;
+
+                if (model.TempId == "")
+                {
+                    model.TempId = null;
+                }
+
+
+                ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
+                string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
+                string[] status = promoStatuses.Split(',');
+                if (status.Any(x => x == promoStatus) && !role.Equals("SupportAdministrator"))
+                    return InternalServerError(new Exception("Cannot be update correction where status promo = " + promoStatus));
+                if (model.PromoProductPriceIncrease.PromoProduct.Promo.NeedRecountUplift == false)
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+
+                var saveChangesResult = Context.SaveChanges();
+                if (saveChangesResult > 0)
+                {
+                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                    Context.SaveChanges();
+                }
+
+                return Updated(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }
+        }
+
+
+        [ClaimsAuthorize]
+        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        {
+            try
+            {
+                var model = Context.Set<PromoProductCorrectionPriceIncrease>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+                if (model.PromoProductPriceIncrease.PromoProduct.Promo.NeedRecountUplift == false)
+                {
+                    return InternalServerError(new Exception("Promo Locked Update"));
+                }
+                model.DeletedDate = System.DateTime.Now;
+                model.Disabled = true;
+
+                var saveChangesResult = Context.SaveChanges();
+                if (saveChangesResult > 0)
+                {
+                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                    Context.SaveChanges();
+                }
+
+                return StatusCode(HttpStatusCode.NoContent);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e.InnerException);
+            }
+        }
+
+        private bool EntityExists(Guid key)
+        {
+            return Context.Set<PromoProductCorrectionPriceIncrease>().Count(e => e.Id == key) > 0;
+        }
+
+        public static void CreateChangesIncident(DbSet<ChangesIncident> changesIncidents, PromoProductCorrectionPriceIncrease promoProductCorrection)
+        {
+            changesIncidents.Add(new ChangesIncident
+            {
+                Id = Guid.NewGuid(),
+                DirectoryName = nameof(PromoProductCorrectionPriceIncrease),
+                ItemId = promoProductCorrection.Id.ToString(),
+                CreateDate = DateTimeOffset.Now,
+                ProcessDate = null,
+                DeletedDate = null,
+                Disabled = false
+            });
         }
 
         [ClaimsAuthorize]
@@ -566,85 +789,6 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
-        {
-            try
-            {
-                var model = Context.Set<PromoProductsCorrection>().Find(key);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-                if (model.PromoProduct.Promo.NeedRecountUplift == false)
-                {
-                    return InternalServerError(new Exception("Promo Locked Update"));
-                }
-                model.DeletedDate = System.DateTime.Now;
-                model.Disabled = true;
-                //удаление копии в RS режиме при наличии
-                if (model.TPMmode == TPMmode.Current)
-                {
-                    var promoNumber = model.PromoProduct.Promo.Number;
-                    var zrep = model.PromoProduct.ZREP;
-                    var promoProductCorrectionRS = Context.Set<PromoProductsCorrection>()
-                        .FirstOrDefault(x => x.PromoProduct.Promo.Number == promoNumber && x.PromoProduct.ZREP == zrep && x.TPMmode == TPMmode.RS && !x.Disabled);
-                    if (promoProductCorrectionRS != null)
-                        Context.Set<PromoProductsCorrection>().Remove(promoProductCorrectionRS);
-                }
-
-                var saveChangesResult = Context.SaveChanges();
-                if (saveChangesResult > 0)
-                {
-                    CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
-                }
-
-                return StatusCode(HttpStatusCode.NoContent);
-            }
-            catch (Exception e)
-            {
-                return InternalServerError(e.InnerException);
-            }
-        }
-
-        [ClaimsAuthorize]
-        [HttpPost]
-        public IHttpActionResult PromoProductCorrectionDelete(Guid key, TPMmode TPMmode)
-        {
-            try
-            {
-                var model = Context.Set<PromoProductsCorrection>().Find(key);
-                var promoId = key;
-                var promoProductsCorrection = Context.Set<PromoProductsCorrection>().Where(x => x.PromoProductId == model.PromoProductId && !x.Disabled);
-                var promoProductsCorrectionCopied = promoProductsCorrection.Any(x => x.TPMmode == TPMmode.RS);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-
-                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
-                {
-                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
-                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
-                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
-                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
-                        .ToList();
-                    promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
-                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
-                }
-                model.DeletedDate = System.DateTime.Now;
-                model.Disabled = true;
-                Context.SaveChanges();
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
-            }
-            catch (Exception e)
-            {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
-            }
-        }
-
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
@@ -660,6 +804,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+
         public static void CreateChangesIncident(DbSet<ChangesIncident> changesIncidents, PromoProductsCorrection promoProductCorrection)
         {
             changesIncidents.Add(new ChangesIncident
@@ -672,11 +817,6 @@ namespace Module.Frontend.TPM.Controllers
                 DeletedDate = null,
                 Disabled = false
             });
-        }
-
-        private bool EntityExists(System.Guid key)
-        {
-            return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
         }
 
         [ClaimsAuthorize]

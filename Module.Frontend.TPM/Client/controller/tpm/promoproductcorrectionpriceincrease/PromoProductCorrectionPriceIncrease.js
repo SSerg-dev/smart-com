@@ -1,82 +1,78 @@
-﻿Ext.define('App.controller.tpm.promoproductcorrectionpriceincreace.PromoProductCorrectionPriceIncrease', {
+﻿Ext.define('App.controller.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
     
-    startEndModel: null,
-    
-    thisGrid: null,
-
     init: function () {
         this.listen({
             component: {
-                'promoproductcorrectionpriceincreace[isSearch!=true] directorygrid': {
+                'promoproductcorrectionpriceincrease[isSearch!=true] directorygrid': {
                     load: this.onGridStoreLoad,
                     itemdblclick: this.onDetailButtonClick
                 },
-                'promoproductcorrectionpriceincreace directorygrid': {
+                'promoproductcorrectionpriceincrease directorygrid': {
                     selectionchange: this.onPromoProductCorrectionGridSelectionChange,
                     afterrender: this.onGridPromoProductCorrectionAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'promoproductcorrectionpriceincreace #datatable': {
+                'promoproductcorrectionpriceincrease #datatable': {
                     activate: this.onActivateCard
                 },
-                'promoproductcorrectionpriceincreace #detailform': {
+                'promoproductcorrectionpriceincrease #detailform': {
                     activate: this.onActivateCard
                 },
-                'promoproductcorrectionpriceincreace #detailform #prev': {
+                'promoproductcorrectionpriceincrease #detailform #prev': {
                     click: this.onPrevButtonClick
                 },
-                'promoproductcorrectionpriceincreace #detailform #next': {
+                'promoproductcorrectionpriceincrease #detailform #next': {
                     click: this.onNextButtonClick
                 },
-                'promoproductcorrectionpriceincreace #detail': {
+                'promoproductcorrectionpriceincrease #detail': {
                     click: this.onDetailButtonClick
                 },
-                'promoproductcorrectionpriceincreace #table': {
+                'promoproductcorrectionpriceincrease #table': {
                     click: this.onTableButtonClick
                 },
-                'promoproductcorrectionpriceincreace #extfilterbutton': {
+                'promoproductcorrectionpriceincrease #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'promoproductcorrectionpriceincreace #deletedbutton': {
+                'promoproductcorrectionpriceincrease #deletedbutton': {
                     click: this.onDeletedButtonClick
                 },
-                'promoproductcorrectionpriceincreace #createbutton': {
+                'promoproductcorrectionpriceincrease #createbutton': {
                     click: this.onCreateButtonClick
                 },
-                'promoproductcorrectionpriceincreace #updatebutton': {
+                'promoproductcorrectionpriceincrease #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
-                'promoproductcorrectionpriceincreace #deletebutton': {
+                'promoproductcorrectionpriceincrease #deletebutton': {
                     click: this.onDeletePromoProductCorrectionButtonClick
                 },
-                'promoproductcorrectionpriceincreace #historybutton': {
+                'promoproductcorrectionpriceincrease #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'promoproductcorrectionpriceincreace #refresh': {
+                'promoproductcorrectionpriceincrease #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'promoproductcorrectionpriceincreace #close': {
+                'promoproductcorrectionpriceincrease #close': {
                     click: this.onCloseButtonClick
                 },
                 // import/export
-                'promoproductcorrectionpriceincreace #exportbutton': {
+                'promoproductcorrectionpriceincrease #exportbutton': {
                     click: this.onExportButtonClick
                 },
-                'promoproductcorrectionpriceincreace #loadimportppcbutton': {
+                'promoproductcorrectionpriceincrease #loadimportppcbutton': {
                     click: this.onShowImportFormButtonClick
                 },
-                'promoproductcorrectionpriceincreace #loadimporttemplatebutton': {
+                'promoproductcorrectionpriceincrease #loadimporttemplatebutton': {
                     click: this.onLoadImportTemplateButtonClick
                 },
-                'promoproductcorrectionpriceincreace #customloadimporttemplatebutton': {
+                'promoproductcorrectionpriceincrease #customloadimporttemplatebutton': {
                     click: this.onCustomLoadImportTemplateButtonClick
                 },
-                'promoproductcorrectionpriceincreace #applyimportbutton': {
+                'promoproductcorrectionpriceincrease #applyimportbutton': {
                     click: this.onApplyImportButtonClick
                 },
-                'promoproductcorrectionpriceincreace #exportcorrectionxlsxbutton': {
+                'promoproductcorrectionpriceincrease #exportcorrectionxlsxbutton': {
                     click: this.onExportCorrectionButtonClick
                 },                
                 '#ppcuploadfilewindow #userOk': {
@@ -88,37 +84,8 @@
 
 
     onGridPromoProductCorrectionAfterrender: function (grid) {
-        thisGrid = grid;
-        var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
-                var promoProductCorrectionGridStore = grid.getStore();
-                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
-                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'Current';                
-            }
-            else {
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    startEndModel = returnValue;
-                });
-                var promoProductCorrectionGridStore = grid.getStore();
-                var promoProductCorrectionGridStoreProxy = promoProductCorrectionGridStore.getProxy();
-                promoProductCorrectionGridStoreProxy.extraParams.TPMmode = 'RS';
-            }
-        }
-        this.onGridAfterrender(grid);
-    },
 
-    getColumnIndex: function (grid, dataIndex) {
-        gridColumns = grid.headerCt.getGridColumns();
-        for (var i = 0; i < gridColumns.length; i++) {
-            if (gridColumns[i].dataIndex == dataIndex) {
-                return i;
-            }
-        }
+        this.onGridAfterrender(grid);
     },
 
     onCreateButtonClick: function (button) {

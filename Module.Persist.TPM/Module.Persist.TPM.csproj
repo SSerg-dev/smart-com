@@ -3301,6 +3301,7 @@
     <Compile Include="Model\Import\ImportEvent.cs" />
     <Compile Include="Model\Import\ImportColor.cs" />
     <Compile Include="Model\Import\ImportActualLsv.cs" />
+    <Compile Include="Model\Import\ImportPromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\Import\ImportPromoProductFromTLC.cs" />
     <Compile Include="Model\Import\ImportPromoProductsUplift.cs" />
     <Compile Include="Model\Import\ImportPromoProductsCorrection.cs" />

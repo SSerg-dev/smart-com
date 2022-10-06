@@ -1,7 +1,7 @@
-Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
+Ext.define('App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncreaseView', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'PromoProductCorrectionView',
+    breezeEntityType: 'PromoProductCorrectionPriceIncreaseView',
     fields: [
         { name: 'Number', type: 'int', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' } },
         { name: 'ClientHierarchy', type: 'string', hidden: false, isDefault: true  },
@@ -20,7 +20,6 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'CreateDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'UserName', type:'string', hidden: false, isDefault: true },
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
         { name: 'Id', hidden: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
@@ -32,14 +31,11 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
 
     proxy: {
         type: 'breeze',
-        resourceName: 'PromoProductCorrectionViews',
+        resourceName: 'PromoProductCorrectionPriceIncreaseViews',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
-        },
-        extraParams: {
-            TPMmode: 'Current'
         }
     },
 });

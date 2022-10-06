@@ -1,11 +1,8 @@
-﻿Ext.define('App.view.tpm.promoproductcorrectionpriceincreace.PromoProductCorrectionPriceIncrease', {
+﻿Ext.define('App.view.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
-    alias: 'widget.promoproductcorrectionpriceincreace',
-    title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProductCorrection'),
-    baseModel: Ext.ModelManager.getModel('App.model.tpm.promoproductcorrection.PromoProductCorrection'),
-    getDefaultResource: function () {
-        return 'PromoProductCorrectionPriceIncreaseView';
-    },
+    alias: 'widget.promoproductcorrectionpriceincrease',
+    title: l10n.ns('tpm', 'compositePanelTitles').value('PromoProductCorrectionPriceIncrease'),
+
     customHeaderItems: [
         ResourceMgr.getAdditionalMenu('core').base = {
             glyph: 0xf068,
@@ -138,13 +135,13 @@
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
+            model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncreaseView',
             storeId: 'promoproductcorrectionstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
+                    model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncreaseView',
                     modelId: 'efselectionmodel'
                 }, {
                     xclass: 'App.ExtTextFilterModel',
@@ -160,12 +157,6 @@
             leadingBufferZone: 20,
             pageSize: 30
         },
-        // стор для получения полной записи PromoProductCorrection
-        promoProductCorrectionStore: Ext.create('App.store.core.SimpleStore', {
-            model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
-            storeId: 'gridviewpromoproductcorrectionstore',
-            autoLoad: false,
-        }),
         
         columns: {
             defaults: {
@@ -368,7 +359,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.promoproductcorrection.PromoProductCorrectionView',
+        model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncreaseView',
         items: []
     }]
 });

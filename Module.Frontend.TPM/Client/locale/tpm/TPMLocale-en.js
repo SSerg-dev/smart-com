@@ -193,7 +193,8 @@
         'CompetitorBrandTech': 'Competitor BrandTech',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
-        'RSmode': 'RS'
+        'RSmode': 'RS',
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction'
     },
 
     'text': {

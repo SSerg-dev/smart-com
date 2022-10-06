@@ -213,7 +213,7 @@
     'tpm.promoproductcorrection.HistoricalPromoProductCorrection',
 
     //PromoProductCorrectionPriceIncrease
-    'tpm.promoproductcorrectionpriceincreace.PromoProductCorrectionPriceIncrease',
+    'tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',
 
     //BaseLine
     'tpm.baseline.BaseLine',

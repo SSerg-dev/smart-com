@@ -1,10 +1,9 @@
-﻿Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrection', {
+﻿Ext.define('App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
-    breezeEntityType: 'PromoProductsCorrection',
+    breezeEntityType: 'PromoProductCorrectionPriceIncrease',
     fields: [
         { name: 'Id', hidden: true },
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'PlanProductUpliftPercentCorrected', type: 'float', hidden: false, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
@@ -44,14 +43,11 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'PromoProductsCorrections',
+        resourceName: 'PromoProductsCorrectionPriceIncreases',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
-        },
-        extraParams: {
-            TPMmode: 'Current'
         }
     }
 });
