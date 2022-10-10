@@ -9,10 +9,10 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
 
     items: [{
         xtype: 'container',
-        cls: 'promo-editor-custom-scroll-items',
-        // promoActivity_step1
+        cls: 'promo-editor-custom-scroll-items',        
         items: [
             {
+                // promoActivity_step1
                 xtype: 'panel',
                 name: 'promoActivity_step1',
                 itemId: 'promoActivity_step1',
@@ -407,9 +407,15 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                             xtype: 'custompromopanel',
                             minWidth: 245,
                             flex: 1,
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch',
+                                pack: 'center'
+                            },
                             items: [
                                 {
                                     xtype: 'fieldset',
+                                    flex: 1,
                                     title: l10n.ns('tpm', 'PromoActivity').value('Plan'),
                                     layout: {
                                         type: 'vbox',
@@ -716,9 +722,314 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                     ]
                                 },
                                 {
-                                    xtype: 'tbspacer',
-                                    flex: 1
-                                }
+                                    // PlanPriceIncrease
+                                    xtype: 'fieldset',
+                                    flex: 1,
+                                    title: l10n.ns('tpm', 'PromoActivity').value('PlanPriceIncrease'),
+                                    layout: {
+                                        type: 'vbox',
+                                        align: 'stretch',
+                                        pack: 'center'
+                                    },
+                                    padding: '0 10 10 10',
+                                    defaults: {
+                                        margin: '5 0 0 0',
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'container',
+                                            itemId: 'ContainerPlanPromoUplift',
+                                            height: '100%',
+                                            layout: {
+                                                type: 'hbox',
+                                                align: 'top',
+                                                pack: 'center'
+                                            },
+                                            items: [
+                                                {
+                                                    xtype: 'triggerfielddetails',
+                                                    name: 'PlanPromoUpliftPercentPI',
+                                                    windowType: 'promoproductsview',
+                                                    labelWidth: 190,
+                                                    fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
+                                                    tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),
+                                                    flex: 1,
+                                                    readOnly: false,
+                                                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
+                                                    //listenersToAdd: {
+                                                    //    afterrender: function () {
+                                                    //        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                                    //        if (this.crudAccess.indexOf(currentRole) === -1) {
+                                                    //            this.up('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
+                                                    //        }
+                                                    //    }
+                                                    //},
+                                                    validator: function (value) {
+                                                        if (this.editable) {
+                                                            //Заменяем запятую на точку для парсера
+                                                            value = value.split(",").join(".");
+                                                            var floatValue = parseFloat(value);
+                                                            if (floatValue != value) {
+                                                                return l10n.ns('tpm', 'PromoActivity').value('triggerfieldOnlyNumbers');
+                                                            } else if (floatValue <= 0 || value === "") {
+                                                                return l10n.ns('tpm', 'Promo').value('PlanPromoUpliftPercentError');
+                                                            } else {
+                                                                return true;
+                                                            }
+                                                        } else {
+                                                            return true;
+                                                        }
+                                                    },
+                                                    //changeEditable: function (setToEditable) {
+                                                    //    if (setToEditable) {
+                                                    //        this.setEditable(true);
+                                                    //        this.up('container').addCls('editable-trigger-field');
+                                                    //    } else {
+                                                    //        this.setEditable(false);
+                                                    //        this.up('container').removeCls('editable-trigger-field');
+                                                    //    }
+                                                    //    this.validate();
+                                                    //}
+                                                },
+                                                {
+                                                    xtype: 'checkbox',
+                                                    labelSeparator: '',
+                                                    itemId: 'PromoUpliftLockedUpdateCheckboxPI',
+                                                    name: 'NeedRecountUplift',
+                                                    labelAlign: 'right',
+                                                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
+                                                    style: 'margin-left: 10px',
+                                                    //crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                                    availableRoleStatusActions: {
+                                                        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                                        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                    },
+                                                    availableRoleStatusActionsInOut: {
+
+                                                    },
+                                                    listeners: {
+                                                        afterRender: function (me) {
+                                                            var readonly = me.up('promoeditorcustom').readOnly;
+                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                                            var lockAccessCrud = false;
+
+                                                            if (planPromoUpliftNumberField.crudAccess.indexOf(currentRole) === -1) {
+                                                                lockAccessCrud = true;
+                                                            }
+                                                            if ((!this.value || readonly) || lockAccessCrud) {
+                                                                planPromoUpliftNumberField.setEditable(false);
+                                                                GlyphLock.setGlyph(0xf33e);
+                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                            } else {
+                                                                planPromoUpliftNumberField.setEditable(true);
+                                                                GlyphLock.setGlyph(0xf33f);
+                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                            }
+                                                        },
+                                                        change: function (checkbox, newValue, oldValue) {
+                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                            if (newValue) {
+                                                                planPromoUpliftNumberField.setEditable(true);
+                                                                GlyphLock.setGlyph(0xf33f);
+                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                            } else {
+                                                                planPromoUpliftNumberField.setEditable(false);
+                                                                GlyphLock.setGlyph(0xf33e);
+                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                            }
+                                                        },
+                                                        enable: function (me) {
+                                                            var readonly = me.up('promoeditorcustom').readOnly;
+                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                            if (!this.value || readonly) {
+                                                                planPromoUpliftNumberField.setEditable(false);
+                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                            } else {
+                                                                planPromoUpliftNumberField.setEditable(true);
+                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                            }
+                                                            GlyphLock.setDisabled(false);
+                                                        },
+                                                        disable: function (me) {
+                                                            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                            GlyphLock.setDisabled(true);
+                                                        },
+                                                    }
+                                                },
+                                                {
+                                                    xtype: 'button',
+                                                    itemId: 'GlyphLock',
+                                                    cls: 'promo-calculation-activity-uplift-btnglyph',
+                                                    glyph: 0xf33e,
+                                                    width: 30,
+                                                    height: 30,
+                                                    availableRoleStatusActions: {
+                                                        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                                        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                    },
+                                                    availableRoleStatusActionsInOut: {
+
+                                                    },
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            xtype: 'triggerfielddetails',
+                                            name: 'PlanPromoBaselineLSVPI',
+                                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoBaselineLSV'),
+                                            dataIndexes: ['PlanProductBaselineLSVPI'],
+                                            blockMillion: false, // если true - то преобразовывать в миллионы
+                                            originValue: null, // настоящее значение
+                                            valueToRaw: function (value) {
+                                                var valueToDisplay = null;
+
+                                                if (value !== null && value !== undefined) {
+                                                    if (this.blockMillion) {
+                                                        valueToDisplay = value;
+                                                    }
+                                                    else {
+                                                        this.originValue = value;
+                                                        valueToDisplay = value / 1000000.0;
+                                                    }
+                                                }
+
+                                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                                            },
+                                            rawToValue: function () {
+                                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                                return isNaN(parsedValue) ? null : parsedValue;
+                                            },
+                                            listenersToAdd: {
+                                                focus: function (field) {
+                                                    this.blockMillion = true;
+                                                },
+                                                blur: function (field) {
+                                                    this.blockMillion = false;
+                                                }
+                                            }
+                                        },
+                                        {
+                                            xtype: 'triggerfielddetails',
+                                            name: 'PlanPromoIncrementalLSVPI',
+                                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
+                                            dataIndexes: ['PlanProductIncrementalLSVPI'],
+                                            blockMillion: false, // если true - то преобразовывать в миллионы
+                                            originValue: null, // настоящее значение
+                                            valueToRaw: function (value) {
+                                                var valueToDisplay = null;
+
+                                                if (value !== null && value !== undefined) {
+                                                    if (this.blockMillion) {
+                                                        valueToDisplay = value;
+                                                    }
+                                                    else {
+                                                        this.originValue = value;
+                                                        valueToDisplay = value / 1000000.0;
+                                                    }
+                                                }
+
+                                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                                            },
+                                            rawToValue: function () {
+                                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                                return isNaN(parsedValue) ? null : parsedValue;
+                                            },
+                                            listenersToAdd: {
+                                                focus: function (field) {
+                                                    this.blockMillion = true;
+                                                },
+                                                blur: function (field) {
+                                                    this.blockMillion = false;
+                                                },
+                                                scope: this
+                                            }
+                                        },
+                                        {
+                                            xtype: 'triggerfielddetails',
+                                            name: 'PlanPromoLSVPI',
+                                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
+                                            dataIndexes: ['PlanProductLSVPI'],
+                                            blockMillion: false, // если true - то преобразовывать в миллионы
+                                            originValue: null, // настоящее значение
+                                            valueToRaw: function (value) {
+                                                var valueToDisplay = null;
+
+                                                if (value !== null && value !== undefined) {
+                                                    if (this.blockMillion) {
+                                                        valueToDisplay = value;
+                                                    }
+                                                    else {
+                                                        this.originValue = value;
+                                                        valueToDisplay = value / 1000000.0;
+                                                    }
+                                                }
+
+                                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                                            },
+                                            rawToValue: function () {
+                                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                                return isNaN(parsedValue) ? null : parsedValue;
+                                            },
+                                            listenersToAdd: {
+                                                focus: function (field) {
+                                                    this.blockMillion = true;
+                                                },
+                                                blur: function (field) {
+                                                    this.blockMillion = false;
+                                                },
+                                            }
+                                        },
+                                        {
+                                            xtype: 'triggerfielddetails',
+                                            name: 'PlanPromoPostPromoEffectLSVPI',
+                                            fieldLabel: l10n.ns('tpm', 'Promo').value('PromoPostPromoEffectLSV'),
+                                            dataIndexes: ['PlanProductPostPromoEffectLSVPI'],
+                                            blockMillion: false, // если true - то преобразовывать в миллионы
+                                            originValue: null, // настоящее значение
+                                            valueToRaw: function (value) {
+                                                var valueToDisplay = null;
+
+                                                if (value !== null && value !== undefined) {
+                                                    if (this.blockMillion) {
+                                                        valueToDisplay = value;
+                                                    }
+                                                    else {
+                                                        this.originValue = value;
+                                                        valueToDisplay = value / 1000000.0;
+                                                    }
+                                                }
+
+                                                return Ext.util.Format.number(valueToDisplay, '0.00');
+                                            },
+                                            rawToValue: function () {
+                                                var parsedValue = parseFloat(String(this.rawValue).replace(Ext.util.Format.decimalSeparator, "."))
+                                                return isNaN(parsedValue) ? null : parsedValue;
+                                            },
+                                            listenersToAdd: {
+                                                focus: function (field) {
+                                                    this.blockMillion = true;
+                                                },
+                                                blur: function (field) {
+                                                    this.blockMillion = false;
+                                                },
+                                            }
+                                        }
+                                    ]
+                                },
                             ]
                         },
                         {

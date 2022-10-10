@@ -3199,6 +3199,10 @@
     <Compile Include="Migrations\202210050635326_empty__05102022.Designer.cs">
       <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210101109310_ChangeBindingPromoProductPI.cs" />
+    <Compile Include="Migrations\202210101109310_ChangeBindingPromoProductPI.Designer.cs">
+      <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6044,6 +6048,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210050635326_empty__05102022.resx">
       <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210101109310_ChangeBindingPromoProductPI.resx">
+      <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -3119,12 +3119,20 @@
         var manualInputSumInvoiceCheckbox = promoActivityStep2.down('checkbox[itemId=ManualInputSumInvoiceCheckbox]');
         var invoiceNumber = promoActivityStep2.down('textfield[name=InvoiceNumber]');
         var documentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]');
+        // Plan
         var planPromoUpliftPercent = promoActivityStep2.down('[name=PlanPromoUpliftPercent]');
         var promoUpliftLockedUpdateCheckbox = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckbox]');
         var planPromoBaselineLSV = promoActivityStep2.down('[name=PlanPromoBaselineLSV]');
         var planPromoIncrementalLSV = promoActivityStep2.down('[name=PlanPromoIncrementalLSV]');
         var planPromoLSV = promoActivityStep2.down('[name=PlanPromoLSV]');
         var planPostPromoEffect = promoActivityStep2.down('[name=PlanPromoPostPromoEffectLSV]');
+        // Plan PlanPriceIncrease
+        var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
+        var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
+        var planPromoBaselineLSVPI = promoActivityStep2.down('[name=PlanPromoBaselineLSVPI]');
+        var planPromoIncrementalLSVPI = promoActivityStep2.down('[name=PlanPromoIncrementalLSVPI]');
+        var planPromoLSVPI = promoActivityStep2.down('[name=PlanPromoLSVPI]');
+        var planPostPromoEffectPI = promoActivityStep2.down('[name=PlanPromoPostPromoEffectLSVPI]');
 
         var actualPromoUpliftPercent = promoActivityStep2.down('[name=ActualPromoUpliftPercent]');
         var actualPromoBaselineLSV = promoActivityStep2.down('[name=ActualPromoBaselineLSV]');
@@ -3662,6 +3670,14 @@
             planPromoLSV.setValue(record.data.PlanPromoLSV);
             planPostPromoEffect.setValue(record.data.PlanPromoPostPromoEffectLSV);
 
+            planPromoUpliftPercentPI.setValue(record.data.PlanPromoUpliftPercentPI);
+            promoUpliftLockedUpdateCheckboxPI.setValue(!record.data.NeedRecountUplift);
+            planPromoUpliftPercentPI.defaultValue = !record.data.NeedRecountUplift;
+            planPromoBaselineLSVPI.setValue(record.data.PlanPromoBaselineLSVPI);
+            planPromoIncrementalLSVPI.setValue(record.data.PlanPromoIncrementalLSVPI);
+            planPromoLSVPI.setValue(record.data.PlanPromoLSVPI);
+            planPostPromoEffectPI.setValue(record.data.PlanPromoPostPromoEffectLSVPI);
+            
             actualPromoUpliftPercent.setValue(record.data.ActualPromoUpliftPercent);
             actualPromoBaselineLSV.setValue(record.data.ActualPromoBaselineLSV);
             actualPromoIncrementalLSV.setValue(record.data.ActualPromoIncrementalLSV);

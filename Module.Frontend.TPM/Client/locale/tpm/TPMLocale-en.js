@@ -2257,6 +2257,7 @@
         'ActualInStoreDiscount': 'Actual Instore Mechanic Discount',
         'ActualInStore': 'Actual Discount In Store',
         'Plan': 'Plan',
+        'PlanPriceIncrease': 'Plan Price Increase',
         'Actuals': 'Actuals',
         'ExportAllPromoProducts': 'Export All Promo Products',
         'triggerfieldOnlyNumbers': 'Only number allowed',

@@ -227,6 +227,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public Guid PromoProductId { get; set; }
         public PromoProduct PromoProduct { get; set; }
+        public Guid PromoPriceIncreaseId { get; set; }
         public PromoPriceIncrease PromoPriceIncrease { get; set; }
         public PromoProductCorrectionPriceIncrease ProductCorrectionPriceIncrease { get; set; }
     }

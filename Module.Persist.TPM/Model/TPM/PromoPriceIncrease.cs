@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -18,6 +19,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoPostPromoEffectLSV { get; set; }
 
         public Promo Promo { get; set; }
-        public PromoProductPriceIncrease PromoProductPriceIncrease { get; set; }
+        public ICollection<PromoProductPriceIncrease> PromoProductPriceIncreases { get; set; }
     }
 }

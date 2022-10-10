@@ -168,7 +168,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
-            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithOptional(g => g.PromoProductPriceIncrease);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases);
             modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g=>g.PromoProductPriceIncrease).WithOptional(g=>g.ProductCorrectionPriceIncrease);
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>();
         }
