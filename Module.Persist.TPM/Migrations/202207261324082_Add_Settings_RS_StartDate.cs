@@ -27,7 +27,7 @@ namespace Module.Persist.TPM.Migrations
                    (NEWID()
                    ,'RS_START_WEEKS'
                    ,'int'
-                   ,'5'
+                   ,'8'
                    ,'Number of weeks before RS period Start date')
             GO
             ";
