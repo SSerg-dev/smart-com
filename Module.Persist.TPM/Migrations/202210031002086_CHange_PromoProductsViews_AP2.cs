@@ -4,7 +4,7 @@ namespace Module.Persist.TPM.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Add_Settings_RS_StartDate : DbMigration
+    public partial class CHange_PromoProductsViews_AP2 : DbMigration
     {
         public override void Up()
         {
@@ -16,19 +16,15 @@ namespace Module.Persist.TPM.Migrations
         public override void Down()
         {
         }
-        private string SqlString = @" 
-            INSERT INTO [DefaultSchemaSetting].[Setting]
-           ([Id]
-           ,[Name]
-           ,[Type]
-           ,[Value]
-           ,[Description])
-             VALUES
-                   (NEWID()
-                   ,'RS_START_WEEKS'
-                   ,'int'
-                   ,'8'
-                   ,'Number of weeks before RS period Start date')
+        private string SqlString = @"
+            UPDATE [DefaultSchemaSetting].[AccessPoint]
+               SET [TPMmode] = 0
+             WHERE Resource = 'PromoProductsViews' AND Action = 'FullImportXLSX'
+            GO
+
+            UPDATE [DefaultSchemaSetting].[AccessPoint]
+               SET [TPMmode] = 0
+             WHERE Resource = 'PromoProductsViews' AND Action = 'DownloadTemplateXLSX'
             GO
             ";
     }
