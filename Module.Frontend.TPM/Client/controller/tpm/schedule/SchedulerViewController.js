@@ -156,12 +156,12 @@
                     EndDateRS = new Date(returnValue.EndDate);
                 });
 
-            } 
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
                 dragContext.finalize(false);
                 return false;
-            }
+                }
+            } 
         }
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
@@ -940,9 +940,9 @@
                     EndDateRS = new Date(returnValue.EndDate);
                 });
 
-            }
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                }
             }
         }
         if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
@@ -1234,7 +1234,6 @@
                     EndDateRS = new Date(returnValue.EndDate);
                 });
 
-            }
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
                 resizeContext.finalize(false);
@@ -1242,6 +1241,7 @@
                     calendarGrid[0].resourceStore.load();
                 }
                 return false;
+                }
             }
         }
 
