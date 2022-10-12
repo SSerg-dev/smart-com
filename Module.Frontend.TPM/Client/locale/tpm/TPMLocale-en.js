@@ -2960,5 +2960,6 @@
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'PromoStatusName': 'Status',
-    }
+    },
+    'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity']
 });
