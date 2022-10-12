@@ -2512,6 +2512,7 @@
         'PlanPromoIncrementalCases': 'Plan Promo Incremental Cases',
         'CasePrice': 'Case Price',
         'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
+        'PromoStatusName': 'Promo Status',
         'ClientTreeId': 'Client Id',
     },
     'HistoricalIncrementalPromo': ['.tpm.IncrementalPromo', '.core.BaseHistoryEntity'],
