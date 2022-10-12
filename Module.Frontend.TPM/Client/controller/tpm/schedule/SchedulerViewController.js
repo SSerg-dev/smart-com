@@ -144,8 +144,8 @@
         var dispatchesStart = record.get('DispatchesStart');
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        var calcDispatchesStart = new Date();
-        calcDispatchesStart.setDate(dragContext.startDate.getDate() - 15);
+        var calcDispatchesStart = new Date(dragContext.startDate);
+        calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (calendarGrid.length > 0) {
             me.calendarSheduler = calendarGrid[0];
         }
@@ -928,8 +928,8 @@
         var typeToCreate = null;
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        var calcDispatchesStart = new Date();
-        calcDispatchesStart.setDate(createContext.start.getDate() - 15);
+        var calcDispatchesStart = new Date(createContext.start);
+        calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (createContext.resourceRecord.get('TypeName') == 'Competitor') {
             createContext.finalize(false);
             return false;
@@ -1212,8 +1212,8 @@
         var me = this;
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        var calcDispatchesStart = new Date();
-        calcDispatchesStart.setDate(resizeContext.start.getDate() - 15);
+        var calcDispatchesStart = new Date(resizeContext.start);
+        calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (resizeContext.eventRecord.get('TypeName') == 'Competitor') {
             me.__resizeContext.finalize(false);
             return false;
