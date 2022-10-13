@@ -756,14 +756,6 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                                     flex: 1,
                                                     readOnly: false,
                                                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
-                                                    //listenersToAdd: {
-                                                    //    afterrender: function () {
-                                                    //        var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                                                    //        if (this.crudAccess.indexOf(currentRole) === -1) {
-                                                    //            this.up('container[itemId=ContainerPlanPromoUplift]').setReadable(true);
-                                                    //        }
-                                                    //    }
-                                                    //},
                                                     validator: function (value) {
                                                         if (this.editable) {
                                                             //Заменяем запятую на точку для парсера
@@ -780,22 +772,12 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                                             return true;
                                                         }
                                                     },
-                                                    //changeEditable: function (setToEditable) {
-                                                    //    if (setToEditable) {
-                                                    //        this.setEditable(true);
-                                                    //        this.up('container').addCls('editable-trigger-field');
-                                                    //    } else {
-                                                    //        this.setEditable(false);
-                                                    //        this.up('container').removeCls('editable-trigger-field');
-                                                    //    }
-                                                    //    this.validate();
-                                                    //}
                                                 },
                                                 {
                                                     xtype: 'checkbox',
                                                     labelSeparator: '',
                                                     itemId: 'PromoUpliftLockedUpdateCheckboxPI',
-                                                    name: 'NeedRecountUplift',
+                                                    name: 'NeedRecountUpliftPI',
                                                     labelAlign: 'right',
                                                     crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
                                                     style: 'margin-left: 10px',
@@ -896,7 +878,6 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {
                                                 var valueToDisplay = null;
-
                                                 if (value !== null && value !== undefined) {
                                                     if (this.blockMillion) {
                                                         valueToDisplay = value;

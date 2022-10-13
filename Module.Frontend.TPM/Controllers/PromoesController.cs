@@ -327,8 +327,7 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 // Добавить запись в таблицу PromoProduct при сохранении.
-                string error;
-                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out error, true, promoProductTrees);
+                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out string error, true, promoProductTrees);
                 // Создаём инцидент для draft сразу
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
             }

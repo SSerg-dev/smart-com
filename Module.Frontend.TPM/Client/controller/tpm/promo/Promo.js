@@ -4819,6 +4819,7 @@
         var isInOut = promoeditorcustom.isInOutPromo;
         if (isInOut) {
             promoeditorcustom.down('checkbox[name=NeedRecountUplift]').setDisabled(true);
+            promoeditorcustom.down('checkbox[name=NeedRecountUpliftPI]').setDisabled(true);
         }
         // Блокировка кнопок Add Promo Support для роли DemandPlanning. 
         // Блокировка редактирования Growth Acceleration

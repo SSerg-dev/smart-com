@@ -9,6 +9,7 @@ using System.Linq;
 using Persist;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
+using System.Data.Entity;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -29,14 +30,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var addedZREPs = new List<string>();
                 var deletedZREPs = new List<string>();
                 bool needReturnToOnApprovalStatus = false;
-                var promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                var promo = context.Set<Promo>()
+                    .Include(g=> g.PromoPriceIncrease)
+                    .Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 var changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.NotificationProcessDate == null);
                 var changedProducts = changeProductIncidents.Select(x => x.Product.ZREP).Distinct();
                 var createdProducts = changeProductIncidents.Where(p => p.IsCreate && !p.IsChecked).Select(i => i.Product.ZREP);
                 bool createIncidents = statusesForIncidents.Any(s => s.ToLower() == promo.PromoStatus.SystemName.ToLower());
 
                 var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
-
+                // добавление пустого PromoPriceIncrease к Promo если его нет
+                if (promo.PromoPriceIncrease is null)
+                {
+                    promo.PromoPriceIncrease = new PromoPriceIncrease();
+                }
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
                 List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);

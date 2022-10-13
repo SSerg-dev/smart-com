@@ -14,10 +14,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void SetPriceForPromoProducts(DatabaseContext databaseContext, Promo promo)
         {
             var promoProducts = databaseContext.Set<PromoProduct>().Where(x => !x.Disabled && x.PromoId == promo.Id).ToList();
-            var priceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart 
+            var allPriceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart 
                                                                     && x.EndDate >= promo.DispatchesStart 
                                                                     && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
-            var priceListsForPromoAndPromoProducts = priceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId));
+            var priceListsForPromoAndPromoProducts = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == false));
 
             foreach (var promoProduct in promoProducts)
             {

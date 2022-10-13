@@ -3203,6 +3203,10 @@
     <Compile Include="Migrations\202210101109310_ChangeBindingPromoProductPI.Designer.cs">
       <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210130842541_Add_IndexPriceList.cs" />
+    <Compile Include="Migrations\202210130842541_Add_IndexPriceList.Designer.cs">
+      <DependentUpon>202210130842541_Add_IndexPriceList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6051,6 +6055,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210101109310_ChangeBindingPromoProductPI.resx">
       <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210130842541_Add_IndexPriceList.resx">
+      <DependentUpon>202210130842541_Add_IndexPriceList.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

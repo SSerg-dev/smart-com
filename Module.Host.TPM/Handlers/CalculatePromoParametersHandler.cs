@@ -89,9 +89,8 @@ namespace Module.Host.TPM.Handlers
                         {
                             if (!promo.LoadFromTLC)
                             {
-                                string setPromoProductError;
 
-                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
+                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out string setPromoProductError);
                                 if (setPromoProductError != null)
                                 {
                                     logLine = String.Format("Error filling Product: {0}", setPromoProductError);
