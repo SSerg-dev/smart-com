@@ -4,43 +4,43 @@
     init: function () {
         this.listen({
             component: {
-                'deletedrspromo directorygrid': {
+                'deletedrsmode directorygrid': {
                     load: this.onGridStoreLoad
                 },
-                'deletedrspromo directorygrid': {
+                'deletedrsmode directorygrid': {
                     itemdblclick: this.onDetailButtonClick,
                     selectionchange: this.onGridSelectionChange,
                     afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange
                 },
-                'deletedrspromo #datatable': {
+                'deletedrsmode #datatable': {
                     activate: this.onActivateCard
                 },
-                'deletedrspromo #detailform': {
+                'deletedrsmode #detailform': {
                     activate: this.onActivateCard
                 },
-                'deletedrspromo #detail': {
+                'deletedrsmode #detail': {
                     click: this.onDetailButtonClick
                 },
-                'deletedrspromo #table': {
+                'deletedrsmode #table': {
                     click: this.onTableButtonClick
                 },
-                'deletedrspromo #prev': {
+                'deletedrsmode #prev': {
                     click: this.onPrevButtonClick
                 },
-                'deletedrspromo #next': {
+                'deletedrsmode #next': {
                     click: this.onNextButtonClick
                 },
-                'deletedrspromo #extfilterbutton': {
+                'deletedrsmode #extfilterbutton': {
                     click: this.onFilterButtonClick
                 },
-                'deletedrspromo #historybutton': {
+                'deletedrsmode #historybutton': {
                     click: this.onHistoryButtonClick
                 },
-                'deletedrspromo #refresh': {
+                'deletedrsmode #refresh': {
                     click: this.onRefreshButtonClick
                 },
-                'deletedrspromo #close': {
+                'deletedrsmode #close': {
                     click: this.onCloseButtonClick
                 }
             }
