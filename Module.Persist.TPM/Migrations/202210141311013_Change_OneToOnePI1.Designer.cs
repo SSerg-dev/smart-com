@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class empty__05102022 : IMigrationMetadata
+    public sealed partial class Change_OneToOnePI1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(empty__05102022));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Change_OneToOnePI1));
         
         string IMigrationMetadata.Id
         {
-            get { return "202210050635326_empty__05102022"; }
+            get { return "202210141311013_Change_OneToOnePI1"; }
         }
         
         string IMigrationMetadata.Source

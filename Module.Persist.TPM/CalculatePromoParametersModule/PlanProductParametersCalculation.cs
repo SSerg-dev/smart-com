@@ -31,7 +31,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var deletedZREPs = new List<string>();
                 bool needReturnToOnApprovalStatus = false;
                 var promo = context.Set<Promo>()
-                    .Include(g=> g.PromoPriceIncrease)
+                    .Include(g => g.PromoPriceIncrease)
                     .Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 var changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.NotificationProcessDate == null);
                 var changedProducts = changeProductIncidents.Select(x => x.Product.ZREP).Distinct();
@@ -42,7 +42,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 // добавление пустого PromoPriceIncrease к Promo если его нет
                 if (promo.PromoPriceIncrease is null)
                 {
-                    promo.PromoPriceIncrease = new PromoPriceIncrease();
+                    promo.PromoPriceIncrease = new PromoPriceIncrease
+                    {
+                        //Id = promo.Id
+                    };
                 }
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
@@ -64,7 +67,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
                 var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
 
-                foreach (var promoProduct in promoProductsNotDisabled)
+                foreach (PromoProduct promoProduct in promoProductsNotDisabled)
                 {
                     if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
                     {
@@ -81,68 +84,73 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var draftStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == PromoStates.Draft.ToString() && !x.Disabled);
                 if (promo.PromoStatus.Id != draftStatus.Id)
                 {
-                    // Делаем для ускорения вставки записей, через Mapping всё очень долго                    
-                    String formatStrPromoProduct = "INSERT INTO [DefaultSchemaSetting].[PromoProduct] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [ZREP], [EAN_Case], [EAN_PC], [ProductEN], [TPMmode]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')";
-                    String formatStrIncremental = "INSERT INTO [DefaultSchemaSetting].[IncrementalPromo] ([Id], [Disabled], [DeletedDate], [PromoId], [ProductId], [TPMmode]) VALUES ('{0}', 0, NULL, '{1}', '{2}', '{3}')";
-                    foreach (IEnumerable<Product> items in resultProductList.Partition(100))
+                    foreach (Product product in resultProductList)
                     {
-                        string insertScript = String.Empty;
-
-                        foreach (Product p in items)
+                        product.PromoProducts = new List<PromoProduct>();
+                        product.IncrementalPromoes = new List<IncrementalPromo>();
+                        PromoProduct promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == product.ZREP);
+                        if (promoProduct != null && promoProduct.Disabled)
                         {
-                            var promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == p.ZREP);
-                            if (promoProduct != null && promoProduct.Disabled)
+                            if (changedProducts.Contains(product.ZREP) && createIncidents)
                             {
-                                if (changedProducts.Contains(p.ZREP) && createIncidents)
-                                {
-                                    addedZREPs.Add(p.ZREP);
-                                }
-
-                                promoProduct.Disabled = false;
-                                promoProduct.DeletedDate = null;
-                                needReturnToOnApprovalStatus = true;
-                            }
-                            else if (promoProduct == null)
-                            {
-                                if (changedProducts.Contains(p.ZREP) && createIncidents)
-                                {
-                                    addedZREPs.Add(p.ZREP);
-                                }
-
-                                insertScript += String.Format(formatStrPromoProduct, Guid.NewGuid(), promoId, p.Id, p.ZREP, p.EAN_Case, p.EAN_PC, p.ProductEN, Convert.ToInt32(promo.TPMmode));
-                                needReturnToOnApprovalStatus = true;
+                                addedZREPs.Add(product.ZREP);
                             }
 
-                            if (createdProducts.Any(x => x == p.ZREP) && !addedZREPs.Any(x => x == p.ZREP) && createIncidents)
+                            promoProduct.Disabled = false;
+                            promoProduct.DeletedDate = null;
+                            needReturnToOnApprovalStatus = true;
+                        }
+                        else if (promoProduct == null)
+                        {
+                            if (changedProducts.Contains(product.ZREP) && createIncidents)
                             {
-                                addedZREPs.Add(p.ZREP);
+                                addedZREPs.Add(product.ZREP);
                             }
-
-                            if (promo.InOut.HasValue && promo.InOut.Value)
-                            {
-                                var incrementalPromo = incrementalPromoes.FirstOrDefault(x => x.Product.ZREP == p.ZREP);
-                                if (incrementalPromo != null && incrementalPromo.Disabled)
+                            product.PromoProducts.Add(
+                                new PromoProduct
                                 {
-                                    incrementalPromo.Disabled = false;
-                                    incrementalPromo.DeletedDate = null;
-
-                                    incrementalPromo.LastModifiedDate = null;
-                                    incrementalPromo.PlanPromoIncrementalCases = null;
-                                    incrementalPromo.PlanPromoIncrementalLSV = null;
-
-                                    needReturnToOnApprovalStatus = true;
+                                    PromoId = promoId,
+                                    ZREP = product.ZREP,
+                                    EAN_Case = product.EAN_Case,
+                                    EAN_PC = product.EAN_PC,
+                                    ProductEN = product.ProductEN,
+                                    TPMmode = promo.TPMmode
                                 }
-                                else if (incrementalPromo == null)
-                                {
-                                    insertScript += String.Format(formatStrIncremental, Guid.NewGuid(), promoId, p.Id, Convert.ToInt32(promo.TPMmode));
-                                    needReturnToOnApprovalStatus = true;
-                                }
-                            }
+                                );
+                            needReturnToOnApprovalStatus = true;
                         }
 
-                        if (!String.IsNullOrEmpty(insertScript))
+                        if (createdProducts.Any(x => x == product.ZREP) && !addedZREPs.Any(x => x == product.ZREP) && createIncidents)
                         {
-                            context.ExecuteSqlCommand(insertScript);
+                            addedZREPs.Add(product.ZREP);
+                        }
+
+                        if (promo.InOut.HasValue && promo.InOut.Value)
+                        {
+                            var incrementalPromo = incrementalPromoes.FirstOrDefault(x => x.Product.ZREP == product.ZREP);
+                            if (incrementalPromo != null && incrementalPromo.Disabled)
+                            {
+                                incrementalPromo.Disabled = false;
+                                incrementalPromo.DeletedDate = null;
+
+                                incrementalPromo.LastModifiedDate = null;
+                                incrementalPromo.PlanPromoIncrementalCases = null;
+                                incrementalPromo.PlanPromoIncrementalLSV = null;
+
+                                needReturnToOnApprovalStatus = true;
+                            }
+                            else if (incrementalPromo == null)
+                            {
+                                product.IncrementalPromoes.Add(
+                                    new IncrementalPromo
+                                    {
+                                        PromoId = promoId,
+                                        ProductId = product.Id,
+                                        TPMmode = promo.TPMmode
+                                    }
+                                    );
+                                needReturnToOnApprovalStatus = true;
+                            }
                         }
                     }
                 }
@@ -158,8 +166,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             ProductId = p.Id,
                             IsRecalculated = true,
                             RecalculatedPromoId = promoId,
-                            AddedProductIds = addedZREPs.Any() ? String.Join(";", addedZREPs) : null,
-                            ExcludedProductIds = deletedZREPs.Any() ? String.Join(";", deletedZREPs) : null,
+                            AddedProductIds = addedZREPs.Any() ? string.Join(";", addedZREPs) : null,
+                            ExcludedProductIds = deletedZREPs.Any() ? string.Join(";", deletedZREPs) : null,
                             CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value,
                             IsCreate = false,
                             IsChecked = false
@@ -299,7 +307,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                             if (!promo.PlanPromoUpliftPercent.HasValue)
                             {
-                                message = String.Format("For promo №{0} is no Plan Promo Uplift value. Plan parameters will not be calculated.", promo.Number);
+                                message = string.Format("For promo №{0} is no Plan Promo Uplift value. Plan parameters will not be calculated.", promo.Number);
                             }
 
                             foreach (var promoProduct in promoProducts)
@@ -366,7 +374,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 }
                                 else
                                 {
-                                    message = String.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
+                                    message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
                                 }
 
                                 //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
@@ -404,12 +412,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                     else
                     {
-                        message = String.Format("Plan parameters can not be recalculated, because client was not found for this promo.");
+                        message = string.Format("Plan parameters can not be recalculated, because client was not found for this promo.");
                     }
                 }
                 else
                 {
-                    message = String.Format("Promo has not start date or end date");
+                    message = string.Format("Promo has not start date or end date");
                 }
                 return message;
             }
@@ -449,7 +457,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
             else
             {
-                message = String.Format("Promo with Id = {0} was not found", promoId);
+                message = string.Format("Promo with Id = {0} was not found", promoId);
             }
             return message;
         }
@@ -465,7 +473,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             // также используется в промо для проверки, если нет продуктов, то сохранение/редактирование отменяется
             // отдельно т.к. заполнение может оказаться очень долгой операцией
-            List<Product> product = null;
+            List<Product> products = null;
             List<Product> filteredProductList = new List<Product>();
             error = null;
 
@@ -484,7 +492,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     productTreeArray = context.Set<ProductTree>().Where(x => !x.EndDate.HasValue).ToArray().Where(n => promoProductTrees.Any(p => p.ProductTreeObjectId == n.ObjectId)).ToArray();
                 }
 
-                product = context.Set<Product>().Where(x => !x.Disabled).ToList();
+                products = context.Set<Product>().Where(x => !x.Disabled).ToList();
 
                 foreach (var productTree in productTreeArray)
                 {
@@ -500,10 +508,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     var expr = filter.ToExpressionTree<Product>();
 
                     // Список продуктов, подходящих по параметрам фильтрации
-                    product = product.Where(expr.Compile()).ToList();
+                    products = products.Where(expr.Compile()).ToList();
 
-                    filteredProductList = filteredProductList.Union(product).ToList();
-                    product = context.Set<Product>().Where(x => !x.Disabled).ToList();
+                    filteredProductList = filteredProductList.Union(products).ToList();
+                    products = context.Set<Product>().Where(x => !x.Disabled).ToList();
                 }
 
                 if (filteredProductList.Count == 0)
@@ -604,7 +612,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
 
             Stopwatch s = new Stopwatch();
-            if (!String.IsNullOrEmpty(promo.InOutProductIds))
+            if (!string.IsNullOrEmpty(promo.InOutProductIds))
             {
                 var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
                 products = productQuery.Where(x => productIds.Contains(x.Id)).ToList();

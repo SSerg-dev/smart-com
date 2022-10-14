@@ -3,7 +3,7 @@ namespace Module.Persist.TPM.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class empty__05102022 : DbMigration
+    public partial class Change_OneToOnePI : DbMigration
     {
         public override void Up()
         {

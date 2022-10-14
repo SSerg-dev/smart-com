@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Add_IndexPriceList : IMigrationMetadata
+    public sealed partial class Change_OneToOnePI : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_IndexPriceList));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Change_OneToOnePI));
         
         string IMigrationMetadata.Id
         {
-            get { return "202210130842541_Add_IndexPriceList"; }
+            get { return "202210141310058_Change_OneToOnePI"; }
         }
         
         string IMigrationMetadata.Source

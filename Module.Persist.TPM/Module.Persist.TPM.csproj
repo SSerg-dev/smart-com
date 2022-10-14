@@ -3195,17 +3195,13 @@
     <Compile Include="Migrations\202210041209062_Add_PromoProductCorrectionPriceIncreacseView.Designer.cs">
       <DependentUpon>202210041209062_Add_PromoProductCorrectionPriceIncreacseView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202210050635326_empty__05102022.cs" />
-    <Compile Include="Migrations\202210050635326_empty__05102022.Designer.cs">
-      <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
+    <Compile Include="Migrations\202210141310058_Change_OneToOnePI.cs" />
+    <Compile Include="Migrations\202210141310058_Change_OneToOnePI.Designer.cs">
+      <DependentUpon>202210141310058_Change_OneToOnePI.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202210101109310_ChangeBindingPromoProductPI.cs" />
-    <Compile Include="Migrations\202210101109310_ChangeBindingPromoProductPI.Designer.cs">
-      <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202210130842541_Add_IndexPriceList.cs" />
-    <Compile Include="Migrations\202210130842541_Add_IndexPriceList.Designer.cs">
-      <DependentUpon>202210130842541_Add_IndexPriceList.cs</DependentUpon>
+    <Compile Include="Migrations\202210141311013_Change_OneToOnePI1.cs" />
+    <Compile Include="Migrations\202210141311013_Change_OneToOnePI1.Designer.cs">
+      <DependentUpon>202210141311013_Change_OneToOnePI1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -6050,14 +6046,11 @@
     <EmbeddedResource Include="Migrations\202210041209062_Add_PromoProductCorrectionPriceIncreacseView.resx">
       <DependentUpon>202210041209062_Add_PromoProductCorrectionPriceIncreacseView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202210050635326_empty__05102022.resx">
-      <DependentUpon>202210050635326_empty__05102022.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202210141310058_Change_OneToOnePI.resx">
+      <DependentUpon>202210141310058_Change_OneToOnePI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202210101109310_ChangeBindingPromoProductPI.resx">
-      <DependentUpon>202210101109310_ChangeBindingPromoProductPI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202210130842541_Add_IndexPriceList.resx">
-      <DependentUpon>202210130842541_Add_IndexPriceList.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202210141311013_Change_OneToOnePI1.resx">
+      <DependentUpon>202210141311013_Change_OneToOnePI1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
