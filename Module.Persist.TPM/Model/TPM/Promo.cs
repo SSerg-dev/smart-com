@@ -36,6 +36,9 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? LastChangedDateDemand { get; set; }
         public DateTimeOffset? LastChangedDateFinance { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public int? ClientTreeId { get; set; }
 
         public Guid? CreatorId { get; set; }

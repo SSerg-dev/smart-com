@@ -3251,6 +3251,14 @@
     <Compile Include="Migrations\202210031002086_CHange_PromoProductsViews_AP2.Designer.cs">
       <DependentUpon>202210031002086_CHange_PromoProductsViews_AP2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210141053486_Add_ModifiedDate_Field1.cs" />
+    <Compile Include="Migrations\202210141053486_Add_ModifiedDate_Field1.Designer.cs">
+      <DependentUpon>202210141053486_Add_ModifiedDate_Field1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202210141137249_Alter_NightTaskCreate_Proc.cs" />
+    <Compile Include="Migrations\202210141137249_Alter_NightTaskCreate_Proc.Designer.cs">
+      <DependentUpon>202210141137249_Alter_NightTaskCreate_Proc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6130,6 +6138,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210031002086_CHange_PromoProductsViews_AP2.resx">
       <DependentUpon>202210031002086_CHange_PromoProductsViews_AP2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210141053486_Add_ModifiedDate_Field1.resx">
+      <DependentUpon>202210141053486_Add_ModifiedDate_Field1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210141137249_Alter_NightTaskCreate_Proc.resx">
+      <DependentUpon>202210141137249_Alter_NightTaskCreate_Proc.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

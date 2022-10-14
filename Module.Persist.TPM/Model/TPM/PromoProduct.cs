@@ -20,6 +20,9 @@ namespace Module.Persist.TPM.Model.TPM
 
         public DateTimeOffset? CreateDate { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         [StringLength(255)]
         [Index("Unique_PromoProduct", 4, IsUnique = true)]
         public string ZREP { get; set; }
