@@ -18,7 +18,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             try
             {
-                Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                Promo promo = context.Set<Promo>()
+                    .Where(x => x.Id == promoId && !x.Disabled)
+                    .FirstOrDefault();
 
                 ResetValues(promo, context);
                 double? sumPlanProductBaseLineLSV = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineLSV);
@@ -168,7 +170,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             {
                                 promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
                             }
-                            var isApproved = promo.LastApprovedDate != null;
+                            bool isApproved = promo.LastApprovedDate != null;
                             if (!isApproved)
                             {
                                 promo.PlanAddTIShopperApproved = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;

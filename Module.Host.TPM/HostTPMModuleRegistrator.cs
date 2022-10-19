@@ -29,7 +29,7 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXRATIShopperUpdateImportHandler(),
                 new Handlers.FullXLSXImportBaseLineHandler(),
                 new Handlers.FullXLSXUpdateImportIncrementalPromoHandler(),
-                new Handlers.UpdateUpliftHandler(),
+                //new Handlers.UpdateUpliftHandler(),
                 new Handlers.CalculatePromoParametersHandler(),
                 new Handlers.CalculateBudgetsHandler(),
                 new Handlers.CalculateBTLBudgetsHandler(),

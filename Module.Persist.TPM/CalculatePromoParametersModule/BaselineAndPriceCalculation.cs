@@ -13,13 +13,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// </summary>
         public static void SetPriceForPromoProducts(DatabaseContext databaseContext, Promo promo)
         {
-            var promoProducts = databaseContext.Set<PromoProduct>().Where(x => !x.Disabled && x.PromoId == promo.Id).ToList();
-            var allPriceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart 
+            List<PromoProduct> promoProducts = databaseContext.Set<PromoProduct>()
+                .Where(x => !x.Disabled && x.PromoId == promo.Id)
+                .ToList();
+            List<PriceList> allPriceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart 
                                                                     && x.EndDate >= promo.DispatchesStart 
                                                                     && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
-            var priceListsForPromoAndPromoProducts = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == false));
+            List<PriceList> priceListsForPromoAndPromoProducts = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == false)).ToList();
+            List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
 
-            foreach (var promoProduct in promoProducts)
+            foreach (PromoProduct promoProduct in promoProducts)
             {
                 var priceList = priceListsForPromoAndPromoProducts.Where(x => x.ProductId == promoProduct.ProductId)
                                                                   .OrderByDescending(x => x.StartDate).FirstOrDefault();
@@ -36,7 +39,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (incrementalPromo != null) incrementalPromo.CasePrice = null;
                 }
             }
-
+            // PriceIncreace
+            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
+            {
+                var priceList = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                if (priceList != null)
+                {
+                    promoProductPriceIncrease.Price = priceList.Price;
+                }
+                else
+                {
+                    promoProductPriceIncrease.Price = null;
+                }
+            }
             databaseContext.SaveChanges();
         }
 
@@ -61,11 +77,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     List<DateTimeOffset?> marsWeekStarts = new List<DateTimeOffset?>();
 
                     //длительность промо (проведение или отгрузка)
-                    var promoDuration = Math.Abs((promoEndDate.Value - promoStartDate.Value).Days) + 1;
-                    var promoStartDateDayOfWeek = (int)promoStartDate.Value.DayOfWeek;
-                    var startPromoMarsWeek = promoStartDate.Value.AddDays(-promoStartDateDayOfWeek);
-                    var promoEndDateDayOfWeek = (int)promoEndDate.Value.DayOfWeek;
-                    var endPromoMarsWeek = promoEndDate.Value.AddDays(-promoEndDateDayOfWeek);
+                    int promoDuration = Math.Abs((promoEndDate.Value - promoStartDate.Value).Days) + 1;
+                    int promoStartDateDayOfWeek = (int)promoStartDate.Value.DayOfWeek;
+                    DateTimeOffset startPromoMarsWeek = promoStartDate.Value.AddDays(-promoStartDateDayOfWeek);
+                    int promoEndDateDayOfWeek = (int)promoEndDate.Value.DayOfWeek;
+                    DateTimeOffset endPromoMarsWeek = promoEndDate.Value.AddDays(-promoEndDateDayOfWeek);
 
                     //количество недель, которое затрагивает Promo
                     int d = Math.Abs((endPromoMarsWeek - startPromoMarsWeek).Days) + 1;
@@ -112,10 +128,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                     List<Guid> productIds = promoProducts.Select(x => x.ProductId).ToList();
-                    var baselines = new List<BaseLine>();
+                    List<BaseLine> baselines = new List<BaseLine>();
+                    List<IncreaseBaseLine> increaseBaseLines = new List<IncreaseBaseLine>(); // PriceIncrease
                     if (productIds != null && clientNode != null && startPromoMarsWeek != null && endPromoMarsWeek != null)
                     {
                         baselines = context.Set<BaseLine>().Where(x => !x.Disabled && productIds.Contains(x.ProductId)
+                                    && x.StartDate >= startPromoMarsWeek && x.StartDate <= endPromoMarsWeek
+                                    && x.DemandCode == clientNode.DemandCode).ToList();
+                        // PriceIncrease
+                        increaseBaseLines = context.Set<IncreaseBaseLine>().Where(x => !x.Disabled && productIds.Contains(x.ProductId)
                                     && x.StartDate >= startPromoMarsWeek && x.StartDate <= endPromoMarsWeek
                                     && x.DemandCode == clientNode.DemandCode).ToList();
                     }
@@ -125,12 +146,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (message == null)
                             message = "";
 
-                        foreach (var promoProduct in promoProducts)
+                        foreach (PromoProduct promoProduct in promoProducts)
                         {
                             promoProduct.PlanProductBaselineCaseQty = 0;
                             promoProduct.PlanProductBaselineLSV = 0;
                         }
-                        message += String.Format("\nClientShareIndex was 0");
+                        // PriceIncrease
+                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
+                        {
+                            promoProductPriceIncrease.PlanProductBaselineCaseQty = 0;
+                            promoProductPriceIncrease.PlanProductBaselineLSV = 0;
+                        }
+                        message += string.Format("\nClientShareIndex was 0");
                     }
                     else
                     {
@@ -147,7 +174,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
                             // список №1 - все недели(в виде дат их начала), которые затрагивает промо
                             // список №2 - найденные baseline для этого ZREP
-                            var result = (from mws in marsWeekStarts
+                            List<ShortBaseline> result = (from mws in marsWeekStarts
                                           join ppb in promoProductBaselines on mws equals ppb.StartDate into joined
                                           from j in joined.DefaultIfEmpty()
                                           select new ShortBaseline
@@ -176,6 +203,48 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promoProduct.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProduct.Price;
                             promoProduct.PlanProductBaselineVolume = promoProduct.PlanProductBaselineCaseQty * promoProduct.Product.CaseVolume;
                         }
+                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
+                        {
+                            baseLineFound = false;
+                            var promoProductIncreaseBaselines = increaseBaseLines.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                             .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
+                                                             .ToList();
+
+                            if (promoProductIncreaseBaselines.Count() != 0) baseLineFound = true;
+
+
+                            // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
+                            // список №1 - все недели(в виде дат их начала), которые затрагивает промо
+                            // список №2 - найденные baseline для этого ZREP
+                            List<ShortBaseline> result = (from mws in marsWeekStarts
+                                                          join ppb in promoProductIncreaseBaselines on mws equals ppb.StartDate into joined
+                                                          from j in joined.DefaultIfEmpty()
+                                                          select new ShortBaseline
+                                                          {
+                                                              StartDate = mws,
+                                                              Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
+                                                          })
+                                      .OrderBy(x => x.StartDate)
+                                      .ToList();
+
+                            // умножение количества на первой и последней неделе на коэффициент, пропорциональный количеству дней, которое промо занимаент на соответствующей неделе
+                            result.First().Qty *= kFirstWeek;
+                            if (kLastWeek != 0) result.Last().Qty *= kLastWeek;
+
+                            // если не нашли BaseLine, пишем об этом
+                            if (!baseLineFound)
+                            {
+                                if (message == null)
+                                    message = "";
+
+                                message += String.Format("\nIncreaseBaseline was not found for product with ZREP: {0}", promoProductPriceIncrease.ZREP);
+                            }
+
+                            double? planProductBaseLineCaseQty = result.Sum(x => x.Qty) * baseLineShareIndex;
+                            promoProductPriceIncrease.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
+                            promoProductPriceIncrease.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProductPriceIncrease.Price;
+                            promoProductPriceIncrease.PlanProductBaselineVolume = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.PromoProduct.Product.CaseVolume;
+                        }
                     }
                 }
             }
@@ -187,7 +256,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static double? CalculateCasePrice(IncrementalPromo ipromo, DatabaseContext context)
         {
             double? casePrice = null;
-            var promo = context.Set<Promo>().Where(p => p.Id == ipromo.PromoId && !p.Disabled).Select(p => p).FirstOrDefault();
+            Promo promo = context.Set<Promo>().Where(p => p.Id == ipromo.PromoId && !p.Disabled).Select(p => p).FirstOrDefault();
 
             if (promo != null)
             {

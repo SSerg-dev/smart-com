@@ -342,7 +342,7 @@ namespace Module.Frontend.TPM.Controllers
                         var dispatchesEnd = DateTimeOffset.Parse(data["DispatchesEnd"] as string);
 
                         var eanPCsFromAssortmentMatrixForCurrentPromo =
-                            PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(Context, clientTreeKeyId, dispatchesStart, dispatchesEnd);
+                            PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(Context, clientTreeKeyId, dispatchesStart);
 
                         productsFromAssortmentMatrixForCurrentPromo = Context.Set<Product>().Where(x => eanPCsFromAssortmentMatrixForCurrentPromo.Contains(x.EAN_PC));
                     }
