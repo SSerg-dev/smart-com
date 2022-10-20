@@ -40,6 +40,24 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
             }
             // PriceIncreace
+            if (promo.PromoPriceIncrease.PromoProductPriceIncreases is null)
+            {
+                promo.PromoPriceIncrease.PromoProductPriceIncreases = new List<PromoProductPriceIncrease>();
+                foreach (PromoProduct promoProduct in promoProducts)
+                {
+                    promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(
+                        new PromoProductPriceIncrease
+                        {
+                            PromoProduct = promoProduct,
+                            ZREP = promoProduct.ZREP,
+                            EAN_Case = promoProduct.EAN_Case,
+                            EAN_PC = promoProduct.EAN_PC,
+                            ProductEN = promoProduct.ProductEN
+                        }
+                        );
+                }
+                
+            }
             foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
             {
                 var priceList = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)

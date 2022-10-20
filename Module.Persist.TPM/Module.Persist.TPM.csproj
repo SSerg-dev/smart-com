@@ -3338,6 +3338,7 @@
     <Compile Include="Model\Interfaces\IMode.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
+    <Compile Include="Model\SimpleModel\PlanUplift.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\StartEndModel.cs" />

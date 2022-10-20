@@ -90,7 +90,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     foreach (Product product in resultProductList)
                     {
-                        product.PromoProducts = new List<PromoProduct>();
+                        product.PromoProducts = new List<PromoProduct>();hghfg
                         product.IncrementalPromoes = new List<IncrementalPromo>();
                         PromoProduct promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == product.ZREP);
                         if (promoProduct != null && promoProduct.Disabled)
@@ -414,11 +414,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             double? sumPlanProductBaseLineLSVPI = promoProducts.Sum(x => x.PlanProductBaselineLSV);
                             double? sumPlanProductIncrementalLSVPI = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
                             if (promo.NeedRecountUplift.Value)
-                                promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
+                                promo.PromoPriceIncrease.PlanPromoUpliftPercent = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
 
-                            promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
-                            promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSVPI;
-                            promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;
+                            promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
+                            promo.PromoPriceIncrease.PlanPromoBaselineLSV = sumPlanProductBaseLineLSVPI;
+                            promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoBaselineLSV + promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
                         }
                         else
                         {
@@ -465,6 +465,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             // LSV = Qty ?
                             promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
                             promo.PlanPromoLSV = promo.PlanPromoIncrementalLSV;
+                            // PriceIncrease
+                            promo.PromoPriceIncrease.PlanPromoBaselineLSV = null;
+
+                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g=>g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
+                            // LSV = Qty ?
+                            promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
+                            promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
                         }
 
                         if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))

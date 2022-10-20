@@ -3,6 +3,7 @@ using Core.Settings;
 using Looper.Core;
 using Module.Frontend.TPM.Controllers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
@@ -125,11 +126,11 @@ namespace Module.Host.TPM.Handlers
 
                                 string upliftMessage;
 
-                                double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, false, new Guid());
+                                PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, false, new Guid());
 
-                                if (planPromoUpliftPercent != -1)
+                                if (planPromoUpliftPercent.CountedPlanUplift != -1)
                                 {
-                                    logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent);
+                                    logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUplift);
                                     handlerLogger.Write(true, logLine, "Message");
                                 }
                                 else

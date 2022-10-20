@@ -22,6 +22,7 @@ using Core.Dependency;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.SimpleModel;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -113,11 +114,11 @@ namespace Module.Host.TPM.Handlers
 
 								string upliftMessage;
 
-								double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
+								PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
 
-								if (planPromoUpliftPercent != -1)
+								if (planPromoUpliftPercent.CountedPlanUplift != -1)
 								{
-									logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent);
+									logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUplift);
 									handlerLogger.Write(true, logLine, "Message");
 								}
 								else
