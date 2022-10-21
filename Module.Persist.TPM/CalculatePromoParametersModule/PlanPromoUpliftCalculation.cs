@@ -452,12 +452,21 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     var uplift = promoProductsCorrections.Where(x => x.PromoProductId == promoProduct.Id).FirstOrDefault().PlanProductUpliftPercentCorrected / 100;
                     summPlanIncremental += promoProduct.PlanProductBaselineLSV * uplift;
-                    var upliftPI = currentPromoProducts.SelectMany(g=>g.PromoProductPriceIncreases).Where(x => x.PromoProductId == promoProduct.Id).FirstOrDefault().ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected / 100;
-                    summPlanIncrementalPI += promoProduct.PromoProductPriceIncreases.FirstOrDefault().PlanProductBaselineLSV * uplift;
+                    
                 }
                 else
                 {
                     summPlanIncremental += promoProduct.PlanProductBaselineLSV * factProductUplift / 100;
+                    
+                }
+                // PriceIncrease
+                if (currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases).Any(x => x.PromoProductId == promoProduct.Id))
+                {
+                    var upliftPI = currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases).Where(x => x.PromoProductId == promoProduct.Id).FirstOrDefault().ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected / 100;
+                    summPlanIncrementalPI += promoProduct.PromoProductPriceIncreases.FirstOrDefault().PlanProductBaselineLSV * upliftPI;
+                }
+                else
+                {
                     summPlanIncrementalPI += promoProduct.PromoProductPriceIncreases.FirstOrDefault().PlanProductBaselineLSV * factProductUpliftPI / 100;
                 }
             }

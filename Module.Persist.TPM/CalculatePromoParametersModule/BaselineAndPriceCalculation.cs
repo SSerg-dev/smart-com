@@ -3,6 +3,8 @@ using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -14,10 +16,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void SetPriceForPromoProducts(DatabaseContext databaseContext, Promo promo)
         {
             List<PromoProduct> promoProducts = databaseContext.Set<PromoProduct>()
+                .Include(f => f.PromoProductsCorrections)
                 .Where(x => !x.Disabled && x.PromoId == promo.Id)
                 .ToList();
-            List<PriceList> allPriceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart 
-                                                                    && x.EndDate >= promo.DispatchesStart 
+            List<PriceList> allPriceLists = databaseContext.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart
+                                                                    && x.EndDate >= promo.DispatchesStart
                                                                     && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
             List<PriceList> priceListsForPromoAndPromoProducts = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == false)).ToList();
             List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
@@ -26,7 +29,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var priceList = priceListsForPromoAndPromoProducts.Where(x => x.ProductId == promoProduct.ProductId)
                                                                   .OrderByDescending(x => x.StartDate).FirstOrDefault();
-                var incrementalPromo = databaseContext.Set<IncrementalPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id 
+                var incrementalPromo = databaseContext.Set<IncrementalPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id
                                                                               && x.ProductId == promoProduct.ProductId).FirstOrDefault();
                 if (priceList != null)
                 {
@@ -40,23 +43,34 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
             }
             // PriceIncreace
-            if (promo.PromoPriceIncrease.PromoProductPriceIncreases is null)
+            if (promo.PromoPriceIncrease.PromoProductPriceIncreases is null && promoProducts.Count > 0)
             {
                 promo.PromoPriceIncrease.PromoProductPriceIncreases = new List<PromoProductPriceIncrease>();
                 foreach (PromoProduct promoProduct in promoProducts)
                 {
-                    promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(
-                        new PromoProductPriceIncrease
+                    PromoProductPriceIncrease promoProductPriceIncrease = new PromoProductPriceIncrease
+                    {
+                        PromoProduct = promoProduct,
+                        ZREP = promoProduct.ZREP,
+                        EAN_Case = promoProduct.EAN_Case,
+                        EAN_PC = promoProduct.EAN_PC,
+                        ProductEN = promoProduct.ProductEN
+                    };
+                    if (promoProduct.PromoProductsCorrections.Any(f => !f.Disabled))
+                    {
+                        PromoProductCorrectionPriceIncrease promoProductCorrectionPriceIncrease = new PromoProductCorrectionPriceIncrease
                         {
-                            PromoProduct = promoProduct,
-                            ZREP = promoProduct.ZREP,
-                            EAN_Case = promoProduct.EAN_Case,
-                            EAN_PC = promoProduct.EAN_PC,
-                            ProductEN = promoProduct.ProductEN
-                        }
-                        );
+                            PlanProductUpliftPercentCorrected = promoProduct.PromoProductsCorrections.FirstOrDefault().PlanProductUpliftPercentCorrected,
+                            TempId = promoProduct.PromoProductsCorrections.FirstOrDefault().TempId,
+                            UserId = promoProduct.PromoProductsCorrections.FirstOrDefault().UserId,
+                            UserName = promoProduct.PromoProductsCorrections.FirstOrDefault().UserName,
+                            CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
+                        };
+                        promoProductPriceIncrease.ProductCorrectionPriceIncrease = promoProductCorrectionPriceIncrease;
+                    }
+                    promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(promoProductPriceIncrease);
                 }
-                
+
             }
             foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
             {
@@ -193,13 +207,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             // список №1 - все недели(в виде дат их начала), которые затрагивает промо
                             // список №2 - найденные baseline для этого ZREP
                             List<ShortBaseline> result = (from mws in marsWeekStarts
-                                          join ppb in promoProductBaselines on mws equals ppb.StartDate into joined
-                                          from j in joined.DefaultIfEmpty()
-                                          select new ShortBaseline
-                                          {
-                                              StartDate = mws,
-                                              Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
-                                          })
+                                                          join ppb in promoProductBaselines on mws equals ppb.StartDate into joined
+                                                          from j in joined.DefaultIfEmpty()
+                                                          select new ShortBaseline
+                                                          {
+                                                              StartDate = mws,
+                                                              Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
+                                                          })
                                       .OrderBy(x => x.StartDate)
                                       .ToList();
 

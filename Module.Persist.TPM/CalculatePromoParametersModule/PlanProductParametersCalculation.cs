@@ -77,7 +77,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         needReturnToOnApprovalStatus = true;
                     }
                     // PriceIncrease
-                    if (!promo.PromoPriceIncrease.PromoProductPriceIncreases.Any(x => x.ZREP == promoProduct.ZREP))
+                    if (!promo.PromoPriceIncrease.PromoProductPriceIncreases.Any(x => x.ZREP == promoProduct.ZREP) && createIncidents)
                     {
                         PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
                         promoProductPriceIncrease.Disabled = true;
@@ -90,8 +90,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     foreach (Product product in resultProductList)
                     {
-                        product.PromoProducts = new List<PromoProduct>();hghfg
-                        product.IncrementalPromoes = new List<IncrementalPromo>();
+                        //product.PromoProducts = new List<PromoProduct>();
+                        //product.IncrementalPromoes = new List<IncrementalPromo>();
                         PromoProduct promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == product.ZREP);
                         if (promoProduct != null && promoProduct.Disabled)
                         {
@@ -307,7 +307,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             try
             {
                 var promo = context.Set<Promo>()
-                    .Include(g=>g.PromoPriceIncrease)
+                    .Include(g => g.PromoPriceIncrease)
                     .Where(x => x.Id == promoId && !x.Disabled)
                     .FirstOrDefault();
                 string message = null;
@@ -319,7 +319,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (clientNode != null)
                     {
                         List<PromoProduct> promoProducts = context.Set<PromoProduct>()
-                            .Include(x=>x.PromoProductPriceIncreases.Select(g=>g.ProductCorrectionPriceIncrease))
+                            .Include(x => x.PromoProductPriceIncreases.Select(g => g.ProductCorrectionPriceIncrease))
                             .Where(x => x.PromoId == promo.Id && !x.Disabled)
                             .ToList();
                         double? clientPostPromoEffectW1 = clientNode.PostPromoEffectW1;
@@ -379,7 +379,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
                             promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;
                             // PriceIncrease
-                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g=>g.PromoProductPriceIncreases))
+                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
                             {
                                 var promoProductCorrectionPI = promoProductPriceIncrease.ProductCorrectionPriceIncrease;
                                 var promoProductUpliftPI = promoProductCorrectionPI?.PlanProductUpliftPercentCorrected ?? promoProductPriceIncrease.PlanProductUpliftPercent;
@@ -468,7 +468,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             // PriceIncrease
                             promo.PromoPriceIncrease.PlanPromoBaselineLSV = null;
 
-                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g=>g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
+                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
                             // LSV = Qty ?
                             promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
                             promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
@@ -572,7 +572,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     productTreeArray = context.Set<ProductTree>().Where(x => !x.EndDate.HasValue).ToArray().Where(n => promoProductTrees.Any(p => p.ProductTreeObjectId == n.ObjectId)).ToArray();
                 }
 
-                products = context.Set<Product>().Where(x => !x.Disabled).ToList();
+                products = context.Set<Product>()
+                    .Include(f => f.PromoProducts)
+                    .Include(f => f.IncrementalPromoes)
+                    .Where(x => !x.Disabled)
+                    .ToList();
                 productsCopy = products.ToList();
                 foreach (ProductTree productTree in productTreeArray)
                 {
