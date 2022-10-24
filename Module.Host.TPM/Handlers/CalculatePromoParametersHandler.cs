@@ -97,7 +97,6 @@ namespace Module.Host.TPM.Handlers
                                     logLine = String.Format("Error filling Product: {0}", setPromoProductError);
                                     handlerLogger.Write(true, logLine, "Error");
                                 }
-
                                 calculateBaselineError = PlanProductParametersCalculation.CalculateBaseline(context, promoId);
                             }
                         }

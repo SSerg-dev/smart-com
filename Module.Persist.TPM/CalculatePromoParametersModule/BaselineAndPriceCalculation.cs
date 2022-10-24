@@ -45,44 +45,22 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             // PriceIncreace
             if (promo.PromoPriceIncrease.PromoProductPriceIncreases is null && promoProducts.Count > 0)
             {
-                promo.PromoPriceIncrease.PromoProductPriceIncreases = new List<PromoProductPriceIncrease>();
-                foreach (PromoProduct promoProduct in promoProducts)
-                {
-                    PromoProductPriceIncrease promoProductPriceIncrease = new PromoProductPriceIncrease
-                    {
-                        PromoProduct = promoProduct,
-                        ZREP = promoProduct.ZREP,
-                        EAN_Case = promoProduct.EAN_Case,
-                        EAN_PC = promoProduct.EAN_PC,
-                        ProductEN = promoProduct.ProductEN
-                    };
-                    if (promoProduct.PromoProductsCorrections.Any(f => !f.Disabled))
-                    {
-                        PromoProductCorrectionPriceIncrease promoProductCorrectionPriceIncrease = new PromoProductCorrectionPriceIncrease
-                        {
-                            PlanProductUpliftPercentCorrected = promoProduct.PromoProductsCorrections.FirstOrDefault().PlanProductUpliftPercentCorrected,
-                            TempId = promoProduct.PromoProductsCorrections.FirstOrDefault().TempId,
-                            UserId = promoProduct.PromoProductsCorrections.FirstOrDefault().UserId,
-                            UserName = promoProduct.PromoProductsCorrections.FirstOrDefault().UserName,
-                            CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
-                        };
-                        promoProductPriceIncrease.ProductCorrectionPriceIncrease = promoProductCorrectionPriceIncrease;
-                    }
-                    promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(promoProductPriceIncrease);
-                }
-
+                PlanProductParametersCalculation.FillPriceIncreaseProdusts(promo, promoProducts);
             }
-            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
+            if (promo.PromoPriceIncrease.PromoProductPriceIncreases != null)
             {
-                var priceList = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
-                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
-                if (priceList != null)
+                foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
                 {
-                    promoProductPriceIncrease.Price = priceList.Price;
-                }
-                else
-                {
-                    promoProductPriceIncrease.Price = null;
+                    var priceList = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                                      .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                    if (priceList != null)
+                    {
+                        promoProductPriceIncrease.Price = priceList.Price;
+                    }
+                    else
+                    {
+                        promoProductPriceIncrease.Price = null;
+                    }
                 }
             }
             databaseContext.SaveChanges();
@@ -235,48 +213,52 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promoProduct.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProduct.Price;
                             promoProduct.PlanProductBaselineVolume = promoProduct.PlanProductBaselineCaseQty * promoProduct.Product.CaseVolume;
                         }
-                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
+                        if (promo.PromoPriceIncrease.PromoProductPriceIncreases != null)
                         {
-                            baseLineFound = false;
-                            var promoProductIncreaseBaselines = increaseBaseLines.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
-                                                             .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
-                                                             .ToList();
-
-                            if (promoProductIncreaseBaselines.Count() != 0) baseLineFound = true;
-
-
-                            // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
-                            // список №1 - все недели(в виде дат их начала), которые затрагивает промо
-                            // список №2 - найденные baseline для этого ZREP
-                            List<ShortBaseline> result = (from mws in marsWeekStarts
-                                                          join ppb in promoProductIncreaseBaselines on mws equals ppb.StartDate into joined
-                                                          from j in joined.DefaultIfEmpty()
-                                                          select new ShortBaseline
-                                                          {
-                                                              StartDate = mws,
-                                                              Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
-                                                          })
-                                      .OrderBy(x => x.StartDate)
-                                      .ToList();
-
-                            // умножение количества на первой и последней неделе на коэффициент, пропорциональный количеству дней, которое промо занимаент на соответствующей неделе
-                            result.First().Qty *= kFirstWeek;
-                            if (kLastWeek != 0) result.Last().Qty *= kLastWeek;
-
-                            // если не нашли BaseLine, пишем об этом
-                            if (!baseLineFound)
+                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
                             {
-                                if (message == null)
-                                    message = "";
+                                baseLineFound = false;
+                                var promoProductIncreaseBaselines = increaseBaseLines.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                                 .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
+                                                                 .ToList();
 
-                                message += String.Format("\nIncreaseBaseline was not found for product with ZREP: {0}", promoProductPriceIncrease.ZREP);
+                                if (promoProductIncreaseBaselines.Count() != 0) baseLineFound = true;
+
+
+                                // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
+                                // список №1 - все недели(в виде дат их начала), которые затрагивает промо
+                                // список №2 - найденные baseline для этого ZREP
+                                List<ShortBaseline> result = (from mws in marsWeekStarts
+                                                              join ppb in promoProductIncreaseBaselines on mws equals ppb.StartDate into joined
+                                                              from j in joined.DefaultIfEmpty()
+                                                              select new ShortBaseline
+                                                              {
+                                                                  StartDate = mws,
+                                                                  Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
+                                                              })
+                                          .OrderBy(x => x.StartDate)
+                                          .ToList();
+
+                                // умножение количества на первой и последней неделе на коэффициент, пропорциональный количеству дней, которое промо занимаент на соответствующей неделе
+                                result.First().Qty *= kFirstWeek;
+                                if (kLastWeek != 0) result.Last().Qty *= kLastWeek;
+
+                                // если не нашли BaseLine, пишем об этом
+                                if (!baseLineFound)
+                                {
+                                    if (message == null)
+                                        message = "";
+
+                                    message += String.Format("\nIncreaseBaseline was not found for product with ZREP: {0}", promoProductPriceIncrease.ZREP);
+                                }
+
+                                double? planProductBaseLineCaseQty = result.Sum(x => x.Qty) * baseLineShareIndex;
+                                promoProductPriceIncrease.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
+                                promoProductPriceIncrease.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProductPriceIncrease.Price;
+                                promoProductPriceIncrease.PlanProductBaselineVolume = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.PromoProduct.Product.CaseVolume;
                             }
-
-                            double? planProductBaseLineCaseQty = result.Sum(x => x.Qty) * baseLineShareIndex;
-                            promoProductPriceIncrease.PlanProductBaselineCaseQty = planProductBaseLineCaseQty;
-                            promoProductPriceIncrease.PlanProductBaselineLSV = planProductBaseLineCaseQty * promoProductPriceIncrease.Price;
-                            promoProductPriceIncrease.PlanProductBaselineVolume = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.PromoProduct.Product.CaseVolume;
                         }
+
                     }
                 }
             }

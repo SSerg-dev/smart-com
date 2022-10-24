@@ -29,7 +29,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 //Получаем все продукты по этому промо
                 List<PromoProduct> currentPromoProducts = context.Set<PromoProduct>()
-                    .Include(g => g.PromoProductPriceIncreases.Select(x=>x.ProductCorrectionPriceIncrease))
+                    .Include(g => g.PromoProductPriceIncreases.Select(x => x.ProductCorrectionPriceIncrease))
                     .Where(x => x.PromoId == currentPromo.Id && x.Disabled != true)
                     .ToList();
                 foreach (var promoProduct in currentPromoProducts)
@@ -58,7 +58,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promoProductsCorrection.UserName = user.Name;
                         }
                         // PriceIncrease
-                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in currentPromoProducts.SelectMany(g=>g.PromoProductPriceIncreases))
+                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases))
                         {
                             promoProductPriceIncrease.ProductCorrectionPriceIncrease.Disabled = true;
                             promoProductPriceIncrease.ProductCorrectionPriceIncrease.DeletedDate = DateTimeOffset.UtcNow;
@@ -385,11 +385,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
             double? summPlanIncrementalPI = 0;
             double? summPlanBaselinePI = 0;
-            foreach (PromoProductPriceIncrease promoProductPriceIncrease in currentPromoProducts.SelectMany(g=>g.PromoProductPriceIncreases))
+            if (currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases).Any(g => g.ProductCorrectionPriceIncrease != null))
             {
-                summPlanIncrementalPI += promoProductPriceIncrease.PlanProductBaselineLSV * promoProductPriceIncrease.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected / 100;
+                foreach (PromoProductPriceIncrease promoProductPriceIncrease in currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases))
+                {
+                    summPlanIncrementalPI += promoProductPriceIncrease.PlanProductBaselineLSV * promoProductPriceIncrease.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected / 100;
+                }
             }
-            summPlanBaselinePI = currentPromoProducts.SelectMany(g=>g.PromoProductPriceIncreases).Sum(x => x.PlanProductBaselineLSV);
+            summPlanBaselinePI = currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductBaselineLSV);
             if (summPlanBaselinePI != 0)
             {
                 planUplift.CountedPlanUpliftPI = summPlanIncrementalPI / summPlanBaselinePI * 100;
@@ -415,7 +418,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             foreach (Promo promo in promoList)
             {
                 promoProductsList.AddRange(context.Set<PromoProduct>()
-                    .Include(g=>g.PromoProductPriceIncreases)
+                    .Include(g => g.PromoProductPriceIncreases)
                     .Where(x => x.PromoId == promo.Id && x.Disabled != true)
                     .ToList());
                 if (promo.ActualPromoUpliftPercent != null)
@@ -435,7 +438,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     factProductUplift = promoProductsSubList.Average(x => x.ActualProductUpliftPercent);
                     promoProduct.AverageMarker = false;
-                    factProductUpliftPI = promoProductsSubList.SelectMany(f=>f.PromoProductPriceIncreases).Average(x => x.ActualProductUpliftPercent);
+                    factProductUpliftPI = promoProductsSubList.SelectMany(f => f.PromoProductPriceIncreases).Average(x => x.ActualProductUpliftPercent);
                     promoProduct.PromoProductPriceIncreases.FirstOrDefault().AverageMarker = false;
                 }
                 //Если не подобрали аплифт по предыдущим промо - считаем средний аплифт для продукта
@@ -452,12 +455,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     var uplift = promoProductsCorrections.Where(x => x.PromoProductId == promoProduct.Id).FirstOrDefault().PlanProductUpliftPercentCorrected / 100;
                     summPlanIncremental += promoProduct.PlanProductBaselineLSV * uplift;
-                    
+
                 }
                 else
                 {
                     summPlanIncremental += promoProduct.PlanProductBaselineLSV * factProductUplift / 100;
-                    
+
                 }
                 // PriceIncrease
                 if (currentPromoProducts.SelectMany(g => g.PromoProductPriceIncreases).Any(x => x.PromoProductId == promoProduct.Id))
