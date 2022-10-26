@@ -3203,6 +3203,10 @@
     <Compile Include="Migrations\202210141311013_Change_OneToOnePI1.Designer.cs">
       <DependentUpon>202210141311013_Change_OneToOnePI1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210251155039_Add_NeedRecountUplift_PPI.cs" />
+    <Compile Include="Migrations\202210251155039_Add_NeedRecountUplift_PPI.Designer.cs">
+      <DependentUpon>202210251155039_Add_NeedRecountUplift_PPI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6052,6 +6056,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210141311013_Change_OneToOnePI1.resx">
       <DependentUpon>202210141311013_Change_OneToOnePI1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210251155039_Add_NeedRecountUplift_PPI.resx">
+      <DependentUpon>202210251155039_Add_NeedRecountUplift_PPI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -794,52 +794,52 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                                     listeners: {
                                                         afterRender: function (me) {
                                                             var readonly = me.up('promoeditorcustom').readOnly;
-                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
                                                             var GlyphLock = this.up('container').down('#GlyphLock');
                                                             var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
                                                             var lockAccessCrud = false;
 
-                                                            if (planPromoUpliftNumberField.crudAccess.indexOf(currentRole) === -1) {
+                                                            if (planPromoUpliftNumberFieldPI.crudAccess.indexOf(currentRole) === -1) {
                                                                 lockAccessCrud = true;
                                                             }
                                                             if ((!this.value || readonly) || lockAccessCrud) {
-                                                                planPromoUpliftNumberField.setEditable(false);
+                                                                planPromoUpliftNumberFieldPI.setEditable(false);
                                                                 GlyphLock.setGlyph(0xf33e);
-                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                planPromoUpliftNumberFieldPI.isReadable = false;
                                                                 //planPromoUpliftNumberField.removeCls('readOnlyField');
                                                             } else {
-                                                                planPromoUpliftNumberField.setEditable(true);
+                                                                planPromoUpliftNumberFieldPI.setEditable(true);
                                                                 GlyphLock.setGlyph(0xf33f);
-                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                planPromoUpliftNumberFieldPI.isReadable = true;
                                                                 //planPromoUpliftNumberField.addCls('readOnlyField');
                                                             }
                                                         },
                                                         change: function (checkbox, newValue, oldValue) {
-                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
                                                             var GlyphLock = this.up('container').down('#GlyphLock');
                                                             if (newValue) {
-                                                                planPromoUpliftNumberField.setEditable(true);
+                                                                planPromoUpliftNumberFieldPI.setEditable(true);
                                                                 GlyphLock.setGlyph(0xf33f);
-                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                planPromoUpliftNumberFieldPI.isReadable = true;
                                                                 //planPromoUpliftNumberField.removeCls('readOnlyField');
                                                             } else {
-                                                                planPromoUpliftNumberField.setEditable(false);
+                                                                planPromoUpliftNumberFieldPI.setEditable(false);
                                                                 GlyphLock.setGlyph(0xf33e);
-                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                planPromoUpliftNumberFieldPI.isReadable = false;
                                                                 //planPromoUpliftNumberField.addCls('readOnlyField');
                                                             }
                                                         },
                                                         enable: function (me) {
                                                             var readonly = me.up('promoeditorcustom').readOnly;
-                                                            var planPromoUpliftNumberField = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
                                                             var GlyphLock = this.up('container').down('#GlyphLock');
                                                             if (!this.value || readonly) {
-                                                                planPromoUpliftNumberField.setEditable(false);
-                                                                planPromoUpliftNumberField.isReadable = false;
+                                                                planPromoUpliftNumberFieldPI.setEditable(false);
+                                                                planPromoUpliftNumberFieldPI.isReadable = false;
                                                                 //planPromoUpliftNumberField.removeCls('readOnlyField');
                                                             } else {
-                                                                planPromoUpliftNumberField.setEditable(true);
-                                                                planPromoUpliftNumberField.isReadable = true;
+                                                                planPromoUpliftNumberFieldPI.setEditable(true);
+                                                                planPromoUpliftNumberFieldPI.isReadable = true;
                                                                 //planPromoUpliftNumberField.addCls('readOnlyField');
                                                             }
                                                             GlyphLock.setDisabled(false);

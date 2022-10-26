@@ -76,7 +76,7 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
-            }            
+            }
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -322,7 +322,7 @@ namespace Module.Frontend.TPM.Controllers
                 List<Product> filteredProducts; // продукты, подобранные по фильтрам
                 CheckSupportInfo(result, promoProductTrees, out filteredProducts);
                 //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                CalculatePromo(result, false, false, true);
+                CalculatePromo(result, false, false, false, true);
             }
             else
             {
@@ -365,6 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .Include(g => g.PromoPriceIncrease)
                     .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
@@ -404,7 +405,7 @@ namespace Module.Frontend.TPM.Controllers
                             Context.SaveChanges();
                             patch.Patch(model);
                             RSmodeHelper.EditToPromoRS(Context, model);
-                        }                        
+                        }
                     }
                 }
                 patch.Patch(model);
@@ -559,9 +560,23 @@ namespace Module.Frontend.TPM.Controllers
                     var productQuery = Context.Set<Product>().Where(x => !x.Disabled);
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy, productQuery);
                     bool needResetUpliftCorrections = false;
+                    bool needResetUpliftCorrectionsPI = false;
                     if (model.NeedRecountUplift != null && promoCopy.NeedRecountUplift != null && model.NeedRecountUplift != promoCopy.NeedRecountUplift)
                     {
                         needResetUpliftCorrections = true;
+                    }
+
+                    if (model.NeedRecountUpliftPI != promoCopy.NeedRecountUpliftPI ||
+                        (promoCopy.PlanPromoUpliftPercentPI == null && model.PlanPromoUpliftPercentPI != null) ||
+                        model.PromoPriceIncrease.PlanPromoUpliftPercent != model.PlanPromoUpliftPercentPI)
+                    {
+                        needResetUpliftCorrectionsPI = true;
+
+                    }
+                    // PriceIncrease
+                    if (model.PromoPriceIncrease != null && model.PlanPromoUpliftPercentPI != null)
+                    {
+                        model.PromoPriceIncrease.PlanPromoUpliftPercent = model.PlanPromoUpliftPercentPI;
                     }
                     model.AdditionalUserTimestamp = null;
 
@@ -654,7 +669,7 @@ namespace Module.Frontend.TPM.Controllers
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
 
-                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
                         }
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
@@ -861,7 +876,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 try
                 {
-                    CalculatePromo(promo, true, false);
+                    CalculatePromo(promo, true, false, false);
                     transaction.Commit();
                 }
                 catch (Exception e)
@@ -1097,7 +1112,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
-                    .FirstOrDefault(g=>g.Id == key);
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -1563,7 +1578,7 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
         /// </summary>
         /// <param name="promo"></param>
-        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
+        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -1576,6 +1591,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrectionsPI", needResetUpliftCorrectionsPI, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("createDemandIncidentCreate", createDemandIncidentCreate, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("createDemandIncidentUpdate", createDemandIncidentUpdate, data, visible: false, throwIfNotExists: false);
 
@@ -2460,7 +2476,10 @@ namespace Module.Frontend.TPM.Controllers
                         && Math.Round(oldPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
+                    || (Math.Round(newPromo.PromoPriceIncrease.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercentPI.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
+                    || (oldPromo.PlanPromoUpliftPercentPI == null && newPromo.PlanPromoUpliftPercentPI != null)
+                    || (oldPromo.NeedRecountUpliftPI != newPromo.NeedRecountUpliftPI)
                     || oldPromo.IsOnInvoice != newPromo.IsOnInvoice
                     || oldPromo.PlanAddTIMarketingApproved != newPromo.PlanAddTIMarketingApproved
                     || oldPromo.PromoStatus.Name.ToLower() == "draft"

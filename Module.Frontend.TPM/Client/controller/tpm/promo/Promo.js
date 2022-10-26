@@ -362,7 +362,7 @@
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();                
+                grid.columnManager.getColumns()[indexh].hide();
             }
             else {
                 var promoGridStore = grid.getStore();
@@ -2736,12 +2736,19 @@
 
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
-
+        record.data.PlanPromoUpliftPercentPI = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercentPI]').getValue();
+        debugger;
         var needRecountUplift = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckbox').getValue();
         if (needRecountUplift === true) {
             record.data.NeedRecountUplift = false;
         } else {
             record.data.NeedRecountUplift = true;
+        }
+        var needRecountUpliftPI = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckboxPI').getValue();
+        if (needRecountUpliftPI === true) {
+            record.data.NeedRecountUpliftPI = false;
+        } else {
+            record.data.NeedRecountUpliftPI = true;
         }
         if (window.TPMmode == 0) {
             record.data.TPMmode = 'Current';
@@ -3670,14 +3677,14 @@
             planPromoLSV.setValue(record.data.PlanPromoLSV);
             planPostPromoEffect.setValue(record.data.PlanPromoPostPromoEffectLSV);
 
-            planPromoUpliftPercentPI.setValue(record.data.PlanPromoUpliftPercentPI);
+            planPromoUpliftPercentPI.setValue(record.data.PlanPromoUpliftPercentPIread);
             promoUpliftLockedUpdateCheckboxPI.setValue(!record.data.NeedRecountUplift);
             planPromoUpliftPercentPI.defaultValue = !record.data.NeedRecountUplift;
             planPromoBaselineLSVPI.setValue(record.data.PlanPromoBaselineLSVPI);
             planPromoIncrementalLSVPI.setValue(record.data.PlanPromoIncrementalLSVPI);
             planPromoLSVPI.setValue(record.data.PlanPromoLSVPI);
             planPostPromoEffectPI.setValue(record.data.PlanPromoPostPromoEffectLSVPI);
-            
+
             actualPromoUpliftPercent.setValue(record.data.ActualPromoUpliftPercent);
             actualPromoBaselineLSV.setValue(record.data.ActualPromoBaselineLSV);
             actualPromoIncrementalLSV.setValue(record.data.ActualPromoIncrementalLSV);
@@ -3937,11 +3944,11 @@
                 if (mode.data.value == 0) {
                     this.saveModel(model, window, close, reloadForm);
                 }
-                if (mode.data.value == 1){
+                if (mode.data.value == 1) {
                     this.savePublishClosePromo(model, window, close, reloadForm);
                 }
             }
-            
+
         } else {
             App.Notify.pushInfo(isModelComplete);
         }
@@ -3951,7 +3958,7 @@
         var checkValid = this.validatePromoModel(window);
         if (checkValid === '') {
             var record = this.getRecord(window);
-            
+
             var btn_publish = window.down('button[itemId=btn_publish]');
             window.previousStatusId = window.statusId;
             window.statusId = btn_publish.statusId;
@@ -6533,14 +6540,14 @@
     },
 
 
-    setEventBTL: function () {        
+    setEventBTL: function () {
         var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var durationDateStart = period.down('datefield[name=DurationStartDate]');
         var durationDateEnd = period.down('datefield[name=DurationEndDate]');
 
         if (durationDateStart.value && durationDateEnd.value && promoeditorcustom.InOutProductIds) {
-            var eventBTLModel = new Object();            
+            var eventBTLModel = new Object();
             eventBTLModel.DurationDateStart = durationDateStart.value;
             eventBTLModel.DurationDateEnd = durationDateEnd.value;
             eventBTLModel.InOutProductIds = promoeditorcustom.InOutProductIds;

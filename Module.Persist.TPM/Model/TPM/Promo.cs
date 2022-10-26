@@ -45,6 +45,7 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(400)]
         public string BaseClientTreeIds { get; set; }
         public bool? NeedRecountUplift { get; set; }
+        public bool NeedRecountUpliftPI { get; set; }
 
         public DateTimeOffset? LastApprovedDate { get; set; }
 
@@ -102,6 +103,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoUpliftPercent { get; set; }
         public double? PlanPromoIncrementalLSV { get; set; }
         public double? PlanPromoLSV { get; set; }
+
+        public double? PlanPromoUpliftPercentPI { get; set; }
 
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }

@@ -258,11 +258,13 @@
 
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
 
-        { name: 'PlanPromoUpliftPercentPI', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoUpliftPercent', defaultFilterConfig: { valueField: 'PlanPromoUpliftPercentPI' }, hidden: false, isDefault: false },
+        { name: 'PlanPromoUpliftPercentPIread', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoUpliftPercent', defaultFilterConfig: { valueField: 'PlanPromoUpliftPercentPIread' }, hidden: false, isDefault: false },
+        { name: 'PlanPromoUpliftPercentPI', useNull: true, type: 'float', hidden: false, isDefault: false }, //для сохранения
         { name: 'PlanPromoBaselineLSVPI', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoBaselineLSV', defaultFilterConfig: { valueField: 'PlanPromoBaselineLSVPI' }, hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalLSVPI', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoIncrementalLSV', defaultFilterConfig: { valueField: 'PlanPromoIncrementalLSVPI' }, hidden: false, isDefault: false },
         { name: 'PlanPromoLSVPI', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoLSV', defaultFilterConfig: { valueField: 'PlanPromoLSVPI' }, hidden: false, isDefault: false },
         { name: 'PlanPromoPostPromoEffectLSVPI', useNull: true, type: 'float', mapping: 'PromoPriceIncrease.PlanPromoPostPromoEffectLSV', defaultFilterConfig: { valueField: 'PlanPromoPostPromoEffectLSVPI' }, hidden: false, isDefault: false },
+        { name: 'NeedRecountUpliftPI', type: 'float', hidden: true, isDefault: false },
     ],
     //hasMany: [
     //    //{

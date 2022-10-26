@@ -38,8 +38,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
                 // добавление пустого PromoPriceIncrease к Promo если его нет
                 if (promo.PromoPriceIncrease is null)
-                {
+                {                    
                     promo.PromoPriceIncrease = new PromoPriceIncrease();
+                    if (promo.PlanPromoUpliftPercentPI != null)
+                    {
+                        promo.PromoPriceIncrease.PlanPromoUpliftPercent = promo.PlanPromoUpliftPercentPI;
+                    }
                 }
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);

@@ -169,7 +169,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases);
-            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g=>g.PromoProductPriceIncrease).WithOptional(g=>g.ProductCorrectionPriceIncrease);
+            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithOptional(g => g.ProductCorrectionPriceIncrease);
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>();
         }
 
@@ -1254,7 +1254,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("PromoProductCorrectionDelete");
 
-            builder.EntitySet<PromoPriceIncrease>("PromoPriceIncreases").HasRequiredBinding(g=>g.Promo, "Promoes");
+            builder.EntitySet<PromoPriceIncrease>("PromoPriceIncreases").HasRequiredBinding(g => g.Promo, "Promoes");
 
             builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasRequiredBinding(g => g.PromoProduct, "PromoProducts");
 
