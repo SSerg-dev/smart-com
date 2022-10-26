@@ -2,14 +2,13 @@
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
 
-    startEndModel: null,
-
     init: function () {
         this.listen({
             component: {
                 'btlpromo directorygrid': {
+                    selectionchange: this.onGridSelectionChange,
                     selectionchange: this.onGridSelectionChangeCustom,
-                    afterrender: this.onBTLPromoGridAfterrender,
+                    afterrender: this.onGridAfterrender,
                     extfilterchange: this.onExtFilterChange,
                     itemdblclick: this.onDetailButtonClick
                 },
@@ -41,7 +40,7 @@
                     click: this.onAddButtonClick
                 },
                 'btlpromo #deletebutton': {
-                    click: this.onDeleteBTLPromoButtonClick
+                    click: this.onDeleteButtonClick
                 },
                 'btlpromo #historybutton': {
                     click: this.onHistoryButtonClick
@@ -60,95 +59,6 @@
                 },
             }
         });
-    },
-
-    onBTLPromoGridAfterrender: function (grid) {
-        
-        this.onGridAfterrender(grid);
-    },
-
-    getColumnIndex: function (grid, dataIndex) {
-        gridColumns = grid.headerCt.getGridColumns();
-        for (var i = 0; i < gridColumns.length; i++) {
-            if (gridColumns[i].dataIndex == dataIndex) {
-                return i;
-            }
-        }
-    },
-
-    onDeleteBTLPromoButtonClick: function (button) {
-
-        var grid = this.getGridByButton(button),
-            panel = grid.up('combineddirectorypanel'),
-            selModel = grid.getSelectionModel();
-
-        if (mode) {
-            if (mode.data.value == 1) {
-                if (selModel.hasSelection()) {
-                    Ext.Msg.show({
-                        title: l10n.ns('core').value('deleteWindowTitle'),
-                        msg: l10n.ns('core').value('deleteConfirmMessage'),
-                        fn: onMsgBoxClose,
-                        scope: this,
-                        icon: Ext.Msg.QUESTION,
-                        buttons: Ext.Msg.YESNO,
-                        buttonText: {
-                            yes: l10n.ns('core', 'buttons').value('delete'),
-                            no: l10n.ns('core', 'buttons').value('cancel')
-                        }
-                    });
-                } else {
-                    console.log('No selection');
-                }
-
-                function onMsgBoxClose(buttonId) {
-                    if (buttonId === 'yes') {
-                        var record = selModel.getSelection()[0],
-                            store = grid.getStore(),
-                            view = grid.getView(),
-                            currentIndex = store.indexOf(record),
-                            pageIndex = store.getPageFromRecordIndex(currentIndex),
-                            endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
-
-                        currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
-                        panel.setLoading(l10n.ns('core').value('deletingText'));
-
-
-                        $.ajax({
-                            type: "POST",
-                            cache: false,
-                            url: "/odata/BTLPromoes/BTLPromoDelete?key=" + record.data.Id,
-                            dataType: "json",
-                            contentType: false,
-                            processData: false,
-                            success: function (response) {
-                                var result = Ext.JSON.decode(response.value);
-                                if (result.success) {
-                                    store.on('load', function () {
-                                        panel.setLoading(false);
-                                    });
-
-                                    store.load();
-                                } else {
-                                    App.Notify.pushError(result.message);
-                                    panel.setLoading(false);
-                                }
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                App.Notify.pushError();
-                                panel.setLoading(false);
-                            }
-                        });
-                    }
-                }
-            }
-            else {
-                this.onDeleteButtonClick(button);
-            }
-        }
-        else {
-            this.onDeleteButtonClick(button);
-        }
     },
 
     onAddButtonClick: function (button) {
@@ -189,7 +99,7 @@
                 disabled: true
             }]
         });
-        
+
         var choosePromoWindowGrid = choosepromowindow.down('grid');
 
         choosepromowindow.show();
@@ -251,13 +161,9 @@
             },
             single: true
         });
-        //RS
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         // Находим номера промо с прикреплёнными BTL, чтобы отфильровать их
         var params = {
-            eventId: btlRecord.get('EventId'),
-            tPMmode: mode.data.value
+            eventId: btlRecord.get('EventId')
         };
         App.Util.makeRequestWithCallback('BTLPromoes', 'GetPromoesWithBTL', params, function (data) {
             var result = Ext.JSON.decode(data.httpResponse.data.value);
@@ -320,29 +226,29 @@
                 }
                 window.setLoading(l10n.ns('core').value('savingText'));
 
-               $.ajax({
-               type: "POST",
-               cache: false,
-               url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId,
-               data: JSON.stringify(promoIds),
-               dataType: "json",
-               contentType: false,
-               processData: false,
-               success: function (response) {
-                   var result = Ext.JSON.decode(response.value);
-                   if (result.success) {
-                        promoLinkedGrid.getStore().on('load', function () {
-                            window.setLoading(false);
-                        });
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/odata/BTLPromoes/BTLPromoPost?btlId=" + window.btlId,
+                    data: JSON.stringify(promoIds),
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        var result = Ext.JSON.decode(response.value);
+                        if (result.success) {
+                            promoLinkedGrid.getStore().on('load', function () {
+                                window.setLoading(false);
+                            });
 
-                        promoLinkedGrid.getStore().load();
-                        window.close();
-                   } else {
-                        App.Notify.pushError(result.message);
-                        window.setLoading(false);
-                   }
-               }
-               });
+                            promoLinkedGrid.getStore().load();
+                            window.close();
+                        } else {
+                            App.Notify.pushError(result.message);
+                            window.setLoading(false);
+                        }
+                    }
+                });
 
             } else if (window.promoLinkedGrid) {
                 //окно создания PromoSupport
@@ -404,13 +310,11 @@
         }
     },
 
-    onGridSelectionChangeCustom: function (selMode, selected) {
-        if (selected[0]) {
-            if (selected[0].data.PromoStatusName != "Closed") {
-                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
-            } else {
-                Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
-            }
-        }        
+    onGridSelectionChangeCustom: function (selModel, selected) {
+        if (selected[0] && selected[0].data.PromoStatusName != "Closed") {
+            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').enable();
+        } else {
+            Ext.ComponentQuery.query('btlpromo')[0].down('#deletebutton').disable();
+        }
     },
 });
