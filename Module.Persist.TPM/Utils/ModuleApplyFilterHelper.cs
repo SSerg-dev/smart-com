@@ -765,7 +765,7 @@ namespace Module.Persist.TPM.Utils
         /// <param name="query">Запрос</param>
         /// <param name="hierarchy">Иерархия</param>
         /// <param name="filter">Фильтр</param>
-        public static IQueryable<BTLPromo> ApplyFilter(IQueryable<BTLPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null)
+        public static IQueryable<BTLPromo> ApplyFilter(IQueryable<BTLPromo> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
             if (clientFilter.Any())
@@ -774,16 +774,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.Promo.ClientTreeId));
             }
-            query = query.Where(x => !x.Disabled || x.TPMmode == TPMmode.RS);
-            switch (mode)
-            {
-                case TPMmode.Current:
-                    query = query.Where(x => x.TPMmode == TPMmode.Current);
-                    break;
-                case TPMmode.RS:
-                    query = query.GroupBy(x => new { x.BTLId, x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(x => !x.Disabled);
-                    break;
-            }
+            query = query.Where(x => !x.Disabled);
             return query;
         }
 

@@ -48,7 +48,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<BTLPromo> GetConstraintedQuery(TPMmode TPMmode = TPMmode.Current)
+        protected IQueryable<BTLPromo> GetConstraintedQuery()
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -60,7 +60,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
             IQueryable<BTLPromo> query = Context.Set<BTLPromo>();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode, filters);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
             return query;
         }
@@ -74,9 +74,9 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<BTLPromo> GetBTLPromoes(TPMmode TPMmode = TPMmode.Current)
+        public IQueryable<BTLPromo> GetBTLPromoes()
         {
-            return GetConstraintedQuery(TPMmode);
+            return GetConstraintedQuery();
         }
 
         [ClaimsAuthorize]
@@ -84,9 +84,7 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<BTLPromo> GetFilteredData(ODataQueryOptions<BTLPromo> options)
         {
             var bodyText = HttpContext.Current.Request.GetRequestBody();
-            var query = JsonHelper.IsValueExists(bodyText, "TPMmode")
-                 ? GetConstraintedQuery(JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode"))
-                 : GetConstraintedQuery();
+            var query = GetConstraintedQuery();
             var querySettings = new ODataQuerySettings
             {
                 EnsureStableOrdering = false,
@@ -285,7 +283,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetPromoesWithBTL(string eventId, TPMmode tPMmode)
+        public IHttpActionResult GetPromoesWithBTL(string eventId)
         {
             try
             {
@@ -296,13 +294,13 @@ namespace Module.Frontend.TPM.Controllers
                 if (Guid.TryParse(eventId, out eventIdGuid))
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid && x.TPMmode == tPMmode)
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.Promo.Event.Id == eventIdGuid)
                     .Select(x => x.Promo.Number).Distinct();
                 }
                 else
                 {
                     promoesWithBTL = Context.Set<BTLPromo>()
-                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName) && x.TPMmode == tPMmode)
+                    .Where(x => !x.Disabled && x.DeletedDate == null && !excludedStatuses.Contains(x.Promo.PromoStatus.SystemName))
                     .Select(x => x.Promo.Number).Distinct();
                 }
 
