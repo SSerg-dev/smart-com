@@ -309,6 +309,7 @@
     <Content Include="Client\controller\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\controller\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\controller\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
+    <Content Include="Client\controller\tpm\clientkpidata\ClientKPIDataRS.js" />
     <Content Include="Client\controller\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\DeletedCompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
@@ -337,6 +338,7 @@
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
+    <Content Include="Client\model\tpm\clientkpidata\ClientKPIDataRS.js" />
     <Content Include="Client\model\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\model\tpm\competitorpromo\DeletedCompetitorPromo.js" />
     <Content Include="Client\model\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
@@ -377,6 +379,10 @@
     <Content Include="Client\view\tpm\actualcogstn\HistoricalActualCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ImportActualCOGSTnParamForm.js" />
+    <Content Include="Client\view\tpm\clientdashboard\AccountInformationRS.js" />
+    <Content Include="Client\view\tpm\clientdashboard\PromoWeeksPanelRS.js" />
+    <Content Include="Client\view\tpm\clientdashboard\PromoWeeksRS.js" />
+    <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRSEditor.js" />
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRS.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />

@@ -320,6 +320,7 @@
 
     'tpm.clientkpidata.ClientKPIData',
     'tpm.clientkpidata.HistoricalClientKPIData',
+    'tpm.clientkpidata.ClientKPIDataRS',
 
     // вспомогательный контроллер для промо
     'tpm.promo.PromoHelper',

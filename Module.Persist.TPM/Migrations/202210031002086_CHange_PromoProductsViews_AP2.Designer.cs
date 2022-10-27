@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Add_Future_Price_Marker_To_PriceList : IMigrationMetadata
+    public sealed partial class CHange_PromoProductsViews_AP2 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_Future_Price_Marker_To_PriceList));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CHange_PromoProductsViews_AP2));
         
         string IMigrationMetadata.Id
         {
-            get { return "202209121055439_Add_Future_Price_Marker_To_PriceList"; }
+            get { return "202210031002086_CHange_PromoProductsViews_AP2"; }
         }
         
         string IMigrationMetadata.Source

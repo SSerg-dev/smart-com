@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Module.Frontend.TPM.Controllers;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Actions
 {
@@ -22,13 +23,15 @@ namespace Module.Host.TPM.Actions
         private Guid promoId;
         private Guid userId;
         private string TempId;
+        private TPMmode TPMmode;
 
-        public FullXLSXUpdateImportPromoProductsUpliftAction(FullImportSettings fullImportSettings, Guid promoId, Guid userId, string TempId)
+        public FullXLSXUpdateImportPromoProductsUpliftAction(FullImportSettings fullImportSettings, Guid promoId, Guid userId, string TempId, TPMmode tPMmode)
             : base(fullImportSettings)
         {
             this.promoId = promoId;
             this.userId = userId;
             this.TempId = TempId;
+            this.TPMmode = tPMmode;
         }
 
         protected override int InsertDataToDatabase(IEnumerable<IEntity<Guid>> importedRecords, DatabaseContext databaseContext)
@@ -36,8 +39,8 @@ namespace Module.Host.TPM.Actions
             Promo promo = databaseContext.Set<Promo>().Find(promoId);
             // все PromoProductsCorrections для текущего промо
             // и все PromoProducts для текущего проммо
-            var promoProductCorrections = databaseContext.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == this.promoId && x.TempId == this.TempId);
-            var promoProducts = databaseContext.Set<PromoProduct>().Where(x => x.PromoId == this.promoId);
+            var promoProductCorrections = databaseContext.Set<PromoProductsCorrection>().Where(x => x.PromoProduct.PromoId == this.promoId && x.TempId == this.TempId).ToList();
+            var promoProducts = databaseContext.Set<PromoProduct>().Where(x => x.PromoId == this.promoId).ToList();
             // все импортируемые PromoProductsUplift
             var importedPromoProductViews = importedRecords.Cast<PromoProductsView>();
 
@@ -98,7 +101,8 @@ namespace Module.Host.TPM.Actions
                                 TempId = this.TempId,
                                 UserName = databaseContext.Users.FirstOrDefault(x => x.Id == userId).Name,
                                 CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                                ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
+                                ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                                TPMmode = TPMmode
                             };
                             databaseContext.Set<PromoProductsCorrection>().Add(newPromoProductCorrection);
                         }

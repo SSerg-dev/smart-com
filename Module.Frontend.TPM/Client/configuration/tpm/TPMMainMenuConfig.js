@@ -27,9 +27,9 @@
                 text: l10n.ns('tpm', 'mainmenu').value('ClientKPIdataRS'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdataRS'),
                 glyph: 0xF572,
-                rsMode: false,
+                rsMode: true,
                 currentMode: false,
-                widget: 'clientkpidata'
+                widget: 'clientkpidatars'
             },
         ]
     },

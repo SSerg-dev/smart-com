@@ -174,8 +174,17 @@ namespace Module.Frontend.TPM.Controllers
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
+                .Where(g => stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
                 .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
+            if (tPMmode == TPMmode.Current)
+            {
+                results = results.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+            }
+            else if (tPMmode == TPMmode.RS)
+            {
+                results = results.GroupBy(x => new { x.Promo.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                results = results.Where(x => !x.Disabled);
+            }
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             using (DatabaseContext context = new DatabaseContext())
@@ -483,8 +492,8 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
 
-                patch.TryGetPropertyValue("TPMmode", out object mode);
-
+                patch.TryGetPropertyValue("TPMmode", out object mode1);
+                TPMmode mode = (TPMmode)mode1;
                 var config = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<PromoProductsCorrection, PromoProductCorrectionView>();
@@ -493,6 +502,7 @@ namespace Module.Frontend.TPM.Controllers
                 var modelMapp = mapperPromoProductCorrection.Map<PromoProductCorrectionView>(model);
 
                 patch.Patch(modelMapp);
+                modelMapp.TPMmode = model.TPMmode;
                 var config2 = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<PromoProductCorrectionView, PromoProductsCorrection>()
@@ -503,7 +513,7 @@ namespace Module.Frontend.TPM.Controllers
                 var mapperPromoProductCorrection2 = config2.CreateMapper();
                 mapperPromoProductCorrection2.Map<PromoProductCorrectionView, PromoProductsCorrection>(modelMapp, model);
 
-                if ((int)mode == (int)TPMmode.Current && tPMmode == TPMmode.Current)
+                if (mode == TPMmode.Current && tPMmode == TPMmode.Current)
                 {
                     var promoRS = Context.Set<Promo>()
                         .FirstOrDefault(x => x.Number == model.PromoProduct.Promo.Number && x.TPMmode == TPMmode.RS);
@@ -526,7 +536,7 @@ namespace Module.Frontend.TPM.Controllers
                         promoProductsCorrection.UserName = user.Login;
                     }
                 }
-                else if (model.TPMmode != tPMmode)
+                else if (mode != tPMmode)
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)

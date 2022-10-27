@@ -988,7 +988,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId || h.Hierarchy.Contains(x.ClientTree.ObjectId.ToString())));
             }
             //if (!string.IsNullOrEmpty(role))
             //{

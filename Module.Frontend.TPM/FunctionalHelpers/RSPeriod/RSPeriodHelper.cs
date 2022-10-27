@@ -279,7 +279,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     //{
                     //    if (promo.BTLPromoes.Select(g => g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
                     //    {
-                    //        BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId);
+                    //        BTLPromo bTLPromo = promo.BTLPromoes.FirstOrDefault(g => g.BTLId == bTLPromoRS.BTLId  && !g.Disabled);
                     //        mapperBTLPromoBack.Map(bTLPromoRS, bTLPromo);
 
                     //    }
@@ -294,7 +294,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     {
                         if (promo.PromoSupportPromoes.Select(g => g.PromoSupportId).Contains(promoSupportPromoRS.PromoSupportId)) // существующий PromoSupportPromo
                         {
-                            PromoSupportPromo promoSupportPromo = promo.PromoSupportPromoes.FirstOrDefault(g => g.PromoSupportId == promoSupportPromoRS.PromoSupportId);
+                            PromoSupportPromo promoSupportPromo = promo.PromoSupportPromoes.FirstOrDefault(g => g.PromoSupportId == promoSupportPromoRS.PromoSupportId && !g.Disabled);
                             mapperPromoSupportPromoBack.Map(promoSupportPromoRS, promoSupportPromo);
 
                         }
@@ -309,9 +309,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     {
                         if (promo.IncrementalPromoes.Select(g => g.ProductId).Contains(incrementalPromoRS.ProductId)) // существующий IncrementalPromo
                         {
-                            IncrementalPromo incrementalPromo = promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == incrementalPromoRS.ProductId);
+                            IncrementalPromo incrementalPromo = promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == incrementalPromoRS.ProductId && !g.Disabled);
                             mapperIncrementalPromoBack.Map(incrementalPromoRS, incrementalPromo);
-
+                            MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(IncrementalPromo), incrementalPromo.Id, incrementalPromoRS.Id);
                         }
                         else // новый IncrementalPromo
                         {
@@ -324,7 +324,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     {
                         if (promo.PromoProductTrees.Select(g => g.ProductTreeObjectId).Contains(promoProductTreeRS.ProductTreeObjectId)) // существующий PromoProductTree
                         {
-                            PromoProductTree promoProductTree = promo.PromoProductTrees.FirstOrDefault(g => g.ProductTreeObjectId == promoProductTreeRS.ProductTreeObjectId);
+                            PromoProductTree promoProductTree = promo.PromoProductTrees.FirstOrDefault(g => g.ProductTreeObjectId == promoProductTreeRS.ProductTreeObjectId && !g.Disabled);
                             mapperPromoProductTreeBack.Map(promoProductTreeRS, promoProductTree);
 
                         }
@@ -339,13 +339,24 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     {
                         if (promo.PromoProducts.Select(g => g.ProductId).Contains(promoProductRS.ProductId)) // существующий PromoProduct
                         {
-                            PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId);
+                            PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId && !g.Disabled);
                             foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections.ToList())
                             {
-                                PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault();
-                                mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
-                                //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
-                                Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled);
+                                if (promoProductsCorrection != null)
+                                {
+                                    mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                                    MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
+                                    //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
+                                    Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                }
+                                else
+                                {
+                                    promoProductsCorrectionRS.TPMmode = TPMmode.Current;
+                                    promoProductsCorrectionRS.PromoProductId = promoProduct.Id;
+                                    promoProductsCorrectionRS.PromoProduct = promoProduct;
+                                }
+                                
                             }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
                             //promoRS.PromoProducts.Remove(promoProductRS);
@@ -398,21 +409,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
             Context.SaveChanges();
         }
-        public static void ChangeStatusOnApproval(DatabaseContext context, Promo promo)
+        public static void MoveFromRSChangesIncident(DbSet<ChangesIncident> changesIncidents, string directoryName, Guid id, Guid oldId)
         {
-            using (PromoStateContext promoStateContext = new PromoStateContext(context, promo))
+            List<ChangesIncident> changesIncidents1 = changesIncidents.Where(g => g.ItemId == oldId.ToString() && g.DirectoryName == directoryName).ToList();
+            foreach (var item in changesIncidents1)
             {
-                var status = promoStateContext.ChangeState(promo, PromoStates.OnApproval, "System", out string message);
-                if (status)
-                {
-                    //Сохранение изменения статуса
-                    var promoStatusChange = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-                    promoStatusChange.PromoId = promo.Id;
-                    promoStatusChange.StatusId = promo.PromoStatusId;
-                    promoStatusChange.Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value;
-
-                    context.Set<PromoStatusChange>().Add(promoStatusChange);
-                }
+                item.ItemId = id.ToString();
             }
         }
     }
