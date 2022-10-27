@@ -2,9 +2,8 @@
 using Persist;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.Entity;
-using Module.Persist.TPM.Utils;
+using System.Linq;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -51,9 +50,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
                 {
-                    var priceList = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                    var priceListFPM = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
                                                                       .OrderByDescending(x => x.StartDate).FirstOrDefault();
-                    if (priceList != null)
+                    var priceList = priceListsForPromoAndPromoProducts.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                                 .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                    if (priceListFPM != null)
+                    {
+                        promoProductPriceIncrease.Price = priceListFPM.Price;
+                    }
+                    else if (priceList != null)
                     {
                         promoProductPriceIncrease.Price = priceList.Price;
                     }
@@ -73,6 +78,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             string message = null;
             bool baseLineFound = false;
+            bool baseLinePIFound = false;
             List<Tuple<string, double?, double?>> resultValues = new List<Tuple<string, double?, double?>>();
 
             if (promoStartDate.HasValue && promoEndDate.HasValue)
@@ -217,34 +223,53 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases)
                             {
-                                baseLineFound = false;
+                                baseLinePIFound = false;
                                 var promoProductIncreaseBaselines = increaseBaseLines.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
                                                                  .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
                                                                  .ToList();
+                                List<ShortBaseline> result = new List<ShortBaseline>();
+                                if (promoProductIncreaseBaselines.Count() != 0)
+                                {
+                                    baseLinePIFound = true;
+                                    // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
+                                    // список №1 - все недели(в виде дат их начала), которые затрагивает промо
+                                    // список №2 - найденные baseline для этого ZREP
+                                    result = (from mws in marsWeekStarts
+                                              join ppb in promoProductIncreaseBaselines on mws equals ppb.StartDate into joined
+                                              from j in joined.DefaultIfEmpty()
+                                              select new ShortBaseline
+                                              {
+                                                  StartDate = mws,
+                                                  Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
+                                              })
+                                              .OrderBy(x => x.StartDate)
+                                              .ToList();
+                                }
+                                else
+                                {
+                                    var promoProductBaselines = baselines.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
+                                                             .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
+                                                             .ToList();
+                                    result = (from mws in marsWeekStarts
+                                              join ppb in promoProductBaselines on mws equals ppb.StartDate into joined
+                                              from j in joined.DefaultIfEmpty()
+                                              select new ShortBaseline
+                                              {
+                                                  StartDate = mws,
+                                                  Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
+                                              })
+                                      .OrderBy(x => x.StartDate)
+                                      .ToList();
+                                }
 
-                                if (promoProductIncreaseBaselines.Count() != 0) baseLineFound = true;
 
-
-                                // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
-                                // список №1 - все недели(в виде дат их начала), которые затрагивает промо
-                                // список №2 - найденные baseline для этого ZREP
-                                List<ShortBaseline> result = (from mws in marsWeekStarts
-                                                              join ppb in promoProductIncreaseBaselines on mws equals ppb.StartDate into joined
-                                                              from j in joined.DefaultIfEmpty()
-                                                              select new ShortBaseline
-                                                              {
-                                                                  StartDate = mws,
-                                                                  Qty = isOnInvoice ? j?.SellInBaselineQTY ?? 0 : j?.SellOutBaselineQTY ?? 0
-                                                              })
-                                          .OrderBy(x => x.StartDate)
-                                          .ToList();
 
                                 // умножение количества на первой и последней неделе на коэффициент, пропорциональный количеству дней, которое промо занимаент на соответствующей неделе
                                 result.First().Qty *= kFirstWeek;
                                 if (kLastWeek != 0) result.Last().Qty *= kLastWeek;
 
                                 // если не нашли BaseLine, пишем об этом
-                                if (!baseLineFound)
+                                if (!baseLinePIFound)
                                 {
                                     if (message == null)
                                         message = "";

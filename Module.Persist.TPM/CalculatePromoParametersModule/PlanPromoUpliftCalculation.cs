@@ -293,7 +293,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             bool success = CalculatePlanPromoUpliftPersentPI(ref promoSubrangeList, currentPromo, planUplift, context, currentPromoProducts);
                             if (success)
                             {
-                                currentPromo.PlanPromoUpliftPercent = planUplift.CountedPlanUplift;
+                                currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = planUplift.CountedPlanUpliftPI;
                                 context.SaveChanges();
 
                                 upliftMessage = GetMessagePromoList(promoSubrangeList);
@@ -530,7 +530,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
 
-                PlanUplift planUplift = new PlanUplift {  CountedPlanUpliftPI = 0 };
+                PlanUplift planUplift = new PlanUplift { CountedPlanUpliftPI = 0 };
                 bool success = CalculatePlanPromoUpliftPersentPI(ref promoQueryList, currentPromo, planUplift, context, currentPromoProducts);
                 if (success)
                 {
@@ -939,7 +939,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     double? summPlanIncremental = 0;
                     double? upliftToInsert;
                     var promoProductsIds = promoProductsPI.Select(y => y.Id);
-                    List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = promoProductsPI.Select(g => g.ProductCorrectionPriceIncrease).Where(x => !x.Disabled).ToList();
+                    List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>()
+                        .Include(f => f.PromoProductPriceIncrease)
+                        .Where(x => promoProductsIds.Contains(x.Id) && !x.Disabled)
+                        .ToList();
 
                     foreach (var singlePromoProduct in promoProductsPI)
                     {

@@ -143,7 +143,7 @@ namespace Module.Host.TPM.Handlers
                             PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProducts(promo, context, UserId);
                         }
                         //Подбор исторических промо и расчет PlanPromoUpliftPercent PriceIncrease
-                        if (needResetUpliftCorrectionsPI)
+                        if (!promo.NeedRecountUpliftPI)
                         {
                             // Uplift не расчитывается для промо в статусе Starte, Finished, Closed
                             if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
@@ -179,7 +179,7 @@ namespace Module.Host.TPM.Handlers
                                 handlerLogger.Write(true, logLine, "Message");
                             }
                         }
-                        else
+                        else // если выбран общий процент
                         {
                             PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProductsPriceIncrease(promo, context, UserId);
                         }
@@ -334,6 +334,7 @@ namespace Module.Host.TPM.Handlers
                             PromoHelper.WritePromoDemandChangeIncident(context, promo, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV);
                         }
                         //promo.Calculating = false;
+                        promo.NeedRecountUpliftPI = false;
                         context.SaveChanges();
 					}
 				}

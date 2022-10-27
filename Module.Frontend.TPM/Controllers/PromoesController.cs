@@ -2476,7 +2476,7 @@ namespace Module.Frontend.TPM.Controllers
                         && Math.Round(oldPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
-                    || (Math.Round(newPromo.PromoPriceIncrease.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercentPI.Value, 2, MidpointRounding.AwayFromZero))
+                    || (newPromo.PromoPriceIncrease != null && Math.Round(newPromo.PromoPriceIncrease.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercentPI.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
                     || (oldPromo.PlanPromoUpliftPercentPI == null && newPromo.PlanPromoUpliftPercentPI != null)
                     || (oldPromo.NeedRecountUpliftPI != newPromo.NeedRecountUpliftPI)

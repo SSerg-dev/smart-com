@@ -2745,11 +2745,7 @@
             record.data.NeedRecountUplift = true;
         }
         var needRecountUpliftPI = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckboxPI').getValue();
-        if (needRecountUpliftPI === true) {
-            record.data.NeedRecountUpliftPI = false;
-        } else {
-            record.data.NeedRecountUpliftPI = true;
-        }
+        record.data.NeedRecountUpliftPI = needRecountUpliftPI;
         if (window.TPMmode == 0) {
             record.data.TPMmode = 'Current';
         }

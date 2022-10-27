@@ -45,6 +45,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         promo.PromoPriceIncrease.PlanPromoUpliftPercent = promo.PlanPromoUpliftPercentPI;
                     }
                 }
+                else
+                {
+                    promo.PromoPriceIncrease.PlanPromoUpliftPercent = promo.PlanPromoUpliftPercentPI;
+                }
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
                 List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
                 List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);
@@ -239,7 +243,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             // PriceIncrease
             if (promo.PromoPriceIncrease.PromoProductPriceIncreases != null)
             {
-                foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases.Where(g => !newZreps.Contains(g.ZREP)))
+                foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases.Where(g => !newZreps.Contains(g.ZREP) && !g.Disabled))
                 {
                     promoProductPriceIncrease.ProductCorrectionPriceIncrease.Disabled = true;
                     promoProductPriceIncrease.ProductCorrectionPriceIncrease.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -425,9 +429,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 }
                             }
 
-                            double? sumPlanProductBaseLineLSVPI = promoProducts.Sum(x => x.PlanProductBaselineLSV);
-                            double? sumPlanProductIncrementalLSVPI = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
-                            if (promo.NeedRecountUplift.Value)
+                            double? sumPlanProductBaseLineLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductBaselineLSV);
+                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
+                            if (!promo.NeedRecountUpliftPI)
                                 promo.PromoPriceIncrease.PlanPromoUpliftPercent = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
 
                             promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
