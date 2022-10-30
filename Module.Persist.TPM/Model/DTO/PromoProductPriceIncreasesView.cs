@@ -1,0 +1,22 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Module.Persist.TPM.Model.DTO
+{
+    public class PromoProductPriceIncreasesView
+    {
+        public Guid Id { get; set; }
+        [StringLength(255)]
+        public string ZREP { get; set; }
+        public string ProductEN { get; set; }
+        public double? PlanProductBaselineLSV { get; set; }
+        public double? PlanProductUpliftPercent { get; set; }
+        public double? PlanProductIncrementalLSV { get; set; }
+        public double? PlanProductLSV { get; set; }
+        public double? PlanProductBaselineCaseQty { get; set; }
+        public double? PlanProductIncrementalCaseQty { get; set; }
+        public double? PlanProductCaseQty { get; set; }
+        public bool AverageMarker { get; set; }
+        public bool IsCorrection { get; set; }
+    }
+}

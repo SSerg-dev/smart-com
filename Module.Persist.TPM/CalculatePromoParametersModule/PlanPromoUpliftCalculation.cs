@@ -687,7 +687,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             PlanUplift planUplift = new PlanUplift { CountedPlanUpliftPI = 0 };
             var promoProductsIds = currentPromoProducts.Select(y => y.Id);
-            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>().Where(x => x.Disabled != true).ToList();
+            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>()
+                .Include(g=>g.PromoProductPriceIncrease)
+                .Where(x => x.Disabled != true).ToList();
             if (promoProductsCorrections.Count > 0)
             {
                 double? summPlanIncremental = 0;

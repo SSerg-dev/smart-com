@@ -3179,10 +3179,10 @@
     <Compile Include="Migrations\202210031002086_CHange_PromoProductsViews_AP2.Designer.cs">
       <DependentUpon>202210031002086_CHange_PromoProductsViews_AP2.cs</DependentUpon>
     </Compile>
-	<Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.cs" />
-	<Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
-	  <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
-	</Compile>
+    <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.cs" />
+    <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
+      <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209131057274_IncreaseBaseLine_Create.cs" />
     <Compile Include="Migrations\202209131057274_IncreaseBaseLine_Create.Designer.cs">
       <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
@@ -3227,6 +3227,10 @@
     <Compile Include="Migrations\202210251155039_Add_NeedRecountUplift_PPI.Designer.cs">
       <DependentUpon>202210251155039_Add_NeedRecountUplift_PPI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210301353077_Add_PriceIncrease_AP.cs" />
+    <Compile Include="Migrations\202210301353077_Add_PriceIncrease_AP.Designer.cs">
+      <DependentUpon>202210301353077_Add_PriceIncrease_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3234,6 +3238,7 @@
     <Compile Include="Model\DTO\PriceListFDM.cs" />
     <Compile Include="Model\DTO\PromoProductCorrectionPriceIncreaseView.cs" />
     <Compile Include="Model\DTO\PromoProductCorrectionView.cs" />
+    <Compile Include="Model\DTO\PromoProductPriceIncreasesView.cs" />
     <Compile Include="Model\DTO\PromoProductsView.cs" />
     <Compile Include="Model\DTO\ClientTreeSharesView.cs" />
     <Compile Include="Model\DTO\PlanPostPromoEffectReport.cs" />
@@ -3263,6 +3268,7 @@
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
     <Compile Include="Model\History\HistoricalBaseLine.cs" />
+    <Compile Include="Model\History\HistoricalPromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\History\HistoricalPromoProductsCorrection.cs" />
     <Compile Include="Model\History\HistoricalBlockedPromo.cs" />
     <Compile Include="Model\History\HistoricalPromoProductTree.cs" />
@@ -6094,6 +6100,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210251155039_Add_NeedRecountUplift_PPI.resx">
       <DependentUpon>202210251155039_Add_NeedRecountUplift_PPI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210301353077_Add_PriceIncrease_AP.resx">
+      <DependentUpon>202210301353077_Add_PriceIncrease_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

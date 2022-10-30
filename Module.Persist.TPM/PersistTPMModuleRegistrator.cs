@@ -126,7 +126,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PreviousDayIncremental>();
             modelBuilder.Entity<CurrentDayIncremental>();
-            modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
+            modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView");
             modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
             modelBuilder.Entity<ActualCOGSTn>();
@@ -170,6 +170,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases);
             modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithOptional(g => g.ProductCorrectionPriceIncrease);
+            modelBuilder.Entity<PromoProductPriceIncreasesView>().ToTable("PromoProductPriceIncreasesView");
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>();
         }
 

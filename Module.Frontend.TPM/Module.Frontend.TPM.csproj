@@ -445,6 +445,7 @@
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedIncreaseBaseLine.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
@@ -467,6 +468,7 @@
     <Compile Include="Controllers\HistoricalIncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\HistoricalPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
+    <Compile Include="Controllers\HistoricalPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
     <Compile Include="Controllers\IncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
@@ -476,6 +478,8 @@
     <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
     <Compile Include="Controllers\PromoProductCorrectionPriceIncreaseViewsController.cs" />
     <Compile Include="Controllers\PromoProductCorrectionViewsController.cs" />
+    <Compile Include="Controllers\PromoProductPriceIncreasesController.cs" />
+    <Compile Include="Controllers\PromoProductPriceIncreaseViewsController.cs" />
     <Compile Include="Controllers\PromoRSViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />

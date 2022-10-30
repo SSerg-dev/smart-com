@@ -41,7 +41,7 @@
         var promoController = App.app.getController('tpm.promo.Promo');
         var record = promoController.getRecord(Ext.ComponentQuery.query('promoeditorcustom')[0]);
         var showMessage = false;
-
+        debugger;
         switch (me.windowType) {
             case 'promoactivitydetailsinfo':
                 var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {

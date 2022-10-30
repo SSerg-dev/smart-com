@@ -873,7 +873,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoBaselineLSVPI',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoBaselineLSV'),
-                                            dataIndexes: ['PlanProductBaselineLSVPI'],
+                                            dataIndexes: ['PlanProductBaselineLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {
@@ -907,7 +907,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoIncrementalLSVPI',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
-                                            dataIndexes: ['PlanProductIncrementalLSVPI'],
+                                            dataIndexes: ['PlanProductIncrementalLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {
@@ -943,7 +943,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoLSVPI',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
-                                            dataIndexes: ['PlanProductLSVPI'],
+                                            dataIndexes: ['PlanProductLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {
@@ -978,7 +978,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoPostPromoEffectLSVPI',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoPostPromoEffectLSV'),
-                                            dataIndexes: ['PlanProductPostPromoEffectLSVPI'],
+                                            dataIndexes: ['PlanProductPostPromoEffectLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {
