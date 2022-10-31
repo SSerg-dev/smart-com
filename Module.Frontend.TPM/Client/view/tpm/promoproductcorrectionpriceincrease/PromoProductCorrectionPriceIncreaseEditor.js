@@ -147,7 +147,7 @@
 
                         //вызываем метод заполняющий скрытое поле промопродукт
 
-                        var me = App.app.getController('tpm.promoproductcorrection.PromoProductCorrection');
+                        var me = App.app.getController('tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease');
                         var promoproductcorrectionpriceincreaseeditor = Ext.ComponentQuery.query('promoproductcorrectionpriceincreaseeditor')[0];
                         var promoId = promoproductcorrectionpriceincreaseeditor.down('[name=Number]');
                         var productId = promoproductcorrectionpriceincreaseeditor.down('[name=ZREP]');

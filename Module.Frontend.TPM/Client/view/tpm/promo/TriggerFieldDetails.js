@@ -112,7 +112,7 @@
                             click: function (button) {
                                 var promoProductsView = button.up('basewindow').down('promoproductsview'),
                                     storePromoProductsView = promoProductsView.storePromoProductsView;
-
+                                debugger;
                                 promoProductsView.up('basewindow').setLoading(l10n.ns('core').value('savingText'));
 
                                 if (storePromoProductsView.data.length > 0) {
@@ -189,22 +189,26 @@
                             click: function (button) {
                                 var promoProductsView = button.up('basewindow').down('promoproductpriceincreasesview'),
                                     storePromoProductsView = promoProductsView.storePromoProductsView;
-
+                                debugger;
                                 promoProductsView.up('basewindow').setLoading(l10n.ns('core').value('savingText'));
 
                                 if (storePromoProductsView.data.length > 0) {
                                     storePromoProductsView.sync({
+                                        scope: this,
                                         success: function () {
                                             // закрывается окно
+                                            debugger;
                                             promoProductsView.up('basewindow').setLoading(false);
                                             promoProductsView.up('basewindow').close();
                                         },
                                         failure: function () {
+                                            debugger;
                                             promoProductsView.up('basewindow').setLoading(false);
                                         }
                                     });
                                 } else {
                                     // закрывается окно
+                                    debugger;
                                     promoProductsView.up('basewindow').setLoading(false);
                                     promoProductsView.up('basewindow').close();
                                 }
@@ -219,13 +223,6 @@
 
                 store.getProxy().extraParams.promoId = breeze.DataType.Guid.fmtOData(promoId);
 
-                var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
-                if (promoeditorcustom.tempEditUpliftId) {
-                    store.getProxy().extraParams.tempEditUpliftId = promoeditorcustom.tempEditUpliftId;
-                } else {
-                    store.getProxy().extraParams.tempEditUpliftId = null;
-                    promoeditorcustom.tempEditUpliftId = App.UserInfo.getUserName() + Date.now();
-                }
                 store.load();
 
                 if (this.defaultValue == true && !this.isReadable) {

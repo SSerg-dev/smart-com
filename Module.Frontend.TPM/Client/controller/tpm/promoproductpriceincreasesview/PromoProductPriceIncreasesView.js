@@ -92,7 +92,6 @@
             autoLoad: false,
             root: {}
         });
-
         // проверка точек доступа
         if (promoProductsView.crudAccess.length > 0 && promoProductsView.crudAccess.indexOf(currentRole) === -1) {
             promoProductsView.isReadable = true
@@ -244,7 +243,7 @@
         if (oldUpliftPercent !== newUpliftPercent) {
 
             var _promoProductCorrection = new App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease({
-                PromoProductId: record.data.Id,
+                UserId: record.data.Id, //нет поля для один к одному
                 PlanProductUpliftPercentCorrected: newUpliftPercent,
             });
             this.createPromoProductCorrection(_promoProductCorrection);
@@ -259,7 +258,7 @@
             store = grid.getStore(),
             promoProductsView = this.editor.grid.up('promoproductpriceincreasesview');
         debugger;
-        var index = promoProductsView.storePromoProductsView.find('Id', model.data.Id);
+        var index = promoProductsView.storePromoProductsView.find('UserId', model.data.UserId);
         if (index > -1) {
             promoProductsView.storePromoProductsView.getAt(index).set('PlanProductUpliftPercentCorrected', model.data.PlanProductUpliftPercentCorrected);
         } else {

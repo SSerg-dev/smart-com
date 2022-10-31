@@ -3231,6 +3231,10 @@
     <Compile Include="Migrations\202210301353077_Add_PriceIncrease_AP.Designer.cs">
       <DependentUpon>202210301353077_Add_PriceIncrease_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210311635414_Add_indexPI.cs" />
+    <Compile Include="Migrations\202210311635414_Add_indexPI.Designer.cs">
+      <DependentUpon>202210311635414_Add_indexPI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6103,6 +6107,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210301353077_Add_PriceIncrease_AP.resx">
       <DependentUpon>202210301353077_Add_PriceIncrease_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210311635414_Add_indexPI.resx">
+      <DependentUpon>202210311635414_Add_indexPI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

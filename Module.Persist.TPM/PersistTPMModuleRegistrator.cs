@@ -1259,6 +1259,7 @@ namespace Module.Persist.TPM
 
             builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasRequiredBinding(g => g.PromoProduct, "PromoProducts");
 
+            builder.EntitySet<PromoProductCorrectionPriceIncrease>("PromoProductCorrectionPriceIncreases");
             builder.EntitySet<PromoProductCorrectionPriceIncrease>("PromoProductCorrectionPriceIncreases").HasRequiredBinding(g => g.PromoProductPriceIncrease, "PromoProductPriceIncreases");
 
             builder.EntitySet<PromoProductPriceIncreasesView>("PromoProductPriceIncreaseViews");
