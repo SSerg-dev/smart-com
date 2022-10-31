@@ -2737,7 +2737,7 @@
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
         record.data.PlanPromoUpliftPercentPI = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercentPI]').getValue();
-        debugger;
+        
         var needRecountUplift = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckbox').getValue();
         if (needRecountUplift === true) {
             record.data.NeedRecountUplift = false;

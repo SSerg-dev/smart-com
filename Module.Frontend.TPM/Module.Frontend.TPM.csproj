@@ -325,6 +325,8 @@
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\controller\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesView.js" />
     <Content Include="Client\controller\tpm\promo\PromoMechanicAddPromoes.js" />
@@ -356,6 +358,8 @@
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncreaseView.js" />
     <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
@@ -416,10 +420,15 @@
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncreaseDetail.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncreaseDetail.js" />
     <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncreaseEditor.js" />
     <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrectionViewEditor.js" />
     <Content Include="Client\view\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesView.js" />
+    <Content Include="Client\view\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesViewEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />

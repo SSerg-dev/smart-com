@@ -3,7 +3,7 @@
     idProperty: 'Id',
     breezeEntityType: 'PromoProductPriceIncreasesView',
     fields: [
-        { name: 'Id', hidden: true },
+        { name: 'Id', hidden: false, isDefault: false  },
         { name: 'ZREP', type: 'string', hidden: false, isDefault: true },
         { name: 'ProductEN', type: 'string', hidden: false, isDefault: true },
         { name: 'PlanProductBaselineLSV', type: 'float', hidden: false, isDefault: true, useNull: true },

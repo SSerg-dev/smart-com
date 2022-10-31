@@ -212,9 +212,6 @@
     'tpm.promoproductcorrection.DeletedPromoProductCorrection',
     'tpm.promoproductcorrection.HistoricalPromoProductCorrection',
 
-    //PromoProductCorrectionPriceIncrease
-    'tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',
-
     //BaseLine
     'tpm.baseline.BaseLine',
     'tpm.baseline.DeletedBaseLine',
@@ -333,5 +330,9 @@
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
 
+    //PromoProductCorrectionPriceIncrease
+    'tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',    
+    'tpm.promoproductcorrectionpriceincrease.DeletedPromoProductCorrectionPriceIncrease',
+    'tpm.promoproductcorrectionpriceincrease.HistoricalPromoProductCorrectionPriceIncrease',
     'tpm.promoproductpriceincreasesview.PromoProductPriceIncreasesView',
 ]);

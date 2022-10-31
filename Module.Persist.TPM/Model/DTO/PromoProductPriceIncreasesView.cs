@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.DTO
 {
     public class PromoProductPriceIncreasesView
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [StringLength(255)]
         public string ZREP { get; set; }

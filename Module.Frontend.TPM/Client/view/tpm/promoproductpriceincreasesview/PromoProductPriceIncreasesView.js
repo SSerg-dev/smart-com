@@ -8,7 +8,7 @@
     crudAccess: [],
 
     storePromoProductsView: Ext.create('Ext.data.Store', {
-        model: 'App.model.tpm.promoproductcorrection.PromoProductCorrection',
+        model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',
         autoLoad: false,
         root: {}
     }),
@@ -195,7 +195,7 @@
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.promoproductsview.PromoProductsView',
+        model: 'App.model.tpm.promoproductpriceincreasesview.PromoProductPriceIncreasesView',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: 'ZREP',

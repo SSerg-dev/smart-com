@@ -1,12 +1,13 @@
-﻿Ext.define('App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease', {
+﻿Ext.define('App.model.tpm.promoproductcorrectionpriceincrease.DeletedPromoProductCorrectionPriceIncrease', {
     extend: 'Ext.data.Model',
     idProperty: 'Id',
     breezeEntityType: 'PromoProductCorrectionPriceIncrease',
     fields: [
         { name: 'Id', hidden: true },
+        { name: 'DeletedDate', type: 'date', isDefault: true },
         { name: 'PromoProductId', hidden: true, isDefault: true },
         { name: 'PlanProductUpliftPercentCorrected', type: 'float', hidden: false, isDefault: true },
-        { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
+        { name: 'UserId', hidden: true, isDefault: true },
         { name: 'UserName', type: 'string', hidden: false, isDefault: false },
         { name: 'CreateDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ChangeDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
@@ -14,7 +15,7 @@
             name: 'ZREP', type: 'string', mapping: 'PromoProduct.Product.ZREP', breezeEntityType: 'Product', hidden: false, isDefault: true
         },
         {
-            name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true,
+            name: 'Number', type: 'int', mapping: 'PromoProduct.Promo.Number', hidden: false, isDefault: true, defaultFilterConfig: { valueField: 'Number' }, isKey: true
         },
         { name: 'ClientHierarchy', type: 'string', mapping: 'PromoProduct.Promo.ClientHierarchy', hidden: false, isDefault: true },
         {
@@ -39,11 +40,10 @@
         { name: 'PlanProductIncrementalLSV', type: 'float', mapping: 'PromoProduct.PlanProductIncrementalLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'PlanProductLSV', type: 'float', mapping: 'PromoProduct.PlanProductLSV', hidden: false, isDefault: true, useNull: true },
         { name: 'ProductSubrangesList', type: 'string', mapping: 'PromoProduct.Promo.ProductSubrangesList', hidden: false, isDefault: true },
-        { name: 'PromoDispatchStartDate', type:'date', hidden: true, mapping:'PromoProduct.Promo.DispatchesStart', timeZone: +3, convert: dateConvertTimeZone}
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'PromoProductCorrectionPriceIncreaseViews',
+        resourceName: 'DeletedPromoProductCorrectionPriceIncreases',
         reader: {
             type: 'json',
             totalProperty: 'inlineCount',

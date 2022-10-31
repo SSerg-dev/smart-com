@@ -86,7 +86,6 @@
     },
 
     onAfterRender: function (promoProductsView) {
-        debugger;
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         promoProductsView.storePromoProductsView = Ext.create('Ext.data.Store', {
             model: 'App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',
@@ -122,7 +121,7 @@
     },
 
     onUpdateButtonClick: function (button) {
-        var grid = button.up('promoproductsview').down('directorygrid');
+        var grid = button.up('promoproductpriceincreasesview').down('directorygrid');
         var selModel = grid.getSelectionModel();
         if (selModel.hasSelection()) {
             var selected = selModel.getSelection()[0];
@@ -131,7 +130,7 @@
     },
 
     onDetailButtonClick: function (button) {
-        var grid = button.up('promoproductsview').down('directorygrid');
+        var grid = button.up('promoproductpriceincreasesview').down('directorygrid');
         selModel = grid.getSelectionModel();
 
         if (selModel.hasSelection()) {
@@ -158,7 +157,7 @@
             field.setReadOnly(true);
         }, this);
 
-        if (toEditAccess && !grid.up('promoproductsview').isReadable) {
+        if (toEditAccess && !grid.up('promoproductpriceincreasesview').isReadable) {
             this.editor.down('#ok').setVisible(false);
             this.editor.down('#canceledit').setVisible(false);
 
@@ -225,10 +224,6 @@
             record = form.getRecord(),
             oldUpliftPercent = record.data.PlanProductUpliftPercent;
 
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         if (!form.isValid()) {
@@ -248,10 +243,9 @@
 
         if (oldUpliftPercent !== newUpliftPercent) {
 
-            var _promoProductCorrection = new App.model.tpm.promoproductcorrection.PromoProductCorrection({
+            var _promoProductCorrection = new App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease({
                 PromoProductId: record.data.Id,
                 PlanProductUpliftPercentCorrected: newUpliftPercent,
-                TPMmode: mode.data.value,
             });
             this.createPromoProductCorrection(_promoProductCorrection);
         } else {
@@ -263,9 +257,9 @@
     createPromoProductCorrection: function (model, callback) {
         var grid = this.editor.grid,
             store = grid.getStore(),
-            promoProductsView = this.editor.grid.up('promoproductsview');
-
-        var index = promoProductsView.storePromoProductsView.find('PromoProductId', model.data.PromoProductId);
+            promoProductsView = this.editor.grid.up('promoproductpriceincreasesview');
+        debugger;
+        var index = promoProductsView.storePromoProductsView.find('Id', model.data.Id);
         if (index > -1) {
             promoProductsView.storePromoProductsView.getAt(index).set('PlanProductUpliftPercentCorrected', model.data.PlanProductUpliftPercentCorrected);
         } else {
@@ -325,7 +319,7 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'DownloadTemplateXLSX';
         var resource = button.resource || proxy.resourceName;
-        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductsview').promoId);
+        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductpriceincreasesview').promoId);
 
         panel.setLoading(true);
 
@@ -358,7 +352,7 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
-        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductsview').promoId);
+        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductpriceincreasesview').promoId);
 
         panel.setLoading(true);
 
@@ -450,7 +444,7 @@
         var grid = this.getGridByButton(button);
         var cdPanel = grid.up('combineddirectorypanel');
         var resourceName = this.getResourceName(grid, '');
-        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductsview').promoId);
+        var promoId = breeze.DataType.Guid.fmtOData(button.up('promoproductpriceincreasesview').promoId);
         var url = Ext.String.format('odata/{0}/Apply', resourceName); // Формирование URL получения ИД текущего импорта
         if (grid.importData) {
             cdPanel.setLoading(true);
