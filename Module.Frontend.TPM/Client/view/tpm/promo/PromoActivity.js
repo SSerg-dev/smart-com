@@ -749,7 +749,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                                 {
                                                     xtype: 'triggerfielddetails',
                                                     name: 'PlanPromoUpliftPercentPI',
-                                                    windowType: 'promoproductsview',
+                                                    windowType: 'promoproductpriceincreasesview',
                                                     labelWidth: 190,
                                                     fieldLabel: l10n.ns('tpm', 'Promo').value('PromoUpliftPercent'),
                                                     tooltip: l10n.ns('tpm', 'PromoActivity').value('UpdateActuals'),

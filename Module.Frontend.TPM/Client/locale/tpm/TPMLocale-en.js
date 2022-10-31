@@ -1607,6 +1607,22 @@
         'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
+    'PromoProductPriceIncreasesView': {
+        'ZREP': 'ZREP',
+        'ProductEN': 'ProductEN',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductIncrementalCaseQty': 'Plan Product Incremental Case Qty',
+        'PlanProductCaseQty': 'Plan Product Case Qty',
+        'AverageMarker': 'Average Marker',
+        'IsCorrection': 'Is Correction',
+        'SavePromoMessage': 'Save promo to create new corrections',
+        'SumInvoiceProduct': 'Sum In Invoice Product'
+    },
+
     'BaseLine': {
         'ProductZREP': 'ZREP',
         'ClientTreeDemandCode': 'Client Demand code',

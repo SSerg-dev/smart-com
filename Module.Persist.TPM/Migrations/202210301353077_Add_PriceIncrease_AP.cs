@@ -41,7 +41,7 @@ namespace Module.Persist.TPM.Migrations
                 ([Disabled],[Resource],[Action],[TPMmode]) VALUES (0, 'PromoProductPriceIncreases',	'ExportXLSX', 1)
                 GO
                 INSERT INTO [DefaultSchemaSetting].[AccessPoint] 
-                ([Disabled],[Resource],[Action],[TPMmode]) VALUES (0, 'PromoProductPriceIncreaseViews',	'PromoProductPriceIncreaseViews', 1)
+                ([Disabled],[Resource],[Action],[TPMmode]) VALUES (0, 'PromoProductPriceIncreaseViews',	'GetPromoProductPriceIncreaseViews', 1)
                 GO
                 INSERT INTO [DefaultSchemaSetting].[AccessPoint] 
                 ([Disabled],[Resource],[Action],[TPMmode]) VALUES (0, 'PromoProductPriceIncreaseViews',	'GetFilteredData', 1)
@@ -60,7 +60,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -75,7 +75,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -90,7 +90,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -105,7 +105,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -120,7 +120,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -135,7 +135,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -150,7 +150,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -165,7 +165,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -180,7 +180,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO
@@ -195,7 +195,7 @@ namespace Module.Persist.TPM.Migrations
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetPromoProductPriceIncreases' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreases' and [Action]='ExportXLSX' and [Disabled] = 0)),
-                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='PromoProductPriceIncreaseViews' and [Disabled] = 0)),
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetPromoProductPriceIncreaseViews' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='GetFilteredData' and [Disabled] = 0)),
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='PromoProductPriceIncreaseViews' and [Action]='ExportXLSX' and [Disabled] = 0))
                 GO

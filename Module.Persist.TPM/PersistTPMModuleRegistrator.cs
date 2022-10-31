@@ -1260,6 +1260,12 @@ namespace Module.Persist.TPM
             builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasRequiredBinding(g => g.PromoProduct, "PromoProducts");
 
             builder.EntitySet<PromoProductCorrectionPriceIncrease>("PromoProductCorrectionPriceIncreases").HasRequiredBinding(g => g.PromoProductPriceIncrease, "PromoProductPriceIncreases");
+
+            builder.EntitySet<PromoProductPriceIncreasesView>("PromoProductPriceIncreaseViews");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductPriceIncreasesView>("PromoProductPriceIncreaseViews");
         }
 
 

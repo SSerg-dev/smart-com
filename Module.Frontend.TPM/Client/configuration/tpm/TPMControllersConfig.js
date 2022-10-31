@@ -332,4 +332,6 @@
 
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
+
+    'tpm.promoproductpriceincreasesview.PromoProductPriceIncreasesView',
 ]);

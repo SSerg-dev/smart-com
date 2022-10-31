@@ -51,7 +51,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PromoProductPriceIncreasesView> PromoProductPriceIncreaseViews([FromODataUri] Guid? promoId, string tempEditUpliftId)
+        public IQueryable<PromoProductPriceIncreasesView> GetPromoProductPriceIncreaseViews([FromODataUri] Guid? promoId, string tempEditUpliftId)
         {
             var query = GetConstraintedQuery(promoId);
             if (tempEditUpliftId != null)

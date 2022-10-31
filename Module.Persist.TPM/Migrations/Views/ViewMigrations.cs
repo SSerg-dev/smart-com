@@ -1893,7 +1893,7 @@
                         , pp.[ProductEN]
                         , pp.[PlanProductBaselineLSV]
 		                , PlanProductUpliftPercent = 
-			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [PromoProductId] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL, 
+			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL, 
 			                (SELECT TOP(1) [PlanProductUpliftPercentCorrected] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL ORDER BY [ChangeDate] DESC), 
 			                pp.[PlanProductUpliftPercent])
                         , pp.[PlanProductIncrementalLSV]
