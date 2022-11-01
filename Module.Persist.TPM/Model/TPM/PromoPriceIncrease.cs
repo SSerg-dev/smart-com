@@ -1,12 +1,14 @@
 ﻿using Core.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
     public class PromoPriceIncrease : IEntity<Guid>, IDeactivatable
     {
+        [Key]
         public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }

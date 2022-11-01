@@ -81,6 +81,43 @@
 
                 break;
 
+            case 'promoactivitydetailsinfopi':
+                var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {
+                    title: 'Details',
+                    width: '90%',
+                    minWidth: 600,
+                    height: '90%',
+                    minHeight: 450,
+                    items: [{
+                        xtype: me.windowType,
+                        promoId: record.data.Id
+                    }],
+                    buttons: [{
+                        text: l10n.ns('core', 'buttons').value('close'),
+                        itemId: 'close'
+                    }]
+                });
+
+                me.dataIndexes.forEach(function (field) {
+                    var columns = newWindow.down('directorygrid').columns;
+                    columns.forEach(function (column) {
+                        if (field === column.dataIndex) {
+                            column.hidden = false;
+                        }
+                    });
+                });
+                debugger;
+                var promoProductStore = newWindow.down('directorygrid').getStore();
+                promoProductStore.setFixedFilter('PromoIdFilter', {
+                    property: 'PromoPriceIncreaseId',
+                    operation: 'Equals',
+                    value: record.data.Id
+                });
+                debugger;
+                promoProductStore.load();
+
+                break;
+
             case 'promoproductsview':
                 var newWindow = Ext.create('App.view.core.base.BaseModalWindow', {
                     title: 'Details',

@@ -325,6 +325,7 @@
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\controller\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
     <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
@@ -357,6 +358,7 @@
     <Content Include="Client\model\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\model\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
     <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
@@ -420,6 +422,8 @@
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPIEditor.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
     <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
     <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncreaseDetail.js" />
     <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />

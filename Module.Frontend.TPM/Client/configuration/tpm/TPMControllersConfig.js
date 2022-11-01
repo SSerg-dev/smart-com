@@ -282,6 +282,7 @@
 
     // Promo Activity Details Info
     'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+    'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfoPI',
 
     'tpm.assortmentmatrix.AssortmentMatrix',
     'tpm.assortmentmatrix.DeletedAssortmentMatrix',

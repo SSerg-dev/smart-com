@@ -872,6 +872,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoBaselineLSVPI',
+                                            windowType: 'promoactivitydetailsinfopi',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoBaselineLSV'),
                                             dataIndexes: ['PlanProductBaselineLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
@@ -906,6 +907,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoIncrementalLSVPI',
+                                            windowType: 'promoactivitydetailsinfopi',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoIncrementalLSV'),
                                             dataIndexes: ['PlanProductIncrementalLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
@@ -942,6 +944,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoLSVPI',
+                                            windowType: 'promoactivitydetailsinfopi',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoLSV'),
                                             dataIndexes: ['PlanProductLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
@@ -977,6 +980,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         {
                                             xtype: 'triggerfielddetails',
                                             name: 'PlanPromoPostPromoEffectLSVPI',
+                                            windowType: 'promoactivitydetailsinfopi',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoPostPromoEffectLSV'),
                                             dataIndexes: ['PlanProductPostPromoEffectLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
