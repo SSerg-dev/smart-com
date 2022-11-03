@@ -257,7 +257,6 @@
         var grid = this.editor.grid,
             store = grid.getStore(),
             promoProductsView = this.editor.grid.up('promoproductpriceincreasesview');
-        debugger;
         var index = promoProductsView.storePromoProductsView.find('UserId', model.data.UserId);
         if (index > -1) {
             promoProductsView.storePromoProductsView.getAt(index).set('PlanProductUpliftPercentCorrected', model.data.PlanProductUpliftPercentCorrected);

@@ -106,14 +106,12 @@
                         }
                     });
                 });
-                debugger;
                 var promoProductStore = newWindow.down('directorygrid').getStore();
                 promoProductStore.setFixedFilter('PromoIdFilter', {
                     property: 'PromoPriceIncreaseId',
                     operation: 'Equals',
                     value: record.data.Id
                 });
-                debugger;
                 promoProductStore.load();
 
                 break;
@@ -149,7 +147,6 @@
                             click: function (button) {
                                 var promoProductsView = button.up('basewindow').down('promoproductsview'),
                                     storePromoProductsView = promoProductsView.storePromoProductsView;
-                                debugger;
                                 promoProductsView.up('basewindow').setLoading(l10n.ns('core').value('savingText'));
 
                                 if (storePromoProductsView.data.length > 0) {
@@ -226,7 +223,6 @@
                             click: function (button) {
                                 var promoProductsView = button.up('basewindow').down('promoproductpriceincreasesview'),
                                     storePromoProductsView = promoProductsView.storePromoProductsView;
-                                debugger;
                                 promoProductsView.up('basewindow').setLoading(l10n.ns('core').value('savingText'));
 
                                 if (storePromoProductsView.data.length > 0) {
@@ -234,18 +230,15 @@
                                         scope: this,
                                         success: function () {
                                             // закрывается окно
-                                            debugger;
                                             promoProductsView.up('basewindow').setLoading(false);
                                             promoProductsView.up('basewindow').close();
                                         },
                                         failure: function () {
-                                            debugger;
                                             promoProductsView.up('basewindow').setLoading(false);
                                         }
                                     });
                                 } else {
                                     // закрывается окно
-                                    debugger;
                                     promoProductsView.up('basewindow').setLoading(false);
                                     promoProductsView.up('basewindow').close();
                                 }

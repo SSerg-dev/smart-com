@@ -68,6 +68,7 @@ namespace Module.Host.TPM
                 new Handlers.UnblockPromoesHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsCorrectionHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),
+                new Handlers.FullXLSXUpdateImportPromoProductsPriceIncreaseUpliftHandler(),
                 new Handlers.PromoListPlanRecalculationHandler(),
                 new Handlers.PromoListActualRecalculationHandler(),
                 new Handlers.DataLakeIntegrationHandlers.MarsProductsCheckStarterHandler(),

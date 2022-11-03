@@ -56,7 +56,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductPriceIncrease> options, string additionalColumn = null, Guid? promoId = null, bool updateActualsMode = false)
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductPriceIncrease> options, string additionalColumn = null, Guid? promoId = null)
         {
             // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
             // Это один грид с разными столбцами, additionalColumn - набор столбцов
@@ -66,7 +66,7 @@ namespace Module.Frontend.TPM.Controllers
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
             int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
-            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
+            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProductPriceIncrease" : string.Empty;
             Guid handlerId = Guid.NewGuid();
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -81,7 +81,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductPriceIncreasesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethodParams", additionalColumn, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
+                //HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("CustomFileName", customFileName, data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()

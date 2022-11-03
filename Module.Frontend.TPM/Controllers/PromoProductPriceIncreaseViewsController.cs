@@ -1,11 +1,13 @@
 ﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -16,6 +18,9 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -351,7 +356,7 @@ namespace Module.Frontend.TPM.Controllers
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
             int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
-            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
+            string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProductPriceIncrease" : string.Empty;
             Guid handlerId = Guid.NewGuid();
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -388,6 +393,65 @@ namespace Module.Frontend.TPM.Controllers
 
             return Content(HttpStatusCode.OK, handlerId);
         }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX([FromODataUri] Guid? promoId = null)
+        {
+
+            try
+            {
+                IQueryable results = GetConstraintedQuery(promoId);
+                IEnumerable<Column> columns = GetImportSettings();
+                XLSXExporter exporter = new XLSXExporter(columns);
+                UserInfo user = authorizationManager.GetCurrentUser();
+                string username = user == null ? "" : user.Login;
+                string promoNumber = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoId).Number.ToString();
+                string filePath = exporter.GetExportFileName("PromoProductPriceIncreasesUplift_PromoId_Template" + promoNumber, username);
+                exporter.Export(results, filePath);
+                string filename = System.IO.Path.GetFileName(filePath);
+                return Content<string>(HttpStatusCode.OK, filename);
+            }
+            catch (Exception e)
+            {
+                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
+            }
+
+        }
+
+        [ClaimsAuthorize]
+        public HttpResponseMessage FullImportXLSX()
+        {
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        [ClaimsAuthorize]
+        public async Task<HttpResponseMessage> FullImportXLSX([FromODataUri] Guid promoId)
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string fileName = await FileUtility.UploadFile(Request, importDir);
+
+                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsPriceIncreaseUpliftHandler", promoId);
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StringContent("success = true");
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+
         public static IEnumerable<Column> GetExportSettings()
         {
             int orderNumber = 1;
@@ -405,6 +469,67 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "AverageMarker", Header = "Average Marker", Quoting = false, }
             };
             return columns;
+        }
+
+        private IEnumerable<Column> GetImportSettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+            };
+            return columns;
+        }
+
+        private void CreateImportTask(string fileName, string importHandler, Guid promoId)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+                ImportResultModel resultmodel = new ImportResultModel();
+
+                HandlerData data = new HandlerData();
+                FileModel file = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = System.IO.Path.GetFileName(fileName),
+                    DisplayName = System.IO.Path.GetFileName(fileName)
+                };
+
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsUplift), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsUplift).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductPriceIncreasesView), data, visible: false, throwIfNotExists: false);
+                //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(ImportPromoProductsUplift).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(ImportPromoProductsUplift).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
         }
     }
 }

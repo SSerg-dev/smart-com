@@ -54,17 +54,30 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                                       .OrderByDescending(x => x.StartDate).FirstOrDefault();
                     var priceList = priceListsForPromoAndPromoProducts.Where(x => x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId)
                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
+
                     if (priceListFPM != null)
                     {
                         promoProductPriceIncrease.Price = priceListFPM.Price;
+                        if (promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled) != null)
+                        {
+                            promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled).CasePrice = priceListFPM.Price;
+                        }
                     }
                     else if (priceList != null)
                     {
                         promoProductPriceIncrease.Price = priceList.Price;
+                        if (promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled) != null)
+                        {
+                            promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled).CasePrice = priceList.Price;
+                        }
                     }
                     else
                     {
                         promoProductPriceIncrease.Price = null;
+                        if (promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled) != null)
+                        {
+                            promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled).CasePrice = null;
+                        }
                     }
                 }
             }

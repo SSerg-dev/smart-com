@@ -369,7 +369,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductCorrectionView), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductCorrectionPriceIncreaseView), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
@@ -379,7 +379,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
+                    Description = $"Export {nameof(PromoProductCorrectionPriceIncreaseView)} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -401,9 +401,10 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
-            IQueryable<PromoProduct> results = Context.Set<PromoProduct>()
-                .Where(g => !g.Disabled && stasuses.Contains(g.Promo.PromoStatus.SystemName) && !(bool)g.Promo.InOut && (bool)g.Promo.NeedRecountUplift)
-                .OrderBy(g => g.Promo.Number).ThenBy(d => d.ZREP);
+            IQueryable<PromoProductPriceIncrease> results = Context.Set<PromoProductPriceIncrease>()
+                .Include(g=>g.PromoPriceIncrease.Promo)
+                .Where(g => !g.Disabled && stasuses.Contains(g.PromoPriceIncrease.Promo.PromoStatus.SystemName) && !(bool)g.PromoPriceIncrease.Promo.InOut && (bool)g.PromoPriceIncrease.Promo.NeedRecountUplift)
+                .OrderBy(g => g.PromoPriceIncrease.Promo.Number).ThenBy(d => d.ZREP);
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             using (DatabaseContext context = new DatabaseContext())
@@ -413,7 +414,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductPriceIncrease), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportCorrectionSettings), data, visible: false, throwIfNotExists: false);
@@ -423,7 +424,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductsCorrection)} dictionary",
+                    Description = $"Export {nameof(PromoProductCorrectionPriceIncrease)} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),

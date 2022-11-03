@@ -38,7 +38,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
                 // добавление пустого PromoPriceIncrease к Promo если его нет
                 if (promo.PromoPriceIncrease is null)
-                {                    
+                {
                     promo.PromoPriceIncrease = new PromoPriceIncrease();
                     if (promo.PlanPromoUpliftPercentPI != null)
                     {
@@ -66,7 +66,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
 
                 var promoProducts = context.Set<PromoProduct>()
-                    .Include(g=>g.PromoProductsCorrections)
+                    .Include(g => g.PromoProductsCorrections)
                     .Where(x => x.PromoId == promoId);
                 var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
                 var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
@@ -476,6 +476,44 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promoProduct.PlanProductPostPromoEffectVolumeW2 = 0;
                                 promoProduct.PlanProductPostPromoEffectVolume = 0;
                             }
+                            // PriceIncrease
+                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
+                            {
+                                IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>()
+                                    .Where(x => x.PromoId == promo.Id && x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !x.Disabled).FirstOrDefault();
+
+                                if (incrementalPromo != null)
+                                {
+                                    //Расчет плановых значений PromoProduct
+                                    promoProductPriceIncrease.PlanProductPCPrice = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? promoProductPriceIncrease.Price / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                                    promoProductPriceIncrease.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
+                                    promoProductPriceIncrease.PlanProductCaseQty = promoProductPriceIncrease.PlanProductIncrementalCaseQty;
+                                    promoProductPriceIncrease.PlanProductPCQty = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                                    promoProductPriceIncrease.PlanProductCaseLSV = promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.Price;
+                                    incrementalPromo.PlanPromoIncrementalLSV = (promoProductPriceIncrease.Price ?? 0) * (incrementalPromo.PlanPromoIncrementalCases ?? 0);
+                                    promoProductPriceIncrease.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
+                                    promoProductPriceIncrease.PlanProductLSV = promoProductPriceIncrease.PlanProductIncrementalLSV;
+
+                                    // TODO: удаляем?
+                                    //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
+                                }
+                                else
+                                {
+                                    message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProductPriceIncrease.PromoProduct.Product.ZREP);
+                                }
+
+                                //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
+
+                                promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectQty = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectLSV = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2 = 0;
+                                promoProductPriceIncrease.PlanProductPostPromoEffectVolume = 0;
+                            }
 
                             promo.PlanPromoBaselineLSV = null;
 
@@ -542,6 +580,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             Promo promo = context.Set<Promo>()
                 .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(y => y.ProductCorrectionPriceIncrease))
                 .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(y => y.PromoProduct))
+                .Include(g => g.IncrementalPromoes)
                 .Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
 
             if (promo != null)

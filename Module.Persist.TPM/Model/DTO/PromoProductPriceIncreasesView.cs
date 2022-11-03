@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Core.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.DTO
 {
-    public class PromoProductPriceIncreasesView
+    [Table("PromoProductPriceIncreasesView")]
+    public class PromoProductPriceIncreasesView : IEntity<Guid>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }

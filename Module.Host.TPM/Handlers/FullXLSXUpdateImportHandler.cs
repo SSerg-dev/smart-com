@@ -414,6 +414,27 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXUpdateImportPromoProductsPriceIncreaseUpliftHandler : FullXLSXImportHandler
+    {
+        /// <summary>
+        /// Id промо для которого загружаются ProductUplift-ы
+        /// </summary>
+        private Guid promoId;
+        private Guid userId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            promoId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductPriceIncreasesUpliftAction(settings, promoId, userId);
+        }
+    }
+
     public class FullXLSXUpdateImportClientDashboardHandler : FullXLSXImportHandler
     {
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
