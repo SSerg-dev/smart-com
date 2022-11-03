@@ -67,6 +67,7 @@ namespace Module.Host.TPM
                 new Handlers.Notifications.ClientTreeNeedUpdateNotificationHandler(),
                 new Handlers.UnblockPromoesHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsCorrectionHandler(),
+                new Handlers.FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsUpliftHandler(),
                 new Handlers.FullXLSXUpdateImportPromoProductsPriceIncreaseUpliftHandler(),
                 new Handlers.PromoListPlanRecalculationHandler(),

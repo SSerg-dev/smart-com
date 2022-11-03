@@ -389,6 +389,24 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler : FullXLSXImportHandler
+    {
+        private Guid userId;
+        private TPMmode tPMmode;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data, throwIfNotExists: false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseAction(settings, userId, tPMmode);
+        }
+    }
+
     class FullXLSXUpdateImportPromoProductsUpliftHandler : FullXLSXImportHandler
     {
         /// <summary>

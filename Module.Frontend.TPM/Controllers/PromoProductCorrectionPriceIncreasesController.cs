@@ -67,7 +67,7 @@ namespace Module.Frontend.TPM.Controllers
             //если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductCorrectionPriceIncrease>()
                 .Include(g => g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
-                .FirstOrDefault(x => x.Id == model.UserId); //через UserId передается Id, так как для ext js store.sync() нельзя менять Id
+                .FirstOrDefault(x => x.PromoProductPriceIncreaseId == model.PromoProductPriceIncreaseId); //через UserId передается Id, так как для ext js store.sync() нельзя менять Id
 
             if (item != null)
             {

@@ -243,7 +243,7 @@
         if (oldUpliftPercent !== newUpliftPercent) {
 
             var _promoProductCorrection = new App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease({
-                UserId: record.data.Id, //нет поля для один к одному
+                PromoProductPriceIncreaseId: record.data.Id,
                 PlanProductUpliftPercentCorrected: newUpliftPercent,
             });
             this.createPromoProductCorrection(_promoProductCorrection);
@@ -508,7 +508,7 @@
         var mode = settingStore.findRecord('name', 'mode');
         var win = button.up('uploadfilewindow');
         var promoId = breeze.DataType.Guid.fmtOData(Ext.ComponentQuery.query('promoeditorcustom')[0].promoId);
-        var url = Ext.String.format("/odata/{0}/{1}?promoId={2}&tempEditUpliftId={3}&tPMmode={4}", win.resource, win.action, promoId, Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId, mode.data.value);
+        var url = Ext.String.format("/odata/{0}/{1}?promoId={2}", win.resource, win.action, promoId);
         var needCloseParentAfterUpload = win.needCloseParentAfterUpload;
         var parentWin = win.parentGrid ? win.parentGrid.up('window') : null;
         var form = win.down('#importform');
@@ -528,7 +528,7 @@
         if (form.isValid() && !isEmpty) {
             form.getForm().baseParams = {
                 promoId: promoId,
-                tempEditUpliftId: Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId
+                //tempEditUpliftId: Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId
             };
 
             form.getForm().submit({
@@ -542,7 +542,7 @@
                             parentWin.close();
                         }
                         var infoText = win.successMessage || 'Задача обработки импортируемого файла успешно создана';
-                        Ext.ComponentQuery.query('promoeditorcustom')[0].productUpliftChanged = true;
+                        //Ext.ComponentQuery.query('promoeditorcustom')[0].productUpliftChanged = true;
                         App.Notify.pushInfo(infoText);
                         // Открыть панель задач
                         if (!win.isNotTask) {

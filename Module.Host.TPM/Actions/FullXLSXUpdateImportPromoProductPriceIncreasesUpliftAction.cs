@@ -29,7 +29,7 @@ namespace Module.Host.TPM.Actions
             // все PromoProductsCorrections для текущего промо
             // и все PromoProducts для текущего проммо
             var promoProductPIs = databaseContext.Set<PromoProductPriceIncrease>()
-                .Include(g => g.ProductCorrectionPriceIncrease)
+                .Include(g => g.ProductCorrectionPriceIncreases)
                 .Where(x => x.PromoPriceIncreaseId == this.promoId)
                 .ToList();
             // все импортируемые PromoProductsUplift
@@ -66,17 +66,17 @@ namespace Module.Host.TPM.Actions
                 foreach (var importedPromoProductView in importedPromoProductViews)
                 {
                     var currentPromoProductPI = promoProductPIs.FirstOrDefault(x => x.ZREP == importedPromoProductView.ZREP);
-                    if (currentPromoProductPI.ProductCorrectionPriceIncrease != null)
+                    if (currentPromoProductPI.ProductCorrectionPriceIncreases != null)
                     {
-                        if (currentPromoProductPI.ProductCorrectionPriceIncrease.Disabled)
+                        if (currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled)
                         {
-                            currentPromoProductPI.ProductCorrectionPriceIncrease.Disabled = false;
-                            currentPromoProductPI.ProductCorrectionPriceIncrease.DeletedDate = null;
+                            currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = false;
+                            currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = null;
                         }
-                        currentPromoProductPI.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected = importedPromoProductView.PlanProductUpliftPercent;
-                        currentPromoProductPI.ProductCorrectionPriceIncrease.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                        currentPromoProductPI.ProductCorrectionPriceIncrease.UserId = this.userId;
-                        currentPromoProductPI.ProductCorrectionPriceIncrease.UserName = databaseContext.Users.FirstOrDefault(x => x.Id == this.userId).Name;
+                        currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().PlanProductUpliftPercentCorrected = importedPromoProductView.PlanProductUpliftPercent;
+                        currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().UserId = this.userId;
+                        currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().UserName = databaseContext.Users.FirstOrDefault(x => x.Id == this.userId).Name;
                         //this.CreateChangesIncident(databaseContext, currentPromoProductCorrection);
                     }
                     else
@@ -92,7 +92,7 @@ namespace Module.Host.TPM.Actions
                             CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                             ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
                         };
-                        currentPromoProductPI.ProductCorrectionPriceIncrease = newPromoProductCorrection;
+                        currentPromoProductPI.ProductCorrectionPriceIncreases.Add(newPromoProductCorrection);
                         // this.CreateChangesIncident(databaseContext, newPromoProductCorrection);
                     }
                 }

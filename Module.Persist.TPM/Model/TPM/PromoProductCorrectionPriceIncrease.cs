@@ -7,7 +7,7 @@ namespace Module.Persist.TPM.Model.TPM
 {
     public class PromoProductCorrectionPriceIncrease : IEntity<Guid>, IDeactivatable
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // one to one для ef 6 это не нужно, а для extjs 4.2.1 нужен...
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public System.Guid Id { get; set; }
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
@@ -22,6 +22,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? CreateDate { get; set; }
         public DateTimeOffset? ChangeDate { get; set; }
 
+        public Guid PromoProductPriceIncreaseId { get; set; }
         public PromoProductPriceIncrease PromoProductPriceIncrease { get; set; }
     }
 }

@@ -1027,7 +1027,7 @@
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductCorrectionPriceIncrease AS ppcpi INNER JOIN
-                [DefaultSchemaSetting].PromoProductPriceIncrease AS pppi ON ppcpi.Id = pppi.Id INNER JOIN
+                [DefaultSchemaSetting].PromoProductPriceIncrease AS pppi ON ppcpi.PromoProductPriceIncreaseId = pppi.Id INNER JOIN
 				[DefaultSchemaSetting].PromoProduct AS pp ON pp.Id = pppi.PromoProductId INNER JOIN
                 [DefaultSchemaSetting].PromoPriceIncrease AS prpi ON pppi.PromoPriceIncreaseId = prpi.Id INNER JOIN
 				[DefaultSchemaSetting].Promo AS pr ON pr.Id = prpi.Id INNER JOIN
@@ -1893,8 +1893,8 @@
                         , pp.[ProductEN]
                         , pp.[PlanProductBaselineLSV]
 		                , PlanProductUpliftPercent = 
-			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL, 
-			                (SELECT TOP(1) [PlanProductUpliftPercentCorrected] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL ORDER BY [ChangeDate] DESC), 
+			                IIF((SELECT TOP(1) [Id] FROM [Jupiter].[PromoProductCorrectionPriceIncrease] WHERE [PromoProductPriceIncreaseId] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL, 
+			                (SELECT TOP(1) [PlanProductUpliftPercentCorrected] FROM [Jupiter].[PromoProductCorrectionPriceIncrease] WHERE [PromoProductPriceIncreaseId] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL ORDER BY [ChangeDate] DESC), 
 			                pp.[PlanProductUpliftPercent])
                         , pp.[PlanProductIncrementalLSV]
                         , pp.[PlanProductLSV]
@@ -1903,10 +1903,10 @@
                         , pp.[PlanProductCaseQty]
                         , pp.[AverageMarker]
                         , IsCorrection = 
-			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL,
+			                IIF((SELECT TOP(1) [Id] FROM [Jupiter].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL,
 			                CONVERT(bit, 1),
 			                CONVERT(bit, 0))
-                    FROM [DefaultSchemaSetting].[PromoProductPriceIncrease] pp
+                    FROM [Jupiter].[PromoProductPriceIncrease] pp
                     WHERE pp.[Disabled] = 0
 			GO
 		";

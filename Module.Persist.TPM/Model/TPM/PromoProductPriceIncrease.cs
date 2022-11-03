@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -229,6 +230,6 @@ namespace Module.Persist.TPM.Model.TPM
         public PromoProduct PromoProduct { get; set; }
         public Guid PromoPriceIncreaseId { get; set; }
         public PromoPriceIncrease PromoPriceIncrease { get; set; }
-        public PromoProductCorrectionPriceIncrease ProductCorrectionPriceIncrease { get; set; }
+        public ICollection<PromoProductCorrectionPriceIncrease> ProductCorrectionPriceIncreases { get; set; }
     }
 }

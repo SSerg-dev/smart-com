@@ -21,7 +21,7 @@ Ext.define('App.model.tpm.promoproductcorrectionpriceincrease.PromoProductCorrec
         { name: 'ChangeDate', useNull: true, type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'UserName', type:'string', hidden: false, isDefault: true },
         { name: 'Id', hidden: true },
-        { name: 'PromoProductId', hidden: true, isDefault: true },
+        { name: 'PromoProductPriceIncreaseId', hidden: true, isDefault: true },
         { name: 'UserId', hidden: true, isDefault: true, defaultValue: null },
         { name: 'PromoDispatchStartDate', type: 'date', hidden: true, timeZone: +3, convert: dateConvertTimeZone, isDefault: true },
         { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: true  },

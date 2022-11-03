@@ -190,7 +190,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 //Получаем все продукты по этому промо
                 List<PromoProductPriceIncrease> currentPromoProducts = context.Set<PromoProductPriceIncrease>()
-                    .Include(g => g.ProductCorrectionPriceIncrease)
+                    .Include(g => g.ProductCorrectionPriceIncreases)
                     .Where(x => x.PromoPriceIncreaseId == currentPromo.Id && x.Disabled != true)
                     .ToList();
                 foreach (var promoProduct in currentPromoProducts)
@@ -208,13 +208,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     // PriceIncrease
                     foreach (PromoProductPriceIncrease promoProductPriceIncrease in currentPromoProducts)
                     {
-                        if (promoProductPriceIncrease.ProductCorrectionPriceIncrease != null)
+                        if (promoProductPriceIncrease.ProductCorrectionPriceIncreases != null)
                         {
-                            promoProductPriceIncrease.ProductCorrectionPriceIncrease.Disabled = true;
-                            promoProductPriceIncrease.ProductCorrectionPriceIncrease.DeletedDate = DateTimeOffset.UtcNow;
-                            promoProductPriceIncrease.ProductCorrectionPriceIncrease.ChangeDate = DateTimeOffset.UtcNow;
-                            promoProductPriceIncrease.ProductCorrectionPriceIncrease.UserId = user.Id;
-                            promoProductPriceIncrease.ProductCorrectionPriceIncrease.UserName = user.Name;
+                            if (promoProductPriceIncrease.ProductCorrectionPriceIncreases.Count > 0)
+                            {
+                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = true;
+                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = DateTimeOffset.UtcNow;
+                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().ChangeDate = DateTimeOffset.UtcNow;
+                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().UserId = user.Id;
+                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().UserName = user.Name;
+                            }
                         }
                     }
                     context.SaveChanges();
@@ -787,7 +790,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             foreach (Promo promo in promoList)
             {
                 promoProductsList.AddRange(context.Set<PromoProductPriceIncrease>()
-                    .Include(g => g.ProductCorrectionPriceIncrease)
+                    .Include(g => g.ProductCorrectionPriceIncreases)
                     .Where(x => x.PromoPriceIncreaseId == promo.Id && x.Disabled != true)
                     .ToList());
                 if (promo.ActualPromoUpliftPercent != null)
@@ -797,7 +800,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
             oldCountedPlanUplift = factUpliftSum / promoList.Count();
             var promoProductsIds = currentPromoProducts.Select(y => y.Id);
-            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = promoProductsList.Select(g => g.ProductCorrectionPriceIncrease).ToList();
+            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = promoProductsList.SelectMany(g => g.ProductCorrectionPriceIncreases).ToList();
             var promoProductsWithCorrectionIds = promoProductsCorrections.Select(y => y.Id);
             //Подбираем аплифт для каждого отдельного продукта
             foreach (PromoProductPriceIncrease promoProduct in currentPromoProducts)
@@ -935,7 +938,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 User user = context.Set<User>().Where(x => x.Id == UserId && x.Disabled != true).FirstOrDefault();
                 List<PromoProductPriceIncrease> promoProductsPI = context.Set<PromoProductPriceIncrease>()
-                    .Include(g => g.ProductCorrectionPriceIncrease)
+                    .Include(g => g.ProductCorrectionPriceIncreases)
                     .Where(x => x.PromoPriceIncreaseId == currentPromo.Id && x.Disabled != true).ToList();
                 List<double?> incrementalList = promoProductsPI.Select(x => x.PlanProductIncrementalLSV).ToList();
                 if (promoProductsPI != null && promoProductsPI.Count != 0)
@@ -966,31 +969,31 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             upliftToInsert = newUplift;
                         }
-                        if (singlePromoProduct.ProductCorrectionPriceIncrease == null)
+                        if (singlePromoProduct.ProductCorrectionPriceIncreases == null)
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncrease = new PromoProductCorrectionPriceIncrease()
+                            singlePromoProduct.ProductCorrectionPriceIncreases.Add( new PromoProductCorrectionPriceIncrease()
                             {
                                 PlanProductUpliftPercentCorrected = upliftToInsert,
                                 CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                            };
+                            });
                         }
                         else
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected = upliftToInsert;
-                            singlePromoProduct.ProductCorrectionPriceIncrease.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            singlePromoProduct.ProductCorrectionPriceIncrease.Disabled = false;
-                            singlePromoProduct.ProductCorrectionPriceIncrease.DeletedDate = null;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().PlanProductUpliftPercentCorrected = upliftToInsert;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = false;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = null;
                         }
 
                     }
 
-                    foreach (var singlePromoProduct in promoProductsPI.Where(d => !d.ProductCorrectionPriceIncrease.Disabled))
+                    foreach (var singlePromoProduct in promoProductsPI.Where(d => d.ProductCorrectionPriceIncreases.Any(f=>!f.Disabled)))
                     {
-                        if (singlePromoProduct.ProductCorrectionPriceIncrease != null)
+                        if (singlePromoProduct.ProductCorrectionPriceIncreases != null)
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncrease.UserId = user.Id;
-                            singlePromoProduct.ProductCorrectionPriceIncrease.UserName = user.Name;
-                            singlePromoProduct.ProductCorrectionPriceIncrease.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().UserId = user.Id;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().UserName = user.Name;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                         }
                     }
 
@@ -1006,16 +1009,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         upliftRatio = newUplift / oldUplift;
                     }
-                    foreach (var singlePromoProduct in promoProductsPI.Where(d => !d.ProductCorrectionPriceIncrease.Disabled))
+                    foreach (var singlePromoProduct in promoProductsPI.Where(d => d.ProductCorrectionPriceIncreases.Any(f => !f.Disabled)))
                     {
                         if (!(singlePromoProduct.PlanProductBaselineLSV == null || singlePromoProduct.PlanProductBaselineLSV == 0)
                             && !(singlePromoProduct.PlanProductIncrementalLSV == null || singlePromoProduct.PlanProductIncrementalLSV == 0))
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected = (singlePromoProduct.PlanProductIncrementalLSV * upliftRatio) / singlePromoProduct.PlanProductBaselineLSV;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().PlanProductUpliftPercentCorrected = (singlePromoProduct.PlanProductIncrementalLSV * upliftRatio) / singlePromoProduct.PlanProductBaselineLSV;
                         }
                         else
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncrease.PlanProductUpliftPercentCorrected = newUplift;
+                            singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().PlanProductUpliftPercentCorrected = newUplift;
                         }
                     }
                     context.SaveChanges();

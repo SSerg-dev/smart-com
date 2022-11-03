@@ -352,6 +352,7 @@
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportPromoProductPriceIncreasesUpliftAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportRollingVolumesAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorUpdateImportAction.cs" />
