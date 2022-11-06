@@ -46,6 +46,7 @@ namespace Module.Frontend.TPM.Controllers
 
         protected IQueryable<PromoProduct> GetConstraintedQuery(ODataQueryOptions<PromoProduct> options, bool updateActualsMode = false, Guid? promoIdInUpdateActualsMode = null, bool isActualsExport = false)
         {
+            // если есть promoIdInUpdateActualsMode то updateActualsMode = true
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints

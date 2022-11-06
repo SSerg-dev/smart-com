@@ -19,7 +19,7 @@ namespace Module.Persist.TPM.Migrations
             AddColumn($"{defaultSchema}.PromoProductPriceIncrease", "PromoPriceIncreaseId", c => c.Guid(nullable: false));
             CreateIndex($"{defaultSchema}.PromoProductPriceIncrease", "PromoPriceIncreaseId");
             AddForeignKey($"{defaultSchema}.PromoProductPriceIncrease", "PromoPriceIncreaseId", $"{defaultSchema}.PromoPriceIncrease", "Id");
-            Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreaseViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreaseViewString(defaultSchema));
             DropIndex($"{defaultSchema}.PriceList", "Unique_PriceList");
             CreateIndex($"{defaultSchema}.PriceList", new[] { "DeletedDate", "StartDate", "EndDate", "ClientTreeId", "ProductId", "FuturePriceMarker" }, unique: true, name: "Unique_PriceList");
         }

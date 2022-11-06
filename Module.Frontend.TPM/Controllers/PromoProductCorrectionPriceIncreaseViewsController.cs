@@ -251,7 +251,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.PlanProductUpliftPercentCorrected = view.PlanProductUpliftPercentCorrected;
 
                 var promoStatus = model.PromoProductPriceIncrease.PromoProduct.Promo.PromoStatus.SystemName;
-                
+
                 model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 model.UserId = user.Id;
                 model.UserName = user.Login;
@@ -402,11 +402,12 @@ namespace Module.Frontend.TPM.Controllers
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProductPriceIncrease> results = Context.Set<PromoProductPriceIncrease>()
-                .Include(g=>g.PromoPriceIncrease.Promo)
+                .Include(g => g.PromoPriceIncrease.Promo)
                 .Where(g => !g.Disabled && stasuses.Contains(g.PromoPriceIncrease.Promo.PromoStatus.SystemName) && !(bool)g.PromoPriceIncrease.Promo.InOut && (bool)g.PromoPriceIncrease.Promo.NeedRecountUplift)
                 .OrderBy(g => g.PromoPriceIncrease.Promo.Number).ThenBy(d => d.ZREP);
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            var ddd = results.ToList();
+            Guid userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
             using (DatabaseContext context = new DatabaseContext())
             {
                 HandlerData data = new HandlerData();
@@ -417,7 +418,7 @@ namespace Module.Frontend.TPM.Controllers
                 HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductPriceIncrease), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportCorrectionSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportCorrectionPISettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
@@ -485,7 +486,7 @@ namespace Module.Frontend.TPM.Controllers
                 var importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 var fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler", tPMmode);
+                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler", tPMmode);
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -553,23 +554,23 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 IEnumerable<Column> columns = GetImportSettings();
-                //if (tPMmode == TPMmode.Current)
-                //{
-                //    columns = GetImportSettings();
-                //}
+                if (tPMmode == TPMmode.Current)
+                {
+                    columns = GetImportSettings();
+                }
                 //if (tPMmode == TPMmode.RS)
                 //{
                 //    columns = GetImportSettingsRS();
                 //}
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                string filename = string.Format("{0}Template.xlsx", "PromoProductsUplift");
+                string filename = string.Format("{0}Template.xlsx", "PromoProductCorrectionPricesUplift");
                 if (!Directory.Exists(exportDir))
                 {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
-                exporter.Export(Enumerable.Empty<PromoProductsCorrection>(), filePath);
+                exporter.Export(Enumerable.Empty<PromoProductCorrectionPriceIncrease>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
             }

@@ -78,6 +78,7 @@
 
     onCustomExportXlsxButtonClick: function (button) {
         var me = this;
+        debugger;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
         var store = grid.getStore();
@@ -100,7 +101,8 @@
                 $actionName: actionName,
                 $method: 'POST',
                 additionalColumn: dataIndexes,
-                promoId: promoactivitydetailsinfo.promoId
+                promoId: promoactivitydetailsinfo.promoId,
+                updateActualsMode: true,
             });
 
         query = me.buildQuery(query, store)

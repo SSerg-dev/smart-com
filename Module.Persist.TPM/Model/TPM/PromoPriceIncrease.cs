@@ -19,7 +19,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoLSV { get; set; }
         public double? PlanPromoPostPromoEffectLSV { get; set; }
 
-        public Promo Promo { get; set; }
+        public virtual Promo Promo { get; set; }
         public ICollection<PromoProductPriceIncrease> PromoProductPriceIncreases { get; set; }
     }
 }

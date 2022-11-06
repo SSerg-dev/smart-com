@@ -619,5 +619,16 @@ namespace Module.Frontend.TPM.Util
             };
             return columns;
         }
+        public static IEnumerable<Column> GetExportCorrectionPISettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "PromoPriceIncrease.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+            };
+            return columns;
+        }
     }
 }
