@@ -1,0 +1,109 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS\". \n####*Calculate costs and BTL actual support parameters*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-15 09:03:44.663",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS\u0026rdquo;. \u003c/p\u003e\n\u003cp\u003e####*Calculate costs and BTL actual support parameters*.\u003c/p\u003e\n\u003ch6\u003e*Developer: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:\u0026#x61;\u0026#x6e;\u0026#100;\u0026#114;\u0026#101;\u0026#x79;\u0026#x2e;\u0026#112;\u0026#104;i\u0026#x6c;u\u0026#115;\u0026#104;k\u0026#x69;\u0026#x6e;\u0026#x40;\u0026#101;\u0026#102;f\u0026#101;\u0026#109;\u0026#x2e;c\u0026#111;\u0026#109;\u0026#42;\"\u003e\u0026#x61;\u0026#x6e;\u0026#100;\u0026#114;\u0026#101;\u0026#x79;\u0026#x2e;\u0026#112;\u0026#104;i\u0026#x6c;u\u0026#115;\u0026#104;k\u0026#x69;\u0026#x6e;\u0026#x40;\u0026#101;\u0026#102;f\u0026#101;\u0026#109;\u0026#x2e;c\u0026#111;\u0026#109;\u0026#42;\u003c/a\u003e\u003c/h6\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660554224663_1926141614",
+      "id": "20220815-090344_532719350",
+      "dateCreated": "2022-08-15 09:03:44.663",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-15 10:24:34.308",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660559064205_1961022558",
+      "id": "paragraph_1660559064205_1961022558",
+      "dateCreated": "2022-08-15 10:24:24.205",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef run(promoSupportDF,activePromoSupportPromoDF,calcActualSupportPromoDF,btlDF,btlPromoDF,budgetItemDF,budgetSubItemDF,promoSupportPromoCols):\n    sc \u003d SparkContext.getOrCreate();\n    spark \u003d SparkSession(sc)\n    ####*Calculate Costs*\n\n    #####*Separate promo by closed and not closed. Get sum PlanPromoLSV and closed promo budget*\n\n    allPromoSupportDF \u003d promoSupportDF\\\n      .select(\\\n               promoSupportDF.Id.alias(\u0027psId\u0027)\n              ,promoSupportDF.BudgetSubItemId\n              ,promoSupportDF.Number.alias(\u0027promoSupportNumber\u0027)\n              ,promoSupportDF.ActualCostTE.cast(DecimalType(30,6))\n              ,promoSupportDF.ActualProdCost.cast(DecimalType(30,6))\n             )\n\n    allCalcActualPromoSupportDF \u003d allPromoSupportDF\\\n      .join(activePromoSupportPromoDF, activePromoSupportPromoDF.PromoSupportId \u003d\u003d allPromoSupportDF.psId, \u0027inner\u0027)\\\n      .join(calcActualSupportPromoDF, calcActualSupportPromoDF.Id \u003d\u003d activePromoSupportPromoDF.PromoId, \u0027inner\u0027)\\\n      .select(\\\n               calcActualSupportPromoDF[\u0027*\u0027]\n              ,allPromoSupportDF[\u0027*\u0027]\n              ,activePromoSupportPromoDF[\u0027*\u0027]\n             )\\\n      .withColumn(\u0027pspId\u0027, activePromoSupportPromoDF.Id)\\\n      .withColumn(\u0027pspTPMmode\u0027, activePromoSupportPromoDF.TPMmode)\\\n      .withColumn(\u0027pspDisabled\u0027, activePromoSupportPromoDF.Disabled)\\\n      .withColumn(\u0027pspDeletedDate\u0027, activePromoSupportPromoDF.DeletedDate)\\\n      .drop(activePromoSupportPromoDF.Id)\\\n      .drop(activePromoSupportPromoDF.TPMmode)\\\n      .drop(activePromoSupportPromoDF.Disabled)\\\n      .drop(activePromoSupportPromoDF.DeletedDate)\\\n      .dropDuplicates()\n\n    notClosedSumWindow \u003d Window.partitionBy(\u0027psId\u0027).orderBy(col(\u0027isPromoNotClosed\u0027).desc())\n    closedSumWindow \u003d Window.partitionBy(\u0027psId\u0027).orderBy(col(\u0027isPromoClosed\u0027).desc())\n\n    sumNotClosedGroup \u003d allCalcActualPromoSupportDF\\\n      .groupBy([(col(\u0027promoStatusSystemName\u0027) !\u003d \u0027Closed\u0027).alias(\u0027isPromoNotClosed\u0027), \u0027psId\u0027])\\\n      .agg(sum(\u0027PlanPromoLSV\u0027).alias(\u0027sumPromoLSV\u0027))\\\n      .withColumn(\u0027Row_Number\u0027, row_number().over(notClosedSumWindow))\\\n      .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\n    sumClosedGroup \u003d allCalcActualPromoSupportDF\\\n      .groupBy([(col(\u0027promoStatusSystemName\u0027) \u003d\u003d \u0027Closed\u0027).alias(\u0027isPromoClosed\u0027), \u0027psId\u0027])\\\n      .agg(sum(\u0027FactCalculation\u0027).alias(\u0027_closedBudgetMarketingTi\u0027), sum(\u0027FactCostProd\u0027).alias(\u0027_closedBudgetCostProd\u0027))\\\n      .withColumn(\u0027Row_Number\u0027, row_number().over(closedSumWindow))\\\n      .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\n    sumClosedGroup \u003d sumClosedGroup\\\n      .select(\\\n               sumClosedGroup.psId\n              ,sumClosedGroup.isPromoClosed\n              ,sumClosedGroup._closedBudgetMarketingTi\n              ,sumClosedGroup._closedBudgetCostProd\n             )\\\n      .withColumn(\u0027closedBudgetMarketingTi\u0027, when(col(\u0027isPromoClosed\u0027) \u003d\u003d \u0027true\u0027, col(\u0027_closedBudgetMarketingTi\u0027)).otherwise(0))\\\n      .withColumn(\u0027closedBudgetCostProd\u0027, when(col(\u0027isPromoClosed\u0027) \u003d\u003d \u0027true\u0027, col(\u0027_closedBudgetCostProd\u0027)).otherwise(0))\n\n    allCalcActualPromoSupportDF \u003d allCalcActualPromoSupportDF\\\n      .join(sumNotClosedGroup, \u0027psId\u0027, \u0027left\u0027)\\\n      .join(sumClosedGroup, \u0027psId\u0027, \u0027left\u0027)\\\n      .drop(\u0027isPromoNotClosed\u0027,\u0027isPromoClosed\u0027,\u0027_closedBudgetMarketingTi\u0027,\u0027_closedBudgetCostProd\u0027)\n\n    notClosedCalcActualPromoSupportDF \u003d allCalcActualPromoSupportDF\\\n      .where(col(\u0027promoStatusSystemName\u0027) !\u003d \u0027Closed\u0027)\n\n    closedCalcActualPromoSupportDF \u003d allCalcActualPromoSupportDF\\\n      .where(col(\u0027promoStatusSystemName\u0027) \u003d\u003d \u0027Closed\u0027)\n\n    #####*Calculate budgets*\n\n    notClosedCalcActualPromoSupportDF \u003d notClosedCalcActualPromoSupportDF\\\n      .withColumn(\u0027kPlan\u0027, when(((col(\u0027sumPromoLSV\u0027) !\u003d 0) \u0026 (col(\u0027PlanPromoLSV\u0027).isNotNull())), col(\u0027PlanPromoLSV\u0027) / col(\u0027sumPromoLSV\u0027)).otherwise(0))\\\n      .withColumn(\u0027FactCalculation\u0027, ((col(\u0027ActualCostTE\u0027) - col(\u0027closedBudgetMarketingTi\u0027)) * col(\u0027kPlan\u0027)).cast(DecimalType(30,2)))\\\n      .withColumn(\u0027FactCostProd\u0027, ((col(\u0027ActualProdCost\u0027) - col(\u0027closedBudgetCostProd\u0027)) * col(\u0027kPlan\u0027)).cast(DecimalType(30,2)))\n\n    notClosedCalcActualPromoSupportDF \u003d notClosedCalcActualPromoSupportDF\\\n      .join(budgetSubItemDF, budgetSubItemDF.Id \u003d\u003d notClosedCalcActualPromoSupportDF.BudgetSubItemId, \u0027left\u0027)\\\n      .join(budgetItemDF, budgetItemDF.Id \u003d\u003d budgetSubItemDF.BudgetItemId, \u0027left\u0027)\\\n      .select(\\\n               notClosedCalcActualPromoSupportDF[\u0027*\u0027]\n              ,budgetItemDF.Name.alias(\u0027BudgetName\u0027)\n             )\n\n    xsitesDF \u003d notClosedCalcActualPromoSupportDF.where(col(\u0027BudgetName\u0027) \u003d\u003d \u0027X-sites\u0027).select(\u0027Id\u0027,\u0027FactCalculation\u0027,\u0027FactCostProd\u0027)\n    catalogDF \u003d notClosedCalcActualPromoSupportDF.where(col(\u0027BudgetName\u0027) \u003d\u003d \u0027Catalog\u0027).select(\u0027Id\u0027,\u0027FactCalculation\u0027,\u0027FactCostProd\u0027)\n    posmDF \u003d notClosedCalcActualPromoSupportDF.where(col(\u0027BudgetName\u0027) \u003d\u003d \u0027POSM\u0027).select(\u0027Id\u0027,\u0027FactCalculation\u0027,\u0027FactCostProd\u0027)\n    tiMarketCostProdDF \u003d notClosedCalcActualPromoSupportDF.select(\u0027Id\u0027,\u0027FactCalculation\u0027,\u0027FactCostProd\u0027)\n\n    supportSchema \u003d StructType([\n      StructField(\"Id\", StringType(), True),\n      StructField(\"actualSupportParameter\", DecimalType(30,2), True),\n      StructField(\"actualCostProdParameter\", DecimalType(30,2), True)\n    ])\n\n    xsitesList \u003d xsitesDF\\\n      .groupBy(\u0027Id\u0027)\\\n      .agg(sum(\u0027FactCalculation\u0027).alias(\u0027calcActualPromoXSites\u0027)\\\n          ,sum(\u0027FactCostProd\u0027).alias(\u0027calcActualPromoCostProdXSites\u0027))\\\n      .collect()\n    xsitesDF \u003d spark.createDataFrame(xsitesList, supportSchema)\n\n    catalogList \u003d catalogDF\\\n      .groupBy(\u0027Id\u0027)\\\n      .agg(sum(\u0027FactCalculation\u0027).alias(\u0027calcActualPromoCatalogue\u0027)\\\n          ,sum(\u0027FactCostProd\u0027).alias(\u0027calcActualPromoCostProdCatalogue\u0027))\\\n      .collect()\n    catalogDF \u003d spark.createDataFrame(catalogList, supportSchema)\n\n    posmList \u003d posmDF\\\n      .groupBy(\u0027Id\u0027)\\\n      .agg(sum(\u0027FactCalculation\u0027).alias(\u0027calcActualPromoPOSMInClient\u0027)\\\n          ,sum(\u0027FactCostProd\u0027).alias(\u0027calcActualPromoCostProdPOSMInClient\u0027))\\\n      .collect()\n    posmDF \u003d spark.createDataFrame(posmList, supportSchema)\n\n    tiMarketCostProdList \u003d tiMarketCostProdDF\\\n      .groupBy(\u0027Id\u0027)\\\n      .agg(sum(\u0027FactCalculation\u0027).alias(\u0027calcActualPromoTIMarketing\u0027)\\\n          ,sum(\u0027FactCostProd\u0027).alias(\u0027calcActualPromoCostProduction\u0027))\\\n      .collect()\n    tiMarketCostProdDF \u003d spark.createDataFrame(tiMarketCostProdList, supportSchema)\n\n    notClosedPromoSupportDF \u003d notClosedCalcActualPromoSupportDF\\\n      .drop(\u0027Id\u0027, \u0027Disabled\u0027, \u0027DeletedDate\u0027)\\\n      .withColumn(\u0027Id\u0027, col(\u0027pspId\u0027))\\\n      .withColumn(\u0027Disabled\u0027, col(\u0027pspDisabled\u0027))\\\n      .withColumn(\u0027DeletedDate\u0027, col(\u0027pspDeletedDate\u0027))\n\n    closedPromoSupportDF \u003d closedCalcActualPromoSupportDF\\\n      .drop(\u0027Id\u0027, \u0027Disabled\u0027, \u0027DeletedDate\u0027)\\\n      .withColumn(\u0027Id\u0027, col(\u0027pspId\u0027))\\\n      .withColumn(\u0027Disabled\u0027, col(\u0027pspDisabled\u0027))\\\n      .withColumn(\u0027DeletedDate\u0027, col(\u0027pspDeletedDate\u0027))\n\n    notClosedPromoSupportDF \u003d notClosedPromoSupportDF.select(promoSupportPromoCols)\n    closedPromoSupportDF \u003d closedPromoSupportDF.select(promoSupportPromoCols)\n    allCalcActualPromoSupportPromoDF \u003d notClosedPromoSupportDF.union(closedPromoSupportDF)\n\n    allCalcActualPromoSupportPromoIdsDF \u003d allCalcActualPromoSupportPromoDF.select(col(\u0027Id\u0027))\n    notCalcActualPromoSupportPromoDF \u003d activePromoSupportPromoDF.join(allCalcActualPromoSupportPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(activePromoSupportPromoDF[\u0027*\u0027])\n\n    allPromoSupportPromoDF \u003d allCalcActualPromoSupportPromoDF.union(notCalcActualPromoSupportPromoDF)\n\n    ####*Calculate BTL*\n\n    #####*Separate promo by closed and not closed. Get sum PlanPromoLSV and closed promo btl*\n\n    allBtlDF \u003d btlDF\\\n      .select(\\\n               btlDF.Id.alias(\u0027bId\u0027)\n              ,btlDF.Number.alias(\u0027btlNumber\u0027)\n              ,btlDF.ActualBTLTotal.cast(DecimalType(30,6))\n             )\n\n    allCalcActualBtlDF \u003d allBtlDF\\\n      .join(btlPromoDF, btlPromoDF.BTLId \u003d\u003d allBtlDF.bId, \u0027inner\u0027)\\\n      .join(calcActualSupportPromoDF, calcActualSupportPromoDF.Id \u003d\u003d btlPromoDF.PromoId, \u0027inner\u0027)\\\n      .select(\\\n               calcActualSupportPromoDF[\u0027*\u0027]\n              ,allBtlDF[\u0027*\u0027]\n              ,btlPromoDF.Id.alias(\u0027bpId\u0027)\n             )\\\n      .dropDuplicates()\n\n    notClosedSumWindowBtl \u003d Window.partitionBy(\u0027bId\u0027).orderBy(col(\u0027isPromoNotClosed\u0027).desc())\n    closedSumWindowBtl \u003d Window.partitionBy(\u0027bId\u0027).orderBy(col(\u0027isPromoClosed\u0027).desc())\n\n    sumNotClosedGroupBtl \u003d allCalcActualBtlDF\\\n      .groupBy([(col(\u0027promoStatusSystemName\u0027) !\u003d \u0027Closed\u0027).alias(\u0027isPromoNotClosed\u0027), \u0027bId\u0027])\\\n      .agg(sum(\u0027PlanPromoLSV\u0027).alias(\u0027sumPromoLSV\u0027))\\\n      .withColumn(\u0027Row_Number\u0027, row_number().over(notClosedSumWindowBtl))\\\n      .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\n    sumClosedGroupBtl \u003d allCalcActualBtlDF\\\n      .groupBy([(col(\u0027promoStatusSystemName\u0027) \u003d\u003d \u0027Closed\u0027).alias(\u0027isPromoClosed\u0027), \u0027bId\u0027])\\\n      .agg(sum(\u0027ActualPromoBTL\u0027).alias(\u0027_closedBudgetBTL\u0027))\\\n      .withColumn(\u0027Row_Number\u0027, row_number().over(closedSumWindowBtl))\\\n      .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\n    sumClosedGroupBtl \u003d sumClosedGroupBtl\\\n      .select(\\\n               sumClosedGroupBtl.bId\n              ,sumClosedGroupBtl.isPromoClosed\n              ,sumClosedGroupBtl._closedBudgetBTL\n             )\\\n      .withColumn(\u0027closedBudgetBTL\u0027, when(col(\u0027isPromoClosed\u0027) \u003d\u003d \u0027true\u0027, col(\u0027_closedBudgetBTL\u0027)).otherwise(0))\n\n    allCalcActualBtlDF \u003d allCalcActualBtlDF\\\n      .join(sumNotClosedGroupBtl, \u0027bId\u0027, \u0027left\u0027)\\\n      .join(sumClosedGroupBtl, \u0027bId\u0027, \u0027left\u0027)\\\n      .drop(\u0027isPromoNotClosed\u0027,\u0027isPromoClosed\u0027,\u0027_closedBudgetBTL\u0027)\n\n    #####*Calculate BTL budgets*\n\n    allCalcActualBtlDF \u003d allCalcActualBtlDF\\\n      .withColumn(\u0027kPlan\u0027, when(((col(\u0027sumPromoLSV\u0027) !\u003d 0) \u0026 (col(\u0027PlanPromoLSV\u0027).isNotNull())), col(\u0027PlanPromoLSV\u0027) / col(\u0027sumPromoLSV\u0027)).otherwise(0))\\\n      .withColumn(\u0027ActualPromoBTL\u0027, when(col(\u0027promoStatusSystemName\u0027) !\u003d \u0027Closed\u0027, ((col(\u0027ActualBTLTotal\u0027) - col(\u0027closedBudgetBTL\u0027)) * col(\u0027kPlan\u0027)))\\\n                  .otherwise(col(\u0027ActualPromoBTL\u0027)).cast(DecimalType(30,2)))\n\n    btlSchema \u003d StructType([\n      StructField(\"Id\", StringType(), True),\n      StructField(\"actualBtlParameter\", DecimalType(30,2), True)\n    ])\n\n    promoBtlList \u003d allCalcActualBtlDF.select(col(\u0027Id\u0027), col(\u0027ActualPromoBTL\u0027).alias(\u0027calcActualPromoBTL\u0027)).collect()\n    promoBtlDF \u003d spark.createDataFrame(promoBtlList, btlSchema)\n\n    #####*Get result*\n\n    cols \u003d calcActualSupportPromoDF.columns\n\n    calcActualSupportPromoDF \u003d calcActualSupportPromoDF\\\n      .join(xsitesDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .withColumn(\u0027ActualPromoXSites\u0027, when(col(\u0027actualSupportParameter\u0027).isNull(), col(\u0027ActualPromoXSites\u0027)).otherwise(col(\u0027actualSupportParameter\u0027)))\\\n      .withColumn(\u0027ActualPromoCostProdXSites\u0027, when(col(\u0027actualCostProdParameter\u0027).isNull(), col(\u0027ActualPromoCostProdXSites\u0027)).otherwise(col(\u0027actualCostProdParameter\u0027)))\\\n      .select(cols)\n\n    calcActualSupportPromoDF \u003d calcActualSupportPromoDF\\\n      .join(catalogDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .withColumn(\u0027ActualPromoCatalogue\u0027, when(col(\u0027actualSupportParameter\u0027).isNull(), col(\u0027ActualPromoCatalogue\u0027)).otherwise(col(\u0027actualSupportParameter\u0027)))\\\n      .withColumn(\u0027ActualPromoCostProdCatalogue\u0027, when(col(\u0027actualCostProdParameter\u0027).isNull(), col(\u0027ActualPromoCostProdCatalogue\u0027)).otherwise(col(\u0027actualCostProdParameter\u0027)))\\\n      .select(cols)\n\n    calcActualSupportPromoDF \u003d calcActualSupportPromoDF\\\n      .join(posmDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .withColumn(\u0027ActualPromoPOSMInClient\u0027, when(col(\u0027actualSupportParameter\u0027).isNull(), col(\u0027ActualPromoPOSMInClient\u0027)).otherwise(col(\u0027actualSupportParameter\u0027)))\\\n      .withColumn(\u0027ActualPromoCostProdPOSMInClient\u0027, when(col(\u0027actualCostProdParameter\u0027).isNull(), col(\u0027ActualPromoCostProdPOSMInClient\u0027)).otherwise(col(\u0027actualCostProdParameter\u0027)))\\\n      .select(cols)\n\n    calcActualSupportPromoDF \u003d calcActualSupportPromoDF\\\n      .join(tiMarketCostProdDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .withColumn(\u0027ActualPromoTIMarketing\u0027, when(col(\u0027actualSupportParameter\u0027).isNull(), col(\u0027ActualPromoTIMarketing\u0027)).otherwise(col(\u0027actualSupportParameter\u0027)))\\\n      .withColumn(\u0027ActualPromoCostProduction\u0027, when(col(\u0027actualCostProdParameter\u0027).isNull(), col(\u0027ActualPromoCostProduction\u0027)).otherwise(col(\u0027actualCostProdParameter\u0027)))\\\n      .select(cols)\n\n    calcActualSupportPromoDF \u003d calcActualSupportPromoDF\\\n      .join(promoBtlDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .withColumn(\u0027ActualPromoBTL\u0027, when(col(\u0027actualBtlParameter\u0027).isNull(), col(\u0027ActualPromoBTL\u0027)).otherwise(col(\u0027actualBtlParameter\u0027)))\\\n      .select(cols)\n\n    print(\u0027Actual support parameters calculation completed!\u0027) \n    \n    return calcActualSupportPromoDF,allPromoSupportPromoDF",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-30 12:48:29.472",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660559074553_1991017425",
+      "id": "paragraph_1660559074553_1991017425",
+      "dateCreated": "2022-08-15 10:24:34.553",
+      "status": "READY"
+    }
+  ],
+  "name": "ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS",
+  "id": "2HA6SWXTW",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

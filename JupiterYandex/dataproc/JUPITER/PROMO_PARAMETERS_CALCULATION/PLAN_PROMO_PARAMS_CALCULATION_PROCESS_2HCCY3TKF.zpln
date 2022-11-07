@@ -1,0 +1,118 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"PLAN_PROMO_PARAMS_CALCULATION_PROCESS\". \n####*Calculate plan promo parameters*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 10:10:21.482",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;PLAN_PROMO_PARAMS_CALCULATION_PROCESS\u0026rdquo;.\u003cbr /\u003e\n####\u003cem\u003eCalculate plan promo parameters\u003c/em\u003e.\u003c/p\u003e\n\u003ch6\u003e\u003cem\u003eDeveloper: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:andrey.philushkin@effem.com\"\u003eandrey.philushkin@effem.com\u003c/a\u003e\u003c/em\u003e\u003c/h6\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660298721233_2082399123",
+      "id": "20220812-100311_1313680705",
+      "dateCreated": "2022-08-12 10:05:21.233",
+      "dateStarted": "2022-08-12 10:10:20.985",
+      "dateFinished": "2022-08-12 10:10:20.990",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 10:09:23.892",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660298954076_420544830",
+      "id": "paragraph_1660298954076_420544830",
+      "dateCreated": "2022-08-12 10:09:14.076",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanPromoDF,promoDF):\n    sc \u003d SparkContext.getOrCreate();\n    spark \u003d SparkSession(sc)\n\n    #####*Set COGS\u0026TI percent*\n\n    activeClientTreeList \u003d clientTreeDF.where(col(\u0027EndDate\u0027).isNull()).collect()\n\n    cogsClientDF \u003d cogsDF\\\n      .join(clientTreeDF, clientTreeDF.Id \u003d\u003d cogsDF.ClientTreeId, \u0027inner\u0027)\\\n      .join(brandTechDF, brandTechDF.Id \u003d\u003d cogsDF.BrandTechId, \u0027inner\u0027)\\\n      .select(\\\n               cogsDF.StartDate.alias(\u0027cogsStartDate\u0027)\n              ,cogsDF.EndDate.alias(\u0027cogsEndDate\u0027)\n              ,cogsDF.LSVpercent\n              ,clientTreeDF.ObjectId.alias(\u0027cogsClientTreeObjectId\u0027)\n              ,brandTechDF.BrandsegTechsub.alias(\u0027cbtName\u0027)\n             )\n\n    cogsClientList \u003d cogsClientDF.collect()\n\n    cogsTnClientDF \u003d cogsTnDF\\\n      .join(clientTreeDF, clientTreeDF.Id \u003d\u003d cogsTnDF.ClientTreeId, \u0027inner\u0027)\\\n      .join(brandTechDF, brandTechDF.Id \u003d\u003d cogsTnDF.BrandTechId, \u0027inner\u0027)\\\n      .select(\\\n               cogsTnDF.StartDate.alias(\u0027cogsStartDate\u0027)\n              ,cogsTnDF.EndDate.alias(\u0027cogsEndDate\u0027)\n              ,cogsTnDF.TonCost\n              ,clientTreeDF.ObjectId.alias(\u0027cogsClientTreeObjectId\u0027)\n              ,brandTechDF.BrandsegTechsub.alias(\u0027cbtName\u0027)\n             )\n\n    cogsTnClientList \u003d cogsTnClientDF.collect()\n\n    cogsTnClientDF \u003d cogsTnDF\\\n      .join(clientTreeDF, clientTreeDF.Id \u003d\u003d cogsTnDF.ClientTreeId, \u0027inner\u0027)\\\n      .join(brandTechDF, brandTechDF.Id \u003d\u003d cogsTnDF.BrandTechId, \u0027inner\u0027)\\\n      .select(\\\n               cogsTnDF.StartDate.alias(\u0027cogsStartDate\u0027)\n              ,cogsTnDF.EndDate.alias(\u0027cogsEndDate\u0027)\n              ,cogsTnDF.TonCost\n              ,clientTreeDF.ObjectId.alias(\u0027cogsClientTreeObjectId\u0027)\n              ,brandTechDF.BrandsegTechsub.alias(\u0027cbtName\u0027)\n             )\n\n    cogsTnClientList \u003d cogsTnClientDF.collect()\n\n    tiClientNullBtDF \u003d tiDF\\\n      .join(clientTreeDF, clientTreeDF.Id \u003d\u003d tiDF.ClientTreeId, \u0027inner\u0027)\\\n      .select(\\\n               tiDF.StartDate.alias(\u0027tiStartDate\u0027)\n              ,tiDF.EndDate.alias(\u0027tiEndDate\u0027)\n              ,tiDF.SizePercent\n              ,clientTreeDF.ObjectId.alias(\u0027tiClientTreeObjectId\u0027)\n             )\\\n      .withColumn(\u0027tibtName\u0027, lit(None).cast(StringType()))\n\n    tiClientNotNullBtDF \u003d tiDF\\\n      .join(clientTreeDF, clientTreeDF.Id \u003d\u003d tiDF.ClientTreeId, \u0027inner\u0027)\\\n      .join(brandTechDF, brandTechDF.Id \u003d\u003d tiDF.BrandTechId, \u0027inner\u0027)\\\n      .select(\\\n               tiDF.StartDate.alias(\u0027tiStartDate\u0027)\n              ,tiDF.EndDate.alias(\u0027tiEndDate\u0027)\n              ,tiDF.SizePercent\n              ,clientTreeDF.ObjectId.alias(\u0027tiClientTreeObjectId\u0027)\n              ,brandTechDF.BrandsegTechsub.alias(\u0027tibtName\u0027)\n             )\n\n    tiClientList \u003d tiClientNullBtDF.union(tiClientNotNullBtDF).collect()\n\n    ratiShopperList \u003d ratiShopperDF.collect()\n\n    import COGS_TI_CALCULATION as cc\n\n    import RA_TI_SHOPPER_CALCULATION as ra\n\n    calcPlanPromoDF \u003d calcPlanPromoDF\\\n      .withColumn(\u0027calcCogsPercent\u0027, lit(cc.getCogsPercent(activeClientTreeList,cogsClientList)(col(\u0027ClientTreeId\u0027), col(\u0027promoBrandTechName\u0027), col(\u0027DispatchesStart\u0027))))\\\n      .withColumn(\u0027calcCogsTn\u0027, lit(cc.getCogsTnPercent(activeClientTreeList,cogsTnClientList)(col(\u0027ClientTreeId\u0027), col(\u0027promoBrandTechName\u0027), col(\u0027DispatchesStart\u0027))))\\\n      .withColumn(\u0027calcTiPercent\u0027, lit(cc.getTiPercent(activeClientTreeList,tiClientList)(col(\u0027ClientTreeId\u0027), col(\u0027promoBrandTechName\u0027), col(\u0027StartDate\u0027))))\\\n      .withColumn(\u0027calcRaTiShopperPercent\u0027, lit(ra.getRaTiShopperPercent(activeClientTreeList,ratiShopperList)(col(\u0027ClientTreeKeyId\u0027), col(\u0027BudgetYear\u0027))))\n\n    logCOGS \u003d calcPlanPromoDF\\\n      .select(\\\n               col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\\\n              ,col(\u0027calcCogsPercent\u0027).alias(\u0027COGSMessage\u0027)\n             )\\\n      .where(col(\u0027calcCogsPercent\u0027).isin(*cc.logText))\n\n    logCOGSTn \u003d calcPlanPromoDF\\\n      .select(\\\n               col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\\\n              ,col(\u0027calcCogsTn\u0027).alias(\u0027COGSTnMessage\u0027)\n             )\\\n      .where(col(\u0027calcCogsTn\u0027).isin(*cc.logText))\n\n    logTI \u003d calcPlanPromoDF\\\n      .select(\\\n               col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\\\n              ,col(\u0027calcTiPercent\u0027).alias(\u0027TIMessage\u0027)\n             )\\\n      .where(col(\u0027calcTiPercent\u0027).isin(*cc.logText))\n\n    logRATIShopper \u003d calcPlanPromoDF\\\n      .select(\\\n               col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\\\n              ,col(\u0027calcRaTiShopperPercent\u0027).alias(\u0027TIMessage\u0027)\n             )\\\n      .where(col(\u0027calcRaTiShopperPercent\u0027).isin(*ra.raLogText))\n\n    calcPlanPromoDF \u003d calcPlanPromoDF\\\n      .withColumn(\u0027PlanCOGSPercent\u0027, when(~col(\u0027calcCogsPercent\u0027).isin(*cc.logText), col(\u0027calcCogsPercent\u0027)).otherwise(col(\u0027PlanCOGSPercent\u0027)))\\\n      .withColumn(\u0027PlanCOGSTn\u0027, when(~col(\u0027calcCogsTn\u0027).isin(*cc.logText), col(\u0027calcCogsTn\u0027)).otherwise(col(\u0027PlanCOGSTn\u0027)))\\\n      .withColumn(\u0027PlanTIBasePercent\u0027, when(~col(\u0027calcTiPercent\u0027).isin(*cc.logText), col(\u0027calcTiPercent\u0027)).otherwise(col(\u0027PlanTIBasePercent\u0027)))\\\n      .withColumn(\u0027RATIShopperPercent\u0027, when(~col(\u0027calcRaTiShopperPercent\u0027).isin(*ra.raLogText), col(\u0027calcRaTiShopperPercent\u0027)).otherwise(0))\n\n    #####*Calculate promo parameters*\n\n    @udf\n    def isNullCheck(value):\n      if value is None:\n        return 0\n      else:\n        return value\n\n    calcPlanPromoDF \u003d calcPlanPromoDF\\\n      .withColumn(\u0027PlanPromoTIShopper\u0027, (col(\u0027PlanPromoLSV\u0027) * col(\u0027MarsMechanicDiscount\u0027) / 100).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoCost\u0027, (isNullCheck(col(\u0027PlanPromoTIShopper\u0027)) + isNullCheck(col(\u0027PlanPromoTIMarketing\u0027)) + isNullCheck(col(\u0027PlanPromoBranding\u0027))\\\n                                  + isNullCheck(col(\u0027PlanPromoBTL\u0027)) + isNullCheck(col(\u0027PlanPromoCostProduction\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalBaseTI\u0027, (col(\u0027PlanPromoIncrementalLSV\u0027) * col(\u0027PlanTIBasePercent\u0027) / 100).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalCOGS\u0027, (col(\u0027PlanPromoIncrementalLSV\u0027) * col(\u0027PlanCOGSPercent\u0027) / 100).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoBaseTI\u0027, (col(\u0027PlanPromoLSV\u0027) * col(\u0027PlanTIBasePercent\u0027) / 100).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoTotalCost\u0027, (isNullCheck(col(\u0027PlanPromoCost\u0027)) + isNullCheck(col(\u0027PlanPromoBaseTI\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectLSVW1\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, isNullCheck(col(\u0027PlanPromoBaselineLSV\u0027))\\\n                                                        * isNullCheck(col(\u0027promoClientPostPromoEffectW1\u0027)) / 100.0).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectLSVW2\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanPromoBaselineLSV\u0027) * col(\u0027promoClientPostPromoEffectW2\u0027) / 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectLSV\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanPromoPostPromoEffectLSVW1\u0027) + col(\u0027PlanPromoPostPromoEffectLSVW2\u0027))\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalLSV\u0027, (isNullCheck(col(\u0027PlanPromoIncrementalLSV\u0027)) + isNullCheck(col(\u0027PlanPromoPostPromoEffectLSV\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetLSV\u0027, (isNullCheck(col(\u0027PlanPromoBaselineLSV\u0027)) + isNullCheck(col(\u0027PlanPromoNetIncrementalLSV\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalBaseTI\u0027, (col(\u0027PlanPromoNetIncrementalLSV\u0027) * col(\u0027PlanTIBasePercent\u0027) / 100.0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalCOGS\u0027, (col(\u0027PlanPromoNetIncrementalLSV\u0027) * col(\u0027PlanCOGSPercent\u0027) / 100.0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetBaseTI\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanPromoNetLSV\u0027) * col(\u0027PlanTIBasePercent\u0027) / 100.0).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoBaselineBaseTI\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanPromoBaselineLSV\u0027) * col(\u0027PlanTIBasePercent\u0027) / 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNSV\u0027, (isNullCheck(col(\u0027PlanPromoLSV\u0027)) - isNullCheck(col(\u0027PlanPromoTIShopper\u0027))\\\n                                 - isNullCheck(col(\u0027PlanPromoTIMarketing\u0027)) - isNullCheck(col(\u0027PlanPromoBaseTI\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalNSV\u0027, (isNullCheck(col(\u0027PlanPromoIncrementalLSV\u0027)) - isNullCheck(col(\u0027PlanPromoTIShopper\u0027))\\\n                                            - isNullCheck(col(\u0027PlanPromoTIMarketing\u0027)) - isNullCheck(col(\u0027PlanPromoIncrementalBaseTI\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalNSV\u0027, (isNullCheck(col(\u0027PlanPromoNetIncrementalLSV\u0027)) - isNullCheck(col(\u0027PlanPromoTIShopper\u0027))\\\n                                               - isNullCheck(col(\u0027PlanPromoTIMarketing\u0027)) - isNullCheck(col(\u0027PlanPromoNetIncrementalBaseTI\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalMACLSV\u0027, (isNullCheck(col(\u0027PlanPromoNetIncrementalNSV\u0027))\\\n                                               - isNullCheck(col(\u0027PlanPromoNetIncrementalCOGS\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetNSV\u0027, (isNullCheck(col(\u0027PlanPromoNetLSV\u0027)) - isNullCheck(col(\u0027PlanPromoTIShopper\u0027))\\\n                                    - isNullCheck(col(\u0027PlanPromoTIMarketing\u0027)) - isNullCheck(col(\u0027PlanPromoNetBaseTI\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalMACLSV\u0027, (isNullCheck(col(\u0027PlanPromoIncrementalNSV\u0027)) - isNullCheck(col(\u0027PlanPromoIncrementalCOGS\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalEarningsLSV\u0027, (isNullCheck(col(\u0027PlanPromoIncrementalMACLSV\u0027)) - isNullCheck(col(\u0027PlanPromoBranding\u0027))\\\n                                                 - isNullCheck(col(\u0027PlanPromoBTL\u0027)) - isNullCheck(col(\u0027PlanPromoCostProduction\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalEarningsLSV\u0027, (isNullCheck(col(\u0027PlanPromoNetIncrementalMACLSV\u0027)) - isNullCheck(col(\u0027PlanPromoBranding\u0027))\\\n                                                    - isNullCheck(col(\u0027PlanPromoBTL\u0027)) - isNullCheck(col(\u0027PlanPromoCostProduction\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoROIPercentLSV\u0027, when(col(\u0027PlanPromoCost\u0027) !\u003d 0, (col(\u0027PlanPromoIncrementalEarningsLSV\u0027) / col(\u0027PlanPromoCost\u0027) + 1) * 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetROIPercentLSV\u0027, when(col(\u0027PlanPromoCost\u0027) !\u003d 0, (col(\u0027PlanPromoNetIncrementalEarningsLSV\u0027) / col(\u0027PlanPromoCost\u0027) + 1) * 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetUpliftPercent\u0027, when(col(\u0027PlanPromoBaselineLSV\u0027) !\u003d 0, (col(\u0027PlanPromoNetIncrementalLSV\u0027) / col(\u0027PlanPromoBaselineLSV\u0027)) * 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanAddTIShopperCalculated\u0027, (isNullCheck(col(\u0027PlanPromoTIShopper\u0027)) - isNullCheck(col(\u0027PlanPromoNetIncrementalLSV\u0027)) * col(\u0027RATIShopperPercent\u0027) / 100)\\\n                  .cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanAddTIShopperApproved\u0027, when(col(\u0027LastApprovedDate\u0027).isNull(), col(\u0027PlanAddTIShopperCalculated\u0027)).otherwise(col(\u0027PlanAddTIShopperApproved\u0027)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectVolumeW1\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, isNullCheck(col(\u0027PlanPromoBaselineVolume\u0027)) * isNullCheck(col(\u0027promoClientPostPromoEffectW1\u0027)) / 100).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectVolumeW2\u0027, when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, isNullCheck(col(\u0027PlanPromoBaselineVolume\u0027)) * isNullCheck(col(\u0027promoClientPostPromoEffectW2\u0027)) / 100).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoPostPromoEffectVolume\u0027,  when(col(\u0027InOut\u0027) \u003d\u003d \u0027False\u0027, isNullCheck(col(\u0027PlanPromoPostPromoEffectVolumeW1\u0027)) + isNullCheck(col(\u0027PlanPromoPostPromoEffectVolumeW2\u0027))).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalVolume\u0027, (col(\u0027PlanPromoIncrementalVolume\u0027) + col(\u0027PlanPromoPostPromoEffectVolume\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalCOGSTn\u0027, (col(\u0027PlanPromoIncrementalVolume\u0027) * col(\u0027PlanCOGSTn\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalCOGSTn\u0027, (col(\u0027PlanPromoNetIncrementalVolume\u0027) * col(\u0027PlanCOGSTn\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalMAC\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, isNullCheck(col(\u0027PlanPromoNetIncrementalNSV\u0027)) - isNullCheck(col(\u0027PlanPromoNetIncrementalCOGSTn\u0027)))\\\n                                              .otherwise(col(\u0027PlanPromoNetIncrementalMACLSV\u0027))\\\n                                              .cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalMAC\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, isNullCheck(col(\u0027PlanPromoIncrementalNSV\u0027)) - isNullCheck(col(\u0027PlanPromoIncrementalCOGSTn\u0027)))\\\n                                              .otherwise(col(\u0027PlanPromoIncrementalMACLSV\u0027))\\\n                                              .cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoIncrementalEarnings\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, (isNullCheck(col(\u0027PlanPromoIncrementalMAC\u0027)) - isNullCheck(col(\u0027PlanPromoBranding\u0027))\\\n                                                 - isNullCheck(col(\u0027PlanPromoBTL\u0027)) - isNullCheck(col(\u0027PlanPromoCostProduction\u0027)))).otherwise(col(\u0027PlanPromoIncrementalEarningsLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetIncrementalEarnings\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, (isNullCheck(col(\u0027PlanPromoNetIncrementalMAC\u0027)) - isNullCheck(col(\u0027PlanPromoBranding\u0027))\\\n                                                 - isNullCheck(col(\u0027PlanPromoBTL\u0027)) - isNullCheck(col(\u0027PlanPromoCostProduction\u0027)))).otherwise(col(\u0027PlanPromoNetIncrementalEarningsLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoROIPercent\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, when(col(\"PlanPromoCost\") !\u003d 0, (col(\u0027PlanPromoIncrementalEarnings\u0027) / col(\u0027PlanPromoCost\u0027) + 1) * 100.0)\\\n                                              .otherwise(0)).otherwise(col(\u0027PlanPromoROIPercentLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PlanPromoNetROIPercent\u0027, when(col(\u0027IsLSVBased\u0027) \u003d\u003d False, when(col(\"PlanPromoCost\") !\u003d 0, (col(\u0027PlanPromoNetIncrementalEarnings\u0027) / col(\u0027PlanPromoCost\u0027) + 1) * 100.0)\\\n                                              .otherwise(0)).otherwise(col(\u0027PlanPromoNetROIPercentLSV\u0027)).cast(DecimalType(30,6)))\n\n    if \"MasterPromoId\" in promoDF.schema.fieldNames():\n      inExchangeCalcPromoDF \u003d promoDF\\\n        .select(\\\n                col(\u0027MasterPromoId\u0027).alias(\u0027MasterPromo\u0027)\n                ,col(\u0027PlanPromoTIShopper\u0027)\n                ,col(\u0027PlanPromoNetIncrementalLSV\u0027)\n               )\\\n        .groupBy(\u0027MasterPromo\u0027)\\\n        .agg(sum(\u0027PlanPromoTIShopper\u0027).alias(\u0027sumPlanPromoTIShopper\u0027),\n             sum(\u0027PlanPromoNetIncrementalLSV\u0027).alias(\u0027sumPlanPromoNetIncrementalLSV\u0027))\n\n      calcPlanPromoDF \u003d calcPlanPromoDF\\\n        .join(inExchangeCalcPromoDF, inExchangeCalcPromoDF.MasterPromo \u003d\u003d calcPlanPromoDF.Id, \u0027left\u0027)\\\n        .select(\\\n                 calcPlanPromoDF[\u0027*\u0027]\n                ,col(\u0027sumPlanPromoTIShopper\u0027)\n                ,col(\u0027sumPlanPromoNetIncrementalLSV\u0027)\n               )\n\n      calcPlanPromoDF \u003d calcPlanPromoDF\\\n        .withColumn(\u0027PlanAddTIShopperCalculated\u0027, (isNullCheck(col(\u0027PlanPromoTIShopper\u0027)) - isNullCheck(col(\u0027sumPlanPromoTIShopper\u0027)) - (isNullCheck(col(\u0027PlanPromoNetIncrementalLSV\u0027)) - isNullCheck(col(\u0027sumPlanPromoNetIncrementalLSV\u0027))) * col(\u0027RATIShopperPercent\u0027) / 100)\\\n                    .cast(DecimalType(30,6)))\\\n        .drop(\u0027sumPlanPromoTIShopper\u0027, \u0027sumPlanPromoNetIncrementalLSV\u0027)\n\n    #####*Get result*\n\n    # calcPlanPromoDF.toPandas().to_csv(OUTPUT_PLANPROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n    print(\u0027Plan promo parameters calculation completed!\u0027)\n    \n    return calcPlanPromoDF,logCOGS,logTI",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:10:33.559",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660298919950_1452976551",
+      "id": "paragraph_1660298919950_1452976551",
+      "dateCreated": "2022-08-12 10:08:39.950",
+      "status": "READY"
+    }
+  ],
+  "name": "PLAN_PROMO_PARAMS_CALCULATION_PROCESS",
+  "id": "2HCCY3TKF",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

@@ -1,0 +1,978 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"JUPITER_ROLLING_VOLUMES_FDM\". \n####*Get rolling volumes by ZREP CLIENT WEEK*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:58.368",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;JUPITER_ROLLING_VOLUMES_FDM\u0026rdquo;.\u003cbr /\u003e\n####\u003cem\u003eGet rolling volumes by ZREP CLIENT WEEK\u003c/em\u003e.\u003c/p\u003e\n\u003ch6\u003e\u003cem\u003eDeveloper: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:andrey.philushkin@effem.com\"\u003eandrey.philushkin@effem.com\u003c/a\u003e\u003c/em\u003e\u003c/h6\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663387_1256974195",
+      "id": "20220823-083423_918210062",
+      "dateCreated": "2022-08-23 08:34:23.387",
+      "dateStarted": "2022-08-23 09:44:58.370",
+      "dateFinished": "2022-08-23 09:44:58.376",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Function to determine runtime(Notebook or pure python)",
+      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:58.470",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_2146013575",
+      "id": "20220823-083423_1452700115",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:44:58.472",
+      "dateFinished": "2022-08-23 09:44:58.690",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nfrom datetime import timedelta, datetime, date\nimport datetime as datetime\nimport os",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:58.773",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1448995848",
+      "id": "20220823-083423_332178876",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:44:58.774",
+      "dateFinished": "2022-08-23 09:44:58.991",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-08-23_manual__2022-08-23T09%3A27%3A30%2B00%3A00_\", \"ProcessDate\": \"2022-08-23\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_rolling_volumes_fdm\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\") \n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:59.075",
+      "progress": 0,
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243790644_1554279910",
+      "id": "paragraph_1661243790644_1554279910",
+      "dateCreated": "2022-08-23 08:36:30.644",
+      "dateStarted": "2022-08-23 09:44:59.077",
+      "dateFinished": "2022-08-23 09:44:59.293",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ndatesDimSchema \u003d StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:59.377",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1879027477",
+      "id": "20220823-083423_2070865396",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:44:59.379",
+      "dateFinished": "2022-08-23 09:44:59.596",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nincrementalSchema \u003d StructType([\n  StructField(\"PromoNumber\", IntegerType(), False),\n  StructField(\"ZREP\", StringType(), False),\n  StructField(\"DemandCode\", StringType(), False),\n  StructField(\"WeekStartDate\", StringType(), False),\n  StructField(\"DispatchesStart\", StringType(), False),\n  StructField(\"DispatchesEnd\", StringType(), False),\n  StructField(\"PlanProductIncrementalCaseQty\",  DoubleType(), False),\n  StructField(\"Status\", StringType(), False)\n])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:59.679",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_494116187",
+      "id": "20220823-083423_944323232",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:44:59.681",
+      "dateFinished": "2022-08-23 09:44:59.899",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)\nimport SUPPORT_FUNCTIONS as sp",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:44:59.981",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-08-23_manual__2022-08-23T09%3A27%3A30%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1173948452",
+      "id": "20220823-083423_1563741331",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:44:59.983",
+      "dateFinished": "2022-08-23 09:45:00.204",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nstartRollingDate \u003d es.systemParametersDF.select(to_date(col(\"Value\"), \u0027yyyy-MM-dd\u0027).alias(\"Value\")).where(col(\u0027Key\u0027)\u003d\u003d\u0027StartRollingDate\u0027).collect()[0].Value\nprint(startRollingDate)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:00.284",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2020-06-28\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d31"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1176299179",
+      "id": "20220823-083423_732128204",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:00.286",
+      "dateFinished": "2022-08-23 09:45:00.607",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ntoday \u003d datetime.datetime.today().date()\nseven_days \u003d timedelta(7)\nweek_ago \u003d today - seven_days\n\nweek_day \u003d today.isoweekday()\nstart_mars_week \u003d today\nif week_day !\u003d 7:\n  days_to_start_week \u003d timedelta(week_day)\n  start_mars_week \u003d today - days_to_start_week\n  \nyear_ago \u003d today - timedelta(365)\nweek_day_year_ago \u003d year_ago.isoweekday()\nstart_mars_week_year_ago \u003d year_ago\nif week_day_year_ago !\u003d 7:\n  days_to_start_week \u003d timedelta(week_day_year_ago)\n  start_mars_week_year_ago \u003d year_ago - days_to_start_week\n  \nif startRollingDate \u003c start_mars_week_year_ago:\n  startRollingDate \u003d start_mars_week_year_ago\n  \ntoday_year \u003d str(today.year)\ntoday_month \u003d str(today.month)\ntoday_day \u003d str(today.day)\n\nweek_ago_year \u003d str(week_ago.year)\nweek_ago_month \u003d str(week_ago.month)\nweek_ago_day \u003d str(week_ago.day)\n\ntoday_str \u003d today_year.zfill(4) + \u0027/\u0027 + today_month.zfill(2) + \"/\" + today_day.zfill(2)\nweek_ago_str \u003d week_ago_year.zfill(4) + \u0027/\u0027 + week_ago_month.zfill(2) + \"/\" + week_ago_day.zfill(2)\n\nprint(start_mars_week)\nprint(start_mars_week_year_ago)\nprint(startRollingDate)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:00.686",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2022-08-21\n2021-08-22\n2021-08-22\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1691387028",
+      "id": "20220823-083423_661545481",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:00.688",
+      "dateFinished": "2022-08-23 09:45:00.908",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Set paths*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:00.989",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eSet paths\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1240343153",
+      "id": "20220823-083423_1451479166",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:00.991",
+      "dateFinished": "2022-08-23 09:45:00.995",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n#Inputs\nORDERS_PATH \u003d SETTING_OUTPUT_DIR + \u0027/JUPITER_ORDERS_DELIVERY_FDM/\u0027 + today_str + \u0027/ORDERS_DELIVERY_FDM.parquet\u0027\nDATESDIM_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv\u0027\n\nBASELINE_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/JUPITER/BaseLine\u0027\nPRODUCT_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/JUPITER/Product\u0027\nPROMO_STATUS_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/JUPITER/PromoStatus\u0027\nINCREMENTAL_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/JUPITER/PlanIncrementalReport\u0027\nROLLINGVOLUMES_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/JUPITER/RollingVolume\u0027\n\nPREV_INCREMENTAL_PATH \u003d SETTING_PROCESS_DIR + \u0027/PREVIOUS_INCREMENTAL.PARQUET\u0027\nFULL_WEEK_ACTUAL_PATH \u003d SETTING_PROCESS_DIR + \"/FULL_WEEK_ACTUAL.parquet\"\n\n#Outputs\nOUTPUT_DIR\u003dSETTING_OUTPUT_DIR + \"/\" + es.pipelineSubfolderName\nROLLINGVOLUMES_FDM_OUTPUT_PATH \u003d OUTPUT_DIR + \"/\" + today_str + \"/ROLLINGVOLUMES_FDM.CSV\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:01.091",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1800020688",
+      "id": "20220823-083423_757649001",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:01.093",
+      "dateFinished": "2022-08-23 09:45:01.310",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Load raw entities schemas from json files to map",
+      "text": "%pyspark\nSCHEMAS_DIR\u003dSETTING_RAW_DIR + \u0027/SCHEMAS/\u0027\nschemas_map \u003d sp.getSchemasMap(SCHEMAS_DIR)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:01.393",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661245905902_1860349870",
+      "id": "paragraph_1661245905902_1860349870",
+      "dateCreated": "2022-08-23 09:11:45.902",
+      "dateStarted": "2022-08-23 09:45:01.395",
+      "dateFinished": "2022-08-23 09:45:01.915",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\nordersDF \u003d spark.read.parquet(ORDERS_PATH)\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BaseLine\"])\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"])\npromoStatusDF \u003d spark.read.csv(PROMO_STATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoStatus\"])\nincrementalDF \u003d spark.read.csv(INCREMENTAL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PlanIncrementalReport\"])\nfullWeekActualsDF \u003d spark.read.format(\"parquet\").load(FULL_WEEK_ACTUAL_PATH)\nrollingVolumeDF \u003d spark.read.csv(ROLLINGVOLUMES_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"RollingVolume\"])\n\ntry:\n  previousPlanIncrementalDF \u003d spark.read.format(\"parquet\").load(PREV_INCREMENTAL_PATH)\nexcept:\n  print(\u0027Previous incremental plan not exists. Creating new one.\u0027)     \n  previousPlanIncrementalDF \u003d sqlContext.createDataFrame(sc.emptyRDD(), incrementalSchema)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:01.996",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d32"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d33"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d34"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1853309310",
+      "id": "20220823-083423_497382659",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:01.998",
+      "dateFinished": "2022-08-23 09:45:02.770",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Calculate Promo Difference*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:02.799",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eCalculate Promo Difference\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1403800091",
+      "id": "20220823-083423_1225728660",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:02.801",
+      "dateFinished": "2022-08-23 09:45:02.805",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ncurrentPlanIncrementalDF \u003d incrementalDF\\\n  .select(\\\n          col(\u0027PromoNumber\u0027)\n          ,split(col(\"ZREP\"), \"\\_0125\")[0].alias(\"ZREP\")\\\n          ,split(col(\"DemandCode\"), \"\\_05_0125\")[0].alias(\"DMDGROUP\")\\\n          ,to_date(col(\"WeekStartDate\"), \u0027yyyy-MM-dd\u0027).alias(\"WeekStartDate\")\\\n          ,to_date(col(\"DispatchesStart\"), \u0027yyyy-MM-dd\u0027).alias(\"DispatchesStart\")\\\n          ,to_date(col(\"DispatchesEnd\"), \u0027yyyy-MM-dd\u0027).alias(\"DispatchesEnd\")\\\n          ,col(\"PlanProductIncrementalCaseQty\").cast(DoubleType()).alias(\"CurrentIncrementalQty\")\\\n          ,col(\"Status\").alias(\"CurrentStatus\")\\\n         )\\\n  .withColumn(\u0027CurrentDispatchesStart\u0027, date_add(col(\u0027DispatchesStart\u0027), 1))\\\n  .withColumn(\u0027CurrentDispatchesEnd\u0027, date_add(col(\u0027DispatchesEnd\u0027), 1))\\\n  .where((col(\"WeekStartDate\") \u003c start_mars_week) \u0026 (col(\"WeekStartDate\") \u003e\u003d startRollingDate))\n\npreviousPlanIncrementalDF \u003d previousPlanIncrementalDF\\\n  .select(\\\n          col(\u0027PromoNumber\u0027)\n          ,split(col(\"ZREP\"), \"\\_0125\")[0].alias(\"ZREP\")\\\n          ,split(col(\"DemandCode\"), \"\\_05_0125\")[0].alias(\"DMDGROUP\")\\\n          ,to_date(col(\"WeekStartDate\"), \u0027yyyy-MM-dd\u0027).alias(\"WeekStartDate\")\\\n          ,to_date(col(\"DispatchesStart\"), \u0027yyyy-MM-dd\u0027).alias(\"DispatchesStart\")\\\n          ,to_date(col(\"DispatchesEnd\"), \u0027yyyy-MM-dd\u0027).alias(\"DispatchesEnd\")\\\n          ,col(\"PlanProductIncrementalCaseQty\").cast(DoubleType()).alias(\"PreviousIncrementalQty\")\\\n          ,col(\"Status\").alias(\"PreviousStatus\")\\\n         )\\\n  .withColumn(\u0027PreviousDispatchesStart\u0027, date_add(col(\u0027DispatchesStart\u0027), 1))\\\n  .withColumn(\u0027PreviousDispatchesEnd\u0027, date_add(col(\u0027DispatchesEnd\u0027), 1))\\\n  .where((col(\"WeekStartDate\") \u003c start_mars_week) \u0026 (col(\"WeekStartDate\") \u003e\u003d startRollingDate))\n\npromoDifferenceDF \u003d previousPlanIncrementalDF\\\n  .join(currentPlanIncrementalDF, [\u0027PromoNumber\u0027, \u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .select(\\\n          previousPlanIncrementalDF.PromoNumber\n          ,previousPlanIncrementalDF.ZREP\n          ,previousPlanIncrementalDF.DMDGROUP\n          ,previousPlanIncrementalDF.WeekStartDate\n          \n          ,currentPlanIncrementalDF.CurrentDispatchesStart\n          ,previousPlanIncrementalDF.PreviousDispatchesStart\n          \n          ,currentPlanIncrementalDF.CurrentDispatchesEnd\n          ,previousPlanIncrementalDF.PreviousDispatchesEnd\n          \n          ,currentPlanIncrementalDF.CurrentStatus\n          ,previousPlanIncrementalDF.PreviousStatus\n          \n          ,currentPlanIncrementalDF.CurrentIncrementalQty\n          ,previousPlanIncrementalDF.PreviousIncrementalQty\n         )\\\n  .fillna(0, [\u0027CurrentIncrementalQty\u0027, \u0027PreviousIncrementalQty\u0027])\\\n  .withColumn(\u0027DifferenceIncrementalQty\u0027, col(\u0027CurrentIncrementalQty\u0027) - col(\u0027PreviousIncrementalQty\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:02.901",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1233440969",
+      "id": "20220823-083423_29826027",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:02.903",
+      "dateFinished": "2022-08-23 09:45:03.321",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Promo Difference, Baseline and Incremental preparation*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:03.403",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003ePromo Difference, Baseline and Incremental preparation\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_356812057",
+      "id": "20220823-083423_1794623036",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:03.405",
+      "dateFinished": "2022-08-23 09:45:03.409",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\npromoDifferenceDF \u003d promoDifferenceDF\\\n  .select(\\\n          col(\"ZREP\")\n          ,col(\"DMDGROUP\")\n          ,to_date(col(\"WeekStartDate\"), \u0027yyyy-MM-dd\u0027).alias(\"WeekStartDate\")\\\n          ,col(\"DifferenceIncrementalQty\").cast(DecimalType(30,6)).alias(\"QTY\")\\\n         )\\\n  .groupBy([\u0027ZREP\u0027, \u0027DMDGROUP\u0027])\\\n  .agg(sum(\u0027QTY\u0027).alias(\u0027PromoDifferenceQty\u0027))\\\n  .withColumn(\u0027WeekStartDate\u0027, to_date(lit(start_mars_week), \u0027yyyy-MM-dd\u0027))   \n\ngoodStatuses \u003d [\u0027OnApproval\u0027, \u0027Planned\u0027, \u0027Started\u0027, \u0027Approved\u0027]\n\ncurrIncrementalWeekDF \u003d incrementalDF\\\n  .select(\\\n          split(col(\"ZREP\"), \"\\_0125\")[0].alias(\"ZREP\")\\\n          ,split(col(\"DemandCode\"), \"\\_05_0125\")[0].alias(\"DMDGROUP\")\\\n          ,to_date(col(\"WeekStartDate\"), \u0027yyyy-MM-dd\u0027).alias(\"WeekStartDate\")\\\n          ,col(\"PlanProductIncrementalCaseQty\").cast(DecimalType(30,6)).alias(\"QTY\")\\\n          ,col(\"Status\")\\\n  )\\\n  .where((col(\u0027WeekStartDate\u0027) \u003d\u003d start_mars_week) \u0026 (col(\"Status\").isin(*goodStatuses)))\\\n  .groupBy([\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027])\\\n  .agg(sum(\u0027QTY\u0027).alias(\u0027PlanProductIncrementalQty\u0027))\n\nbaselineWeekDF \u003d baselineDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .join(productDF, baselineDF.ProductId \u003d\u003d productDF.Id, \u0027inner\u0027)\\\n  .select(\\\n          col(\u0027ZREP\u0027)\n          ,split(col(\"DemandCode\"), \"\\_05_0125\")[0].alias(\"DMDGROUP\")\\\n          ,to_date(col(\"StartDate\"), \u0027yyyy-MM-dd\u0027).alias(\"StartDate\")\\\n          ,col(\"SellInBaselineQTY\").cast(DecimalType(30,6))\\\n  )\\\n  .withColumn(\u0027WeekStartDate\u0027, date_add(col(\u0027StartDate\u0027), 1))\\\n  .where(col(\u0027WeekStartDate\u0027) \u003d\u003d start_mars_week)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:03.505",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663388_1405120908",
+      "id": "20220823-083423_1556917004",
+      "dateCreated": "2022-08-23 08:34:23.388",
+      "dateStarted": "2022-08-23 09:45:03.508",
+      "dateFinished": "2022-08-23 09:45:03.876",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Actual and Open Orders separation*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:03.908",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eActual and Open Orders separation\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_1416785620",
+      "id": "20220823-083423_1818704259",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:03.910",
+      "dateFinished": "2022-08-23 09:45:03.914",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nordersWeekDF \u003d ordersDF\\\n  .join(datesDF, ordersDF.MARSDATE \u003d\u003d datesDF.MarsWeekFullName, \u0027inner\u0027)\\\n  .select(\\\n           ordersDF.DMDGROUP\n          ,ordersDF.ZREP\n          ,ordersDF.MARSDATE\n          ,datesDF.OriginalDate.alias(\u0027WeekStartDate\u0027)\n          ,ordersDF.Date\n          ,ordersDF.BrandTech\n          ,ordersDF.QTY.cast(DecimalType(30,6))\n          ,ordersDF.TYPE\n         )\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027, \u0027Date\u0027, \u0027BrandTech\u0027, \u0027QTY\u0027, \u0027TYPE\u0027])\\\n  .agg(min(\u0027WeekStartDate\u0027).alias(\u0027WeekStartDate\u0027))\\\n  .where(col(\u0027WeekStartDate\u0027) \u003d\u003d start_mars_week)\n\npreviousWeekActualsDF \u003d fullWeekActualsDF\\\n  .join(datesDF, fullWeekActualsDF.MARSDATE \u003d\u003d datesDF.MarsWeekFullName, \u0027inner\u0027)\\\n  .select(\\\n           fullWeekActualsDF.DMDGROUP\n          ,fullWeekActualsDF.ZREP\n          ,fullWeekActualsDF.MARSDATE\n          ,datesDF.OriginalDate.alias(\u0027WeekStartDate\u0027)\n          ,fullWeekActualsDF.Date\n          ,fullWeekActualsDF.BrandTech\n          ,fullWeekActualsDF.QTY.cast(DecimalType(30,6))\n          ,fullWeekActualsDF.TYPE\n         )\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027, \u0027Date\u0027, \u0027BrandTech\u0027, \u0027QTY\u0027, \u0027TYPE\u0027])\\\n  .agg(min(\u0027WeekStartDate\u0027).alias(\u0027WeekStartDate\u0027))\\\n  .where(col(\u0027WeekStartDate\u0027) \u003d\u003d (start_mars_week - timedelta(7)))\n\npreviousWeekActualsDF \u003d previousWeekActualsDF\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027])\\\n  .agg(sum(\u0027QTY\u0027).alias(\u0027QTY\u0027), first(\u0027BrandTech\u0027).alias(\u0027BrandTech\u0027), first(\u0027TYPE\u0027).alias(\u0027TYPE\u0027))\\\n  .withColumn(\u0027WeekStartDate\u0027, lit(start_mars_week))\n\nactualsDF \u003d ordersWeekDF\\\n  .where(col(\u0027TYPE\u0027) \u003d\u003d \u0027ACTUAL\u0027)\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027])\\\n  .agg(first(\u0027WeekStartDate\u0027).alias(\u0027WeekStartDate\u0027), sum(\u0027QTY\u0027).alias(\u0027QTY\u0027), first(\u0027BrandTech\u0027).alias(\u0027BrandTech\u0027), first(\u0027TYPE\u0027).alias(\u0027TYPE\u0027))\n\nopenOrdersDF \u003d ordersWeekDF\\\n  .where(col(\u0027TYPE\u0027) \u003d\u003d \u0027OPEN_ORDER\u0027)\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027])\\\n  .agg(first(\u0027WeekStartDate\u0027).alias(\u0027WeekStartDate\u0027), sum(\u0027QTY\u0027).alias(\u0027QTY\u0027), first(\u0027BrandTech\u0027).alias(\u0027BrandTech\u0027), first(\u0027TYPE\u0027).alias(\u0027TYPE\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:04.010",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_832312598",
+      "id": "20220823-083423_1430683559",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:04.012",
+      "dateFinished": "2022-08-23 09:45:04.430",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Previous week rolling*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:04.513",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003ePrevious week rolling\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_80453823",
+      "id": "20220823-083423_22316309",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:04.515",
+      "dateFinished": "2022-08-23 09:45:04.519",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nformattedDatesDF \u003d datesDF\\\n  .withColumn(\u0027FormattedWeek\u0027, concat(col(\u0027MarsYear\u0027), lit(\u0027P\u0027), lpad(col(\u0027MarsPeriod\u0027), 2, \u00270\u0027), col(\u0027MarsWeekName\u0027)))\n\nprevRollingVolumeDF \u003d rollingVolumeDF\\\n  .join(productDF, ((rollingVolumeDF.ProductId \u003d\u003d productDF.Id) \u0026 (col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)), \u0027inner\u0027)\\\n  .join(formattedDatesDF, formattedDatesDF.FormattedWeek \u003d\u003d rollingVolumeDF.Week, \u0027inner\u0027)\\\n  .select(\\\n           rollingVolumeDF.ManualRollingTotalVolumes\n          ,rollingVolumeDF.ActualOO.alias(\u0027ActualOpenOrdersQty\u0027)\n          ,split(col(\"DemandGroup\"), \"\\_05_0125\")[0].alias(\"DMDGROUP\")\\\n          ,productDF.ZREP\n          ,rollingVolumeDF.Week\n          ,formattedDatesDF.OriginalDate\n         )\n\nprevRollingVolumeDF \u003d prevRollingVolumeDF\\\n  .groupBy([\u0027ManualRollingTotalVolumes\u0027,\u0027ActualOpenOrdersQty\u0027,\u0027DMDGROUP\u0027,\u0027ZREP\u0027,\u0027Week\u0027])\\\n  .agg(date_add(min(col(\u0027OriginalDate\u0027)), 7).alias(\u0027WeekStartDate\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:04.615",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_1457270478",
+      "id": "20220823-083423_955898616",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:04.617",
+      "dateFinished": "2022-08-23 09:45:04.935",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Result*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:05.017",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eResult\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_453674618",
+      "id": "20220823-083423_1837586245",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:05.020",
+      "dateFinished": "2022-08-23 09:45:05.024",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nrollingVolumesDF \u003d currIncrementalWeekDF\\\n  .join(actualsDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .join(openOrdersDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .join(previousWeekActualsDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .join(prevRollingVolumeDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .join(baselineWeekDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .join(promoDifferenceDF, [\u0027ZREP\u0027, \u0027DMDGROUP\u0027, \u0027WeekStartDate\u0027], \u0027left\u0027)\\\n  .select(\\\n           currIncrementalWeekDF.ZREP\\\n          ,currIncrementalWeekDF.DMDGROUP\\\n          ,currIncrementalWeekDF.WeekStartDate\\\n          ,currIncrementalWeekDF.PlanProductIncrementalQty.alias(\u0027PlanProductIncrementalQty\u0027)\\\n          ,prevRollingVolumeDF.ManualRollingTotalVolumes.alias(\u0027PreviousRollingVolumesQty\u0027)\\\n          ,prevRollingVolumeDF.ActualOpenOrdersQty.alias(\u0027PreviousActualOpenOrdersQty\u0027)\\\n          ,actualsDF.QTY.alias(\u0027ActualsQty\u0027)\\\n          ,openOrdersDF.QTY.alias(\u0027OpenOrdersQty\u0027)\\\n          ,previousWeekActualsDF.QTY.alias(\u0027FullWeekActualsQty\u0027)\\\n          ,baselineWeekDF.SellInBaselineQTY.alias(\u0027BaselineQty\u0027)\n          ,promoDifferenceDF.PromoDifferenceQty.alias(\u0027PromoDifferenceQty\u0027)\n         )\\\n  .fillna(0, [\u0027PreviousRollingVolumesQty\u0027, \u0027ActualsQty\u0027, \u0027OpenOrdersQty\u0027, \u0027FullWeekActualsQty\u0027, \u0027BaselineQty\u0027, \u0027PromoDifferenceQty\u0027])\\\n  .withColumn(\u0027ActualIncrementalQty\u0027, col(\u0027ActualsQty\u0027) + col(\u0027OpenOrdersQty\u0027) - col(\u0027BaselineQty\u0027))\\\n  .withColumn(\u0027PreliminaryRollingVolumesQty\u0027, col(\u0027PlanProductIncrementalQty\u0027) - col(\u0027ActualIncrementalQty\u0027))\\\n  .withColumn(\u0027ActualOpenOrdersQty\u0027, col(\u0027ActualsQty\u0027) + col(\u0027OpenOrdersQty\u0027))\\\n  .withColumn(\u0027FullWeekDiffQty\u0027, col(\u0027FullWeekActualsQty\u0027) - col(\u0027PreviousActualOpenOrdersQty\u0027))\\\n  .withColumn(\u0027RollingVolumesQty\u0027,\\\n              when((col(\u0027PlanProductIncrementalQty\u0027) + col(\u0027PreviousRollingVolumesQty\u0027) - col(\u0027ActualIncrementalQty\u0027) + col(\u0027PromoDifferenceQty\u0027)) \u003c 0, 0)\\\n         .otherwise(col(\u0027PlanProductIncrementalQty\u0027) + col(\u0027PreviousRollingVolumesQty\u0027) - col(\u0027ActualIncrementalQty\u0027) + col(\u0027PromoDifferenceQty\u0027)))\n\nrollingVolumesDF \u003d rollingVolumesDF\\\n  .select(\\\n           rollingVolumesDF.ZREP\n          ,rollingVolumesDF.DMDGROUP\n          ,to_date(date_add(col(\u0027WeekStartDate\u0027), 7), \u0027yyyy.MM.dd\u0027).alias(\u0027WeekStartDate\u0027)\n          ,rollingVolumesDF.PlanProductIncrementalQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.PreviousRollingVolumesQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.ActualsQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.OpenOrdersQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.ActualOpenOrdersQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.BaselineQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.PreliminaryRollingVolumesQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.PromoDifferenceQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.ActualIncrementalQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.FullWeekDiffQty.cast(DecimalType(30,6))\n          ,rollingVolumesDF.RollingVolumesQty.cast(DecimalType(30,6))\n         )",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:45:05.120",
+      "progress": 0,
+      "config": {
+        "editorSetting": {},
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_109345302",
+      "id": "20220823-083423_198882837",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:45:05.122",
+      "dateFinished": "2022-08-23 09:45:05.592",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# rollingVolumesDF.write.mode(\"overwrite\").parquet(ROLLINGVOLUMES_FDM_OUTPUT_PATH)\n\nrollingVolumesDF\\\n.repartition(1)\\\n.write.csv(ROLLINGVOLUMES_FDM_OUTPUT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nincrementalDF.write.mode(\"overwrite\").parquet(PREV_INCREMENTAL_PATH)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-23 09:48:13.695",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d44"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:33225/jobs/job?id\u003d45"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661243663389_740747470",
+      "id": "20220823-083423_772007510",
+      "dateCreated": "2022-08-23 08:34:23.389",
+      "dateStarted": "2022-08-23 09:48:13.698",
+      "dateFinished": "2022-08-23 09:49:01.252",
+      "status": "FINISHED"
+    }
+  ],
+  "name": "JUPITER_ROLLING_VOLUMES_FDM",
+  "id": "2HCEC3AXH",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {
+    "isRunning": false
+  }
+}

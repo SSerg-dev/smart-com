@@ -1,0 +1,147 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"RA_TI_SHOPPER_CALCULATION\". \n####*RA TI Shopper calculation functions*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 11:16:06.971",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;RA_TI_SHOPPER_CALCULATION\u0026rdquo;. \u003c/p\u003e\n\u003cp\u003e####*RA TI Shopper calculation functions*.\u003c/p\u003e\n\u003ch6\u003e*Developer: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:\u0026#97;\u0026#x6e;\u0026#100;r\u0026#x65;\u0026#x79;\u0026#x2e;\u0026#112;hi\u0026#x6c;u\u0026#115;\u0026#104;ki\u0026#110;\u0026#x40;\u0026#x65;\u0026#x66;\u0026#x66;\u0026#101;\u0026#109;\u0026#x2e;\u0026#x63;\u0026#x6f;\u0026#x6d;\u0026#x2a;\"\u003e\u0026#97;\u0026#x6e;\u0026#100;r\u0026#x65;\u0026#x79;\u0026#x2e;\u0026#112;hi\u0026#x6c;u\u0026#115;\u0026#104;ki\u0026#110;\u0026#x40;\u0026#x65;\u0026#x66;\u0026#x66;\u0026#101;\u0026#109;\u0026#x2e;\u0026#x63;\u0026#x6f;\u0026#x6d;\u0026#x2a;\u003c/a\u003e\u003c/h6\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302966971_1576822136",
+      "id": "20220812-111337_7113825",
+      "dateCreated": "2022-08-12 11:16:06.971",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql.functions import *",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 12:05:17.734",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660304461704_8604477",
+      "id": "paragraph_1660304461704_8604477",
+      "dateCreated": "2022-08-12 11:41:01.704",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nraLogText \u003d [\u0027RA TI Shopper was not found\u0027, \u0027RA TI Shopper duplicate record error\u0027]",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 11:33:48.595",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false
+        },
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302966971_1101194174",
+      "id": "20220812-111337_2052333800",
+      "dateCreated": "2022-08-12 11:16:06.971",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\r\ndef getRaTiShopperPercent(activeClientTreeList,ratiShopperList):\r\n  def f(clientId, budgetYear):\r\n      c \u003d [x for x in activeClientTreeList if x.Id \u003d\u003d clientId]\r\n      rati \u003d []\r\n      while (len(rati) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\r\n        rati \u003d [x for x in ratiShopperList if x.ClientTreeId \u003d\u003d c[0].Id and x.Year \u003d\u003d budgetYear]\r\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\r\n  \r\n      if len(rati) \u003d\u003d 0:\r\n        return \"RA TI Shopper was not found\"\r\n      elif len(rati) \u003e 1:\r\n        return \"RA TI Shopper duplicate record error\"\r\n      else:\r\n        return rati[0].RATIShopperPercent\r\n  \r\n  return udf(f)      ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:10:25.851",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302966971_1688201375",
+      "id": "20220812-111337_1816267855",
+      "dateCreated": "2022-08-12 11:16:06.971",
+      "status": "READY"
+    }
+  ],
+  "name": "RA_TI_SHOPPER_CALCULATION",
+  "id": "2HCYHFNM6",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

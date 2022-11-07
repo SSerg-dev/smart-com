@@ -1,0 +1,324 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"COGS_TI_CALCULATION\". \n####*COGS and TI Base calculation functions*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 11:15:38.329",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;COGS_TI_CALCULATION\u0026rdquo;. \u003c/p\u003e\n\u003cp\u003e####*COGS and TI Base calculation functions*.\u003c/p\u003e\n\u003ch6\u003e*Developer: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:a\u0026#110;\u0026#x64;\u0026#x72;\u0026#101;\u0026#121;\u0026#x2e;\u0026#112;hi\u0026#108;\u0026#x75;s\u0026#104;\u0026#x6b;\u0026#105;\u0026#x6e;\u0026#x40;\u0026#x65;\u0026#102;f\u0026#101;\u0026#x6d;\u0026#x2e;\u0026#99;\u0026#x6f;m*\"\u003ea\u0026#110;\u0026#x64;\u0026#x72;\u0026#101;\u0026#121;\u0026#x2e;\u0026#112;hi\u0026#108;\u0026#x75;s\u0026#104;\u0026#x6b;\u0026#105;\u0026#x6e;\u0026#x40;\u0026#x65;\u0026#102;f\u0026#101;\u0026#x6d;\u0026#x2e;\u0026#99;\u0026#x6f;m*\u003c/a\u003e\u003c/h6\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_99624168",
+      "id": "20220812-111413_601529748",
+      "dateCreated": "2022-08-12 11:15:38.329",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql.functions import *\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 11:41:00.433",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660304451064_163426369",
+      "id": "paragraph_1660304451064_163426369",
+      "dateCreated": "2022-08-12 11:40:51.064",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nlogText \u003d [\u0027COGS was not found\u0027,\u0027COGSTn was not found\u0027,\u0027COGS duplicate record error\u0027,\u0027COGSTn duplicate record error\u0027,\u0027TI Base was not found\u0027]\nlogTnText \u003d [\u0027COGSTn was not found\u0027,\u0027COGSTn duplicate record error\u0027,\u0027TI Base was not found\u0027]\nactualLogText \u003d [\u0027Actual COGS was not found\u0027,\u0027Actual COGSTn was not found\u0027,\u0027Actual COGS duplicate record error\u0027,\u0027Actual COGSTn duplicate record error\u0027,\u0027Actual TI Base was not found\u0027]\nactualTnLogText \u003d [\u0027Actual COGSTn was not found\u0027,\u0027Actual COGSTn duplicate record error\u0027,\u0027Actual TI Base was not found\u0027]",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 11:31:48.132",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_1877170691",
+      "id": "20220812-111413_943182631",
+      "dateCreated": "2022-08-12 11:15:38.329",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getCogsPercent(activeClientTreeList,cogsClientList):\n    def f(objectId, brandTechName, dispatchesStart):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      cogs \u003d []\n      while (len(cogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        cogs \u003d [x for x in cogsClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName \u003d\u003d brandTechName\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(cogs) \u003d\u003d 0:\n        while (len(cogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n          cogs \u003d [x for x in cogsClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName is None\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n          c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(cogs) \u003d\u003d 0:\n        return \"COGS was not found\"\n      elif len(cogs) \u003e 1:\n        return \"COGS duplicate record error\"\n      else:\n        return cogs[0].LSVpercent\n    return udf(f)    ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:09:48.453",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_2072014243",
+      "id": "20220812-111413_2076726719",
+      "dateCreated": "2022-08-12 11:15:38.329",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getCogsTnPercent(activeClientTreeList,cogsTnClientList):\n    def f(objectId, brandTechName, dispatchesStart):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      cogs \u003d []\n      while (len(cogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        cogs \u003d [x for x in cogsTnClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName \u003d\u003d brandTechName\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(cogs) \u003d\u003d 0:\n        while (len(cogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n          cogs \u003d [x for x in cogsTnClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName is None\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n          c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(cogs) \u003d\u003d 0:\n        return \"COGSTn was not found\"\n      elif len(cogs) \u003e 1:\n        return \"COGSTn duplicate record error\"\n      else:\n        return cogs[0].TonCost\n    return udf(f)          ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 07:58:42.296",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_1812734803",
+      "id": "20220812-111413_1942733853",
+      "dateCreated": "2022-08-12 11:15:38.329",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getActualCogsPercent(activeClientTreeList,actualCogsClientList):\n    def f(objectId, brandTechName, dispatchesStart):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      actualcogs \u003d []\n      while (len(actualcogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        actualcogs \u003d [x for x in actualCogsClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName \u003d\u003d brandTechName\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(actualcogs) \u003d\u003d 0:\n        while (len(actualcogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n          actualcogs \u003d [x for x in actualCogsClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName is None\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n          c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(actualcogs) \u003d\u003d 0:\n        return \"Actual COGS was not found\"\n      elif len(actualcogs) \u003e 1:\n        return \"Actual COGS duplicate record error\"\n      else:\n        return actualcogs[0].LSVpercent\n    return udf(f)          ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:31:14.138",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_375998863",
+      "id": "20220812-111413_1142988576",
+      "dateCreated": "2022-08-12 11:15:38.329",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getActualCogsTnPercent(activeClientTreeList,actualCogsTnClientList):\n    def f(objectId, brandTechName, dispatchesStart):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      actualcogs \u003d []\n      while (len(actualcogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        actualcogs \u003d [x for x in actualCogsTnClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName \u003d\u003d brandTechName\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(actualcogs) \u003d\u003d 0:\n        while (len(actualcogs) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n          actualcogs \u003d [x for x in actualCogsTnClientList if x.cogsClientTreeObjectId \u003d\u003d c[0].ObjectId and x.cbtName is None\\\n                                             and x.cogsStartDate \u003c\u003d dispatchesStart and x.cogsEndDate \u003e\u003d dispatchesStart]\n          c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n      \n      if len(actualcogs) \u003d\u003d 0:\n        return \"Actual COGSTn was not found\"\n      elif len(actualcogs) \u003e 1:\n        return \"Actual COGSTn duplicate record error\"\n      else:\n        return actualcogs[0].TonCost\n    return udf(f)          ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:32:03.810",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938329_48030806",
+      "id": "20220812-111413_1107870312",
+      "dateCreated": "2022-08-12 11:15:38.330",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getTiPercent(activeClientTreeList,tiClientList):\n    def f(objectId, brandTechName, startDate):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      ti \u003d []\n      while (len(ti) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        ti \u003d [x for x in tiClientList if x.tiClientTreeObjectId \u003d\u003d c[0].ObjectId and (x.tibtName \u003d\u003d brandTechName or x.tibtName is None)\\\n                                         and x.tiStartDate \u003c\u003d startDate and x.tiEndDate \u003e\u003d startDate]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n        \n      if len(ti) \u003d\u003d 0:\n        return \"TI Base was not found\"\n      else:\n        sizePercent \u003d [x.SizePercent for x in ti]\n        sumSizePercent \u003d sizePercent[0]\n        for el in sizePercent[1:]:\n          sumSizePercent \u003d sumSizePercent + el\n        return sumSizePercent\n    return udf(f)          ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 07:44:59.314",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938330_1133489977",
+      "id": "20220812-111413_2077491771",
+      "dateCreated": "2022-08-12 11:15:38.330",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef getActualTiPercent(activeClientTreeList,actualTiClientList):\n    def f(objectId, brandTechName, startDate):\n      c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n      actualti \u003d []\n      while (len(actualti) \u003d\u003d 0) \u0026 (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027):\n        actualti \u003d [x for x in actualTiClientList if x.tiClientTreeObjectId \u003d\u003d c[0].ObjectId and (x.tibtName \u003d\u003d brandTechName or x.tibtName is None)\\\n                                         and x.tiStartDate \u003c\u003d startDate and x.tiEndDate \u003e\u003d startDate]\n        c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n        \n      if len(actualti) \u003d\u003d 0:\n        return \"Actual TI Base was not found\"\n      else:\n        sizePercent \u003d [x.SizePercent for x in actualti]\n        sumSizePercent \u003d sizePercent[0]\n        for el in sizePercent[1:]:\n          sumSizePercent \u003d sumSizePercent + el\n        return sumSizePercent \n    return udf(f)          ",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-23 08:33:02.171",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660302938330_1313542416",
+      "id": "20220812-111413_1444076144",
+      "dateCreated": "2022-08-12 11:15:38.330",
+      "status": "READY"
+    }
+  ],
+  "name": "COGS_TI_CALCULATION",
+  "id": "2HCUK8NDY",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

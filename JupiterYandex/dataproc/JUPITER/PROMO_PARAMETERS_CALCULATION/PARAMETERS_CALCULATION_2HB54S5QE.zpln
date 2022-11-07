@@ -1,0 +1,213 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"PARAMETERS_CALCULATION\". \n####*Main night all parameters recalculation notebook. Get all parameters for promo, promoproduct*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-11 13:53:02.549",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;PARAMETERS_CALCULATION\u0026rdquo;.\u003cbr /\u003e\n####\u003cem\u003eMain night all parameters recalculation notebook. Get all parameters for promo, promoproduct\u003c/em\u003e.\u003c/p\u003e\n\u003ch6\u003e\u003cem\u003eDeveloper: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:andrey.philushkin@effem.com\"\u003eandrey.philushkin@effem.com\u003c/a\u003e\u003c/em\u003e\u003c/h6\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660221280513_1126408736",
+      "id": "20220811-122929_1473127171",
+      "dateCreated": "2022-08-11 12:34:40.513",
+      "dateStarted": "2022-08-11 13:53:02.551",
+      "dateFinished": "2022-08-11 13:53:02.556",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Function checks whether we in notebook or python",
+      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-11 13:59:28.128",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660225426927_1813067803",
+      "id": "paragraph_1660225426927_1813067803",
+      "dateCreated": "2022-08-11 13:43:46.927",
+      "dateStarted": "2022-08-11 13:53:02.652",
+      "dateFinished": "2022-08-11 13:53:02.874",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION.py\")",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-11 13:53:02.952",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660225522532_1980463315",
+      "id": "paragraph_1660225522532_1980463315",
+      "dateCreated": "2022-08-11 13:45:22.532",
+      "dateStarted": "2022-08-11 13:53:02.953",
+      "dateFinished": "2022-08-11 13:53:03.173",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nimport PLAN_PARAMETERS_CALCULATION",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-19 08:53:21.251",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "RUN-\u003ePLAN_PARAMETERS_CALCULATION\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660221280513_352534574",
+      "id": "20220811-122929_1222828263",
+      "dateCreated": "2022-08-11 12:34:40.513",
+      "dateStarted": "2022-08-11 13:53:03.255",
+      "dateFinished": "2022-08-11 13:53:03.473",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nimport ACTUAL_PARAMETERS_CALCULATION",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-11 13:53:03.556",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "RUN-\u003eACTUAL_PARAMETERS_CALCULATION\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660221280513_1611057708",
+      "id": "20220811-122929_1270204664",
+      "dateCreated": "2022-08-11 12:34:40.513",
+      "dateStarted": "2022-08-11 13:53:03.557",
+      "dateFinished": "2022-08-11 13:53:03.775",
+      "status": "FINISHED"
+    }
+  ],
+  "name": "PARAMETERS_CALCULATION",
+  "id": "2HB54S5QE",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

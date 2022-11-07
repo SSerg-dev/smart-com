@@ -1,0 +1,1929 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n### Calculate Year end estimate for Jupiter\n###Developer: LLC Smart-Com, alexei.loktev@effem.com\n###Last Updated - 10th Jan 2020 - alexei.loktev@effem.com\n###\u003c/br\u003eUpdate 20/05/2020 - aggregation made on \u0027Brand Seg Tech Sub\u0027 Level.\n###\u003c/br\u003eYEE forecast \u0027SubBrand\u0027 columns must contain Core,Prem or empty suffix.",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:45:57.270",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003eCalculate Year end estimate for Jupiter\u003c/h3\u003e\n\u003cp\u003e###Developer: LLC Smart-Com, \u003ca href\u003d\"mailto:alexei.loktev@effem.com\"\u003ealexei.loktev@effem.com\u003c/a\u003e\u003cbr /\u003e\n###Last Updated - 10th Jan 2020 - \u003ca href\u003d\"mailto:alexei.loktev@effem.com\"\u003ealexei.loktev@effem.com\u003c/a\u003e\u003cbr /\u003e\n###\u003c/br\u003eUpdate 20/05/2020 - aggregation made on \u0026lsquo;Brand Seg Tech Sub\u0026rsquo; Level.\u003cbr /\u003e\n###\u003c/br\u003eYEE forecast \u0026lsquo;SubBrand\u0026rsquo; columns must contain Core,Prem or empty suffix.\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427912_615925425",
+      "id": "20220826-113027_1757369801",
+      "dateCreated": "2022-08-26 11:30:27.912",
+      "dateStarted": "2022-08-29 05:45:57.273",
+      "dateFinished": "2022-08-29 05:45:59.419",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Function to determine runtime(Notebook or pure python)",
+      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:45:59.476",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1974271048",
+      "id": "20220826-113027_1533786600",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:45:59.479",
+      "dateFinished": "2022-08-29 05:45:59.694",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nfrom pyspark.sql import *\nimport datetime as datetime\nimport pandas as pd\nimport re\nimport math\nimport subprocess",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:45:59.780",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1108528417",
+      "id": "20220826-113027_891657162",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:45:59.782",
+      "dateFinished": "2022-08-29 05:45:59.997",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_\", \"ProcessDate\": \"2022-08-26\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_year_end_estimate_fdm\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:00.083",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661515990087_20593416",
+      "id": "paragraph_1661515990087_20593416",
+      "dateCreated": "2022-08-26 12:13:10.087",
+      "dateStarted": "2022-08-29 05:46:00.085",
+      "dateFinished": "2022-08-29 05:46:00.401",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\npipelineSubfolderName \u003d es.input_params.get(\"PipelineName\")\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:00.486",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "INPUT_PARAMS\u003d{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_\", \"ProcessDate\": \"2022-08-26\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_year_end_estimate_fdm\"}\nSETTINGS_PATH\u003dhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_PARAMETERS.csv\nhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_PARAMETERS.csv\n\nprocessDate: 2022-08-26\npipelineRunId: manual__2022-08-26T12%3A42%3A44%2B00%3A00\npipelineSubfolderName: jupiter_year_end_estimate_fdm\n\nSETTING_RAW_DIR: hdfs:///JUPITER/RAW\nSETTING_PROCESS_DIR: hdfs:///JUPITER/PROCESS\nSETTING_OUTPUT_DIR: hdfs:///JUPITER/OUTPUT\nMAINTENANCE_PATH_PREFIX: /JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_\nSYSTEM_NAME: JUPITER\nSETTING_BRANCH_NAME: \nOther settings - list \"systemParametersDF\" data frame\nEXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d832"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d833"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d834"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d835"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d836"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d837"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d838"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_941797490",
+      "id": "20220826-113027_1762363296",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:00.488",
+      "dateFinished": "2022-08-29 05:46:04.283",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastSchema\u003dStructType([StructField(\u0027Type\u0027 , StringType(), False),\n                              StructField(\u0027Type_1\u0027 , StringType(), False),\n                              StructField(\u0027Comment\u0027 , StringType(), False),\n                              StructField(\u0027Year\u0027 , StringType(), False),\n                              StructField(\u0027Region\u0027 , StringType(), False),\n                              StructField(\u0027SubBrand\u0027 , StringType(), False),\n                              StructField(\u0027ZREP\u0027 , StringType(), False),\n                              StructField(\u0027GRD\u0027 , StringType(), False),\n                              StructField(\u0027SKU\u0027 , StringType(), False),\n                              StructField(\u0027PERIOD\u0027 , StringType(), False),\n                              StructField(\u0027LSV\u0027 , DoubleType(), False),\n                              StructField(\u0027NSV\u0027 , DoubleType(), False),\n                              StructField(\u0027TNS\u0027 , DoubleType(), False),\n                              StructField(\u0027VERSION\u0027 , StringType(), False)])   ",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:04.293",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1220098037",
+      "id": "20220826-113027_2131311931",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:04.296",
+      "dateFinished": "2022-08-29 05:46:04.522",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Inputs\nHELIOS_ACTUALS_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/SELLIN/HELIOS_ACTUALS_BDM.parquet\u0027\nYEAR_END_ESTIMATE_BDM_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/SELLIN/YEAR_END_ESTIMATE_BDM.parquet\u0027\nCUSTOMER_HIER_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.csv\u0027\nMATERIAL_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_MATERIALS.csv\u0027\nCALENDAR_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv\u0027\n\n# Outputs\nOUTPUT_DIR\u003dSETTING_OUTPUT_DIR+\"/\"+pipelineSubfolderName\nYEAR_END_ESTIMATE_FDM_OUTPUT_DIR\u003dOUTPUT_DIR+\"/YEAR_END_ESTIMATE_FDM.CSV\"\nYEAR_END_ESTIMATE_FDM_ARCHIVE_OUTPUT_DIR\u003dOUTPUT_DIR+\"/#ARCHIVE/YEAR_END_ESTIMATE_FDM.CSV\"\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:04.596",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1318613253",
+      "id": "20220826-113027_2032889803",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:04.598",
+      "dateFinished": "2022-08-29 05:46:04.816",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Import Helios Actuals Mapped data\nheliosActualsDf \u003d spark.read.format(\"parquet\").option(\"header\", \"true\").load(HELIOS_ACTUALS_DIR)\n\n\nmaterialHydrateDf \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(MATERIAL_DIR)\ngHierarchyDf \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(CUSTOMER_HIER_DIR)\n\nforecastBdmDf \u003d spark.read.format(\"parquet\").option(\"header\", \"true\").schema(forecastSchema).load(YEAR_END_ESTIMATE_BDM_DIR)\n\ncalendarDf \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"|\").load(CALENDAR_DIR)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:04.898",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d839"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d840"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d841"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d842"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1823942696",
+      "id": "20220826-113027_1615413487",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:04.901",
+      "dateFinished": "2022-08-29 05:46:05.820",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Some revenue recognition\u0027s codes mapped to not correct brand tech, we need apply this correction to fix final result\nrrCorrectionsSchema \u003d StructType([StructField(\u0027MATNR\u0027, StringType()), StructField(\u0027BST_CODE_CORRECTION\u0027,StringType())])\nrrCorrectionsData \u003d[Row(MATNR\u003d\"10170507\",\tBST_CODE_CORRECTION\u003d\"474-04-003\"),\nRow(MATNR\u003d\"TV069\"\t,BST_CODE_CORRECTION\u003d\"073-04-004\"),\nRow(MATNR\u003d\"XL282\"\t,BST_CODE_CORRECTION\u003d\"016-07-007\")]\n\n\nrrCorrectionsDf \u003d spark.createDataFrame(rrCorrectionsData, rrCorrectionsSchema)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:05.902",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_629198260",
+      "id": "20220826-113027_1430977985",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:05.905",
+      "dateFinished": "2022-08-29 05:46:06.170",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(forecastBdmDf)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:06.205",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1857797576",
+      "id": "20220826-113027_1671230134",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:06.208",
+      "dateFinished": "2022-08-29 05:46:06.423",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ntoday \u003d datetime.datetime.today().strftime(\u0027%Y-%m-%d\u0027)\nprint(today)\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:06.508",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2022-08-29\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_915749400",
+      "id": "20220826-113027_1097571385",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:06.510",
+      "dateFinished": "2022-08-29 05:46:06.729",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Convert version to number\nforecastBdmVersionNumericDf\u003dforecastBdmDf\\\n.withColumn(\u0027VERSION_NUM\u0027,regexp_replace(\u0027VERSION\u0027,\u0027DMR\u0027,\u0027\u0027))\\\n.withColumn(\u0027VERSION_NUM\u0027,regexp_replace(\u0027VERSION_NUM\u0027,\u0027P\u0027,\u0027\u0027))\\\n.withColumn(\u0027VERSION_NUM\u0027,col(\u0027VERSION_NUM\u0027).cast(IntegerType()))\n# Select maximum version number\nMAX_DMR_VERSION_NUM\u003dforecastBdmVersionNumericDf.agg({\"VERSION_NUM\": \"max\"}).collect()[0][0]\nprint(\"MAX DMR VERSION:\",MAX_DMR_VERSION_NUM)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:06.810",
+      "progress": 71,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "MAX DMR VERSION: 202111\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d843"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1811696987",
+      "id": "20220826-113027_1796207299",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:06.813",
+      "dateFinished": "2022-08-29 05:46:14.287",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\np \u003d re.compile(\"(\\d{4})(\\d{1,2})\")\nresult \u003d p.search(str(MAX_DMR_VERSION_NUM))\n\n# Year and period from version\nYEAR\u003dresult.group(1)\nPERIOD\u003dresult.group(2).lstrip(\"0\")\n\nprint(YEAR)\nprint(PERIOD)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:14.322",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2021\n11\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_351066454",
+      "id": "20220826-113027_1772732054",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:14.325",
+      "dateFinished": "2022-08-29 05:46:14.543",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmMaxVersionDf\u003dforecastBdmVersionNumericDf.where(col(\"VERSION_NUM\")\u003d\u003dMAX_DMR_VERSION_NUM)\nforecastBdmMaxVersionDf.count()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:14.625",
+      "progress": 80,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "218647"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d844"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_114040758",
+      "id": "20220826-113027_1831135319",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:14.627",
+      "dateFinished": "2022-08-29 05:46:21.647",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmMaxVersionDf.select(\"VERSION\").distinct().show()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:21.737",
+      "progress": 66,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+----------+\n|   VERSION|\n+----------+\n|DMR2021P11|\n+----------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d845"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d846"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d847"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d848"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d849"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1348872023",
+      "id": "20220826-113027_1882405790",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:21.740",
+      "dateFinished": "2022-08-29 05:46:30.222",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Getting forecast for max version year and period equal and greater than max version period\nforecastBdmFuturePeriodsDf\u003dforecastBdmMaxVersionDf.withColumn(\"PERIOD_NUM\",expr(\"substring(PERIOD, 2, length(PERIOD)-1)\").cast(IntegerType()))\nforecastBdmFuturePeriodsDf\u003dforecastBdmFuturePeriodsDf.where((col(\"YEAR\")\u003d\u003dYEAR) \u0026 (col(\"PERIOD_NUM\")\u003e\u003dPERIOD))\n\n# Getting actuals for previous years and periods \nheliosPreviosPeriodsDf\u003dheliosActualsDf\\\n                      .withColumn(\"PERIOD_NUM\",expr(\"substring(PERIOD, 2, length(PERIOD)-1)\"))\\\n                      .withColumn(\"YEARPERIOD_NUM\",concat(col(\"YEAR\"),col(\"PERIOD_NUM\")).cast(IntegerType()))\n\nYEARPERIOD_NUM\u003dYEAR+PERIOD.zfill(2)\nprint(int(YEARPERIOD_NUM))\nheliosPreviosPeriodsDf\u003dheliosPreviosPeriodsDf.where(col(\"YEARPERIOD_NUM\")\u003cYEARPERIOD_NUM)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:30.251",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "202111\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1593187248",
+      "id": "20220826-113027_1681807025",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:30.253",
+      "dateFinished": "2022-08-29 05:46:30.830",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmFuturePeriodsDf.select(\"VERSION\").distinct().show()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:30.854",
+      "progress": 12,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "+----------+\n|   VERSION|\n+----------+\n|DMR2021P11|\n+----------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d850"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d851"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d852"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d853"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d854"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_474479011",
+      "id": "20220826-113027_1086785966",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:30.856",
+      "dateFinished": "2022-08-29 05:46:35.566",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Append g-hierarchy to helios data\ngHierarchyCurrentDataDf\u003d gHierarchyDf.withColumn(\"Active_From\",unix_timestamp(\u0027Active_From\u0027, \u0027yyyy/MM/dd\u0027).cast(\"timestamp\")).withColumn(\"Active_Till\",unix_timestamp(\u0027Active_Till\u0027, \u0027yyyy/MM/dd\u0027).cast(\"timestamp\"))\ngHierarchyCurrentDataDf\u003dgHierarchyCurrentDataDf.where( ((col(\"Active_Till\")\u003e\u003dtoday) \u0026 (col(\"Active_From\")\u003c\u003dtoday)) |  (col(\"Active_Till\").isNull() \u0026 (col(\"Active_From\")\u003c\u003dtoday)) )",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:35.662",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_244920222",
+      "id": "20220826-113027_183183281",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:35.665",
+      "dateFinished": "2022-08-29 05:46:35.930",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ngHierarchySubsetDf \u003d gHierarchyCurrentDataDf.select(\"0CUST_SALES\",\"ZCUSTHG02\", \"ZCUSTHG03\",\"ZCUSTHG03___T\", \"ZCUSTHG04\",\"ZCUSTHG04___T\",\"Active_From\",\"Active_Till\")\\\n                      .withColumn(\u00270CUST_SALES\u0027,regexp_replace(\u00270CUST_SALES\u0027,\u0027^0*\u0027,\u0027\u0027))\\\n                      .withColumn(\u0027ZCUSTHG03\u0027,regexp_replace(\u0027ZCUSTHG03\u0027,\u0027^0*\u0027,\u0027\u0027))\\\n                      .withColumn(\u0027ZCUSTHG04\u0027,regexp_replace(\u0027ZCUSTHG04\u0027,\u0027^0*\u0027,\u0027\u0027))\ngHierarchySubsetDf\u003d gHierarchySubsetDf.dropDuplicates([\"0CUST_SALES\",\"ZCUSTHG02\",\"ZCUSTHG03\",\"ZCUSTHG03___T\",\"ZCUSTHG04\",\"ZCUSTHG04___T\"])\n\ngHierarchySubsetHeliosDf\u003d gHierarchySubsetDf\nheliosPreviosPeriodsHierDf \u003d heliosPreviosPeriodsDf.join(gHierarchySubsetHeliosDf, heliosPreviosPeriodsDf[\"G_HIERARCHY_ID\"] \u003d\u003d gHierarchySubsetHeliosDf[\"0CUST_SALES\"] , \"left\").select(heliosPreviosPeriodsDf[\"*\"],gHierarchySubsetHeliosDf[\"ZCUSTHG02\"] ,gHierarchySubsetHeliosDf[\"ZCUSTHG03\"], gHierarchySubsetHeliosDf[\"ZCUSTHG04\"], gHierarchySubsetHeliosDf[\"ZCUSTHG03___T\"], gHierarchySubsetHeliosDf[\"ZCUSTHG04___T\"])\n\nheliosPreviosPeriodsHierDf \u003d heliosPreviosPeriodsHierDf.withColumn(\"CLIENT_CODE\", when(col(\"ZCUSTHG02\") \u003d\u003d \"0070015696\", col(\"ZCUSTHG04\")).otherwise(col(\"ZCUSTHG03\"))).withColumn(\"CLIENT_NAME\", when(col(\"ZCUSTHG02\") \u003d\u003d \"0070015696\", col(\"ZCUSTHG04___T\")).otherwise(col(\"ZCUSTHG03___T\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:35.965",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1607002869",
+      "id": "20220826-113027_1668092601",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:35.967",
+      "dateFinished": "2022-08-29 05:46:36.283",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmFuturePeriodsDf\u003dforecastBdmFuturePeriodsDf.withColumn(\u0027Region\u0027,regexp_replace(\u0027Region\u0027,\u0027Perekrestok\u0027,\u0027Big Boxes\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:36.367",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1057518497",
+      "id": "20220826-113027_1970297787",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:36.371",
+      "dateFinished": "2022-08-29 05:46:36.585",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Append g-hierarchy to forecast data\ngHierarchySubsetYeeDf \u003d gHierarchyCurrentDataDf.where(col(\"G_H_level\")\u003d\u003d4).select(\"0CUST_SALES___T\",\"ZCUSTHG02\", \"ZCUSTHG03\",\"ZCUSTHG03___T\", \"ZCUSTHG04\",\"ZCUSTHG04___T\")\\\n                        .withColumn(\u0027ZCUSTHG03\u0027,regexp_replace(\u0027ZCUSTHG03\u0027,\u0027^0*\u0027,\u0027\u0027))\\\n                        .withColumn(\u0027ZCUSTHG04\u0027,regexp_replace(\u0027ZCUSTHG04\u0027,\u0027^0*\u0027,\u0027\u0027))\\\n                        .withColumn(\u00270CUST_SALES___T\u0027,regexp_replace(\u00270CUST_SALES___T\u0027,\u0027\\s+Indirect\u0027,\u0027\u0027))\\\n                        .withColumn(\u00270CUST_SALES___T\u0027,regexp_replace(\u00270CUST_SALES___T\u0027,\u0027Ural\u0027,\u0027Urals\u0027))\n\ngHierarchySubsetYeeDf\u003d gHierarchySubsetYeeDf.dropDuplicates()\n\nforecastBdmFuturePeriodsHierDf \u003d forecastBdmFuturePeriodsDf.join(gHierarchySubsetYeeDf, forecastBdmFuturePeriodsDf[\"Region\"] \u003d\u003d gHierarchySubsetYeeDf[\"0CUST_SALES___T\"] , \"left\").select(forecastBdmFuturePeriodsDf[\"*\"],gHierarchySubsetYeeDf[\"ZCUSTHG02\"] ,gHierarchySubsetYeeDf[\"ZCUSTHG03\"], gHierarchySubsetYeeDf[\"ZCUSTHG04\"], gHierarchySubsetYeeDf[\"ZCUSTHG03___T\"], gHierarchySubsetYeeDf[\"ZCUSTHG04___T\"])\n\nforecastBdmFuturePeriodsHierDf \u003d forecastBdmFuturePeriodsHierDf.withColumn(\"CLIENT_CODE\", when(col(\"ZCUSTHG02\") \u003d\u003d \"0070015696\", col(\"ZCUSTHG04\")).otherwise(col(\"ZCUSTHG03\"))).withColumn(\"CLIENT_NAME\", when(col(\"ZCUSTHG02\") \u003d\u003d \"0070015696\", col(\"ZCUSTHG04___T\")).otherwise(col(\"ZCUSTHG03___T\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:36.670",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_1089179981",
+      "id": "20220826-113027_218277570",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:36.673",
+      "dateFinished": "2022-08-29 05:46:37.042",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmFuturePeriodsHierDf.count()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:37.073",
+      "progress": 81,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "50457"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d856"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427913_70569780",
+      "id": "20220826-113027_1577569916",
+      "dateCreated": "2022-08-26 11:30:27.913",
+      "dateStarted": "2022-08-29 05:46:37.076",
+      "dateFinished": "2022-08-29 05:46:42.483",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nmaterialHydrateDf\u003dmaterialHydrateDf.withColumn(\"START_DATE\",to_date(col(\"START_DATE\"))).withColumn(\"END_DATE\",to_date(col(\"END_DATE\")))\nmaterialHydrateDf\u003dmaterialHydrateDf.where((col(\"START_DATE\") \u003c\u003d today )\u0026(col(\"END_DATE\") \u003e\u003dtoday) )\nmaterialHydrateDf.count()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:42.583",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "5442"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d857"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1379000402",
+      "id": "20220826-113027_1433724895",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:42.585",
+      "dateFinished": "2022-08-29 05:46:43.457",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nmaterialHydrateDf \u003d materialHydrateDf.filter(col(\"Segmen\").isNotNull()).withColumn(\u0027ZREP\u0027,regexp_replace(\u0027ZREP\u0027,\u0027^0*\u0027,\u0027\u0027))\nmaterialHydrateDf \u003d materialHydrateDf.dropDuplicates(subset \u003d [\"MATNR\"])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:43.486",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_739639852",
+      "id": "20220826-113027_573494089",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:43.489",
+      "dateFinished": "2022-08-29 05:46:43.702",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nmaterialHydrateDf\u003dmaterialHydrateDf.join(rrCorrectionsDf,[\"MATNR\"],how\u003d\"left\").withColumn(\"BrandsegTech_code\",when(col(\"BST_CODE_CORRECTION\").isNotNull(),col(\"BST_CODE_CORRECTION\")).otherwise(col(\"BrandsegTech_code\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:43.789",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1458377202",
+      "id": "20220826-113027_981620088",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:43.791",
+      "dateFinished": "2022-08-29 05:46:44.006",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nheliosPreviosPeriodsHierMatDf \u003d heliosPreviosPeriodsHierDf.join(materialHydrateDf, heliosPreviosPeriodsHierDf[\"MATERIAL_CODE\"] \u003d\u003d materialHydrateDf[\"MATNR\"],\"left\").select(heliosPreviosPeriodsHierDf[\"*\"], materialHydrateDf[\"BrandSegTechSub_code\"])\n\nheliosPreviosPeriodsHierMatDf\u003dheliosPreviosPeriodsHierMatDf.drop(\"G_HIERARCHY_ID\")",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:44.092",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_442521663",
+      "id": "20220826-113027_1519786106",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:44.094",
+      "dateFinished": "2022-08-29 05:46:44.309",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nheliosPreviosPeriodsHierFinalDf\u003dheliosPreviosPeriodsHierMatDf.select(col(\"BrandSegTechSub_code\").alias(\"BRAND_SEG_TECH_CODE\"),col(\"CLIENT_CODE\").alias(\"G_HIERARCHY_ID\"),col(\"YEAR\"),col(\"PERIOD\"),col(\"LSV\").alias(\"ACTUAL_LSV\"))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:44.394",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1331050049",
+      "id": "20220826-113027_682514152",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:44.397",
+      "dateFinished": "2022-08-29 05:46:44.663",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmFuturePeriodsHierDf.count()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:44.697",
+      "progress": 81,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "50457"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d859"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_974935893",
+      "id": "20220826-113027_2085514287",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:44.700",
+      "dateFinished": "2022-08-29 05:46:49.100",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Create zrep to brand-tech-seg code mapping and brandsegtech to  brand-tech-seg code mapping\nzrepDf\u003dmaterialHydrateDf.select(\"ZREP\",\"BrandSegTechSub_code\").dropDuplicates([\"ZREP\"])\nbrandSegTechDf\u003dmaterialHydrateDf.select(\"BrandSegTechSub\",\"BrandSegTechSub_code\").dropDuplicates([\"BrandSegTechSub\"])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:49.105",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_45913122",
+      "id": "20220826-113027_1422905163",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:49.107",
+      "dateFinished": "2022-08-29 05:46:49.324",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n#Change \u0027Catsan Cat Litters\u0027 subbrand to \u0027Catsan Litter\u0027 for propper mapping with materials dictionary.\nforecastBdmFuturePeriodsHierDf\u003dforecastBdmFuturePeriodsHierDf.withColumn(\"SubBrand\",when(col(\"SubBrand\")\u003d\u003d\"Catsan Cat Litters\",\"Catsan Litter\").otherwise(col(\"SubBrand\")))\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:49.407",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1798023929",
+      "id": "20220826-113027_1055938656",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:49.410",
+      "dateFinished": "2022-08-29 05:46:49.624",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(forecastBdmFuturePeriodsHierDf.where(col(\"SubBrand\")\u003d\u003d\"CATSAN Litter\").select(\"SubBrand\",\"ZREP\",\"GRD\").dropDuplicates())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:49.710",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1536705703",
+      "id": "20220826-113027_1681084480",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:49.712",
+      "dateFinished": "2022-08-29 05:46:49.927",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Determine Brandsegtechcode by grd\nforecastBdmFuturePeriodsHierMatGrdDf \u003d forecastBdmFuturePeriodsHierDf.join(materialHydrateDf, forecastBdmFuturePeriodsHierDf[\"GRD\"] \u003d\u003d materialHydrateDf[\"MATNR\"],\"left\").select(forecastBdmFuturePeriodsHierDf[\"*\"], materialHydrateDf[\"BrandSegTechSub_code\"].alias(\"BRAND_SEG_TECH_GRD\"))\nprint(forecastBdmFuturePeriodsHierMatGrdDf.count())\n# Determine Brandsegtechcode by zrep\nforecastBdmFuturePeriodsHierMatZrepDf \u003d forecastBdmFuturePeriodsHierMatGrdDf.join(zrepDf, forecastBdmFuturePeriodsHierMatGrdDf[\"Zrep\"] \u003d\u003d zrepDf[\"ZREP\"],\"left\").select(forecastBdmFuturePeriodsHierMatGrdDf[\"*\"], zrepDf[\"BrandSegTechSub_code\"].alias(\"BRAND_SEG_TECH_ZREP\"))\nprint(forecastBdmFuturePeriodsHierMatZrepDf.count())\n# Determine Brandsegtechcode by subbrand\nforecastBdmFuturePeriodsHierMatBSTDf \u003d forecastBdmFuturePeriodsHierMatZrepDf.join(brandSegTechDf, forecastBdmFuturePeriodsHierMatZrepDf[\"SubBrand\"] \u003d\u003d brandSegTechDf[\"BrandSegTechSub\"],\"left\").select(forecastBdmFuturePeriodsHierMatZrepDf[\"*\"], brandSegTechDf[\"BrandSegTechSub_code\"].alias(\"BRAND_SEG_TECH_BST\"))\nprint(forecastBdmFuturePeriodsHierMatBSTDf.count())\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:46:50.013",
+      "progress": 86,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "50457\n50457\n50457\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d861"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d863"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d865"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1069520839",
+      "id": "20220826-113027_1804826621",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:46:50.015",
+      "dateFinished": "2022-08-29 05:47:29.556",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# Choose value of BRAND_SEG_TECH_CODE. First use from grd code, if grd not exits from zrep code and if zrep not exits from brand tech \nforecastBdmFuturePeriodsHierMatFinalDf\u003dforecastBdmFuturePeriodsHierMatBSTDf.withColumn(\"BRAND_SEG_TECH_CODE\",when(col(\"BRAND_SEG_TECH_GRD\").isNotNull(),col(\"BRAND_SEG_TECH_GRD\")).otherwise(when(col(\"BRAND_SEG_TECH_ZREP\").isNotNull(),col(\"BRAND_SEG_TECH_ZREP\")).otherwise(col(\"BRAND_SEG_TECH_BST\"))))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:29.568",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_268503650",
+      "id": "20220826-113027_1091328083",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:29.571",
+      "dateFinished": "2022-08-29 05:47:29.785",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastBdmFuturePeriodsHierMatFinalDf\u003dforecastBdmFuturePeriodsHierMatFinalDf.select(col(\"BRAND_SEG_TECH_CODE\"),col(\"CLIENT_CODE\").alias(\"G_HIERARCHY_ID\"),col(\"Year\").alias(\"YEAR\"),col(\"PERIOD\"),col(\"LSV\").alias(\"FORECAST_LSV\")).withColumn(\"FORECAST_LSV\",col(\"FORECAST_LSV\")*1000000)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:29.871",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1412701071",
+      "id": "20220826-113027_2105752394",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:29.874",
+      "dateFinished": "2022-08-29 05:47:30.088",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nheliosPreviosPeriodsHierAggDf\u003dheliosPreviosPeriodsHierFinalDf.groupBy(\"BRAND_SEG_TECH_CODE\",\"G_HIERARCHY_ID\",\"YEAR\").agg({\"ACTUAL_LSV\":\"sum\"})\nforecastBdmFuturePeriodsHierAggDf\u003dforecastBdmFuturePeriodsHierMatFinalDf.groupBy(\"BRAND_SEG_TECH_CODE\",\"G_HIERARCHY_ID\",\"YEAR\").agg({\"FORECAST_LSV\":\"sum\"})",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:30.174",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_731105624",
+      "id": "20220826-113027_55363050",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:30.176",
+      "dateFinished": "2022-08-29 05:47:30.391",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastActualsDf\u003dforecastBdmFuturePeriodsHierAggDf.join(heliosPreviosPeriodsHierAggDf,[\"BRAND_SEG_TECH_CODE\",\"G_HIERARCHY_ID\",\"YEAR\"],how\u003d\"full\")\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:30.477",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1533930452",
+      "id": "20220826-113027_1938843361",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:30.479",
+      "dateFinished": "2022-08-29 05:47:30.694",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nforecastActualsDf\u003dforecastActualsDf.fillna(0)\nforecastActualsYeeYtdDf\u003dforecastActualsDf.withColumn(\"YEE_LSV\",col(\"sum(FORECAST_LSV)\")+col(\"sum(ACTUAL_LSV)\"))\n\nfinalDf\u003dforecastActualsYeeYtdDf.select(col(\"YEAR\"),col(\"BRAND_SEG_TECH_CODE\"),col(\"G_HIERARCHY_ID\"),col(\"sum(FORECAST_LSV)\").alias(\"DMR_PLAN_LSV\"),col(\"sum(ACTUAL_LSV)\").alias(\"YTD_LSV\"),col(\"YEE_LSV\"))\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:30.780",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1375015870",
+      "id": "20220826-113027_1350395392",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:30.782",
+      "dateFinished": "2022-08-29 05:47:31.050",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfinalDf.count()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:31.083",
+      "progress": 98,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2746"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d868"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427914_1571614556",
+      "id": "20220826-113027_885022254",
+      "dateCreated": "2022-08-26 11:30:27.914",
+      "dateStarted": "2022-08-29 05:47:31.085",
+      "dateFinished": "2022-08-29 05:47:50.867",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(finalDf.where((col(\"G_HIERARCHY_ID\")\u003d\u003d\"70015713\") \u0026 (col(\"YEAR\")\u003d\u003d\"2020\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:50.910",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_497628114",
+      "id": "20220826-113027_1363590857",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:47:50.912",
+      "dateFinished": "2022-08-29 05:47:51.128",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(finalDf.where((col(\"BRAND_SEG_TECH_CODE\").isin(\"073-04-004\"))\u0026(col(\"G_HIERARCHY_ID\").isin(\"70015717\")) \u0026 (col(\"YEAR\")\u003d\u003d\"2020\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:51.213",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_1481371616",
+      "id": "20220826-113027_554794350",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:47:51.215",
+      "dateFinished": "2022-08-29 05:47:51.430",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(finalDf.where((col(\"BRAND_SEG_TECH_CODE\").isin(\"474-07-003\"))\u0026(col(\"G_HIERARCHY_ID\").isin(\"70015718\")) \u0026 (col(\"YEAR\")\u003d\u003d\"2020\")))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:51.515",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_2056064257",
+      "id": "20220826-113027_451363370",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:47:51.518",
+      "dateFinished": "2022-08-29 05:47:51.732",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# display(finalDf.where((col(\"YEAR\")\u003d\u003d\"2020\") ).groupBy(\"YEAR\").agg({\"YTD_LSV\":\"sum\"}).withColumn(\"sum(YTD_LSV)\",col(\"sum(YTD_LSV)\")/1000000))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:51.818",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_1819707802",
+      "id": "20220826-113027_744513142",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:47:51.820",
+      "dateFinished": "2022-08-29 05:47:52.035",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ntry:\n  subprocess.call([\"hadoop\", \"fs\", \"-rm\",\"-r\", YEAR_END_ESTIMATE_FDM_ARCHIVE_OUTPUT_DIR])\n  subprocess.call([\"hadoop\", \"fs\", \"-cp\", YEAR_END_ESTIMATE_FDM_OUTPUT_DIR, YEAR_END_ESTIMATE_FDM_ARCHIVE_OUTPUT_DIR])\nexcept Exception as e:\n  print(e)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:47:52.120",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_1598171725",
+      "id": "20220826-113027_1219759557",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:47:52.123",
+      "dateFinished": "2022-08-29 05:47:55.713",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# finalDf.write.mode(\"overwrite\").parquet(YEAR_END_ESTIMATE_FDM_OUTPUT_DIR)\nfinalDf\\\n.repartition(1)\\\n.write.csv(YEAR_END_ESTIMATE_FDM_OUTPUT_DIR,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-29 05:49:15.525",
+      "progress": 99,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d873"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1661513427915_253482607",
+      "id": "20220826-113027_1650779056",
+      "dateCreated": "2022-08-26 11:30:27.915",
+      "dateStarted": "2022-08-29 05:49:15.528",
+      "dateFinished": "2022-08-29 05:49:47.659",
+      "status": "FINISHED"
+    }
+  ],
+  "name": "JUPITER_YEAR_END_ESTIMATE_FDM",
+  "id": "2HDBF7J8S",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {
+    "isRunning": false
+  }
+}

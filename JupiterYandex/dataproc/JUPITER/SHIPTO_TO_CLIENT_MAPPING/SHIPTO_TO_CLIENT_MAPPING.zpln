@@ -1,0 +1,596 @@
+﻿{
+  "paragraphs": [
+    {
+      "text": "%pyspark\ndef is_notebook() -> bool:\n    try:\n        shell = get_ipython().__class__.__name__\n        if shell == 'ZMQInteractiveShell':\n            return True   # Jupyter notebook or qtconsole\n        elif shell == 'TerminalInteractiveShell':\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:50+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183833_1918749928",
+      "id": "paragraph_1662638585445_500092845",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:50+0000",
+      "dateFinished": "2022-09-13T12:09:51+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:6095"
+    },
+    {
+      "text": "%pyspark\n\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom datetime import timedelta, date, datetime\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:51+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_841047687",
+      "id": "20220822-102308_775973632",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:51+0000",
+      "dateFinished": "2022-09-13T12:09:51+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6096"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-09-09_manual__2022-09-09T11%3A15%3A40%2B00%3A00_\", \"ProcessDate\": \"2022-09-12\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_shipto_client_mapping\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] = \"airflow\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:51+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_616754462",
+      "id": "paragraph_1662641609562_245750343",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:51+0000",
+      "dateFinished": "2022-09-13T12:09:51+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6097"
+    },
+    {
+      "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR = es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR = es.SETTING_OUTPUT_DIR\n\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:51+0000",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "EXTRACT_ENTITIES_AUTO_PATH=hdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-09-09_manual__2022-09-09T11%3A15%3A40%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_385020815",
+      "id": "paragraph_1662641706132_932546591",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:51+0000",
+      "dateFinished": "2022-09-13T12:09:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6098"
+    },
+    {
+      "text": "%pyspark\n\nCUSTOMER_ATTR_DATA = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/0CUSTOMER_ATTR/DATA/\"\nCUSTOMER_TEXT_DATA = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/0CUSTOMER_TEXT/DATA/\"\nCUST_SALES_ATTR_DATA = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/0CUST_SALES_ATTR/DATA/\"\nCUST_SALES_TEXT_DATA = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/0CUST_SALES_TEXT/DATA/\"\nCUST_HIER = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/0CUST_SALES_LKDH_HIER_T_ELEMENTS/DATA/\"\nZCUSTOPF_ATTR = SETTING_RAW_DIR + \"/SOURCES/HYDRATEATLAS/ZCUSTOPF_ATTR/DATA/\"\n\nRESULT_MAPPING_PARQ = SETTING_PROCESS_DIR + \"/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING.PARQUET\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:52+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_1476706042",
+      "id": "20220822-102308_380969602",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:52+0000",
+      "dateFinished": "2022-09-13T12:09:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6099"
+    },
+    {
+      "text": "%pyspark\n\ncustHierSchema = StructType([StructField(\"HIENM\", StringType(), False),\n                              StructField(\"HCLASS\", StringType(), False),\n                              StructField(\"DATEFROM\", StringType(), False),\n                              StructField(\"DATETO\", StringType(), False),\n                              StructField(\"HEADERID\", StringType(), False),\n                              StructField(\"NODEID\", StringType(), False),\n                              StructField(\"IOBJNM\", StringType(), False),\n                              StructField(\"NODENAME\", StringType(), False),\n                              StructField(\"TLEVEL\", StringType(), False),\n                              StructField(\"LINK\", StringType(), False),\n                              StructField(\"PARENTID\", StringType(), False),\n                              StructField(\"CHILDID\", StringType(), False),\n                              StructField(\"NEXTID\", StringType(), False),\n                              StructField(\"ODQ_CHANGEMODE\", StringType(), False),\n                              StructField(\"ODQ_ENTITYCNTR\", StringType(), False),\n                              StructField(\"LOAD_DATE\", StringType(), False),\n                              StructField(\"LOAD_DATETIME\", StringType(), False),\n                              StructField(\"INPUT_FILE_NAME\", StringType(), False)])\n\ncustopfSchema = StructType([StructField('KUNNR_PK', StringType(), False),\n                            StructField('VKORG_PK', StringType(), False),\n                            StructField('VTWEG_PK', StringType(), False),\n                            StructField('SPART_PK', StringType(), False),\n                            StructField('PARVW_PK', StringType(), False),\n                            StructField('PARZA_PK', StringType(), False),\n                            StructField('KUNN2_PK', StringType(), False),\n                            StructField('KTOKD_PK', StringType(), False),\n                            StructField('KNREF_PK', StringType(), False),\n                            StructField('ODQ_CHANGEMODE', StringType(), False),\n                            StructField('ODQ_ENTITYCNTR', StringType(), False),\n                            StructField('LOAD_DATE', StringType(), False),\n                            StructField('LOAD_DATETIME', StringType(), False),\n                            StructField('INPUT_FILE_NAME', StringType(), False)])\n\ncustomerTextSchema = StructType([StructField('KUNNR_PK' , StringType(), False),\n                              StructField('TXTMD' , StringType(), False),\n                              StructField('TXTLG' , StringType(), False),\n                              StructField('ODQ_CHANGEMODE' , StringType(), False),\n                              StructField('ODQ_ENTITYCNTR' , StringType(), False),\n                              StructField('LOAD_DATE' , StringType(), False),\n                              StructField('LOAD_DATETIME' , StringType(), False),\n                              StructField('INPUT_FILE_NAME' , StringType(), False)])\n\ncustHierDf = spark.read.schema(custHierSchema).parquet(CUST_HIER)\ncustomerTextDf = spark.read.schema(customerTextSchema).parquet(CUSTOMER_TEXT_DATA)\ncustopfDf = spark.read.schema(custopfSchema).parquet(ZCUSTOPF_ATTR)\n\ncustHierDf = custHierDf.\\\nwithColumn('DATEFROM',to_date(col('DATEFROM'),'yyyy.MM.dd')).\\\nwithColumn('DATETO',to_date(col('DATETO'),'yyyy.MM.dd')).\\\nwithColumn('TLEVEL',col('TLEVEL').cast(IntegerType()))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:52+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_1579053680",
+      "id": "20220822-102308_706017728",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:52+0000",
+      "dateFinished": "2022-09-13T12:09:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6100"
+    },
+    {
+      "text": "%pyspark\n\ncustHierDf = custHierDf.select(col(\"NODEID\").alias(\"NODEID\"),\\\n    col(\"IOBJNM\").alias(\"InfoObject(IOBJNM)\"),\\\n    col(\"NODENAME\").alias(\"NODENAME\"),\\\n    col(\"TLEVEL\").alias(\"Le\"),\\\n    col(\"LINK\").alias(\"L\"),\\\n    col(\"PARENTID\").alias(\"Parent ID\"),\\\n    col(\"CHILDID\").alias(\"Child ID\"),\\\n    col(\"NEXTID\").alias(\"Next ID\"),\\\n    col(\"DATEFROM\").alias(\"Active_From\"),\\\n    col(\"DATETO\").alias(\"Active_Till\")).where(col(\"HIENM\")==\"G\")\n\ncustHierDf = custHierDf.\\\n    withColumn('H_DIV',regexp_extract('NODENAME', '(^.{0,2})(.{2,2})(.{2,3})', 1)).\\\n    withColumn('H_CH',regexp_extract('NODENAME', '(^.{0,2})(.{2,2})(.{2,3})', 2)).\\\n    withColumn('H_SO',regexp_extract('NODENAME', '(^.{0,2})(.{2,2})(.{2,3})', 3)).\\\n    withColumn('H_PTR',regexp_extract('NODENAME', '(.{10})\\\\s*$', 1))\ncustHierDf=custHierDf.where( (col('H_DIV') == '51') & (col('H_SO') == '261') & (col('H_CH').isin({'33','22','11'})))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:52+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_2144589053",
+      "id": "paragraph_1661240575704_729581714",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:52+0000",
+      "dateFinished": "2022-09-13T12:09:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6101"
+    },
+    {
+      "text": "%pyspark\nchildParentDf = custHierDf.select(col('NODEID').alias('NODEID'),col('Parent ID').alias('PARENTID'),col('H_PTR').alias('NODEADDR'))\n\ncustHierLvlPrevDf = custHierDf.join(childParentDf,(custHierDf['NODEID']==childParentDf.NODEID) & (custHierDf['Le']==5) | (custHierDf['NODEID']==childParentDf.NODEID) & (custHierDf['Le']==4), how='left').drop(childParentDf['NODEID'])\n\ncustHierLvlPrevDf = custHierLvlPrevDf\\\n  .withColumn('Lvl5',when(col('Le')==5,col('NODEID')))\\\n  .withColumn('Lvl4',when(col('Le')==5,col('PARENTID'))\\\n  .otherwise(when(col('Le')==4,col('NODEID'))\\\n  .otherwise(None))).drop('PARENTID','NODEADDR')\n\ncustHierLvlPrevDf = custHierLvlPrevDf.join(childParentDf\\\n                                         ,custHierLvlPrevDf['Lvl4']==childParentDf.NODEID,how='left').drop(childParentDf['NODEID'])\n\ncustHierLvlPrevDf = custHierLvlPrevDf.withColumnRenamed('PARENTID','lvl4parent').drop('NODEADDR')\n\nfor l in range(4,2,-1):\n    custHierLvlCurDf = custHierLvlPrevDf.join(childParentDf\\\n        ,((custHierLvlPrevDf['NODEID']==childParentDf.NODEID) & (custHierLvlPrevDf['Le']>=(l))\\\n          |(custHierLvlPrevDf['NODEID']==childParentDf.NODEID) & (custHierDf['Le']==(l-1))),how='left').drop(childParentDf['NODEID'])\n    custHierLvlCurDf = custHierLvlCurDf.withColumn('Lvl'+str(l-1)\\\n                                                 ,when(col('Le')>=l,col('lvl'+str(l)+'parent'))\\\n                                                 .otherwise(when(col('Le')==(l-1),col('NODEID'))\\\n                                                 .otherwise(None))).drop('PARENTID','NODEADDR')\n    \n    custHierLvlCurDf = custHierLvlCurDf.join(childParentDf,custHierLvlCurDf['Lvl'+str(l-1)]==childParentDf.NODEID,how='left').drop(childParentDf['NODEID'])\n    custHierLvlCurDf = custHierLvlCurDf.withColumnRenamed('PARENTID','Lvl'+str(l-1)+'parent').drop('NODEADDR')\n    custHierLvlPrevDf = custHierLvlCurDf\n    \ncustHierLvlCurDf = custHierLvlCurDf.drop('lvl4parent','lvl3parent','lvl2parent')    \n  \nfor l in range(2,6):  \n  custHierLvlCurDf = custHierLvlCurDf.join(childParentDf,custHierLvlCurDf['Lvl'+str(l)]==childParentDf['NODEID'],how='left')\n  custHierLvlCurDf = custHierLvlCurDf.withColumnRenamed('NODEADDR','ZCUSTHG0'+str(l-1)).drop('NODEID').drop('PARENTID').drop('Lvl'+str(l))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:52+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183834_1469137841",
+      "id": "20220822-102308_1631086647",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:53+0000",
+      "dateFinished": "2022-09-13T12:09:53+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6102"
+    },
+    {
+      "text": "%pyspark\n\ncustHierDupDf = custHierDf.select(col('NODEID').alias('NODE_ID'),col('H_PTR').alias('G_H_ParentID'))\ncustHierLvlCurDf = custHierLvlCurDf.join(custHierDupDf,custHierLvlCurDf['Parent ID']==custHierDupDf['NODE_ID'],how='left')\ncustHierLevels1to5Df = custHierLvlCurDf\\\n.select(col('H_PTR').alias('0CUST_SALES'),\\\n        col('H_DIV').alias('Division'),\\\n        col('H_SO').alias('0SALESORG'),\\\n        col('H_CH').alias('0DISTR_CHAN'),\\\n        'ZCUSTHG01','ZCUSTHG02','ZCUSTHG03','ZCUSTHG04',\\\n        col('Active_From'),col('Active_Till'),'G_H_ParentID',col('Le').alias('G_H_level'))\n\ncustHierLevels1to5Df = custHierLevels1to5Df.withColumn('G_H_level',col('G_H_level') - 1)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:53+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_1116969238",
+      "id": "20220822-102308_1906519523",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:53+0000",
+      "dateFinished": "2022-09-13T12:09:53+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6103"
+    },
+    {
+      "text": "%pyspark\n\ncustopfZaDf = custopfDf.where( (col('VKORG_PK') == '261') \\\n                            & (col('VTWEG_PK').isin({'33','22','11'})) \\\n                            & col('PARVW_PK').isin({'ZA'}) \\\n                            & (col('PARZA_PK') == '0') \\\n                            & (col('KTOKD_PK').isin('0001', '0002')) \\\n                            & (col('SPART_PK') == '51' ))\n\ncustHierLevels1to5PlusShiptoDf = custHierLevels1to5Df.join(custopfZaDf,\\\n                                                         ((custopfZaDf.KUNN2_PK == custHierLevels1to5Df['0CUST_SALES']) \\\n                                                          & (custopfZaDf.VKORG_PK == custHierLevels1to5Df['0SALESORG']) \\\n                                                          & (custopfZaDf.VTWEG_PK == custHierLevels1to5Df['0DISTR_CHAN']) \\\n                                                          & (custopfZaDf.SPART_PK == custHierLevels1to5Df.Division)),how='inner')\n\ncustHierLevels1to5PlusShiptoDf = custHierLevels1to5PlusShiptoDf.withColumn('G_H_level',col('G_H_level')+1)\\\n    .withColumn('G_H_ParentID',col('0CUST_SALES'))\\\n    .withColumn('0CUST_SALES',col('KUNNR_PK'))\n\ncustHierLevels1to5PlusShiptoDf = custHierLevels1to5PlusShiptoDf.\\\nselect('0CUST_SALES','Division','0SALESORG','0DISTR_CHAN','ZCUSTHG01',\\\n       'ZCUSTHG02','ZCUSTHG03','ZCUSTHG04','Active_From','Active_Till','G_H_ParentID','G_H_level')",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:53+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_2045833126",
+      "id": "20220822-102308_1772397072",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:53+0000",
+      "dateFinished": "2022-09-13T12:09:54+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6104"
+    },
+    {
+      "text": "%pyspark\n\nhydratePlusShiptoDf = custHierLevels1to5Df.union(custHierLevels1to5PlusShiptoDf)\ncustomerFilteredDf = customerTextDf.select('KUNNR_PK','TXTMD')\\\n        .withColumn('TXTMD',regexp_replace('TXTMD', 'RU$', ''))\\\n        .withColumn('TXTMD',regexp_replace('TXTMD', ' $', ''))\n\nhydratePlusShiptoDf = hydratePlusShiptoDf.join(customerFilteredDf,hydratePlusShiptoDf.ZCUSTHG01==customerFilteredDf.KUNNR_PK,how='left')\\\n.withColumnRenamed('TXTMD','ZCUSTHG01___T').drop('KUNNR_PK')\nhydratePlusShiptoDf = hydratePlusShiptoDf.join(customerFilteredDf,hydratePlusShiptoDf.ZCUSTHG02==customerFilteredDf.KUNNR_PK,how='left')\\\n.withColumnRenamed('TXTMD','ZCUSTHG02___T').drop('KUNNR_PK')\nhydratePlusShiptoDf = hydratePlusShiptoDf.join(customerFilteredDf,hydratePlusShiptoDf.ZCUSTHG03==customerFilteredDf.KUNNR_PK,how='left')\\\n.withColumnRenamed('TXTMD','ZCUSTHG03___T').drop('KUNNR_PK')\nhydratePlusShiptoDf = hydratePlusShiptoDf.join(customerFilteredDf,hydratePlusShiptoDf.ZCUSTHG04==customerFilteredDf.KUNNR_PK,how='left')\\\n.withColumnRenamed('TXTMD','ZCUSTHG04___T').drop('KUNNR_PK')\n\nhydratePlusShiptoDf = hydratePlusShiptoDf.join(customerFilteredDf,\\\n                                             hydratePlusShiptoDf['0CUST_SALES']==customerFilteredDf.KUNNR_PK,how='left')\\\n.withColumnRenamed('TXTMD','0CUST_SALES___T').drop('KUNNR_PK')\n\nhydratePlusShiptoDf = hydratePlusShiptoDf.\\\nselect('0CUST_SALES','0CUST_SALES___T','Division','0SALESORG','0DISTR_CHAN','ZCUSTHG01','ZCUSTHG01___T','ZCUSTHG02','ZCUSTHG02___T','ZCUSTHG03','ZCUSTHG03___T','ZCUSTHG04','ZCUSTHG04___T','Active_From','Active_Till','G_H_ParentID','G_H_level')\n\nhydratePlusShiptoDf = hydratePlusShiptoDf.where(col('G_H_level') == 5)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:54+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_1305838171",
+      "id": "20220822-102308_1961995961",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:54+0000",
+      "dateFinished": "2022-09-13T12:09:54+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6105"
+    },
+    {
+      "text": "%pyspark\n\ncustopfSpShDf = custopfDf.where( (col('VKORG_PK') == '261')\\\n                              & (col('VTWEG_PK').isin({'33','22','11'})) \\\n                              & (col('PARVW_PK') == 'SH') \\\n                              & (col('SPART_PK') == '51') \\\n                              & (col('KTOKD_PK').isin('0001', '0002')))\n\ncustopfSpShDf = custopfSpShDf.select(col('KUNNR_PK').alias('SoldToPoint'),'KUNN2_PK','PARVW_PK')\n\nsoldToCountDf = custopfSpShDf.groupBy(\"SoldToPoint\",\"KUNN2_PK\").agg(countDistinct(\"PARVW_PK\").alias('count'))\\\n.select(col('SoldToPoint').alias('SoldToPoint2'),col('KUNN2_PK').alias('KUNN2_PK2'),'count')\n\nsoldToCount1Df = custopfSpShDf.join(soldToCountDf,\\\n                                  (custopfSpShDf.SoldToPoint == soldToCountDf.SoldToPoint2) \\\n                                  & (custopfSpShDf.KUNN2_PK == soldToCountDf.KUNN2_PK2) & (soldToCountDf['count']==1))\n\nsoldToCount2Df = custopfSpShDf.join(soldToCountDf,\\\n                                  (custopfSpShDf.SoldToPoint == soldToCountDf.SoldToPoint2) & (custopfSpShDf.KUNN2_PK == soldToCountDf.KUNN2_PK2)\\\n                                  & (soldToCountDf['count']==2) & (custopfSpShDf.PARVW_PK=='SH'))\n\nsoldToDf = soldToCount1Df.union(soldToCount2Df).drop('SoldToPoint2','KUNN2_PK2','PARVW_PK','count')\n\nsoldToTextDf = soldToDf.join(customerFilteredDf,\\\n                           soldToDf.SoldToPoint==customerFilteredDf['KUNNR_PK'],how='left').withColumnRenamed('TXTMD','SP_Description')",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:54+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_565876609",
+      "id": "20220822-102308_483740145",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:54+0000",
+      "dateFinished": "2022-09-13T12:09:55+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6106"
+    },
+    {
+      "text": "%pyspark\n\nhydratePlusShiptoAndSoldToDf = hydratePlusShiptoDf.join(soldToTextDf,\\\n                                                      hydratePlusShiptoDf['0CUST_SALES']==soldToTextDf.KUNN2_PK,how='left').drop('KUNN2_PK')\n                                                      \nhydratePlusShiptoAndSoldToDf = hydratePlusShiptoAndSoldToDf.withColumn(\"0CUST_SALES\",\\\n                                                                       hydratePlusShiptoAndSoldToDf[\"0CUST_SALES\"].cast(IntegerType()))\n\nhydratePlusShiptoAndSoldToDf = hydratePlusShiptoAndSoldToDf.\\\n    select('0CUST_SALES','0DISTR_CHAN','SoldToPoint','ZCUSTHG03___T','SP_Description','Active_From','Active_Till')",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:09:55+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_261243524",
+      "id": "20220822-102308_1450001682",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:09:55+0000",
+      "dateFinished": "2022-09-13T12:09:55+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6107"
+    },
+    {
+      "text": "%pyspark\n\ncurrentDate = datetime.today()\nhydratePlusShiptoAndSoldToDf = hydratePlusShiptoAndSoldToDf.where( col('SoldToPoint').isNotNull() ).dropDuplicates()\n\nshipToMappingDf = hydratePlusShiptoAndSoldToDf.where( (col('Active_From') <= currentDate) & (col('Active_Till') >= currentDate) ).\\\n    withColumnRenamed('ZCUSTHG03___T','GRP_DESC').\\\n    withColumnRenamed('0DISTR_CHAN','Channel')",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:10:23+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_1904166452",
+      "id": "20220822-102308_431813570",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:10:23+0000",
+      "dateFinished": "2022-09-13T12:10:23+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:6108"
+    },
+    {
+      "text": "%pyspark\n\nshipToMappingDf\\\n.write.parquet(RESULT_MAPPING_PARQ,\nmode=\"overwrite\"\n)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13T12:10:59+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m<ipython-input-2244-153a19905afb>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mshipToMappingDf\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m .write.parquet(RESULT_MAPPING_PARQ,\n\u001b[1;32m      3\u001b[0m \u001b[0mmode\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"overwrite\"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m )\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mparquet\u001b[0;34m(self, path, mode, partitionBy, compression)\u001b[0m\n\u001b[1;32m    937\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpartitionBy\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpartitionBy\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    938\u001b[0m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_set_opts\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcompression\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcompression\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 939\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparquet\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    940\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    941\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.6\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1304\u001b[0;31m         return_value = get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o17931.parquet.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user=zeppelin, access=ALL, inode=\"/JUPITER/PROCESS/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING.PARQUET\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1614)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:949)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:946)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:956)\n\tat org.apache.spark.internal.io.FileCommitProtocol.deleteWithJob(FileCommitProtocol.scala:124)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.deleteMatchingPartitions(InsertIntoHadoopFsRelationCommand.scala:226)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:129)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:764)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.parquet(DataFrameWriter.scala:847)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user=zeppelin, access=ALL, inode=\"/JUPITER/PROCESS/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING.PARQUET\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:644)\n\tat sun.reflect.GeneratedMethodAccessor140.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1612)\n\t... 39 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1662982183835_1847471009",
+      "id": "paragraph_1662355412054_1486450090",
+      "dateCreated": "2022-09-12T11:29:43+0000",
+      "dateStarted": "2022-09-13T12:10:59+0000",
+      "dateFinished": "2022-09-13T12:11:00+0000",
+      "status": "ERROR",
+      "$$hashKey": "object:6110"
+    }
+  ],
+  "name": "SHIPTO_TO_CLIENT_MAPPING",
+  "id": "2HCACGM7U",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {
+    "isRunning": false
+  },
+  "path": "/JUPITER/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING"
+}

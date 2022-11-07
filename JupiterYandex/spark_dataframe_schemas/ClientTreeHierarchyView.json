@@ -1,0 +1,1 @@
+{"fields":[{"metadata":{},"name":"Id","nullable":true,"type":"integer"},{"metadata":{},"name":"Hierarchy","nullable":true,"type":"string"},{"metadata":{},"name":"#QCCount","nullable":true,"type":"integer"}],"type":"struct"}

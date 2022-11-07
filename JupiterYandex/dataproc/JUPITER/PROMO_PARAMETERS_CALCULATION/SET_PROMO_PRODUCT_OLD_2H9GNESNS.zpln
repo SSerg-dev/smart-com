@@ -1,0 +1,428 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"SET_PROMO_PRODUCT\". \n####*Get product set for promo*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.044",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;SET_PROMO_PRODUCT\u0026rdquo;. \u003c/p\u003e\n\u003cp\u003e####*Get product set for promo*.\u003c/p\u003e\n\u003ch6\u003e*Developer: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:\u0026#97;n\u0026#100;\u0026#x72;\u0026#x65;\u0026#x79;\u0026#x2e;\u0026#112;\u0026#x68;\u0026#x69;l\u0026#117;\u0026#x73;\u0026#104;k\u0026#105;\u0026#110;\u0026#64;e\u0026#102;f\u0026#x65;\u0026#109;\u0026#x2e;\u0026#x63;\u0026#111;\u0026#109;*\"\u003e\u0026#97;n\u0026#100;\u0026#x72;\u0026#x65;\u0026#x79;\u0026#x2e;\u0026#112;\u0026#x68;\u0026#x69;l\u0026#117;\u0026#x73;\u0026#104;k\u0026#105;\u0026#110;\u0026#64;e\u0026#102;f\u0026#x65;\u0026#109;\u0026#x2e;\u0026#x63;\u0026#111;\u0026#109;*\u003c/a\u003e\u003c/h6\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_264305955",
+      "id": "20220812-055330_539687180",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%md\n#####*Get AM Products*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.044",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e#####*Get AM Products*\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_1935608530",
+      "id": "20220812-055330_576217793",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nsetProductDF \u003d notInOutCalcPlanPromoDF\\\n  .join(promoProductTreeDF, promoProductTreeDF.PromoId \u003d\u003d notInOutCalcPlanPromoDF.Id, \u0027inner\u0027)\\\n  .join(productTreeDF, productTreeDF.ObjectId \u003d\u003d promoProductTreeDF.ProductTreeObjectId, \u0027inner\u0027)\\\n  .select(\\\n           notInOutCalcPlanPromoDF.Id.alias(\u0027promoId\u0027)\n          ,notInOutCalcPlanPromoDF.ClientTreeKeyId\n          ,notInOutCalcPlanPromoDF.DispatchesStart\n          ,promoProductTreeDF.Disabled.alias(\u0027pptDisabled\u0027)\n          ,notInOutCalcPlanPromoDF.Number.alias(\u0027pNumber\u0027)\n          ,productTreeDF.EndDate\n          ,lower(productTreeDF.FilterQuery).alias(\u0027FilterQuery\u0027)\n          ,notInOutCalcPlanPromoDF.InOutProductIds.alias(\u0027promoInOutProductIds\u0027)\n         )\\\n  .where((col(\u0027pptDisabled\u0027) \u003d\u003d \u0027false\u0027) \u0026 (col(\u0027EndDate\u0027).isNull()))\n\nsetProductDF \u003d setProductDF\\\n  .withColumn(\u0027CheckedProductList\u0027, split(setProductDF.promoInOutProductIds, \u0027;\u0027))\\\n  .drop(\u0027EndDate\u0027,\u0027promoInOutProductIds\u0027)\n\namProductDF \u003d setProductDF\\\n  .join(assortmentMatrixDF, \n        [\\\n          assortmentMatrixDF.ClientTreeId \u003d\u003d setProductDF.ClientTreeKeyId\n         ,assortmentMatrixDF.StartDate \u003c\u003d setProductDF.DispatchesStart\n         ,assortmentMatrixDF.EndDate \u003e\u003d setProductDF.DispatchesStart\n        ],\n        \u0027inner\u0027)\\\n  .select(setProductDF[\u0027*\u0027], assortmentMatrixDF.ProductId)\n\namProductDF \u003d amProductDF\\\n  .join(allProductDF, allProductDF.Id \u003d\u003d amProductDF.ProductId, \u0027inner\u0027)\\\n  .select(amProductDF[\u0027*\u0027], allProductDF.EAN_PC)\\\n  .drop(\u0027ProductId\u0027)\n\namProductDF \u003d amProductDF\\\n  .join(allProduct01DF, allProduct01DF.EAN_PC \u003d\u003d amProductDF.EAN_PC, \u0027inner\u0027)\\\n  .select(amProductDF[\u0027*\u0027], allProduct01DF.Id.alias(\u0027ProductId\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:28:48.454",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_1215095629",
+      "id": "20220812-055330_1947821273",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%md\n#####*Convert productDF to lower case*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.044",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e#####*Convert productDF to lower case*\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_202080330",
+      "id": "20220812-055330_670492860",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nlowerCaseProductDF \u003d productDF.select(*[lower(col(c)).name(c) for c in productDF.columns])\nlowerCaseProductDF \u003d lowerCaseProductDF.toDF(*[c.lower() for c in lowerCaseProductDF.columns])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:28:52.295",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_167603122",
+      "id": "20220812-055330_1003359390",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%md\n#####*Get Filtered Products DF*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.044",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e#####*Get Filtered Products DF*\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_1361502121",
+      "id": "20220812-055330_1516322636",
+      "dateCreated": "2022-08-12 05:54:34.044",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nsetProductList \u003d setProductDF.collect()\n\nfilteredArray \u003d []\nlowerCaseProductDF.registerTempTable(\"product\")\n\nfilteredProductSchema \u003d StructType([\n  StructField(\"Id\", StringType(), False),\n  StructField(\"filteredEAN_PC\", StringType(), False),\n  StructField(\"filteredZREP\", StringType(), False),\n  StructField(\"Number\", IntegerType(), False),\n  StructField(\"filteredPromoId\", StringType(), False),\n])\n\nfor i, item in enumerate(setProductList):\n#   print(i, item.pNumber, item.promoId)\n  productFilter \u003d item.FilterQuery.replace(\u0027[\u0027+schema.lower()+\u0027].[\u0027, \u0027\u0027).replace(\u0027].[\u0027, \u0027.\u0027).replace(\u0027[\u0027, \u0027\u0027).replace(\u0027]\u0027, \u0027\u0027).replace(\u0027*\u0027, \u0027id,ean_pc,zrep\u0027)\n  filteredList \u003d sqlContext.sql(productFilter).collect()\n#   print(productFilter)\n#   print(filteredList)\n  for f in filteredList:\n    filteredArray.append([f[0], f[1], f[2], item.pNumber, item.promoId])\n    \nfilteredProductDF \u003d sqlContext.createDataFrame(filteredArray, filteredProductSchema)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:28:58.966",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674044_672298078",
+      "id": "20220812-055330_1709287285",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\n# display(filteredProductDF)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:29:00.510",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674045_288506570",
+      "id": "20220812-055330_1975648381",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    },
+    {
+      "text": "%md\n#####*Get Union Filtered Products DF *",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.045",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e#####*Get Union Filtered Products DF *\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674045_631789130",
+      "id": "20220812-055330_1050892455",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nresultFilteredProductDF \u003d amProductDF\\\n  .join(filteredProductDF,\n        [\\\n          filteredProductDF.Id \u003d\u003d amProductDF.ProductId\n         ,filteredProductDF.filteredPromoId \u003d\u003d amProductDF.promoId\n        ],\n        \u0027inner\u0027)\\\n  .drop(filteredProductDF.Id)\\\n  .drop(filteredProductDF.filteredEAN_PC)\n\nresultFilteredProductDF \u003d resultFilteredProductDF.where(expr(\"array_contains(CheckedProductList, ProductId)\"))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:29:02.936",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674045_1195065972",
+      "id": "20220812-055330_1835764576",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    },
+    {
+      "text": "%md\n#####*Get result product set for promoes*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 05:54:34.045",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e#####*Get result product set for promoes*\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674045_1662536039",
+      "id": "20220812-055330_89736119",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nnotInOutCalcPlanPromoProductDF \u003d resultFilteredProductDF\\\n  .join(notInOutCalcPlanPromoProductDF, \n        [\\\n          notInOutCalcPlanPromoProductDF.ProductId \u003d\u003d resultFilteredProductDF.ProductId\n         ,notInOutCalcPlanPromoProductDF.PromoId \u003d\u003d resultFilteredProductDF.filteredPromoId\n        ],\n        \u0027full\u0027)\\\n  .select(\\\n           notInOutCalcPlanPromoProductDF[\u0027*\u0027]\n          ,resultFilteredProductDF.Number\n          ,resultFilteredProductDF.ProductId.alias(\u0027ResultFilteredProductId\u0027)\n          ,resultFilteredProductDF.filteredZREP.alias(\u0027ResultFilteredZREP\u0027)\n          ,resultFilteredProductDF.filteredPromoId.alias(\u0027pId\u0027)\n         )\\\n  .dropDuplicates()\n\nnotInOutCalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .withColumn(\u0027Action\u0027, when(notInOutCalcPlanPromoProductDF.ResultFilteredProductId.isNull(), lit(\u0027Deleted\u0027))\\\n              .otherwise(when(notInOutCalcPlanPromoProductDF.ProductId.isNull(), lit(\u0027Added\u0027))\\\n              .otherwise(\u0027\u0027)))\n\nnotInOutCalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .withColumn(\u0027Disabled\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Deleted\u0027), True)\\\n              .otherwise(when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), False).otherwise(notInOutCalcPlanPromoProductDF.Disabled)))\\\n  .withColumn(\u0027DeletedDate\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Deleted\u0027), current_timestamp())\\\n                                 .otherwise(notInOutCalcPlanPromoProductDF.DeletedDate))\\\n  .withColumn(\u0027PromoId\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), col(\u0027pId\u0027)).otherwise(col(\u0027PromoId\u0027)))\\\n  .withColumn(\u0027ProductId\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), col(\u0027ResultFilteredProductId\u0027)).otherwise(col(\u0027ProductId\u0027)))\\\n  .withColumn(\u0027ZREP\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), col(\u0027ResultFilteredZREP\u0027)).otherwise(col(\u0027ZREP\u0027)))\\\n  .withColumn(\u0027promoNumber\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), col(\u0027Number\u0027)).otherwise(col(\u0027promoNumber\u0027)))\\\n  .withColumn(\u0027AverageMarker\u0027, when(notInOutCalcPlanPromoProductDF.Action \u003d\u003d lit(\u0027Added\u0027), False).otherwise(col(\u0027AverageMarker\u0027)))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-12 07:29:05.968",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660283674045_150354374",
+      "id": "20220812-055330_1627220617",
+      "dateCreated": "2022-08-12 05:54:34.045",
+      "status": "READY"
+    }
+  ],
+  "name": "SET_PROMO_PRODUCT",
+  "id": "2H9GNESNS",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

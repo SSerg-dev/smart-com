@@ -1,0 +1,998 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"INPUT_BASELINE_PROCESSING\". \n####*Get valid baseline items from input file*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:16.747",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;INPUT_BASELINE_PROCESSING\u0026rdquo;.\u003cbr /\u003e\n####\u003cem\u003eGet valid baseline items from input file\u003c/em\u003e.\u003c/p\u003e\n\u003ch6\u003e\u003cem\u003eDeveloper: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:andrey.philushkin@effem.com\"\u003eandrey.philushkin@effem.com\u003c/a\u003e\u003c/em\u003e\u003c/h6\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659445866209_561537752",
+      "id": "paragraph_1659445866209_561537752",
+      "dateCreated": "2022-08-02 13:11:06.209",
+      "dateStarted": "2022-08-10 07:13:16.752",
+      "dateFinished": "2022-08-10 07:13:16.763",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Function to determine runtime(Notebook or pure python)",
+      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-19 09:02:38.616",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "IS ZEPPE!\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_1795775537",
+      "id": "20220802-110016_1884972952",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:16.857",
+      "dateFinished": "2022-08-10 07:13:17.076",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark import SparkConf, SparkContext\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pandas as pd\nfrom functools import reduce\nimport datetime, time\nfrom datetime import timedelta\nfrom pyspark.sql.functions import lag\nfrom pyspark.sql.functions import lead\nimport sys",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:17.157",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_1649382510",
+      "id": "20220802-110016_711780206",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:17.162",
+      "dateFinished": "2022-08-10 07:13:17.378",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ninputBaselineSchema \u003d StructType([\n  StructField(\"REP\", StringType(), True),\n  StructField(\"DMDGroup\", StringType(), True),\n  StructField(\"LOC\", StringType(), True),\n  StructField(\"STARTDATE\", StringType(), True),\n  StructField(\"DurInMinutes\", IntegerType(), True),\n  StructField(\"QTY\", DoubleType(), True),\n  StructField(\"MOE\", StringType(), True),\n  StructField(\"SALES_ORG\", IntegerType(), True),\n  StructField(\"SALES_DIST_CHANNEL\", IntegerType(), True),\n  StructField(\"SALES_DIVISON\", IntegerType(), True),\n  StructField(\"BUS_SEG\", StringType(), True),\n  StructField(\"MKT_SEG\", StringType(), True),\n  StructField(\"DELETION_FLAG\", StringType(), True),\n  StructField(\"DELETION_DATE\", StringType(), True),\n  StructField(\"INTEGRATION_STAMP\", StringType(), True)\n])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:17.462",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_222351713",
+      "id": "20220802-110016_1652861786",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:17.467",
+      "dateFinished": "2022-08-10 07:13:17.684",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/RAW/#MAINTENANCE/2022-08-01_manual__2022-08-01T12%3A37%3A59.726096%2B00%3A00_\", \"ProcessDate\": \"2022-08-01\", \"FileName\":\"BASELINE_0_20220726_200209.dat\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:17.767",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_421211169",
+      "id": "20220802-110016_1267569755",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:17.772",
+      "dateFinished": "2022-08-10 07:13:17.987",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:18.072",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2022-08-01_manual__2022-08-01T12%3A37%3A59.726096%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_136201788",
+      "id": "20220802-110016_1749568533",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:18.077",
+      "dateFinished": "2022-08-10 07:13:18.296",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nspark.sql(\"set spark.sql.legacy.timeParserPolicy\u003dLEGACY\")\n\ntoday \u003d datetime.datetime.today().date()\nfileName \u003d es.input_params.get(\"FileName\")\n\nDIRECTORY \u003d SETTING_RAW_DIR + \u0027/SOURCES/\u0027\n\nINPUT_BASELINE_PATH \u003d DIRECTORY + \u0027BASELINE/\u0027 + fileName\nPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/Product\u0027\nCLIENTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTree\u0027\nPRICELIST_PATH \u003d DIRECTORY + \u0027JUPITER/PriceList\u0027\nPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/Promo\u0027\nPROMOSTATUS_PATH \u003d DIRECTORY + \u0027JUPITER/PromoStatus\u0027\nPROMOPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProduct\u0027\nBASELINE_PATH \u003d DIRECTORY + \u0027JUPITER/BaseLine\u0027\n\n# OUTPUT_UPDATEDBASELINE_PATH \u003d es.SETTING_OUTPUT_DIR + \u0027/BASELINE/\u0027 + today.strftime(\u0027%Y/%m/%d\u0027) + \u0027/BaseLine.PARQUET\u0027\n# OUTPUT_NEWBASELINE_PATH \u003d es.SETTING_OUTPUT_DIR + \u0027/BASELINE/\u0027 + today.strftime(\u0027%Y/%m/%d\u0027) + \u0027/NewBaseLine.PARQUET\u0027\n\nOUTPUT_UPDATEDBASELINE_PATH \u003d es.SETTING_OUTPUT_DIR + \u0027/BASELINE/\u0027 + today.strftime(\u0027%Y/%m/%d\u0027) + \u0027/BaseLine.CSV\u0027\nOUTPUT_NEWBASELINE_PATH \u003d es.SETTING_OUTPUT_DIR + \u0027/BASELINE/\u0027 + today.strftime(\u0027%Y/%m/%d\u0027) + \u0027/NewBaseLine.CSV\u0027",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:18.681",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_46812863",
+      "id": "20220802-110016_1649094782",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:18.686",
+      "dateFinished": "2022-08-10 07:13:18.901",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nprint(INPUT_BASELINE_PATH)\n\nprint(OUTPUT_UPDATEDBASELINE_PATH)\nprint(OUTPUT_NEWBASELINE_PATH)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:18.986",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "hdfs:///JUPITER/RAW/SOURCES/BASELINE/BASELINE_0_20220726_200209.dat\nhdfs:///JUPITER/OUTPUT/BASELINE/2022/08/10/BaseLine.CSV\nhdfs:///JUPITER/OUTPUT/BASELINE/2022/08/10/NewBaseLine.CSV\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_1701131082",
+      "id": "20220802-110016_1170427680",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:18.991",
+      "dateFinished": "2022-08-10 07:13:19.211",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nbaselineSchema \u003d StructType([\n    StructField(\"Id\",StringType(),True),\nStructField(\"Disabled\",BooleanType(),True),\nStructField(\"DeletedDate\",TimestampType(),True),\nStructField(\"StartDate\",DateType(),True),\nStructField(\"Type\",IntegerType(),True),\nStructField(\"ProductId\",StringType(),True),\nStructField(\"LastModifiedDate\",TimestampType(),True),\nStructField(\"DemandCode\",StringType(),True),\nStructField(\"InputBaselineQTY\",DoubleType(),True),\nStructField(\"SellInBaselineQTY\",DoubleType(),True),\nStructField(\"SellOutBaselineQTY\",DoubleType(),True),\nStructField(\"NeedProcessing\",BooleanType(),True),\nStructField(\"$QCCount\",IntegerType(),True)])",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:19.291",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_1770244875",
+      "id": "20220802-110016_1874955113",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:19.296",
+      "dateFinished": "2022-08-10 07:13:19.511",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\r\ninputBaselineDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"\\u0009\").option(\"header\",\"true\").schema(inputBaselineSchema).load(INPUT_BASELINE_PATH)\r\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\nclientTreeDF \u003d spark.read.csv(CLIENTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\npriceListDF \u003d spark.read.csv(PRICELIST_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\npromoDF \u003d spark.read.csv(PROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\npromoStatusDF \u003d spark.read.csv(PROMOSTATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\npromoProductDF \u003d spark.read.csv(PROMOPRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue)\r\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dbaselineSchema)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 12:12:25.311",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d49"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d50"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d51"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d52"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d53"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d54"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926486_1942721874",
+      "id": "20220802-110016_1700721062",
+      "dateCreated": "2022-08-02 11:32:06.486",
+      "dateStarted": "2022-08-10 07:13:19.601",
+      "dateFinished": "2022-08-10 07:13:20.823",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nprint(inputBaselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:20.902",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "257796\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d55"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_903751336",
+      "id": "20220802-110016_1497519775",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:13:20.907",
+      "dateFinished": "2022-08-10 07:13:21.731",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nbaselineDF\u003dbaselineDF.na.fill({\"Disabled\":False,\"NeedProcessing\":0})",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:21.808",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659704230626_693531878",
+      "id": "paragraph_1659704230626_693531878",
+      "dateCreated": "2022-08-05 12:57:10.626",
+      "dateStarted": "2022-08-10 07:13:21.813",
+      "dateFinished": "2022-08-10 07:13:22.027",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nvalidBaselineDF \u003d inputBaselineDF\\\n  .withColumn(\u0027REP\u0027, regexp_replace(\u0027REP\u0027, r\u0027^[0]*\u0027, \u0027\u0027))\\\n  .withColumn(\u0027DMDGroup\u0027, regexp_replace(\u0027DMDGroup\u0027, r\u0027^[0]*\u0027, \u0027\u0027))\n\nvalidBaselineDF \u003d validBaselineDF\\\n  .where(\\\n          (col(\u0027REP\u0027).rlike(\"^0*[\\d]{6}\"))\n         \u0026(col(\u0027DMDGroup\u0027).rlike(\"^0*[\\d]{8}\"))\n         \u0026(col(\u0027DurInMinutes\u0027) \u003d\u003d 10080)\n         \u0026(col(\u0027SALES_ORG\u0027) \u003d\u003d 261)\n         \u0026(col(\u0027SALES_DIVISON\u0027) \u003d\u003d 51)\n         \u0026(col(\u0027BUS_SEG\u0027) \u003d\u003d \u002705\u0027)\n         \u0026(col(\u0027MOE\u0027) \u003d\u003d \u00270125\u0027)\n         \u0026(col(\u0027SALES_DIST_CHANNEL\u0027).isin([11,22]))\n        )\n\nproductDF \u003d productDF.where(col(\u0027Disabled\u0027) \u003d\u003d False)\n\nvalidBaselineDF \u003d validBaselineDF\\\n  .join(productDF, productDF.ZREP \u003d\u003d validBaselineDF.REP, \u0027left\u0027)\\\n  .select(validBaselineDF[\u0027*\u0027], productDF.Id.alias(\u0027ProductId\u0027))\\\n  .where(~col(\u0027ProductId\u0027).isNull())\n\nclientTreeDMDGroupDF \u003d clientTreeDF.where((col(\u0027EndDate\u0027).isNull()) \u0026 ~(col(\u0027DMDGroup\u0027).isNull()) \u0026 (col(\u0027DMDGroup\u0027) !\u003d \u0027\u0027))\nvalidBaselineDF \u003d validBaselineDF\\\n  .join(clientTreeDMDGroupDF, clientTreeDMDGroupDF.DMDGroup \u003d\u003d validBaselineDF.DMDGroup, \u0027left\u0027)\\\n  .select(validBaselineDF[\u0027*\u0027], clientTreeDMDGroupDF.DMDGroup.alias(\u0027clientDMDGroup\u0027), clientTreeDMDGroupDF.DemandCode.alias(\u0027clientDemandCode\u0027))\\\n  .where(~col(\u0027clientDMDGroup\u0027).isNull())\n\nvalidBaselineDF \u003d validBaselineDF\\\n  .withColumn(\u0027STARTDATE\u0027, to_date(col(\u0027STARTDATE\u0027), \u0027yyyyMMdd\u0027))\\\n  .withColumn(\u0027WeekDay\u0027, date_format(col(\"STARTDATE\"), \"u\"))\\\n  .where(col(\u0027WeekDay\u0027) \u003d\u003d 7)\\\n  .drop(\u0027WeekDay\u0027)\\\n  .orderBy(col(\u0027STARTDATE\u0027).desc())\n\nvalidBaselineDF \u003d validBaselineDF\\\n  .withColumn(\u0027QTY\u0027, when(col(\u0027QTY\u0027) \u003c 0, 0).otherwise(col(\u0027QTY\u0027)))\n\ntempBaselineDF \u003d validBaselineDF.drop(\u0027ProductId\u0027)\n\nprint(validBaselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:22.426",
+      "progress": 33,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "257796\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d58"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_2031102662",
+      "id": "20220802-110016_2083129967",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:13:22.431",
+      "dateFinished": "2022-08-10 07:13:25.323",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nactiveClientTreeList \u003d clientTreeDF.where(col(\u0027EndDate\u0027).isNull()).collect()\nbaseClientTreeDF \u003d clientTreeDF.where((col(\u0027EndDate\u0027).isNull()) \u0026 (col(\u0027IsBaseClient\u0027) \u003d\u003d True))",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:25.334",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d59"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_1828120100",
+      "id": "20220802-110016_1234081655",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:13:25.339",
+      "dateFinished": "2022-08-10 07:13:25.705",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n@udf\ndef getDMDGroup(objectId):\n  c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n  while (c is not None) \u0026 (c[0].Type !\u003d \u0027root\u0027) \u0026 ((c[0].DMDGroup \u003d\u003d \u0027\u0027) | (c[0].DMDGroup is None)):\n    c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n    if c is None: break\n  return c[0].DMDGroup\n  \nbaseClientTreeDF \u003d baseClientTreeDF\\\n  .withColumn(\u0027baseClientDMDGroup\u0027, lit(getDMDGroup(col(\u0027ObjectId\u0027))))\n\nvalidBaselineClientDF \u003d validBaselineDF\\\n  .join(baseClientTreeDF,  baseClientTreeDF.baseClientDMDGroup \u003d\u003d validBaselineDF.DMDGroup, \u0027left\u0027)\\\n  .select(validBaselineDF[\u0027*\u0027], baseClientTreeDF.Id.alias(\u0027ClientTreeId\u0027))\\\n  .where(~col(\u0027ClientTreeId\u0027).isNull())\n\nvalidBaselinePriceDF \u003d validBaselineClientDF\\\n  .join(priceListDF,\n        [\\\n          priceListDF.StartDate \u003c\u003d validBaselineClientDF.STARTDATE\n         ,priceListDF.EndDate \u003e\u003d validBaselineClientDF.STARTDATE\n         ,priceListDF.ProductId \u003d\u003d validBaselineClientDF.ProductId\n         ,priceListDF.ClientTreeId \u003d\u003d validBaselineClientDF.ClientTreeId\n        ],\n       \u0027left\u0027)\\\n  .select(validBaselineClientDF[\u0027*\u0027], priceListDF.Price)\\\n  .where(~col(\u0027Price\u0027).isNull())\\\n  .drop(\u0027Price\u0027,\u0027ProductId\u0027,\u0027ClientTreeId\u0027)\\\n  .dropDuplicates()",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:25.739",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_1407670622",
+      "id": "20220802-110016_1308117191",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:13:25.744",
+      "dateFinished": "2022-08-10 07:13:26.062",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nnotPriceBaselineDF \u003d tempBaselineDF.exceptAll(validBaselinePriceDF)\nprint(notPriceBaselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:13:26.144",
+      "progress": 99,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "5796\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d64"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d65"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_1252926231",
+      "id": "20220802-110016_1758142489",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:13:26.148",
+      "dateFinished": "2022-08-10 07:14:06.511",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nstatusList \u003d [\"Started\", \"Planned\", \"Approved\"]\n\npromoDF \u003d promoDF.where((col(\u0027Disabled\u0027) \u003d\u003d False))\npromoProductDF \u003d promoProductDF.where((col(\u0027Disabled\u0027) \u003d\u003d False))\n\nlightPromoDF \u003d promoDF\\\n  .select(\\\n           col(\u0027Id\u0027).alias(\u0027promoId\u0027)\n          ,col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\n          ,col(\u0027PromoStatusId\u0027).alias(\u0027promoStatusId\u0027)\n          ,date_add(to_date(promoDF.StartDate, \u0027yyyy-MM-dd\u0027), 1).alias(\u0027promoStartDate\u0027)\n          ,date_add(to_date(promoDF.EndDate, \u0027yyyy-MM-dd\u0027), 1).alias(\u0027promoEndDate\u0027)\n          ,col(\u0027ClientTreeKeyId\u0027).alias(\u0027promoClientTreeKeyId\u0027)\n          ,col(\u0027ClientTreeId\u0027).alias(\u0027promoClientTreeId\u0027)\n         )\n\ncheckPromoDF \u003d lightPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d lightPromoDF.promoStatusId, \u0027left\u0027)\\\n  .select(\\\n           lightPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\\\n  .where(col(\u0027promoStatusSystemName\u0027).isin(*statusList))\n\ncheckPromoProductDF \u003d checkPromoDF\\\n  .join(promoProductDF, promoProductDF.PromoId \u003d\u003d checkPromoDF.promoId, \u0027inner\u0027)\\\n  .select(\\\n           checkPromoDF[\u0027*\u0027]\n          ,promoProductDF.ProductId\n         )\n\nzeroQtyBaselineDF \u003d validBaselineClientDF\\\n  .where(col(\u0027QTY\u0027) \u003d\u003d 0)\\\n  .withColumn(\u0027nextStartDate\u0027, date_add(col(\u0027STARTDATE\u0027), 6))\n\nzeroQtyBaselinePromoDF \u003d zeroQtyBaselineDF\\\n  .join(checkPromoProductDF,\\\n        [\\\n          checkPromoProductDF.ProductId \u003d\u003d zeroQtyBaselineDF.ProductId\n         ,(checkPromoProductDF.promoClientTreeId \u003d\u003d zeroQtyBaselineDF.ClientTreeId)\n        ]\n       ,\u0027inner\u0027)\\\n  .where((checkPromoProductDF.promoStartDate \u003e zeroQtyBaselineDF.nextStartDate) | (checkPromoProductDF.promoEndDate \u003c zeroQtyBaselineDF.STARTDATE))\n\nprint(checkPromoProductDF.count())\nprint(zeroQtyBaselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:14:06.598",
+      "progress": 25,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "8451\n197810\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d68"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d72"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_1011668437",
+      "id": "20220802-110016_1142826525",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:14:06.603",
+      "dateFinished": "2022-08-10 07:14:16.293",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nbaselineDF \u003d baselineDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(col(\u0027StartDate\u0027), \u0027yyyy-MM-dd\u0027), 1))\n\nprint(baselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:14:16.314",
+      "progress": 66,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2785737\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d73"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_779279698",
+      "id": "20220802-110016_2031494342",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:14:16.319",
+      "dateFinished": "2022-08-10 07:14:17.598",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\njoinedValidBaselineDF \u003d baselineDF\\\n  .join(validBaselineDF,\n        [\\\n          validBaselineDF.STARTDATE \u003d\u003d baselineDF.StartDate\n         ,validBaselineDF.ProductId \u003d\u003d baselineDF.ProductId\n         ,validBaselineDF.clientDemandCode \u003d\u003d baselineDF.DemandCode\n        ],\\\n        \u0027outer\u0027)\\\n  .select(\\\n           baselineDF[\u0027*\u0027]\\\n          ,validBaselineDF.clientDemandCode.alias(\u0027inputDemandCode\u0027)\n          ,validBaselineDF.ProductId.alias(\u0027inputProductId\u0027)\n          ,validBaselineDF.STARTDATE.alias(\u0027inputStartDate\u0027)\n          ,validBaselineDF.QTY\n         )\n\nupdatedBaselineDF \u003d joinedValidBaselineDF\\\n  .where(~col(\u0027Id\u0027).isNull())\\\n  .withColumn(\u0027InputBaselineQTY\u0027, when(~col(\u0027QTY\u0027).isNull(), col(\u0027QTY\u0027)).otherwise(col(\u0027InputBaselineQTY\u0027)))\\\n  .withColumn(\u0027NeedProcessing\u0027, when((~col(\u0027QTY\u0027).isNull()), True).otherwise(col(\u0027NeedProcessing\u0027)))\\\n  .withColumn(\u0027LastModifiedDate\u0027, when(~col(\u0027QTY\u0027).isNull(), lit(today)).otherwise(col(\u0027LastModifiedDate\u0027)))\\\n  .drop(\u0027inputDemandCode\u0027, \u0027inputProductId\u0027, \u0027inputStartDate\u0027, \u0027QTY\u0027, \u0027$QCCount\u0027)\n\nnewBaselineDF \u003d joinedValidBaselineDF\\\n  .where(col(\u0027Id\u0027).isNull())\\\n  .withColumn(\u0027StartDate\u0027, col(\u0027inputStartDate\u0027))\\\n  .withColumn(\u0027ProductId\u0027, col(\u0027inputProductId\u0027))\\\n  .withColumn(\u0027DemandCode\u0027, col(\u0027inputDemandCode\u0027))\\\n  .withColumn(\u0027InputBaselineQTY\u0027, when(~col(\u0027QTY\u0027).isNull(), col(\u0027QTY\u0027)).otherwise(0))\\\n  .drop(\u0027inputDemandCode\u0027, \u0027inputProductId\u0027, \u0027inputStartDate\u0027, \u0027QTY\u0027, \u0027$QCCount\u0027)\n\nprint(updatedBaselineDF.count())\nprint(newBaselineDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:14:17.620",
+      "progress": 93,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2785737\n124488\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d76"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d79"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926487_1142361614",
+      "id": "20220802-110016_1982330195",
+      "dateCreated": "2022-08-02 11:32:06.487",
+      "dateStarted": "2022-08-10 07:14:17.625",
+      "dateFinished": "2022-08-10 07:14:39.460",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowBaseline \u003d Window.partitionBy([\u0027ProductId\u0027, \u0027DemandCode\u0027]).orderBy(\u0027StartDate\u0027)\n\nupdatedBaselineDF \u003d updatedBaselineDF.withColumn(\u0027isNewBasline\u0027, lit(False))\nnewBaselineDF \u003d newBaselineDF\\\n  .withColumn(\u0027NeedProcessing\u0027, lit(True))\\\n  .withColumn(\u0027isNewBasline\u0027, lit(True))\n\nunionBaselineDF \u003d updatedBaselineDF\\\n  .union(newBaselineDF)\\\n  .withColumn(\u0027lag_1\u0027, when(lag(\u0027NeedProcessing\u0027,1).over(windowBaseline).isNull(), lit(False)).otherwise(lag(\u0027NeedProcessing\u0027,1).over(windowBaseline)))\\\n  .withColumn(\u0027lag_2\u0027, when(lag(\u0027NeedProcessing\u0027,2).over(windowBaseline).isNull(), lit(False)).otherwise(lag(\u0027NeedProcessing\u0027,2).over(windowBaseline)))\\\n  .withColumn(\u0027lead_1\u0027,when(lead(\u0027NeedProcessing\u0027,1).over(windowBaseline).isNull(), lit(False)).otherwise(lead(\u0027NeedProcessing\u0027,1).over(windowBaseline)))\\\n  .withColumn(\u0027lead_2\u0027,when(lead(\u0027NeedProcessing\u0027,2).over(windowBaseline).isNull(), lit(False)).otherwise(lead(\u0027NeedProcessing\u0027,2).over(windowBaseline)))\\\n  .withColumn(\u0027NeedProcessing\u0027, col(\u0027NeedProcessing\u0027) | col(\u0027lag_1\u0027) | col(\u0027lag_2\u0027) | col(\u0027lead_1\u0027) | col(\u0027lead_2\u0027))\n\nupdatedBaselineDF \u003d unionBaselineDF\\\n  .where(col(\u0027isNewBasline\u0027) \u003d\u003d False)\\\n  .drop(\u0027lag_1\u0027,\u0027lag_2\u0027,\u0027lead_1\u0027,\u0027lead_2\u0027,\u0027isNewBasline\u0027)\n\nnewBaselineDF \u003d unionBaselineDF\\\n  .where(col(\u0027isNewBasline\u0027) \u003d\u003d True)\\\n  .select(updatedBaselineDF.columns)\n\n  \nprint(f\u0027UPDATED_BASELINE_COUNT\u003d{updatedBaselineDF.count()}\u0027)\nprint(f\u0027NEW_BASELINE_COUNT\u003d{newBaselineDF.count()}\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:44:40.615",
+      "progress": 90,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "UPDATED_BASELINE_COUNT\u003d2785737\nNEW_BASELINE_COUNT\u003d124488\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d82"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-g-utej.mdb.yandexcloud.net:46135/jobs/job?id\u003d85"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926488_1257960086",
+      "id": "20220802-110016_1523385676",
+      "dateCreated": "2022-08-02 11:32:06.488",
+      "dateStarted": "2022-08-10 07:14:39.559",
+      "dateFinished": "2022-08-10 07:14:53.927",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n# updatedBaselineDF.write.mode(\"overwrite\").parquet(OUTPUT_UPDATEDBASELINE_PATH)\n# newBaselineDF.write.mode(\"overwrite\").parquet(OUTPUT_NEWBASELINE_PATH)\n\nupdatedBaselineDF\u003dupdatedBaselineDF\\\n.withColumn(\"NeedProcessing\",col(\"NeedProcessing\").cast(IntegerType()))\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\n\n\n\nupdatedBaselineDF\\\n.repartition(1)\\\n.write.csv(OUTPUT_UPDATEDBASELINE_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nnewBaselineDF\\\n.repartition(1)\\\n.write.csv(OUTPUT_NEWBASELINE_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-10 07:44:59.463",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m\u003cipython-input-116-a56975a004ce\u003e\u001b[0m in \u001b[0;36m\u003cmodule\u003e\u001b[0;34m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;31m# newBaselineDF.write.mode(\"overwrite\").parquet(OUTPUT_NEWBASELINE_PATH)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----\u003e 4\u001b[0;31m \u001b[0mupdatedBaselineDF\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      5\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mrepartition\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      6\u001b[0m .write.csv(OUTPUT_UPDATEDBASELINE_PATH,\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m\u003d\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding\u003dencoding, emptyValue\u003demptyValue, lineSep\u003dlineSep)\n\u001b[0;32m-\u003e 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-\u003e 1304\u001b[0;31m         return_value \u003d get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m\u003d\u003d\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o643.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/BASELINE/2022/08/09\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:258)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1614)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:949)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:946)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:956)\n\tat org.apache.spark.internal.io.FileCommitProtocol.deleteWithJob(FileCommitProtocol.scala:124)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.deleteMatchingPartitions(InsertIntoHadoopFsRelationCommand.scala:226)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:129)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:764)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/BASELINE/2022/08/09\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:258)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:644)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1612)\n\t... 39 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1659439926488_101193983",
+      "id": "20220802-110016_1399348188",
+      "dateCreated": "2022-08-02 11:32:06.488",
+      "dateStarted": "2022-08-09 13:52:29.831",
+      "dateFinished": "2022-08-09 13:52:30.808",
+      "status": "ERROR"
+    }
+  ],
+  "name": "INPUT_BASELINE_PROCESSING",
+  "id": "2HAWCXQDX",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

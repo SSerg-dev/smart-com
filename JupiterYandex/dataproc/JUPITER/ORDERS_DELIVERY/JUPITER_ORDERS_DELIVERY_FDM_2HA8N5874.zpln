@@ -1,0 +1,1027 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"JUPITER_ORDERS_DELIVERY_FDM\". \n####*Get Delivery \u0026 Sales Orders data by ZREP CLIENT WEEK*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:12.034",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;JUPITER_ORDERS_DELIVERY_FDM\u0026rdquo;.\u003cbr /\u003e\n####\u003cem\u003eGet Delivery \u0026amp; Sales Orders data by ZREP CLIENT WEEK\u003c/em\u003e.\u003c/p\u003e\n\u003ch6\u003e\u003cem\u003eDeveloper: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:andrey.philushkin@effem.com\"\u003eandrey.philushkin@effem.com\u003c/a\u003e\u003c/em\u003e\u003c/h6\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399164_2014847173",
+      "id": "20220819-085639_164002314",
+      "dateCreated": "2022-08-19 08:56:39.164",
+      "dateStarted": "2022-09-13 08:59:12.036",
+      "dateFinished": "2022-09-13 08:59:12.041",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Function to determine runtime(Notebook or pure python)",
+      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:12.136",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899744538_958782231",
+      "id": "paragraph_1660899744538_958782231",
+      "dateCreated": "2022-08-19 09:02:24.538",
+      "dateStarted": "2022-09-13 08:59:12.139",
+      "dateFinished": "2022-09-13 08:59:12.352",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nfrom datetime import timedelta, datetime\nimport datetime as datetime\nimport pandas as pd\nimport os\nimport json\nimport subprocess",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:12.439",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_2126183925",
+      "id": "20220819-085639_616837994",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:12.442",
+      "dateFinished": "2022-09-13 08:59:12.655",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-08-23_manual__2022-08-23T07%3A07%3A22%2B00%3A00_\", \"ProcessDate\": \"2022-08-23\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_orders_delivery_fdm\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:12.742",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899839678_1085234310",
+      "id": "paragraph_1660899839678_1085234310",
+      "dateCreated": "2022-08-19 09:03:59.678",
+      "dateStarted": "2022-09-13 08:59:12.744",
+      "dateFinished": "2022-09-13 08:59:12.957",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:13.045",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-09-09_manual__2022-09-09T11%3A15%3A40%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_250131941",
+      "id": "20220819-085639_492392926",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:13.047",
+      "dateFinished": "2022-09-13 08:59:13.261",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ntoday \u003d datetime.datetime.today().date()\n\ntoday_year \u003d str(today.year)\ntoday_month \u003d str(today.month)\ntoday_day \u003d str(today.day)\n\ntoday_str \u003d today_year.zfill(4) + \u0027/\u0027 + today_month.zfill(2) + \"/\" + today_day.zfill(2)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:13.348",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_698633215",
+      "id": "20220819-085639_1789248296",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:13.350",
+      "dateFinished": "2022-09-13 08:59:13.562",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Set paths*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:13.650",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eSet paths\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_389766304",
+      "id": "20220819-085639_1634170729",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:13.653",
+      "dateFinished": "2022-09-13 08:59:13.658",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\n#Inputs\nDATESDIM_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv\u0027\nMATERIALS_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_MATERIALS.csv\u0027\nHYDRATE_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/HYDRATEATLAS/Z2LIS_11_VAITM.PARQUET\u0027\nHYDRATE_DELIVERY_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/HYDRATEATLAS/Z2LIS_12_VCITM.PARQUET\u0027\n# SHIPTO_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/APOLLODEMAND/UDT_CUST_SHIP_TO.PARQUET\u0027\nSHIPTO_PATH \u003d SETTING_PROCESS_DIR + \u0027/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING.PARQUET\u0027\n\n#Outputs\nOUTPUT_DIR \u003d SETTING_OUTPUT_DIR + \"/\" + es.pipelineSubfolderName\nORDERS_DELIVERY_FDM_OUTPUT_PATH \u003d OUTPUT_DIR + \"/\" + today_str + \"/ORDERS_DELIVERY_FDM.parquet\"\nFULL_WEEK_ACTUAL_OUTPUT_PATH \u003d SETTING_PROCESS_DIR + \"/FULL_WEEK_ACTUAL.parquet\"",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:13.753",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_1152887724",
+      "id": "20220819-085639_1681741644",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:13.756",
+      "dateFinished": "2022-09-13 08:59:13.969",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ndatesDimSchema \u003d StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:14.056",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_1903929799",
+      "id": "20220819-085639_868040116",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:14.058",
+      "dateFinished": "2022-09-13 08:59:14.270",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\nhydrateDF \u003d spark.read.format(\"parquet\").load(HYDRATE_PATH)\nhydrateDeliveryDF \u003d spark.read.format(\"parquet\").load(HYDRATE_DELIVERY_PATH)\nshipToDF \u003d spark.read.format(\"parquet\").load(SHIPTO_PATH)\nmaterialDf \u003d spark.read.format(\"csv\").option(\"delimiter\", \"\\u0001\").option(\"header\", \"true\").load(MATERIALS_PATH)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:14.359",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d557"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d558"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d559"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d560"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_1213439186",
+      "id": "20220819-085639_2009404520",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:14.361",
+      "dateFinished": "2022-09-13 08:59:15.734",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nshipToDF\u003dshipToDF\\\n.withColumn(\u0027CUST_NBR\u0027, regexp_replace(\u00270CUST_SALES\u0027, r\u0027^[0]*\u0027, \u0027\u0027))\\\n.withColumn(\u0027PET_DMD_GRP_DESC\u0027, col(\u0027GRP_DESC\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 09:06:59.217",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1663057166713_1576632806",
+      "id": "paragraph_1663057166713_1576632806",
+      "dateCreated": "2022-09-13 08:19:26.713",
+      "dateStarted": "2022-09-13 08:59:15.766",
+      "dateFinished": "2022-09-13 08:59:15.979",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Delivery filtering (step 1)*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:17.270",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eDelivery filtering (step 1)\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_915075575",
+      "id": "20220819-085639_767818182",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:17.273",
+      "dateFinished": "2022-09-13 08:59:17.277",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowFirstDeliveryRowNumber \u003d (Window.partitionBy(\u0027VGBEL\u0027).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing))\nwindowFirstDeliverySeqRowNumber \u003d (Window.partitionBy(\u0027VGBEL\u0027).orderBy(col(\u0027DI_SEQUENCE_NUMBER\u0027).desc()))\n\ndeliveryNumberDF \u003d hydrateDeliveryDF\\\n  .where(\\\n           (col(\u0027SPARA\u0027) \u003d\u003d 5)\\\n         \u0026 (col(\u0027VKORG\u0027) \u003d\u003d 261)\\\n         \u0026 (col(\u0027PSTYV\u0027) !\u003d \u0027ZBCH\u0027)\\\n         \u0026 (col(\u0027PSTYV\u0027) !\u003d \u0027ZRBC\u0027)\n        )\\\n  .select(\\\n         col(\u0027VGBEL\u0027)\n         ,when(((to_date(hydrateDeliveryDF.WADAT_IST, \u0027yyyy.MM.dd\u0027) \u003d\u003d \u00271900-01-01\u0027) | hydrateDeliveryDF.WADAT_IST.isNull()), to_date(hydrateDeliveryDF.WADAT, \u0027yyyy.MM.dd\u0027))\\\n              .otherwise(to_date(hydrateDeliveryDF.WADAT_IST, \u0027yyyy.MM.dd\u0027)).alias(\u0027WADAT_IST\u0027)\n         ,to_timestamp(col(\u0027LOAD_DATE\u0027), \u0027yyyy.MM.dd HH:mm:ss\u0027).alias(\u0027LOAD_DATE\u0027)\n         ,col(\u0027DI_SEQUENCE_NUMBER\u0027).cast(IntegerType()).alias(\u0027DI_SEQUENCE_NUMBER\u0027)\n         ,length(regexp_replace(\"VGBEL\", r\u0027^[0]*\u0027, \u0027\u0027)).alias(\u0027ORDER_LENGTH\u0027)\n        )\\\n  .where(col(\u0027WADAT_IST\u0027).isNotNull())      \n\ndeliveryNumberDF \u003d deliveryNumberDF\\\n  .withColumn(\u0027maxDate\u0027, max(\u0027LOAD_DATE\u0027).over(windowFirstDeliveryRowNumber))\\\n  .where(col(\u0027LOAD_DATE\u0027) \u003d\u003d col(\u0027maxDate\u0027))\n\ndeliveryNumberDF \u003d deliveryNumberDF\\\n  .withColumn(\u0027Row_Number\u0027, row_number().over(windowFirstDeliverySeqRowNumber))\\\n  .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\ndeliveryNumberDF \u003d deliveryNumberDF.select(col(\u0027VGBEL\u0027)).distinct()",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:17.374",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_324746613",
+      "id": "20220819-085639_592075781",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:17.377",
+      "dateFinished": "2022-09-13 08:59:17.741",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Delivery filtering (step 2)*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:17.777",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eDelivery filtering (step 2)\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_2011519636",
+      "id": "20220819-085639_2034271557",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:17.780",
+      "dateFinished": "2022-09-13 08:59:17.784",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowDeliveryRowNumber \u003d (Window.partitionBy(\u0027VGBEL\u0027, \u0027MATNR\u0027, \u0027VGPOS\u0027)\\\n  .rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing))\n\nwindowDeliverySeqRowNumber \u003d (Window.partitionBy([\u0027VGBEL\u0027, \u0027MATNR\u0027, \u0027VGPOS\u0027]).orderBy(col(\u0027DI_SEQUENCE_NUMBER\u0027).desc()))\n\ndeliveryFilteredDF \u003d hydrateDeliveryDF.join(deliveryNumberDF, \u0027VGBEL\u0027, \u0027inner\u0027)\n\ndeliveryFilteredDF \u003d deliveryFilteredDF\\\n  .where( (col(\u0027SPARA\u0027) \u003d\u003d 5)\\\n         \u0026 (col(\u0027VKORG\u0027) \u003d\u003d 261)\\\n         \u0026 (col(\u0027PSTYV\u0027) !\u003d \u0027ZBCH\u0027)\\\n         \u0026 (col(\u0027PSTYV\u0027) !\u003d \u0027ZRBC\u0027)\n        )\\\n  .withColumn(\u0027isWadatIstValid\u0027,when(((to_date(deliveryFilteredDF.WADAT_IST, \u0027yyyy.MM.dd\u0027) \u003d\u003d \u00271900-01-01\u0027) | deliveryFilteredDF.WADAT_IST.isNull()), False).otherwise(True))\\\n  .select(\\\n         col(\u0027DI_OPERATION_TYPE\u0027)\n        ,when(((to_date(deliveryFilteredDF.WADAT_IST, \u0027yyyy.MM.dd\u0027) \u003d\u003d \u00271900-01-01\u0027) | deliveryFilteredDF.WADAT_IST.isNull()),\\\n               to_date(deliveryFilteredDF.WADAT, \u0027yyyy.MM.dd\u0027)).otherwise(to_date(hydrateDeliveryDF.WADAT_IST, \u0027yyyy.MM.dd\u0027)).alias(\u0027WADAT_IST\u0027)\n        ,col(\u0027PSTYV\u0027)\n        ,col(\u0027VBELN\u0027)\n        ,col(\u0027VGBEL\u0027)\n        ,col(\u0027MATNR\u0027)\n        ,col(\u0027VGPOS\u0027)\n        ,col(\u0027LFART\u0027)\n        ,col(\u0027LGMNG\u0027)\n        ,col(\u0027KCMENG\u0027)\n        ,col(\u0027KUNNR\u0027)\n        ,to_timestamp(col(\u0027LOAD_DATE\u0027), \u0027yyyy.MM.dd HH:mm:ss\u0027).alias(\u0027LOAD_DATE\u0027)\n        ,col(\u0027DI_SEQUENCE_NUMBER\u0027).cast(IntegerType()).alias(\u0027DI_SEQUENCE_NUMBER\u0027)\n        ,length(regexp_replace(\"VGBEL\", r\u0027^[0]*\u0027, \u0027\u0027)).alias(\u0027ORDER_LENGTH\u0027)\n        ,col(\u0027isWadatIstValid\u0027)\n         )\\\n  .withColumn(\u0027QTY_KCMENG_LGMNG\u0027, when(col(\u0027isWadatIstValid\u0027) \u003d\u003d True, col(\u0027KCMENG\u0027)).otherwise(when(col(\u0027LFART\u0027) \u003d\u003d \u0027ZLR\u0027, col(\u0027LGMNG\u0027)).otherwise(col(\u0027KCMENG\u0027))))\n\ndeliveryFilteredDF \u003d deliveryFilteredDF\\\n  .withColumn(\u0027maxDate\u0027, max(\u0027LOAD_DATE\u0027).over(windowDeliveryRowNumber))\\\n  .where(col(\u0027LOAD_DATE\u0027) \u003d\u003d col(\u0027maxDate\u0027))\n\ndeliveryFilteredDF \u003d deliveryFilteredDF\\\n  .withColumn(\u0027Row_Number\u0027, row_number().over(windowDeliverySeqRowNumber))\\\n  .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\ndeliveryFilteredDF \u003d deliveryFilteredDF\\\n  .where(col(\u0027WADAT_IST\u0027).isNotNull())\n\ndeliveryFilteredDF \u003d deliveryFilteredDF\\\n  .where(col(\u0027DI_OPERATION_TYPE\u0027) !\u003d \u0027D\u0027)\n     \ndeliveryActualsDF \u003d deliveryFilteredDF\\\n  .where(col(\u0027isWadatIstValid\u0027) \u003d\u003d True)\\\n  .groupBy([\u0027KUNNR\u0027, \u0027MATNR\u0027, \u0027WADAT_IST\u0027])\\\n  .agg(sum(\u0027QTY_KCMENG_LGMNG\u0027).alias(\u0027KCMENG\u0027), first(\u0027VGBEL\u0027).alias(\u0027VGBEL\u0027))\n\ndeliveryOpenOrdersDF \u003d deliveryFilteredDF\\\n  .where(col(\u0027isWadatIstValid\u0027) \u003d\u003d False)\\\n  .groupBy([\u0027KUNNR\u0027, \u0027MATNR\u0027, \u0027WADAT_IST\u0027])\\\n  .agg(sum(\u0027QTY_KCMENG_LGMNG\u0027).alias(\u0027KCMENG\u0027), first(\u0027VGBEL\u0027).alias(\u0027VGBEL\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:17.880",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_303165477",
+      "id": "20220819-085639_645507153",
+      "dateCreated": "2022-08-19 08:56:39.165",
+      "dateStarted": "2022-09-13 08:59:17.884",
+      "dateFinished": "2022-09-13 08:59:18.399",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Sales orders filtering (step 1)*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:18.484",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eSales orders filtering (step 1)\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399165_1788849957",
+      "id": "20220819-085639_348551313",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:18.487",
+      "dateFinished": "2022-09-13 08:59:18.491",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowFirstOrdersRowNumber \u003d (Window.partitionBy(\u0027VBELN\u0027).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing))\nwindowFirstOrdersSeqRowNumber \u003d (Window.partitionBy(\u0027VBELN\u0027).orderBy(col(\u0027DI_SEQUENCE_NUMBER\u0027).desc()))\n\nordersNumberDF \u003d hydrateDF\\\n  .where( (col(\u0027SPART\u0027) \u003d\u003d 5)\\\n         \u0026 (col(\u0027VKORG\u0027) \u003d\u003d 261)\\\n         \u0026 (col(\u0027AUART\u0027).isin([\u0027ZBO\u0027,\u0027ZCS\u0027,\u0027ZKB\u0027,\u0027ZOR\u0027,\u0027ZTP\u0027,\u0027ZDTC\u0027,\u0027ZRE\u0027]))\\\n        )\\\n  .select(\\\n         col(\u0027VBELN\u0027)\n         ,col(\u0027VGBEL\u0027)\n         ,to_date(col(\u0027ZZWADAT\u0027), \u0027yyyy.MM.dd\u0027).alias(\u0027ZZWADAT\u0027)\n         ,to_date(col(\u0027KURSK_DAT\u0027), \u0027yyyy.MM.dd\u0027).alias(\u0027KURSK_DAT\u0027)\n         ,to_timestamp(col(\u0027LOAD_DATE\u0027), \u0027yyyy.MM.dd HH:mm:ss\u0027).alias(\u0027LOAD_DATE\u0027)\n         ,col(\u0027DI_SEQUENCE_NUMBER\u0027).cast(IntegerType()).alias(\u0027DI_SEQUENCE_NUMBER\u0027)\n         ,length(regexp_replace(\"VBELN\", r\u0027^[0]*\u0027, \u0027\u0027)).alias(\u0027ORDER_LENGTH\u0027)\n        )\\\n  .withColumn(\u0027EARLIEST_DATE\u0027, date_add(col(\u0027ZZWADAT\u0027), -180))\\\n  .where(col(\u0027ZZWADAT\u0027).isNotNull())  \n\nsplittedOrders \u003d ordersNumberDF.where(col(\u0027VGBEL\u0027).isNotNull()).select(col(\u0027VGBEL\u0027).alias(\u0027VBELN\u0027)).distinct()\nordersNumberDF \u003d ordersNumberDF.join(splittedOrders, \u0027VBELN\u0027, \u0027left_anti\u0027)\n\nordersNumberDF \u003d ordersNumberDF\\\n  .withColumn(\u0027maxDate\u0027, max(\u0027LOAD_DATE\u0027).over(windowFirstOrdersRowNumber))\\\n  .where(col(\u0027LOAD_DATE\u0027) \u003d\u003d col(\u0027maxDate\u0027))\n\nordersNumberDF \u003d ordersNumberDF\\\n  .withColumn(\u0027Row_Number\u0027, row_number().over(windowFirstOrdersSeqRowNumber))\\\n  .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\nordersNumberDF \u003d ordersNumberDF.join(deliveryNumberDF, ordersNumberDF.VBELN \u003d\u003d deliveryNumberDF.VGBEL, \u0027left_anti\u0027)\nordersNumberDF \u003d ordersNumberDF.select(col(\u0027VBELN\u0027)).distinct()",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:18.587",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_2128976992",
+      "id": "20220819-085639_1704830072",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:18.591",
+      "dateFinished": "2022-09-13 08:59:18.955",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Sales orders filtering (step 2)*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:18.991",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eSales orders filtering (step 2)\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_991859574",
+      "id": "20220819-085639_403341091",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:18.994",
+      "dateFinished": "2022-09-13 08:59:18.998",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowRowNumber \u003d (Window.partitionBy(\u0027VBELN\u0027, \u0027MATNR\u0027, \u0027POSNR\u0027)\\\n  .rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing))\n\nwindowSeqRowNumber \u003d (Window.partitionBy([\u0027VBELN\u0027, \u0027MATNR\u0027, \u0027POSNR\u0027]).orderBy(col(\u0027DI_SEQUENCE_NUMBER\u0027).desc()))\n\nordersFilteredDF \u003d hydrateDF.join(ordersNumberDF, \u0027VBELN\u0027, \u0027inner\u0027)\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .where((col(\u0027SPART\u0027) \u003d\u003d 5)\\\n         \u0026 (col(\u0027VKORG\u0027) \u003d\u003d 261)\\\n         \u0026 (col(\u0027AUART\u0027).isin([\u0027ZBO\u0027,\u0027ZCS\u0027,\u0027ZKB\u0027,\u0027ZOR\u0027,\u0027ZTP\u0027,\u0027ZDTC\u0027,\u0027ZRE\u0027]))\\\n        )\\\n  .select(\\\n          col(\u0027DI_OPERATION_TYPE\u0027)\n          ,to_date(col(\u0027ZZWADAT\u0027), \u0027yyyy.MM.dd\u0027).alias(\u0027ZZWADAT\u0027)\n          ,col(\u0027PSTYV\u0027)\n          ,col(\u0027POSNR\u0027)\n          ,col(\u0027ABGRU\u0027)\n          ,col(\u0027VBELN\u0027)\n          ,col(\u0027MATNR\u0027)\n          ,col(\u0027PKUNWE\u0027)\n          ,col(\u0027KLMENG\u0027)\n          ,to_timestamp(col(\u0027LOAD_DATE\u0027), \u0027yyyy.MM.dd HH:mm:ss\u0027).alias(\u0027LOAD_DATE\u0027)\n          ,col(\u0027DI_SEQUENCE_NUMBER\u0027).cast(IntegerType()).alias(\u0027DI_SEQUENCE_NUMBER\u0027)\n          ,length(regexp_replace(\"VBELN\", r\u0027^[0]*\u0027, \u0027\u0027)).alias(\u0027ORDER_LENGTH\u0027)\n         )\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .withColumn(\u0027maxDate\u0027, max(\u0027LOAD_DATE\u0027).over(windowRowNumber))\\\n  .where(col(\u0027LOAD_DATE\u0027) \u003d\u003d col(\u0027maxDate\u0027))\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .withColumn(\u0027Row_Number\u0027, row_number().over(windowSeqRowNumber))\\\n  .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .where((col(\u0027ZZWADAT\u0027).isNotNull())\n         \u0026 (col(\u0027PSTYV\u0027) !\u003d \u0027ZAPA\u0027)\n       )\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .where((col(\u0027ABGRU\u0027).isNull())\n         \u0026 (col(\u0027DI_OPERATION_TYPE\u0027) !\u003d \u0027D\u0027)\n       )\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .groupBy([\u0027PKUNWE\u0027, \u0027MATNR\u0027, \u0027ZZWADAT\u0027])\\\n  .agg(sum(\u0027KLMENG\u0027).alias(\u0027KLMENG\u0027), first(\u0027VBELN\u0027).alias(\u0027VBELN\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:19.094",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_1503904808",
+      "id": "20220819-085639_1935304531",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:19.098",
+      "dateFinished": "2022-09-13 08:59:19.562",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Union orders*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:19.598",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eUnion orders\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_1140711816",
+      "id": "20220819-085639_1417648985",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:19.601",
+      "dateFinished": "2022-09-13 08:59:19.605",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\ndeliveryActualsDF \u003d deliveryActualsDF\\\n  .withColumn(\u0027TYPE\u0027, lit(\u0027ACTUAL\u0027))\n\ndeliveryOpenOrdersDF \u003d deliveryOpenOrdersDF\\\n  .withColumn(\u0027TYPE\u0027, lit(\u0027OPEN_ORDER\u0027))\n\nordersFilteredDF \u003d ordersFilteredDF\\\n  .withColumn(\u0027TYPE\u0027,lit(\u0027OPEN_ORDER\u0027))\n\ndeliveryDF \u003d deliveryActualsDF\\\n  .select(\\\n           col(\u0027KUNNR\u0027).alias(\u0027SHIPTO\u0027)\n          ,col(\u0027MATNR\u0027)\n          ,col(\u0027WADAT_IST\u0027).alias(\u0027DATE\u0027)\n          ,col(\u0027KCMENG\u0027).alias(\u0027QTY\u0027)\n          ,col(\u0027TYPE\u0027)\n         )\n\ndeliveryOrdersDF \u003d deliveryOpenOrdersDF\\\n  .select(\\\n           col(\u0027KUNNR\u0027).alias(\u0027SHIPTO\u0027)\n          ,col(\u0027MATNR\u0027)\n          ,col(\u0027WADAT_IST\u0027).alias(\u0027DATE\u0027)\n          ,col(\u0027KCMENG\u0027).alias(\u0027QTY\u0027)\n          ,col(\u0027TYPE\u0027)\n         )\n\nordersDF \u003d ordersFilteredDF\\\n  .select(\\\n           col(\u0027PKUNWE\u0027).alias(\u0027SHIPTO\u0027)\n          ,col(\u0027MATNR\u0027)\n          ,col(\u0027ZZWADAT\u0027).alias(\u0027DATE\u0027)\n          ,col(\u0027KLMENG\u0027).alias(\u0027QTY\u0027)\n          ,col(\u0027TYPE\u0027)\n         )\n\nordersDeliveryDF \u003d deliveryDF\\\n  .union(deliveryOrdersDF)\\\n  .union(ordersDF)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:19.701",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_305319154",
+      "id": "20220819-085639_1556696010",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:19.705",
+      "dateFinished": "2022-09-13 08:59:19.968",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nwindowMatRowNumber \u003d (Window.partitionBy(\u0027MATNR\u0027).orderBy(col(\u0027Date\u0027).desc()))\nmaterialFilteredDF \u003d materialDf\\\n  .select(\\\n          materialDf.MATNR,\n          materialDf.ZREP\n          ,to_date(col(\u0027VMSTD\u0027), \u0027yyyy.MM.dd\u0027).alias(\u0027Date\u0027)\n          ,materialDf.BrandTech\n         )\\\n  .withColumn(\u0027Row_Number\u0027, row_number().over(windowMatRowNumber))\\\n  .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:20.005",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_1735695960",
+      "id": "20220819-085639_393335831",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:20.008",
+      "dateFinished": "2022-09-13 08:59:20.221",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n####*Result*",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:20.308",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####\u003cem\u003eResult\u003c/em\u003e\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_41948448",
+      "id": "20220819-085639_934365525",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:20.311",
+      "dateFinished": "2022-09-13 08:59:20.315",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nresultOrdersDeliveryDF \u003d ordersDeliveryDF\\\n  .select(\\\n          regexp_replace(\"SHIPTO\", r\u0027^[0]*\u0027, \u0027\u0027).alias(\u0027ShipTo\u0027)\n          ,regexp_replace(\"MATNR\", r\u0027^[0]*\u0027, \u0027\u0027).alias(\u0027MATNR\u0027)\n          ,to_date(col(\u0027DATE\u0027), \u0027yyyy.MM.dd\u0027).alias(\u0027Date\u0027)\n          ,col(\u0027QTY\u0027)\n          ,col(\u0027TYPE\u0027)\n         )\n\nresultOrdersDeliveryShipToDF \u003d resultOrdersDeliveryDF\\\n  .join(shipToDF, resultOrdersDeliveryDF.ShipTo \u003d\u003d shipToDF.CUST_NBR, \u0027left\u0027)\\\n  .select(\\\n           when(shipToDF.PET_DMD_GRP_DESC.contains(\u0027Far East\u0027), \u0027FAREAST\u0027).otherwise(upper(regexp_replace(shipToDF.PET_DMD_GRP_DESC, \u0027\\s?(\\w+$)\u0027, \u0027\\_05\u0027))).alias(\u0027DMDGROUP\u0027)\\\n          ,resultOrdersDeliveryDF.MATNR\n          ,resultOrdersDeliveryDF.Date\n          ,resultOrdersDeliveryDF.QTY\n          ,resultOrdersDeliveryDF.TYPE\n         )\\\n  .where(col(\u0027DMDGROUP\u0027) !\u003d\u0027N\u0027)\n\nresultOrdersDeliveryMaterialsDF \u003d resultOrdersDeliveryShipToDF\\\n  .join(materialFilteredDF, \u0027MATNR\u0027, \u0027left\u0027)\\\n  .select(\\\n          resultOrdersDeliveryShipToDF.DMDGROUP\n          ,resultOrdersDeliveryShipToDF.Date\n          ,resultOrdersDeliveryShipToDF.QTY\n          ,resultOrdersDeliveryShipToDF.TYPE\n          ,regexp_replace(materialDf.ZREP, r\u0027^[0]*\u0027, \u0027\u0027).alias(\u0027ZREP\u0027) \n          ,materialDf.BrandTech\n         )\n\ncurrentMarsWeek \u003d datesDF.select(col(\u0027MarsWeekFullName\u0027), col(\u0027OriginalDate\u0027)).where(col(\u0027OriginalDate\u0027) \u003d\u003d today).drop(\u0027OriginalDate\u0027).first()[0]\npreviousMarsWeek \u003d datesDF.select(col(\u0027MarsWeekFullName\u0027), col(\u0027OriginalDate\u0027)).where(col(\u0027OriginalDate\u0027) \u003d\u003d (today - timedelta(7))).drop(\u0027OriginalDate\u0027).first()[0]\n\nresultDF \u003d resultOrdersDeliveryMaterialsDF\\\n  .join(datesDF, resultOrdersDeliveryMaterialsDF.Date \u003d\u003d datesDF.OriginalDate, \u0027left\u0027)\\\n  .select(\\\n          resultOrdersDeliveryMaterialsDF.DMDGROUP\n          ,resultOrdersDeliveryMaterialsDF.ZREP\n          ,datesDF.MarsWeekFullName.alias(\u0027MARSDATE\u0027)\n          ,resultOrdersDeliveryMaterialsDF.Date\n          ,resultOrdersDeliveryMaterialsDF.BrandTech\n          ,resultOrdersDeliveryMaterialsDF.QTY\n          ,resultOrdersDeliveryMaterialsDF.TYPE\n         )\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027, \u0027TYPE\u0027])\\\n  .agg(sum(\u0027QTY\u0027).alias(\u0027QTY\u0027), first(\u0027BrandTech\u0027).alias(\u0027BrandTech\u0027), first(\u0027Date\u0027).alias(\u0027Date\u0027))\\\n  .where(col(\u0027MARSDATE\u0027) \u003d\u003d currentMarsWeek)\n\nfullWeekActualsDF \u003d resultOrdersDeliveryMaterialsDF\\\n  .join(datesDF, resultOrdersDeliveryMaterialsDF.Date \u003d\u003d datesDF.OriginalDate, \u0027left\u0027)\\\n  .select(\\\n          resultOrdersDeliveryMaterialsDF.DMDGROUP\n          ,resultOrdersDeliveryMaterialsDF.ZREP\n          ,datesDF.MarsWeekFullName.alias(\u0027MARSDATE\u0027)\n          ,resultOrdersDeliveryMaterialsDF.Date\n          ,resultOrdersDeliveryMaterialsDF.BrandTech\n          ,resultOrdersDeliveryMaterialsDF.QTY\n          ,resultOrdersDeliveryMaterialsDF.TYPE\n         )\\\n  .groupBy([\u0027DMDGROUP\u0027, \u0027ZREP\u0027, \u0027MARSDATE\u0027, \u0027TYPE\u0027])\\\n  .agg(sum(\u0027QTY\u0027).alias(\u0027QTY\u0027), first(\u0027BrandTech\u0027).alias(\u0027BrandTech\u0027), first(\u0027Date\u0027).alias(\u0027Date\u0027))\\\n  .where((col(\u0027MARSDATE\u0027) \u003d\u003d previousMarsWeek) \u0026 (col(\u0027TYPE\u0027) \u003d\u003d \u0027ACTUAL\u0027))",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 08:59:20.411",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d563"
+            },
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d564"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_269081385",
+      "id": "20220819-085639_532457897",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 08:59:20.414",
+      "dateFinished": "2022-09-13 08:59:21.736",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%pyspark\nresultDF.write.mode(\"overwrite\").parquet(ORDERS_DELIVERY_FDM_OUTPUT_PATH)\nfullWeekActualsDF.write.mode(\"overwrite\").parquet(FULL_WEEK_ACTUAL_OUTPUT_PATH)",
+      "user": "anonymous",
+      "dateUpdated": "2022-09-13 09:00:24.586",
+      "progress": 100,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m\u003cipython-input-980-db93239815fa\u003e\u001b[0m in \u001b[0;36m\u003cmodule\u003e\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0mresultDF\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmode\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"overwrite\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparquet\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mORDERS_DELIVERY_FDM_OUTPUT_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----\u003e 2\u001b[0;31m \u001b[0mfullWeekActualsDF\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmode\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"overwrite\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparquet\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mFULL_WEEK_ACTUAL_OUTPUT_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mparquet\u001b[0;34m(self, path, mode, partitionBy, compression)\u001b[0m\n\u001b[1;32m    937\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpartitionBy\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpartitionBy\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    938\u001b[0m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_set_opts\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcompression\u001b[0m\u001b[0;34m\u003d\u001b[0m\u001b[0mcompression\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 939\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparquet\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    940\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    941\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.6\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-\u003e 1304\u001b[0;31m         return_value \u003d get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m\u003d\u003d\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o8087.parquet.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user\u003dzeppelin, access\u003dALL, inode\u003d\"/JUPITER/PROCESS/FULL_WEEK_ACTUAL.parquet\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1614)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:949)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:946)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:956)\n\tat org.apache.spark.internal.io.FileCommitProtocol.deleteWithJob(FileCommitProtocol.scala:124)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.deleteMatchingPartitions(InsertIntoHadoopFsRelationCommand.scala:226)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:129)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:764)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.parquet(DataFrameWriter.scala:847)\n\tat sun.reflect.GeneratedMethodAccessor157.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user\u003dzeppelin, access\u003dALL, inode\u003d\"/JUPITER/PROCESS/FULL_WEEK_ACTUAL.parquet\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:644)\n\tat sun.reflect.GeneratedMethodAccessor140.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1612)\n\t... 38 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:33861/jobs/job?id\u003d582"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660899399166_252725705",
+      "id": "20220819-085639_155002511",
+      "dateCreated": "2022-08-19 08:56:39.166",
+      "dateStarted": "2022-09-13 09:00:24.589",
+      "dateFinished": "2022-09-13 09:01:14.386",
+      "status": "ERROR"
+    }
+  ],
+  "name": "JUPITER_ORDERS_DELIVERY_FDM",
+  "id": "2HA8N5874",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {
+    "isRunning": false
+  }
+}

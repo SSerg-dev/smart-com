@@ -1,0 +1,114 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS\". \n####*Calculate actual product parameters and ActualPromoLSVSI, ActualPromoLSVByCompensation*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-15 09:03:12.109",
+      "progress": 0,
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003e####Notebook \u0026ldquo;ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS\u0026rdquo;. \u003c/p\u003e\n\u003cp\u003e####*Calculate actual product parameters and ActualPromoLSVSI, ActualPromoLSVByCompensation*.\u003c/p\u003e\n\u003ch6\u003e*Developer: \u003ca href\u003d\"http://smartcom.software/\"\u003eLLC Smart-Com\u003c/a\u003e, \u003ca href\u003d\"mailto:\u0026#x61;\u0026#x6e;d\u0026#114;\u0026#x65;\u0026#x79;\u0026#46;\u0026#112;\u0026#104;\u0026#105;\u0026#108;\u0026#x75;\u0026#x73;\u0026#104;\u0026#107;\u0026#105;\u0026#110;\u0026#x40;\u0026#101;\u0026#102;\u0026#102;\u0026#x65;\u0026#109;\u0026#46;\u0026#x63;\u0026#111;\u0026#x6d;\u0026#x2a;\"\u003e\u0026#x61;\u0026#x6e;d\u0026#114;\u0026#x65;\u0026#x79;\u0026#46;\u0026#112;\u0026#104;\u0026#105;\u0026#108;\u0026#x75;\u0026#x73;\u0026#104;\u0026#107;\u0026#105;\u0026#110;\u0026#x40;\u0026#101;\u0026#102;\u0026#102;\u0026#x65;\u0026#109;\u0026#46;\u0026#x63;\u0026#111;\u0026#x6d;\u0026#x2a;\u003c/a\u003e\u003c/h6\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660554192109_1887911483",
+      "id": "20220815-090312_554722352",
+      "dateCreated": "2022-08-15 09:03:12.109",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json",
+      "user": "anonymous",
+      "dateUpdated": "2022-08-15 10:06:01.858",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660557952481_1177826588",
+      "id": "paragraph_1660557952481_1177826588",
+      "dateCreated": "2022-08-15 10:05:52.481",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ndef run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCalcActualPromoDF,promoProductCols):\n    sc \u003d SparkContext.getOrCreate();\n    spark \u003d SparkSession(sc)\n    \n    #####*Set product price*\n\n    byPriceStartDate \u003d Window.partitionBy(calcActualPromoProductDF.columns).orderBy(col(\"priceStartDate\").desc())\n\n    calcActualPromoProductDF \u003d calcActualPromoProductDF\\\n      .join(actualParamsPriceListDF, \n            [\\\n              actualParamsPriceListDF.priceStartDate \u003c\u003d calcActualPromoProductDF.promoDispatchesStart,\n              actualParamsPriceListDF.priceEndDate \u003e\u003d calcActualPromoProductDF.promoDispatchesStart,\n              actualParamsPriceListDF.priceClientTreeId \u003d\u003d calcActualPromoProductDF.promoClientTreeKeyId,\n              actualParamsPriceListDF.priceProductId \u003d\u003d calcActualPromoProductDF.ProductId\n            ], \n            \u0027left\u0027)\\\n      .select(\\\n               calcActualPromoProductDF[\u0027*\u0027]\n              ,actualParamsPriceListDF.priceStartDate\n              ,actualParamsPriceListDF.Price.alias(\u0027newPrice\u0027)\n             )\\\n      .withColumn(\u0027Row_Number\u0027, row_number().over(byPriceStartDate))\\\n      .where(col(\u0027Row_Number\u0027) \u003d\u003d 1).drop(\u0027Row_Number\u0027)\n\n    calcActualPromoProductDF \u003d calcActualPromoProductDF\\\n      .withColumn(\u0027Price\u0027, when(((col(\u0027Price\u0027).isNull()) | (col(\u0027Price\u0027) \u003d\u003d 0)), col(\u0027newPrice\u0027)).otherwise(col(\u0027Price\u0027)))\\\n      .drop(\u0027newPrice\u0027)\n\n    #product price logging\n    logPricePromoProductDF \u003d calcActualPromoProductDF\\\n      .select(\\\n               calcActualPromoProductDF.promoNumber\n              ,calcActualPromoProductDF.ZREP\n              ,calcActualPromoProductDF.Price\n             )\\\n      .withColumn(\u0027NullPrice\u0027, when(calcActualPromoProductDF.Price.isNull(), True).otherwise(None))\\\n      .withColumn(\u0027ZeroPrice\u0027, when(calcActualPromoProductDF.Price \u003d\u003d 0, True).otherwise(None))\n\n    logNullPricePromoDF \u003d logPricePromoProductDF\\\n      .where(col(\u0027NullPrice\u0027) \u003d\u003d True)\\\n      .groupBy(\u0027promoNumber\u0027)\\\n      .agg(concat_ws(\u0027;\u0027, collect_list(col(\u0027ZREP\u0027))).alias(\u0027nullPriceMessage\u0027))\n\n    logZeroPricePromoDF \u003d logPricePromoProductDF\\\n      .where(col(\u0027ZeroPrice\u0027) \u003d\u003d True)\\\n      .groupBy(\u0027promoNumber\u0027)\\\n      .agg(concat_ws(\u0027;\u0027, collect_list(col(\u0027ZREP\u0027))).alias(\u0027zeroPriceMessage\u0027))\n\n    logPricePromoDF \u003d logNullPricePromoDF\\\n      .join(logZeroPricePromoDF, \u0027promoNumber\u0027, \u0027full\u0027)\n    #---\n\n    #####*Calculate actual product parameters*\n\n    # calcPlanPromoProductDF \u003d calcPlanPromoProductDF\\\n    #   .join(planParamsIncrementalDF, \n    #         [\\\n    #           planParamsIncrementalDF.incrementalPromoId \u003d\u003d calcPlanPromoProductDF.PromoId\n    #          ,planParamsIncrementalDF.incrementalProductId \u003d\u003d calcPlanPromoProductDF.ProductId\n    #         ]\n    #         ,\u0027left\u0027)\\\n    #   .select(\\\n    #            calcPlanPromoProductDF[\u0027*\u0027]\n    #           ,planParamsIncrementalDF.PlanPromoIncrementalCases.cast(DecimalType(30,6))\n    #          )\n\n    calcActualPromoProductDF \u003d calcActualPromoProductDF\\\n      .withColumn(\u0027isActualPromoBaseLineLSVChangedByDemand\u0027, when((~col(\u0027ActualPromoBaselineLSV\u0027).isNull()) \u0026 (col(\u0027ActualPromoBaselineLSV\u0027) !\u003d col(\u0027PlanPromoBaselineLSV\u0027)), True).otherwise(False))\\\n      .withColumn(\u0027isActualPromoLSVChangedByDemand\u0027, when((~col(\u0027ActualPromoLSVSO\u0027).isNull()) \u0026 (col(\u0027ActualPromoLSVSO\u0027) !\u003d 0), True).otherwise(False))\\\n      .withColumn(\u0027isActualPromoProstPromoEffectLSVChangedByDemand\u0027, when((~col(\u0027ActualPromoPostPromoEffectLSV\u0027).isNull()) \u0026 (col(\u0027ActualPromoPostPromoEffectLSV\u0027) !\u003d 0), True).otherwise(False))\n\n    calcActualPromoProductDF \u003d calcActualPromoProductDF\\\n      .withColumn(\u0027ActualProductBaselineLSV\u0027, when((col(\u0027promoInOut\u0027) \u003d\u003d \u0027False\u0027) \u0026 (~col(\u0027isActualPromoBaseLineLSVChangedByDemand\u0027)), col(\u0027PlanProductBaselineLSV\u0027))\\\n                                          .otherwise(col(\u0027ActualProductBaselineLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductCaseQty\u0027, when(((col(\u0027UOM_PC2Case\u0027) !\u003d 0) \u0026 ~(col(\u0027ActualProductPCQty\u0027).isNull())), col(\u0027ActualProductPCQty\u0027) / col(\u0027UOM_PC2Case\u0027))\\\n                  .otherwise(0).cast(IntegerType()))\\\n      .withColumn(\u0027ActualProductSellInPrice\u0027, when(col(\u0027UOM_PC2Case\u0027) !\u003d 0, col(\u0027Price\u0027) / col(\u0027UOM_PC2Case\u0027)).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductBaselineCaseQty\u0027, when((col(\u0027Price\u0027) !\u003d 0) \u0026 ~(col(\u0027Price\u0027).isNull()), col(\u0027ActualProductBaselineLSV\u0027) / col(\u0027Price\u0027))\\\n                                          .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPCLSV\u0027, col(\u0027ActualProductPCQty\u0027) * col(\u0027ActualProductSellInPrice\u0027).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPCLSV\u0027, when(col(\u0027ActualProductPCLSV\u0027).isNull(), 0).otherwise(col(\u0027ActualProductPCLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductLSV\u0027, when((col(\u0027promoIsOnInvoice\u0027) \u003d\u003d True), col(\u0027ActualProductPCLSV\u0027))\\\n                                          .otherwise(when(col(\u0027isActualPromoLSVChangedByDemand\u0027) \u003d\u003d False, 0).otherwise(col(\u0027ActualProductLSV\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductIncrementalLSV\u0027, when(col(\u0027ActualProductBaselineLSV\u0027).isNull(), col(\u0027ActualProductLSV\u0027))\\\n                                          .otherwise(col(\u0027ActualProductLSV\u0027) - col(\u0027ActualProductBaselineLSV\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductUpliftPercent\u0027, when(col(\u0027promoInOut\u0027) \u003d\u003d \u0027False\u0027, \n                                                     when(col(\u0027ActualProductBaselineLSV\u0027) !\u003d 0, col(\u0027ActualProductIncrementalLSV\u0027) / col(\u0027ActualProductBaselineLSV\u0027) * 100.0)\\\n                                                     .otherwise(0))\\\n                                                .otherwise(None).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPostPromoEffectQtyW1\u0027, when(col(\u0027promoInOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanProductBaselineCaseQty\u0027) * col(\u0027promoClientPostPromoEffectW1\u0027) / 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPostPromoEffectQtyW2\u0027, when(col(\u0027promoInOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027PlanProductBaselineCaseQty\u0027) * col(\u0027promoClientPostPromoEffectW2\u0027) / 100.0)\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPostPromoEffectQty\u0027, when(col(\u0027promoInOut\u0027) \u003d\u003d \u0027False\u0027, col(\u0027ActualProductPostPromoEffectQtyW1\u0027) + col(\u0027ActualProductPostPromoEffectQtyW2\u0027))\\\n                                              .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductLSVByCompensation\u0027, (col(\u0027ActualProductPCQty\u0027) * col(\u0027ActualProductSellInPrice\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductLSVByCompensation\u0027, when(col(\u0027ActualProductLSVByCompensation\u0027).isNull(), 0)\\\n                  .otherwise(col(\u0027ActualProductLSVByCompensation\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductIncrementalPCQty\u0027, when(col(\u0027ActualProductSellInPrice\u0027) !\u003d 0, col(\u0027ActualProductIncrementalLSV\u0027) / col(\u0027ActualProductSellInPrice\u0027))\\\n                                                  .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductIncrementalPCLSV\u0027, when(col(\u0027UOM_PC2Case\u0027) !\u003d 0, col(\u0027ActualProductIncrementalLSV\u0027) / col(\u0027UOM_PC2Case\u0027))\\\n                                                  .otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductQtySO\u0027, (col(\u0027ActualProductLSV\u0027) / (col(\u0027Price\u0027) /col(\u0027UOM_PC2Case\u0027))).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027PCPrice\u0027, (col(\u0027Price\u0027) / col(\u0027UOM_PC2Case\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductBaselineVolume\u0027, (col(\u0027ActualProductBaselineLSV\u0027) / col(\u0027PCPrice\u0027) * col(\u0027PCVolume\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductPostPromoEffectVolume\u0027, (col(\u0027ActualProductPostPromoEffectLSV\u0027) / col(\u0027PCPrice\u0027) * col(\u0027PCVolume\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductVolumeByCompensation\u0027, (col(\u0027ActualProductPCQty\u0027) * col(\u0027PCVolume\u0027)).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualProductVolume\u0027, (col(\u0027ActualProductQtySO\u0027) * col(\u0027PCVolume\u0027)).cast(DecimalType(30,6)))\n\n    print(\u0027check actual products1\u0027)\n\n    #####*Calculate ActualPromoLSVByCompensation, ActualPromoLSVSI*\n\n    sumActualProductParamsList \u003d calcActualPromoProductDF\\\n      .select(\\\n                col(\u0027promoNumber\u0027)\n               ,col(\u0027ActualProductLSVByCompensation\u0027)\n               ,col(\u0027ActualProductBaselineVolume\u0027)\n               ,col(\u0027ActualProductPostPromoEffectVolume\u0027)\n               ,col(\u0027ActualProductVolumeByCompensation\u0027)\n               ,col(\u0027ActualProductVolume\u0027)\n             )\\\n      .groupBy(\u0027promoNumber\u0027)\\\n      .agg(sum(\u0027ActualProductLSVByCompensation\u0027).cast(DecimalType(30,6)).alias(\u0027calcActualPromoLSVByCompensation\u0027),\n           sum(\u0027ActualProductBaselineVolume\u0027).cast(DecimalType(30,6)).alias(\u0027calcActualPromoBaselineVolume\u0027),\n           sum(\u0027ActualProductPostPromoEffectVolume\u0027).cast(DecimalType(30,6)).alias(\u0027calcActualPromoPostPromoEffectVolume\u0027),\n           sum(\u0027ActualProductVolumeByCompensation\u0027).cast(DecimalType(30,6)).alias(\u0027calcActualPromoVolumeByCompensation\u0027),\n           sum(\u0027ActualProductVolume\u0027).cast(DecimalType(30,6)).alias(\u0027calcActualPromoVolume\u0027))\\\n      .collect()\n\n    actualParSchema \u003d StructType([\n      StructField(\"promoNumber\", StringType(), True),\n      StructField(\"calcActualPromoLSVByCompensation\", DecimalType(30,6), True),\n      StructField(\"calcActualPromoBaselineVolume\", DecimalType(30,6), True),\n      StructField(\"calcActualPromoPostPromoEffectVolume\", DecimalType(30,6), True),\n      StructField(\"calcActualPromoVolumeByCompensation\", DecimalType(30,6), True),\n      StructField(\"calcActualPromoVolume\", DecimalType(30,6), True)\n    ])\n\n    actualParDF \u003d spark.createDataFrame(sumActualProductParamsList, actualParSchema)\n\n    calcActualPromoDF \u003d calcActualPromoDF\\\n      .join(actualParDF, actualParDF.promoNumber \u003d\u003d calcActualPromoDF.Number, \u0027inner\u0027)\\\n      .withColumn(\u0027ActualPromoLSVByCompensation\u0027, when(col(\u0027calcActualPromoLSVByCompensation\u0027) \u003d\u003d 0, None).otherwise(col(\u0027calcActualPromoLSVByCompensation\u0027)))\\\n      .withColumn(\u0027ActualPromoLSVSI\u0027, when(col(\u0027calcActualPromoLSVByCompensation\u0027) \u003d\u003d 0, None).otherwise(col(\u0027calcActualPromoLSVByCompensation\u0027)))\\\n      .withColumn(\u0027ActualPromoPostPromoEffectVolume\u0027, when(col(\u0027InOut\u0027) \u003d\u003d False, col(\u0027calcActualPromoPostPromoEffectVolume\u0027)).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualPromoVolumeByCompensation\u0027, when(col(\u0027InOut\u0027) \u003d\u003d False, col(\u0027calcActualPromoVolumeByCompensation\u0027)).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualPromoVolume\u0027,  when(col(\u0027IsOnInvoice\u0027) \u003d\u003d False, col(\u0027calcActualPromoVolume\u0027)).otherwise(0).cast(DecimalType(30,6)))\\\n      .withColumn(\u0027ActualPromoVolume\u0027,  when(col(\u0027InOut\u0027) \u003d\u003d True, col(\u0027calcActualPromoVolume\u0027)).otherwise(col(\u0027ActualPromoVolume\u0027)).cast(DecimalType(30,6)))\n\n    calcActualPromoDF \u003d calcActualPromoDF\\\n      .select(\u0027Id\u0027, \u0027ActualPromoLSVByCompensation\u0027, \u0027ActualPromoLSVSI\u0027, \u0027calcActualPromoBaselineVolume\u0027, \u0027ActualPromoPostPromoEffectVolume\u0027, \u0027ActualPromoVolumeByCompensation\u0027, \u0027ActualPromoVolume\u0027)\n\n    allCalcActualPromoDF \u003d allCalcActualPromoDF\\\n      .join(calcActualPromoDF, \u0027Id\u0027, \u0027left\u0027)\\\n      .select(\\\n               allCalcActualPromoDF[\u0027*\u0027]\n              ,calcActualPromoDF.ActualPromoLSVByCompensation.alias(\u0027calcActualPromoLSVByCompensation\u0027)\n              ,calcActualPromoDF.ActualPromoLSVSI.alias(\u0027calcActualPromoLSVSI\u0027)\n              ,calcActualPromoDF.calcActualPromoBaselineVolume.alias(\u0027calcActualPromoBaselineVolume\u0027)\n              ,calcActualPromoDF.ActualPromoPostPromoEffectVolume.alias(\u0027calcActualPromoPostPromoEffectVolume\u0027)\n              ,calcActualPromoDF.ActualPromoVolumeByCompensation.alias(\u0027calcActualPromoVolumeByCompensation\u0027)\n              ,calcActualPromoDF.ActualPromoVolume.alias(\u0027calcActualPromoVolume\u0027)\n             )\\\n      .withColumn(\u0027ActualPromoLSVByCompensation\u0027, when(col(\u0027calcActualPromoLSVByCompensation\u0027).isNull(), 0)\\\n                  .otherwise(col(\u0027calcActualPromoLSVByCompensation\u0027)))\\\n      .withColumn(\u0027ActualPromoLSVSI\u0027, when(col(\u0027calcActualPromoLSVSI\u0027).isNull(), 0).otherwise(col(\u0027calcActualPromoLSVSI\u0027)))\\\n      .withColumn(\u0027ActualPromoBaselineVolume\u0027, when(col(\u0027calcActualPromoBaselineVolume\u0027).isNull(), 0).otherwise(col(\u0027calcActualPromoBaselineVolume\u0027)))\\\n      .withColumn(\u0027ActualPromoPostPromoEffectVolume\u0027, when(col(\u0027calcActualPromoPostPromoEffectVolume\u0027).isNull(), 0).otherwise(col(\u0027calcActualPromoPostPromoEffectVolume\u0027)))\\\n      .withColumn(\u0027ActualPromoVolumeByCompensation\u0027, when(col(\u0027calcActualPromoVolumeByCompensation\u0027).isNull(), 0).otherwise(col(\u0027calcActualPromoVolumeByCompensation\u0027)))\\\n      .withColumn(\u0027ActualPromoVolume\u0027, when(col(\u0027calcActualPromoVolume\u0027).isNull(), 0).otherwise(col(\u0027calcActualPromoVolume\u0027)))\\\n      .drop(\u0027calcActualPromoLSVByCompensation\u0027,\u0027calcActualPromoLSVSI\u0027,\u0027calcActualPromoBaselineVolume\u0027,\u0027calcActualPromoPostPromoEffectVolume\u0027,\u0027calcActualPromoVolumeByCompensation\u0027,\u0027calcActualPromoVolume\u0027)\n\n    #####*Get result*\n\n    calcActualPromoProductDF \u003d calcActualPromoProductDF.select(promoProductCols)\n    print(\u0027Actual product parameters calculation completed!\u0027)\n    \n    return calcActualPromoProductDF,allCalcActualPromoDF,logPricePromoDF\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-10-24 12:13:59.217",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1660554192117_2012886568",
+      "id": "20220815-090312_1851535734",
+      "dateCreated": "2022-08-15 09:03:12.117",
+      "status": "READY"
+    }
+  ],
+  "name": "ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS",
+  "id": "2HCPW8XHE",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
