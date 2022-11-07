@@ -969,7 +969,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             upliftToInsert = newUplift;
                         }
-                        if (singlePromoProduct.ProductCorrectionPriceIncreases == null)
+                        if (singlePromoProduct.ProductCorrectionPriceIncreases == null || singlePromoProduct.ProductCorrectionPriceIncreases.Count == 0)
                         {
                             singlePromoProduct.ProductCorrectionPriceIncreases.Add( new PromoProductCorrectionPriceIncrease()
                             {
@@ -977,7 +977,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                             });
                         }
-                        else
                         {
                             singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().PlanProductUpliftPercentCorrected = upliftToInsert;
                             singlePromoProduct.ProductCorrectionPriceIncreases.FirstOrDefault().CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
