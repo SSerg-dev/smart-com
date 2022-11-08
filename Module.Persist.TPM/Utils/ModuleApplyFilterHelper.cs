@@ -511,7 +511,7 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS: 
+                case TPMmode.RS:
                     query = query.Where(x => x.row_number == 1 && !x.Disabled);
                     break;
             }
@@ -527,6 +527,7 @@ namespace Module.Persist.TPM.Utils
         public static IQueryable<PromoProductCorrectionPriceIncreaseView> ApplyFilter(IQueryable<PromoProductCorrectionPriceIncreaseView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filters = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
+            query = query.Where(x => !x.Disabled);
             if (clientFilter.Any())
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);

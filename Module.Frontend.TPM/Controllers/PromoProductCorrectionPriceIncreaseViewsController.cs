@@ -332,12 +332,14 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                var model = Context.Set<PromoProductCorrectionPriceIncrease>().Find(key);
+                var model = Context.Set<PromoProductCorrectionPriceIncrease>()
+                    .Include(g=>g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
+                    .FirstOrDefault(g=>g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
                 }
-                if (model.PromoProductPriceIncrease.PromoProduct.Promo.NeedRecountUplift == false)
+                if (model.PromoProductPriceIncrease.PromoPriceIncrease.Promo.NeedRecountUplift == false)
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
                 }

@@ -105,6 +105,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoLSV { get; set; }
 
         public double? PlanPromoUpliftPercentPI { get; set; }
+        public bool IsPriceIncrease { get; set; }
 
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }

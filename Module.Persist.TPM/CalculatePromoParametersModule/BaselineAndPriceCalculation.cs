@@ -42,6 +42,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 }
             }
             // PriceIncreace
+            bool IsOneProductWithFuturePriceMarker = false;
             if (promo.PromoPriceIncrease.PromoProductPriceIncreases is null && promoProducts.Count > 0)
             {
                 PlanProductParametersCalculation.FillPriceIncreaseProdusts(promo, promoProducts);
@@ -58,6 +59,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (priceListFPM != null)
                     {
                         promoProductPriceIncrease.Price = priceListFPM.Price;
+                        IsOneProductWithFuturePriceMarker = true;
                         if (promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled) != null)
                         {
                             promo.IncrementalPromoes.FirstOrDefault(g => g.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !g.Disabled).CasePrice = priceListFPM.Price;
@@ -81,6 +83,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     }
                 }
             }
+            promo.IsPriceIncrease = IsOneProductWithFuturePriceMarker;
             databaseContext.SaveChanges();
         }
 

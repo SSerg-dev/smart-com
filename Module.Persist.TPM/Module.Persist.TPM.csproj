@@ -3243,6 +3243,10 @@
     <Compile Include="Migrations\202211031031051_ChangeOneToManyPPCPI.Designer.cs">
       <DependentUpon>202211031031051_ChangeOneToManyPPCPI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211081229204_Add_IsPriceIncreasePromo.cs" />
+    <Compile Include="Migrations\202211081229204_Add_IsPriceIncreasePromo.Designer.cs">
+      <DependentUpon>202211081229204_Add_IsPriceIncreasePromo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6124,6 +6128,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211031031051_ChangeOneToManyPPCPI.resx">
       <DependentUpon>202211031031051_ChangeOneToManyPPCPI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211081229204_Add_IsPriceIncreasePromo.resx">
+      <DependentUpon>202211081229204_Add_IsPriceIncreasePromo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
