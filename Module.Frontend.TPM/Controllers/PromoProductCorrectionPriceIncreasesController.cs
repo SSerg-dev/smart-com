@@ -76,6 +76,10 @@ namespace Module.Frontend.TPM.Controllers
                     item.DeletedDate = null;
                     item.Disabled = false;
                 }
+                if (item.CreateDate == null)
+                {
+                    item.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                }
                 item.PlanProductUpliftPercentCorrected = model.PlanProductUpliftPercentCorrected;
                 item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 item.UserId = user.Id;
@@ -102,7 +106,29 @@ namespace Module.Frontend.TPM.Controllers
 
                 return Created(model);
             }
-            return BadRequest();
+            else
+            {
+                model.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                model.UserId = user.Id;
+                model.UserName = user.Login;
+                model.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                Context.Set<PromoProductCorrectionPriceIncrease>().Add(model);
+                try
+                {
+                    var saveChangesResult = Context.SaveChanges();
+                    if (saveChangesResult > 0)
+                    {
+                        CreateChangesIncident(Context.Set<ChangesIncident>(), model);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    return GetErorrRequest(e);
+                }
+
+                return Created(model);
+            }
         }
         public static void CreateChangesIncident(DbSet<ChangesIncident> changesIncidents, PromoProductCorrectionPriceIncrease promoProductCorrection)
         {

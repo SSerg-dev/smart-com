@@ -1,7 +1,7 @@
 ﻿Ext.define('App.controller.tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
-    
+
     init: function () {
         this.listen({
             component: {
@@ -74,7 +74,7 @@
                 },
                 'promoproductcorrectionpriceincrease #exportcorrectionxlsxbutton': {
                     click: this.onExportCorrectionPIButtonClick
-                },                
+                },
                 '#ppcuploadfilewindow #userOk': {
                     click: this.onUploadFileOkButtonClick
                 },
@@ -91,8 +91,8 @@
     onCreateButtonClick: function (button) {
         var grid = this.getGridByButton(button);
         store = grid.getStore(),
-        model = Ext.create(Ext.ModelManager.getModel(store.model)),
-        this.startCreateRecord(model, grid);
+            model = Ext.create(Ext.ModelManager.getModel(store.model)),
+            this.startCreateRecord(model, grid);
 
         var promoproductcorrectionpriceincreaseeditor = Ext.ComponentQuery.query('promoproductcorrectionpriceincreaseeditor')[0];
         var createDate = promoproductcorrectionpriceincreaseeditor.down('[name=CreateDate]');
@@ -173,7 +173,7 @@
         this.editor.show();
     },
 
-    startCreateRecord: function(model, grid) {
+    startCreateRecord: function (model, grid) {
         this.editor = grid.editorModel.createEditor({
             title: l10n.ns('core').value('createWindowTitle'),
             buttons: [{
@@ -261,13 +261,13 @@
         this.editor.grid.getStore().load();
     },
 
-    getAndSaveFormData: function() {
+    getAndSaveFormData: function () {
         var form = this.editor.down('editorform').getForm();
-        record = form.getRecord();        
-    
-        if (!form.isValid()) {
-            return;
-        }
+        record = form.getRecord();
+        debugger;
+        //if (!form.isValid()) {
+        //    return;
+        //}
 
         form.updateRecord(record);
         var errors = record.validate();
@@ -294,7 +294,7 @@
         var mode = settingStore.findRecord('name', 'mode');
 
 
-        var tPMmode = mode.data.value === 1? 'RS' : 'Current';
+        var tPMmode = mode.data.value === 1 ? 'RS' : 'Current';
 
         model.set('TPMmode', tPMmode);
 
@@ -335,12 +335,12 @@
                         }, this);
                     } else {
                         this.editor.close();
-                    }               
+                    }
                 }
                 if (resp.action == 'create') {
                     this.editor.setLoading(false);
                     this.editor.close();
-                }                
+                }
             },
             failure: function (fff) {
                 if (callback) {
@@ -423,7 +423,7 @@
         this.ExportPromoProductCorrection(actionName, button)
     },
 
-    ExportPromoProductCorrection: function(actionName, button) {
+    ExportPromoProductCorrection: function (actionName, button) {
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
@@ -434,15 +434,15 @@
 
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
-        
+
         var query = breeze.EntityQuery
-        .from(resource)
-        .withParameters({
-            $actionName: actionName,
-            $method: 'POST',
-            TPMmode: mode?.data?.value
-        });
-        
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                TPMmode: mode?.data?.value
+            });
+
         // тут store фильтр не работает на бэке другой запрос
         query = me.buildQuery(query, store)
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
@@ -456,7 +456,7 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    },    
+    },
 
     onEditorClose: function (window) {
         var form = this.editor.down('editorform'),
@@ -466,7 +466,7 @@
         this.editor = null;
         this.detailMode = null;
     },
-    onDeletePromoProductCorrectionPIButtonClick: function(button) {
+    onDeletePromoProductCorrectionPIButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();

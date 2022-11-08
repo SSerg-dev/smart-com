@@ -738,7 +738,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                     items: [
                                         {
                                             xtype: 'container',
-                                            itemId: 'ContainerPlanPromoUplift',
+                                            itemId: 'ContainerPlanPromoUpliftPI',
                                             height: '100%',
                                             layout: {
                                                 type: 'hbox',
