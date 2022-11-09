@@ -91,7 +91,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     // PriceIncrease
                     if (promo.PromoPriceIncrease.PromoProductPriceIncreases != null)
                     {
-                        if (!promo.PromoPriceIncrease.PromoProductPriceIncreases.Any(x => x.ZREP == promoProduct.ZREP) && createIncidents)
+                        if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
                         {
                             PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
                             promoProductPriceIncrease.Disabled = true;

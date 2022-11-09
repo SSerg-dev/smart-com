@@ -148,7 +148,11 @@ namespace Module.Frontend.TPM.Controllers
             //{
             //    model.TempId = null;
             //}
-
+            if (!CheckPriceListA(model))
+            {
+                return InternalServerError(new Exception($"Promo {model.Number} not found products with FuturePriceMarker"));
+            }
+            
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductCorrectionPriceIncrease>()
                 .Include(g => g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
@@ -263,7 +267,10 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
                 patch.Patch(view);
-
+                if (!CheckPriceListA(view))
+                {
+                    return InternalServerError(new Exception($"Promo {view.Number} not found products with FuturePriceMarker"));
+                }
                 var model = Context.Set<PromoProductCorrectionPriceIncrease>()
                     .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.IncrementalPromoes)
                     .Include(g => g.PromoProductPriceIncrease.PromoProduct.Promo.BTLPromoes)
@@ -326,6 +333,33 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+        private bool CheckPriceListA(PromoProductCorrectionPriceIncreaseView view)
+        {
+            Promo promo = Context.Set<Promo>()
+                .Include(g=>g.PromoPriceIncrease.PromoProductPriceIncreases)
+                .FirstOrDefault(g => g.Number == view.Number);
+
+            List<PromoProduct> promoProducts = Context.Set<PromoProduct>()
+                .Include(f => f.PromoProductsCorrections)
+                .Where(x => !x.Disabled && x.PromoId == promo.Id)
+                .ToList();
+            List<PriceList> allPriceLists = Context.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart
+                                                                    && x.EndDate >= promo.DispatchesStart
+                                                                    && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
+            List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
+            
+            bool IsOneProductWithFuturePriceMarker = false;
+            foreach (PromoProduct promoProduct in promoProducts)
+            {
+                var priceListFPM = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProduct.ProductId)
+                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                if (priceListFPM != null)
+                {
+                    IsOneProductWithFuturePriceMarker = true;
+                }
+            }
+            return IsOneProductWithFuturePriceMarker;
+        }
 
         [ClaimsAuthorize]
         public IHttpActionResult Delete([FromODataUri] System.Guid key)

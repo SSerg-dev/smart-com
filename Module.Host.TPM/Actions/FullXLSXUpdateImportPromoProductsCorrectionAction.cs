@@ -262,7 +262,7 @@ namespace Module.Host.TPM.Actions
                                 warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                             }
                         }
-                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts))
+                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts, context))
                         {
                             HasErrors = true;
                             errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
@@ -373,11 +373,11 @@ namespace Module.Host.TPM.Actions
 
         protected ScriptGenerator _generator { get; set; }
 
-        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProduct> promoProducts)
+        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProduct> promoProducts, DatabaseContext context)
         {
             errors = new List<string>();
             var promoProduct = promoProducts.Where(x => x.ZREP == item.ProductZREP && x.Promo.Number == item.PromoNumber).FirstOrDefault();
-
+            
             var importedPromoProductCorrectionGroup = importedPromoProductCorrections.GroupBy(x => new { x.PromoNumber, x.ProductZREP }).FirstOrDefault(x => x.Key.PromoNumber == item.PromoNumber && x.Key.ProductZREP == item.ProductZREP);
             if (importedPromoProductCorrectionGroup.Count() > 1)
             {
@@ -394,12 +394,43 @@ namespace Module.Host.TPM.Actions
                 errors.Add($"No product with ZREP: {item.ProductZREP} found in Promo: {item.PromoNumber}");
                 return false;
             }
+            else if(!CheckPriceListA(item, context))
+            {
+                errors.Add($"Promo {item.PromoNumber} not found products with FuturePriceMarker");
+                return false;
+            }
             else
             {
                 return true;
             }
         }
+        private bool CheckPriceListA(ImportPromoProductsCorrection view, DatabaseContext context)
+        {
+            Promo promo = context.Set<Promo>()
+                .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases)
+                .FirstOrDefault(g => g.Number == view.PromoNumber);
 
+            List<PromoProduct> promoProducts = context.Set<PromoProduct>()
+                .Include(f => f.PromoProductsCorrections)
+                .Where(x => !x.Disabled && x.PromoId == promo.Id)
+                .ToList();
+            List<PriceList> allPriceLists = context.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart
+                                                                    && x.EndDate >= promo.DispatchesStart
+                                                                    && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
+            List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
+
+            bool IsOneProductWithFuturePriceMarker = false;
+            foreach (PromoProduct promoProduct in promoProducts)
+            {
+                var priceListFPM = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProduct.ProductId)
+                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                if (priceListFPM != null)
+                {
+                    IsOneProductWithFuturePriceMarker = true;
+                }
+            }
+            return IsOneProductWithFuturePriceMarker;
+        }
         //protected void UpdateRecordError(BaseImportEntity item, bool hasError, IList<string> errors) {
         //    item.HasErrors = hasError;
         //    item.ErrorMessage = hasError ? String.Join(Environment.NewLine, errors) : null;

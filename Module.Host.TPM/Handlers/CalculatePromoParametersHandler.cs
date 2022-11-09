@@ -384,7 +384,7 @@ namespace Module.Host.TPM.Handlers
                             PromoHelper.WritePromoDemandChangeIncident(context, promo, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV);
                         }
                         //promo.Calculating = false;
-                        promo.NeedRecountUpliftPI = false;
+                        //promo.NeedRecountUpliftPI = false;
                         context.SaveChanges();
                     }
                 }

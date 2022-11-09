@@ -3657,7 +3657,7 @@
             //if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
             //    documentNumber.setReadOnly(true);
             //}
-
+            
             planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
             promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
             planPromoUpliftPercent.defaultValue = !record.data.NeedRecountUplift;
