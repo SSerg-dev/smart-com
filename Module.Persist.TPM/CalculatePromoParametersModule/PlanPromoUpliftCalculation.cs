@@ -934,6 +934,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void DistributePlanPromoUpliftToProductsPriceIncrease(Promo currentPromo, DatabaseContext context, Guid UserId)
         {
             double? newUplift = currentPromo.PlanPromoUpliftPercentPI;
+            if (!currentPromo.IsPriceIncrease)
+            {
+                newUplift = currentPromo.PlanPromoUpliftPercent;
+            }
             if (newUplift != null)
             {
                 User user = context.Set<User>().Where(x => x.Id == UserId && x.Disabled != true).FirstOrDefault();
