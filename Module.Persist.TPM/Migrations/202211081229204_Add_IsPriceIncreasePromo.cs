@@ -1,6 +1,7 @@
 namespace Module.Persist.TPM.Migrations
 {
     using Core.Settings;
+    using Module.Persist.TPM.Migrations.Views;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -10,6 +11,7 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             AddColumn($"{defaultSchema}.Promo", "IsPriceIncrease", c => c.Boolean(nullable: false));
+            Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
         }
         
         public override void Down()

@@ -2053,6 +2053,7 @@
         var promoProductForm = promoeditorcustom.down('container[name=promo_step2]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var promoActivityStep1 = promoActivity.down('container[name=promoActivity_step1]');
+        var promoActivityStep2 = promoActivity.down('container[name=promoActivity_step2]');
         var promoBudgets = button.up('window').down('promobudgets');
 
         me.setReadOnlyForChildrens(promoActivity, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
@@ -2273,6 +2274,13 @@
         var isApproved = record.data.LastApprovedDate != null;
         if (!isApproved) {
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
+        }
+
+        if (!record.data.IsPriceIncrease) {
+            var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
+            var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
+            planPromoUpliftPercentPI.setReadOnly(true);
+            promoUpliftLockedUpdateCheckboxPI.setReadOnly(true);
         }
 
         me.checkLoadingComponents();
@@ -3136,7 +3144,7 @@
         var planPromoIncrementalLSVPI = promoActivityStep2.down('[name=PlanPromoIncrementalLSVPI]');
         var planPromoLSVPI = promoActivityStep2.down('[name=PlanPromoLSVPI]');
         var planPostPromoEffectPI = promoActivityStep2.down('[name=PlanPromoPostPromoEffectLSVPI]');
-
+        
         var actualPromoUpliftPercent = promoActivityStep2.down('[name=ActualPromoUpliftPercent]');
         var actualPromoBaselineLSV = promoActivityStep2.down('[name=ActualPromoBaselineLSV]');
         var actualPromoIncrementalLSV = promoActivityStep2.down('[name=ActualPromoIncrementalLSV]');
@@ -3674,8 +3682,8 @@
             planPostPromoEffect.setValue(record.data.PlanPromoPostPromoEffectLSV);
 
             planPromoUpliftPercentPI.setValue(record.data.PlanPromoUpliftPercentPIread);
-            promoUpliftLockedUpdateCheckboxPI.setValue(!record.data.NeedRecountUplift);
-            planPromoUpliftPercentPI.defaultValue = !record.data.NeedRecountUplift;
+            promoUpliftLockedUpdateCheckboxPI.setValue(record.data.NeedRecountUpliftPI);
+            planPromoUpliftPercentPI.defaultValue = record.data.NeedRecountUpliftPI;
             planPromoBaselineLSVPI.setValue(record.data.PlanPromoBaselineLSVPI);
             planPromoIncrementalLSVPI.setValue(record.data.PlanPromoIncrementalLSVPI);
             planPromoLSVPI.setValue(record.data.PlanPromoLSVPI);
@@ -3770,6 +3778,13 @@
         //чтобы убрать кнопку Recalculate при копировании промо в календаре
         if (isCopy) {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
+        }
+
+        if (!record.data.IsPriceIncrease) {
+            var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
+            var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
+            planPromoUpliftPercentPI.setReadOnly(true);
+            promoUpliftLockedUpdateCheckboxPI.setReadOnly(true);
         }
 
         Ext.resumeLayouts(true);

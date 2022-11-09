@@ -977,7 +977,8 @@
         'LinkedPromoes': 'Linked Promoes',
         'MasterPromoNumber': 'Master Promo Number',
 
-        'TPMmode': 'Indicator'
+        'TPMmode': 'Indicator',
+        'IsPriceIncrease': 'PriceIncrease',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
