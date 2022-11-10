@@ -202,7 +202,12 @@ namespace Module.Host.TPM.Actions
                 List<string> errors = new List<string>();
                 foreach (Promo promo in promoes)
                 {
-                    if (!goodStatuses.Contains(promo.PromoStatus.SystemName) || promo.NeedRecountUpliftPI == true)
+                    if (!goodStatuses.Contains(promo.PromoStatus.SystemName))
+                    {
+                        HasErrors = true;
+                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(promo, $"Can't create corrections for Promo {promo.Number} status: {promo.PromoStatus.Name}"));
+                    }
+                    if (!goodStatuses.Contains(promo.PromoStatus.SystemName) || promo.IsPriceIncrease == false)
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(promo, $"Can't create corrections for Promo {promo.Number}"));

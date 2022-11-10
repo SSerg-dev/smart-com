@@ -168,7 +168,11 @@ namespace Module.Frontend.TPM.Controllers
                 item.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                 item.UserId = user.Id;
                 item.UserName = user.Login;
-
+                if (item.Disabled)
+                {
+                    item.Disabled = false;
+                    item.DeletedDate = null;
+                }
                 try
                 {
                     var saveChangesResult = Context.SaveChanges();
@@ -373,7 +377,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                if (model.PromoProductPriceIncrease.PromoPriceIncrease.Promo.NeedRecountUplift == false)
+                if (model.PromoProductPriceIncrease.PromoPriceIncrease.Promo.NeedRecountUpliftPI == true)
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
                 }
