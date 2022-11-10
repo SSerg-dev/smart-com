@@ -67,8 +67,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 var promoProducts = context.Set<PromoProduct>()
                     .Include(g => g.PromoProductsCorrections)
-                    .Where(x => x.PromoId == promoId);
-                var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId);
+                    .Where(x => x.PromoId == promoId)
+                    .ToList();
+                var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId).ToList();
                 var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
 
                 if (promo.PromoPriceIncrease.PromoProductPriceIncreases == null)
@@ -245,8 +246,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 foreach (PromoProductPriceIncrease promoProductPriceIncrease in promo.PromoPriceIncrease.PromoProductPriceIncreases.Where(g => !newZreps.Contains(g.ZREP) && !g.Disabled))
                 {
-                    promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = true;
-                    promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    if (promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault() != null)
+                    {
+                        promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = true;
+                        promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    }                    
                 }
             }
             Context.SaveChanges();

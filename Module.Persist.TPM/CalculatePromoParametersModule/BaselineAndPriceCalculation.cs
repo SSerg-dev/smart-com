@@ -244,7 +244,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                                                  .Select(x => new { x.StartDate, x.SellInBaselineQTY, x.SellOutBaselineQTY })
                                                                  .ToList();
                                 List<ShortBaseline> result = new List<ShortBaseline>();
-                                if (promoProductIncreaseBaselines.Count() != 0)
+                                if (promoProductIncreaseBaselines.Count() != 0 && promo.IsPriceIncrease)
                                 {
                                     baseLinePIFound = true;
                                     // left join двух списков (именно left, для того, чтобы в отсутвие baseline записать на соответствующую неделю Qty = 0)
