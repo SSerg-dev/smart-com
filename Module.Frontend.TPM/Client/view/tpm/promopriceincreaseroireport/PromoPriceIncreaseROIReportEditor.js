@@ -1,4 +1,4 @@
-﻿Ext.define('App.view.tpm.promopriceincreaseroireport.PromoROIReportEditor', {
+﻿Ext.define('App.view.tpm.promopriceincreaseroireport.PromoPriceIncreaseROIReportEditor', {
     extend: 'App.view.core.common.EditorDetailWindow',
     alias: 'widget.promoroireporteditor',
     width: 1000,
