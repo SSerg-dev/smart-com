@@ -73,7 +73,7 @@
         'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
         'PLUDictionary': 'PLU dictionary',
-        'PromoROIReport': 'Promo ROI Report',
+        'PromoPriceIncreaseROIReport': 'ROI Report Future Price',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
         'ActualLSV': 'Actual LSV',
@@ -170,6 +170,7 @@
         'PlanPostPromoEffectReportWeek': 'Plan Post Promo Effect Report',
         'PromoCalculatingWindow': 'Calculating Log',
         'PromoROIReport': 'Promo ROI Report',
+        'PromoPriceIncreaseROIReport': 'ROI Report Future Price',
         'PromoBudgetsDetailsWindow': 'Budgets Details',
         'PromoActivityDetailsWindow': 'Activity Details',
         'PromoFinanceDetailsWindow': 'Finance Details',
@@ -2265,8 +2266,10 @@
         'ActualPromoVolume': 'Actual Promo Volume',
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
-        'TPMmode': 'Indicator'
+        'TPMmode': 'Indicator',
+        'IsPriceIncrease': 'Price Increase'
     },
+    'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 
     'PromoActivity': {
         'UpdateActuals': 'Upload Actuals',

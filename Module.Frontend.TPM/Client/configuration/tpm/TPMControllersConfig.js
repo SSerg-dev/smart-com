@@ -279,6 +279,7 @@
 
     'tpm.planpostpromoeffectreport.PlanPostPromoEffectReport',
     'tpm.promoroireport.PromoROIReport',
+    'tpm.promopriceincreaseroireport.PromoPriceIncreaseROIReport',
 
     // Promo Activity Details Info
     'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
