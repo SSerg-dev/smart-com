@@ -26,6 +26,7 @@ using Utility.Import.ModelBuilder;
 using Utility.Import.Cache;
 using Core.Extensions;
 using Persist.ScriptGenerator;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Host.TPM.Actions
 {
@@ -251,7 +252,7 @@ namespace Module.Host.TPM.Actions
                                 warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                             }
                         }
-                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts))
+                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts, context))
                         {
                             HasErrors = true;
                             errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
@@ -380,7 +381,7 @@ namespace Module.Host.TPM.Actions
         {
             return records;
         }
-        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProductPriceIncrease> promoProducts)
+        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProductPriceIncrease> promoProducts, DatabaseContext context)
         {
             errors = new List<string>();
             PromoProductPriceIncrease promoProduct = promoProducts.Where(x => x.ZREP == item.ProductZREP && x.PromoPriceIncrease.Promo.Number == item.PromoNumber).FirstOrDefault();
@@ -401,165 +402,200 @@ namespace Module.Host.TPM.Actions
                 errors.Add($"No product with ZREP: {item.ProductZREP} found in Promo: {item.PromoNumber}");
                 return false;
             }
+            else if (!CheckPriceListA(item, context))
+            {
+                errors.Add($"Promo {item.PromoNumber} not found products with FuturePriceMarker");
+                return false;
+            }
             else
             {
                 return true;
             }
         }
+        private bool CheckPriceListA(ImportPromoProductsCorrection view, DatabaseContext context)
+        {
+            Promo promo = context.Set<Promo>()
+                .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases)
+                .FirstOrDefault(g => g.Number == view.PromoNumber);
+
+            List<PromoProduct> promoProducts = context.Set<PromoProduct>()
+                .Include(f => f.PromoProductsCorrections)
+                .Where(x => !x.Disabled && x.PromoId == promo.Id)
+                .ToList();
+            List<PriceList> allPriceLists = context.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart
+                                                                    && x.EndDate >= promo.DispatchesStart
+                                                                    && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
+            List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
+
+            bool IsOneProductWithFuturePriceMarker = false;
+            foreach (PromoProduct promoProduct in promoProducts)
+            {
+                var priceListFPM = priceListsForPromoAndPromoProductsFPM.Where(x => x.ProductId == promoProduct.ProductId)
+                                                                  .OrderByDescending(x => x.StartDate).FirstOrDefault();
+                if (priceListFPM != null)
+                {
+                    IsOneProductWithFuturePriceMarker = true;
+                }
+            }
+            return IsOneProductWithFuturePriceMarker;
+        }
         protected int InsertDataToDatabase(IEnumerable<PromoProductCorrectionPriceIncrease> importedPromoProductCorrections, DatabaseContext databaseContext, ref ConcurrentBag<Tuple<IEntity<Guid>, string>> warningRecords)
         {
-            User currentUser = databaseContext.Set<User>().FirstOrDefault(x => x.Id == this._userId);
-            var ppciIds = importedPromoProductCorrections.Select(ppc => ppc.PromoProductPriceIncreaseId);
-            List<PromoProductCorrectionPriceIncrease> promoProductCorrectionPriceIncreases = databaseContext.Set<PromoProductCorrectionPriceIncrease>()
-                .Where(g => ppciIds.Contains(g.PromoProductPriceIncreaseId))
-                .Include(g => g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
-                .ToList();
+            var currentUser = databaseContext.Set<User>().FirstOrDefault(x => x.Id == this._userId);
+            var promoProductsCorrectionChangeIncidents = new List<PromoProductCorrectionPriceIncrease>();
 
+            var promoProductIds = importedPromoProductCorrections.Select(ppc => ppc.PromoProductPriceIncreaseId);
+            var promoProducts = databaseContext.Set<PromoProductPriceIncrease>()
+                .Include(g=>g.PromoPriceIncrease.Promo)
+                .Where(pp => promoProductIds.Contains(pp.Id)).ToList();
+            var promoIds = promoProducts.Select(pp => pp.PromoPriceIncrease.Id);
+            var promoes = databaseContext.Set<Promo>().Where(p => promoIds.Contains(p.Id)).ToList();
 
-            //foreach (PromoProductCorrectionPriceIncrease importedPromoProductCorrection in importedPromoProductCorrections)
-            //{
-            //    var importedPromoProductCorrectionGroup = importedPromoProductCorrections.GroupBy(x => new { x.PromoNumber, x.ProductZREP }).FirstOrDefault(x => x.Key.PromoNumber == importedPromoProductCorrection.PromoNumber && x.Key.ProductZREP == importedPromoProductCorrection.ProductZREP);
-            //    if (importedPromoProductCorrectionGroup.Count() > 1)
-            //    {
-            //        Errors.Add($"Records must not be repeated (Promo number: {importedPromoProductCorrection.PromoNumber}, ZREP: {importedPromoProductCorrection.ProductZREP})");
-            //        return 0;
-            //    }
-            //    else if (importedPromoProductCorrection.PlanProductUpliftPercentCorrected <= 0)
-            //    {
-            //        Errors.Add($"Uplift must be greater than 0 and must not be empty (Promo number: {importedPromoProductCorrection.PromoNumber}, ZREP: {importedPromoProductCorrection.ProductZREP})");
-            //        return 0;
-            //    }
-            //    else if (promoProductCorrectionPriceIncreases.Select(g => g.PromoProductPriceIncrease).Where(x => x.ZREP == importedPromoProductCorrection.ProductZREP && x.PromoPriceIncrease.Promo.Number == importedPromoProductCorrection.PromoNumber).FirstOrDefault() == null)
-            //    {
-            //        Errors.Add($"No product with ZREP: {importedPromoProductCorrection.ProductZREP} found in Promo: {importedPromoProductCorrection.PromoNumber}");
-            //        return 0;
-            //    }
-            //}
-            foreach (PromoProductCorrectionPriceIncrease correctionPriceIncrease in promoProductCorrectionPriceIncreases)
+            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = new List<PromoProductCorrectionPriceIncrease>();
+
+            foreach (var importedPromoProductCorrection in importedPromoProductCorrections)
             {
-                if (correctionPriceIncrease.PromoProductPriceIncrease.PromoPriceIncrease.Promo.NeedRecountUpliftPI == true)
+                var promoProduct = databaseContext.Set<PromoProductPriceIncrease>()
+                        .FirstOrDefault(x => x.Id == importedPromoProductCorrection.PromoProductPriceIncreaseId && !x.Disabled);
+                var promo = promoes.FirstOrDefault(q => promoProduct != null && q.Id == promoProduct.PromoPriceIncrease.Id);
+
+                if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    throw new ImportException("Promo Locked Update");
+                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(importedPromoProductCorrection, $"Promo Product Correction was not imported for In-Out promo №{promo.Number}"));
+                    handlerLogger.Write(true, $"Promo Product Correction was not imported for In-Out promo №{promo.Number}", "Warning");
+                    continue;
                 }
-                if (correctionPriceIncrease.PromoProductPriceIncrease.PromoPriceIncrease.Promo.InOut.HasValue && correctionPriceIncrease.PromoProductPriceIncrease.PromoPriceIncrease.Promo.InOut.Value)
+
+                var currentPromoProductCorrection = databaseContext.Set<PromoProductCorrectionPriceIncrease>()
+                    .Include(g=>g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
+                .FirstOrDefault(x => x.PromoProductPriceIncreaseId == importedPromoProductCorrection.PromoProductPriceIncreaseId && !x.Disabled);
+
+                if (currentPromoProductCorrection != null)
                 {
-                    Errors.Add($"Promo Product Correction was not imported for In-Out promo №{correctionPriceIncrease.PromoProductPriceIncrease.PromoPriceIncrease.Promo.Number}");
-                    HasErrors = true;
-                    return 0;
-                }
-                PromoProductCorrectionPriceIncrease importedCorrection = importedPromoProductCorrections
-                    .Where(g => g.PromoProductPriceIncrease.ZREP == correctionPriceIncrease.PromoProductPriceIncrease.ZREP && g.PromoProductPriceIncrease.PromoPriceIncrease.Promo.Number == correctionPriceIncrease.PromoProductPriceIncrease.PromoPriceIncrease.Promo.Number)
-                    .FirstOrDefault();
-                if (importedCorrection != null)
-                {
-                    if (correctionPriceIncrease.Disabled)
+                    if (currentPromoProductCorrection.PromoProductPriceIncrease.PromoPriceIncrease.Promo.NeedRecountUpliftPI == true)
                     {
-                        correctionPriceIncrease.Disabled = false;
-                        correctionPriceIncrease.DeletedDate = null;
+                        throw new ImportException("Promo Locked Update");
                     }
-                    correctionPriceIncrease.PlanProductUpliftPercentCorrected = importedCorrection.PlanProductUpliftPercentCorrected;
-                    correctionPriceIncrease.ChangeDate = DateTimeOffset.Now;
-                    correctionPriceIncrease.UserId = this._userId;
-                    correctionPriceIncrease.UserName = currentUser?.Name ?? string.Empty;
+
+                    currentPromoProductCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                    currentPromoProductCorrection.ChangeDate = DateTimeOffset.Now;
+                    currentPromoProductCorrection.UserId = this._userId;
+                    currentPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
+
+                    //if (TPMmode == TPMmode.Current)
+                    //{
+                    //    var promoRS = databaseContext.Set<Promo>()
+                    //    .Include(x => x.PromoProducts)
+                    //    .FirstOrDefault(x => x.Number == promoProduct.Promo.Number && x.TPMmode == TPMmode.RS && !x.Disabled);
+                    //    if (promoRS != null)
+                    //    {
+                    //        databaseContext.Set<Promo>().Remove(promoRS);
+                    //        databaseContext.SaveChanges();
+
+                    //        var currentPromoProductsCorrections = databaseContext.Set<PromoProductsCorrection>()
+                    //            .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                    //            .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                    //            .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                    //            .Where(x => x.PromoProduct.PromoId == promoProduct.PromoId && !x.Disabled)
+                    //            .ToList();
+                    //        currentPromoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(databaseContext, currentPromoProductsCorrections);
+                    //        var promoProductsCorrection = currentPromoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == promoProduct.ZREP);
+                    //        promoProductsCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                    //        promoProductsCorrection.ChangeDate = DateTimeOffset.Now;
+                    //        promoProductsCorrection.UserId = this._userId;
+                    //        promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
+                    //    }
+                    //}
+                    promoProductsCorrectionChangeIncidents.Add(currentPromoProductCorrection);
                 }
+                else
+                {
+                    if (TPMmode == TPMmode.Current)
+                    {
+                        promoProduct = databaseContext.Set<PromoProductPriceIncrease>()
+                            .Include(g => g.PromoPriceIncrease.Promo)
+                            .FirstOrDefault(x => x.Id == importedPromoProductCorrection.PromoProductPriceIncreaseId && !x.Disabled);
 
+                        if (promoProduct.PromoPriceIncrease.Promo.NeedRecountUpliftPI == true)
+                        {
+                            throw new ImportException("Promo Locked Update");
+                        }
+                        importedPromoProductCorrection.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        importedPromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        importedPromoProductCorrection.UserId = this._userId;
+                        importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
 
+                        databaseContext.Set<PromoProductCorrectionPriceIncrease>().Add(importedPromoProductCorrection);
+
+                        //var promoRS = databaseContext.Set<Promo>()
+                        //.Include(x => x.PromoProducts)
+                        //.FirstOrDefault(x => x.Number == promoProduct.Promo.Number && x.TPMmode == TPMmode.RS && !x.Disabled);
+
+                        //if (promoRS != null)
+                        //{
+                        //    databaseContext.Set<Promo>().Remove(promoRS);
+                        //    databaseContext.SaveChanges();
+
+                        //    var currentPromoProductsCorrections = databaseContext.Set<PromoProductsCorrection>()
+                        //        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        //        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        //        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        //        .Where(x => x.PromoProduct.PromoId == promoProduct.PromoId && !x.Disabled)
+                        //        .ToList();
+                        //    currentPromoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(databaseContext, currentPromoProductsCorrections);
+                        //    var promoProductsCorrection = currentPromoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == promoProduct.ZREP);
+                        //    promoProductsCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
+                        //    promoProductsCorrection.ChangeDate = DateTimeOffset.Now;
+                        //    promoProductsCorrection.UserId = this._userId;
+                        //    promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
+                        //}
+                    }
+                    //if (TPMmode == TPMmode.RS)
+                    //{
+                    //    var promoProductRS = databaseContext.Set<PromoProduct>()
+                    //                    .FirstOrDefault(x => x.Promo.Number == promoProduct.Promo.Number && x.ZREP == promoProduct.ZREP && !x.Disabled && x.TPMmode == TPMmode.RS);
+                    //    if (promoProductRS == null)
+                    //    {
+                    //        var currentPromo = databaseContext.Set<Promo>()
+                    //            .Include(g => g.PromoSupportPromoes)
+                    //            .Include(g => g.PromoProductTrees)
+                    //            .Include(g => g.IncrementalPromoes)
+                    //            .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    //            .FirstOrDefault(p => p.Number == promo.Number && p.TPMmode == TPMmode.Current);
+                    //        var promoRS = RSmodeHelper.EditToPromoRS(databaseContext, currentPromo);
+                    //        promoProductRS = promoRS.PromoProducts
+                    //            .FirstOrDefault(x => x.ZREP == promoProduct.ZREP);
+                    //    }
+
+                    //    importedPromoProductCorrection.TPMmode = TPMmode.RS;
+                    //    importedPromoProductCorrection.PromoProduct = promoProductRS;
+                    //    importedPromoProductCorrection.PromoProductId = promoProductRS.Id;
+                    //    importedPromoProductCorrection.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    //    importedPromoProductCorrection.UserId = this._userId;
+                    //    importedPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
+
+                    //    databaseContext.Set<PromoProductsCorrection>().Add(importedPromoProductCorrection);
+                    //    promoProductsCorrections.Add(importedPromoProductCorrection);
+                    //    promoProductsCorrectionChangeIncidents.Add(importedPromoProductCorrection);
+                    //};
+                }
             }
-            //---------------------------------------------
-            //List<PromoProductCorrectionPriceIncrease> promoProductsCorrectionChangeIncidents = new List<PromoProductCorrectionPriceIncrease>();
-
-            //IEnumerable<Guid> promoProductIds = importedPromoProductCorrections.Select(ppc => ppc.PromoProductPriceIncreaseId);
-            //List<PromoProduct> promoProducts = databaseContext.Set<PromoProduct>().Where(pp => promoProductIds.Contains(pp.Id)).ToList();
-            //IEnumerable<Guid> promoIds = promoProducts.Select(pp => pp.PromoId);
-            //List<Promo> promoes = databaseContext.Set<Promo>().Where(p => promoIds.Contains(p.Id)).ToList();
-
-            //List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = new List<PromoProductCorrectionPriceIncrease>();
-
-            //foreach (PromoProductCorrectionPriceIncrease importedPromoProductCorrection in importedPromoProductCorrections)
-            //{
-            //    var promoProduct = databaseContext.Set<PromoProduct>()
-            //            .FirstOrDefault(x => x.Id == importedPromoProductCorrection.PromoProductPriceIncreaseId && !x.Disabled);
-            //    var promo = promoes.FirstOrDefault(q => promoProduct != null && q.Id == promoProduct.PromoId);
-
-            //    if (promo.InOut.HasValue && promo.InOut.Value)
-            //    {
-            //        Errors.Add($"Promo Product Correction was not imported for In-Out promo №{promo.Number}");
-            //        HasErrors = true;
-            //        continue;
-            //    }
-
-            //    var currentPromoProductCorrection = databaseContext.Set<PromoProductCorrectionPriceIncrease>()
-            //    .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-            //    .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
-            //    .Include(g => g.PromoProduct.Promo.PromoProductTrees)
-            //    .FirstOrDefault(x => x.PromoProductId == importedPromoProductCorrection.PromoProductId && x.TempId == importedPromoProductCorrection.TempId && !x.Disabled && x.TPMmode == TPMmode);
-
-            //    if (currentPromoProductCorrection != null)
-            //    {
-            //        if (TPMmode == TPMmode.RS && currentPromoProductCorrection.PromoProduct.Promo.TPMmode == TPMmode.Current)
-            //        {
-            //            promoProductsCorrections = databaseContext.Set<PromoProductCorrectionPriceIncrease>()
-            //            .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-            //            .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
-            //            .Include(g => g.PromoProduct.Promo.PromoProductTrees)
-            //            .Where(x => x.PromoProduct.PromoId == currentPromoProductCorrection.PromoProduct.PromoId && !x.Disabled)
-            //            .ToList();
-            //            promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(databaseContext, promoProductsCorrections);
-            //            currentPromoProductCorrection = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == currentPromoProductCorrection.PromoProduct.ZREP);
-            //        }
-
-            //        if (currentPromoProductCorrection.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(currentPromoProductCorrection.TempId))
-            //        {
-            //            throw new ImportException("Promo Locked Update");
-            //        }
-
-            //        currentPromoProductCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
-            //        currentPromoProductCorrection.ChangeDate = DateTimeOffset.Now;
-            //        currentPromoProductCorrection.UserId = this._userId;
-            //        currentPromoProductCorrection.UserName = currentUser?.Name ?? string.Empty;
-
-            //        if (TPMmode == TPMmode.Current)
-            //        {
-            //            var promoRS = databaseContext.Set<Promo>()
-            //            .Include(x => x.PromoProducts)
-            //            .FirstOrDefault(x => x.Number == promoProduct.Promo.Number && x.TPMmode == TPMmode.RS && !x.Disabled);
-            //            if (promoRS != null)
-            //            {
-            //                databaseContext.Set<Promo>().Remove(promoRS);
-            //                databaseContext.SaveChanges();
-
-            //                var currentPromoProductsCorrections = databaseContext.Set<PromoProductCorrectionPriceIncrease>()
-            //                    .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
-            //                    .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
-            //                    .Include(g => g.PromoProduct.Promo.PromoProductTrees)
-            //                    .Where(x => x.PromoProduct.PromoId == promoProduct.PromoId && !x.Disabled)
-            //                    .ToList();
-            //                currentPromoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(databaseContext, currentPromoProductsCorrections);
-            //                var promoProductsCorrection = currentPromoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == promoProduct.ZREP);
-            //                promoProductsCorrection.PlanProductUpliftPercentCorrected = importedPromoProductCorrection.PlanProductUpliftPercentCorrected;
-            //                promoProductsCorrection.ChangeDate = DateTimeOffset.Now;
-            //                promoProductsCorrection.UserId = this._userId;
-            //                promoProductsCorrection.UserName = currentUser?.Name ?? string.Empty;
-            //            }
-            //        }
-            //        promoProductsCorrectionChangeIncidents.Add(currentPromoProductCorrection);
-            //    }
-            //}
 
             // Необходимо выполнить перед созданием инцидентов.
             databaseContext.SaveChanges();
 
-            //foreach (var promoProductsCorrection in promoProductsCorrectionChangeIncidents)
-            //{
-            //    var currentPromoProductsCorrection = promoProductsCorrections.FirstOrDefault(x => x.PromoProductId == promoProductsCorrection.PromoProductId && !x.Disabled);
-            //    if (currentPromoProductsCorrection != null)
-            //    {
-            //        PromoProductCorrectionPriceIncreasesController.CreateChangesIncident(databaseContext.Set<ChangesIncident>(), currentPromoProductsCorrection);
-            //    }
-            //}
+            foreach (var promoProductsCorrection in promoProductsCorrectionChangeIncidents)
+            {
+                var currentPromoProductsCorrection = promoProductsCorrections.FirstOrDefault(x => x.PromoProductPriceIncreaseId == promoProductsCorrection.PromoProductPriceIncreaseId && !x.Disabled);
+                if (currentPromoProductsCorrection != null)
+                {
+                    PromoProductCorrectionPriceIncreaseViewsController.CreateChangesIncident(databaseContext.Set<ChangesIncident>(), currentPromoProductsCorrection);
+                }
+            }
+
 
             databaseContext.SaveChanges();
-            return promoProductCorrectionPriceIncreases.Count();
+            return promoProductsCorrections.Count();
         }
         private IQueryable<PromoProductPriceIncrease> ApplyFilterForProduct(IQueryable<PromoProductPriceIncrease> query, TPMmode mode)
         {

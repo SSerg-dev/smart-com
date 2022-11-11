@@ -36,6 +36,7 @@ namespace Module.Persist.TPM.Model.DTO
 
         public bool IsGrowthAcceleration { get; set; }
 		public bool IsInExchange { get; set; }
+        public bool IsPriceIncrease { get; set; }
 
     }
 }

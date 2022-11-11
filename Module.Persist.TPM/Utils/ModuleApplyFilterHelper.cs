@@ -527,7 +527,7 @@ namespace Module.Persist.TPM.Utils
         public static IQueryable<PromoProductCorrectionPriceIncreaseView> ApplyFilter(IQueryable<PromoProductCorrectionPriceIncreaseView> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filters = null)
         {
             IEnumerable<string> clientFilter = FilterHelper.GetFilter(filters, ModuleFilterName.Client);
-            query = query.Where(x => !x.Disabled);
+            query = query.Where(x => !x.Disabled && x.IsPriceIncrease);
             if (clientFilter.Any())
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);

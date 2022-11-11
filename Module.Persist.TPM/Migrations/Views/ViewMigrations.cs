@@ -994,6 +994,8 @@
 			return UpdatePromoProductCorrectionPriceIncreaseViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoProductCorrectionPriceIncreaseViewSqlString = @"
+			DROP VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
+			GO
 				CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
 			AS
 			SELECT
@@ -1023,7 +1025,8 @@
 				ps.Name AS PromoStatusName,
 				pr.IsGrowthAcceleration AS IsGrowthAcceleration,
 				pr.IsInExchange AS IsInExchange,
-				pr.DispatchesStart AS PromoDispatchStartDate
+				pr.DispatchesStart AS PromoDispatchStartDate,
+				pr.IsPriceIncrease AS IsPriceIncrease
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductCorrectionPriceIncrease AS ppcpi INNER JOIN

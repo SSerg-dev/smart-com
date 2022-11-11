@@ -2885,6 +2885,12 @@
         if (record.data.TPMmode == 'RS') {
             this.showRSmodeLabel(true);
         }
+        if (record.data.IsPriceIncrease) {
+            this.showIsPriceIncreaseWindowLabel(true);
+        }
+        else {
+            this.showIsPriceIncreaseWindowLabel(false);
+        }
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
 
@@ -6935,6 +6941,24 @@
             promoController.showRSmodeLabel(true);
         } else {
             promoController.showRSmodeLabel(false);
+        }
+    },
+
+    getIsPriceIncreaseWindowLabel: function () {
+        var isPriceIncreaseComponent = Ext.ComponentQuery.query('#btn_promoIsPriceIncrease')[0];
+        return isPriceIncreaseComponent;
+    },
+
+    showIsPriceIncreaseWindowLabel: function (value) {
+        var isPriceIncreaseWindowLabel = this.getIsPriceIncreaseWindowLabel();
+        if (value) {
+            if (isPriceIncreaseWindowLabel) {
+                isPriceIncreaseWindowLabel.show();
+            }
+        } else {
+            if (isPriceIncreaseWindowLabel) {
+                isPriceIncreaseWindowLabel.hide();
+            }
         }
     },
 
