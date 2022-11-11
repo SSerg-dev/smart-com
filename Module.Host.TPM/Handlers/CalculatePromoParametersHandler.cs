@@ -146,7 +146,7 @@ namespace Module.Host.TPM.Handlers
                         if (promo.IsPriceIncrease)
                         {
                             //Подбор исторических промо и расчет PlanPromoUpliftPercent PriceIncrease
-                            if (!promo.NeedRecountUpliftPI)
+                            if (!promo.NeedRecountUpliftPI && promoCopy.IsPriceIncrease)
                             {
                                 // Uplift не расчитывается для промо в статусе Starte, Finished, Closed
                                 if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)

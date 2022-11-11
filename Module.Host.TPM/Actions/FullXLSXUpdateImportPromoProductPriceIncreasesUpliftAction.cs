@@ -66,7 +66,7 @@ namespace Module.Host.TPM.Actions
                 foreach (var importedPromoProductView in importedPromoProductViews)
                 {
                     var currentPromoProductPI = promoProductPIs.FirstOrDefault(x => x.ZREP == importedPromoProductView.ZREP);
-                    if (currentPromoProductPI.ProductCorrectionPriceIncreases != null)
+                    if (currentPromoProductPI.ProductCorrectionPriceIncreases.Count > 0)
                     {
                         if (currentPromoProductPI.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled)
                         {
