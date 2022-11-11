@@ -145,6 +145,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RollingVolume>();
             modelBuilder.Entity<PlanPostPromoEffectReportWeekView>().ToTable("PlanPostPromoEffectReportWeekView");
             modelBuilder.Entity<PromoROIReport>().ToTable("PromoROIReportView");
+            modelBuilder.Entity<PromoPriceIncreaseROIReport>().ToTable("PromoPriceIncreaseROIReportView");
             modelBuilder.Entity<NonPromoSupportDMP>();
             modelBuilder.Entity<PromoSupportDMP>();
 
@@ -522,6 +523,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
+            builder.Entity<Promo>().Collection.Action("ExportPromoPriceIncreaseROIReportXLSX");
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
             builder.Entity<Promo>().Collection.Action("ResetPromo");
             builder.Entity<Promo>().Collection.Action("ChangeResponsible");
@@ -1113,6 +1115,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<PromoROIReport>("PromoROIReports");
             builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
             builder.Entity<PromoROIReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoROIReport>("PromoROIReports");
+
+            builder.EntitySet<PromoPriceIncreaseROIReport>("PromoPriceIncreaseROIReports");
+            builder.Entity<PromoPriceIncreaseROIReport>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoPriceIncreaseROIReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoPriceIncreaseROIReport>("PromoPriceIncreaseROIReports");
 
             builder.EntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
             builder.Entity<SchedulerClientTreeDTO>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");

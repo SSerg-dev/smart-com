@@ -3263,6 +3263,7 @@
     <Compile Include="Model\DTO\ProductTreeHierarchyView.cs" />
     <Compile Include="Model\DTO\DemandDTO.cs" />
     <Compile Include="Model\DTO\PromoGridView.cs" />
+    <Compile Include="Model\DTO\PromoPriceIncreaseROIReport.cs" />
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
     <Compile Include="Model\History\HistoricalActualCOGSTn.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />

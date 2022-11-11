@@ -750,6 +750,33 @@ namespace Module.Persist.TPM.Utils
         }
 
         /// <summary>
+        /// Применить фильтр по клиентам к PromoROIReport
+        /// </summary>
+        /// <param name="query">Запрос</param>
+        /// <param name="hierarchy">Иерархия</param>
+        /// <param name="filter">Фильтр</param>
+        public static IQueryable<PromoPriceIncreaseROIReport> ApplyFilter(IQueryable<PromoPriceIncreaseROIReport> query, IQueryable<ClientTreeHierarchyView> hierarchy, TPMmode mode, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+                    break;
+            }
+            return query;
+        }
+
+        /// <summary>
         /// Применить фильтр по клиентам к IncrementalPromo
         /// </summary>
         /// <param name="query">Запрос</param>

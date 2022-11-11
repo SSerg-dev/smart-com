@@ -605,6 +605,15 @@
                 widget: 'promoroireport'
             },
             {
+                text: l10n.ns('tpm', 'mainmenu').value('PromoPriceIncreaseROIReport'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PromoPriceIncreaseROIReport'),
+                glyph: 0xf215,
+                rsMode: true,
+                currentMode: true,
+                //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
+                widget: 'promopriceincreaseroireport'
+            },
+            {
                 text: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),
                 glyph: 0xfcce,
