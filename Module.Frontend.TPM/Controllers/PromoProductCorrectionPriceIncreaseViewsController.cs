@@ -557,8 +557,8 @@ namespace Module.Frontend.TPM.Controllers
                 CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler", tPMmode);
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
-                result.Content = new StringContent("success = true");
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+                result.Content = new JsonContent( new { success = true });
+                //result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
             }

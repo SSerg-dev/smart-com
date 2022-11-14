@@ -3251,6 +3251,10 @@
     <Compile Include="Migrations\202211110723564_Add_PI_PromoProductCorrectionPriceIncreaseView.Designer.cs">
       <DependentUpon>202211110723564_Add_PI_PromoProductCorrectionPriceIncreaseView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211141026437_Fix_Unique_PromoProductsCorrection.cs" />
+    <Compile Include="Migrations\202211141026437_Fix_Unique_PromoProductsCorrection.Designer.cs">
+      <DependentUpon>202211141026437_Fix_Unique_PromoProductsCorrection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6139,6 +6143,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211110723564_Add_PI_PromoProductCorrectionPriceIncreaseView.resx">
       <DependentUpon>202211110723564_Add_PI_PromoProductCorrectionPriceIncreaseView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211141026437_Fix_Unique_PromoProductsCorrection.resx">
+      <DependentUpon>202211141026437_Fix_Unique_PromoProductsCorrection.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
