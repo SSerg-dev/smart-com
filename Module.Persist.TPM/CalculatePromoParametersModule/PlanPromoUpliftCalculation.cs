@@ -191,6 +191,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 //Получаем все продукты по этому промо
                 List<PromoProductPriceIncrease> currentPromoProducts = context.Set<PromoProductPriceIncrease>()
                     .Include(g => g.ProductCorrectionPriceIncreases)
+                    .Include(g => g.PromoProduct)
                     .Where(x => x.PromoPriceIncreaseId == currentPromo.Id && x.Disabled != true)
                     .ToList();
                 foreach (var promoProduct in currentPromoProducts)
@@ -692,16 +693,75 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         private static PlanUplift CalculateOnlyByCorrectionsPI(Promo currentPromo, DatabaseContext context, List<PromoProductPriceIncrease> currentPromoProducts)
         {
             PlanUplift planUplift = new PlanUplift { CountedPlanUpliftPI = 0 };
-            var promoProductsIds = currentPromoProducts.Select(y => y.Id);
-            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>()
-                .Include(g => g.PromoProductPriceIncrease)
-                .Where(x => x.Disabled != true).ToList();
-            if (promoProductsCorrections.Count > 0)
+            //var promoProductsIds = currentPromoProducts.Select(y => y.Id);
+            //List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>()
+            //    .Include(g => g.PromoProductPriceIncrease)
+            //    .Where(x => x.Disabled != true && promoProductsIds.Contains(x.PromoProductPriceIncreaseId)).ToList();
+            if (currentPromoProducts.SelectMany(g => g.ProductCorrectionPriceIncreases).Count() > 0 && currentPromo.IsPriceIncrease)
             {
                 double? summPlanIncremental = 0;
                 double? summPlanBaseline = 0;
 
-                foreach (PromoProductCorrectionPriceIncrease promoProductsCorrection in promoProductsCorrections)
+                foreach (PromoProductCorrectionPriceIncrease promoProductsCorrection in currentPromoProducts.SelectMany(g => g.ProductCorrectionPriceIncreases))
+                {
+                    summPlanIncremental += promoProductsCorrection.PromoProductPriceIncrease.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
+                }
+                summPlanBaseline += currentPromoProducts.Sum(x => x.PlanProductBaselineLSV);
+
+                if (summPlanBaseline != 0)
+                {
+                    planUplift.CountedPlanUpliftPI = summPlanIncremental / summPlanBaseline * 100;
+                }
+            }
+            else if (currentPromoProducts.Select(g => g.PromoProduct).Count() > 0)
+            {
+                // если еще не PriceIncrease копировать с простых
+                foreach (PromoProductPriceIncrease productPriceIncrease in currentPromoProducts)
+                {
+                    PromoProductsCorrection correction = productPriceIncrease.PromoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled);
+                    PromoProductCorrectionPriceIncrease correctionPI = productPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault();
+                    if (correction != null)
+                    {
+                        if (correctionPI != null)
+                        {
+                            if (correctionPI.Disabled)
+                            {
+                                correctionPI.DeletedDate = null;
+                                correctionPI.Disabled = false;
+                            }
+                            correctionPI.PlanProductUpliftPercentCorrected = correction.PlanProductUpliftPercentCorrected;
+                        }
+                        else
+                        {
+                            correctionPI = new PromoProductCorrectionPriceIncrease
+                            {
+                                PlanProductUpliftPercentCorrected = correction.PlanProductUpliftPercentCorrected,
+                                ChangeDate = correction.ChangeDate,
+                                CreateDate = correction.CreateDate,
+                                UserId = correction.UserId,
+                                UserName = correction.UserName,
+                                PromoProductPriceIncrease = productPriceIncrease
+                            };
+                            productPriceIncrease.ProductCorrectionPriceIncreases.Add(correctionPI);
+                        }
+                    }
+                    else
+                    {
+                        if (correctionPI != null)
+                        {
+                            if (correctionPI.Disabled == false)
+                            {
+                                correctionPI.Disabled = true;
+                                correctionPI.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                            }
+                        }
+                    }                    
+                }
+                context.SaveChanges();
+                double? summPlanIncremental = 0;
+                double? summPlanBaseline = 0;
+
+                foreach (PromoProductCorrectionPriceIncrease promoProductsCorrection in currentPromoProducts.SelectMany(g => g.ProductCorrectionPriceIncreases))
                 {
                     summPlanIncremental += promoProductsCorrection.PromoProductPriceIncrease.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
                 }
@@ -975,7 +1035,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         }
                         if (singlePromoProduct.ProductCorrectionPriceIncreases == null || singlePromoProduct.ProductCorrectionPriceIncreases.Count == 0)
                         {
-                            singlePromoProduct.ProductCorrectionPriceIncreases.Add( new PromoProductCorrectionPriceIncrease()
+                            singlePromoProduct.ProductCorrectionPriceIncreases.Add(new PromoProductCorrectionPriceIncrease()
                             {
                                 PlanProductUpliftPercentCorrected = upliftToInsert,
                                 CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -990,7 +1050,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     }
 
-                    foreach (var singlePromoProduct in promoProductsPI.Where(d => d.ProductCorrectionPriceIncreases.Any(f=>!f.Disabled)))
+                    foreach (var singlePromoProduct in promoProductsPI.Where(d => d.ProductCorrectionPriceIncreases.Any(f => !f.Disabled)))
                     {
                         if (singlePromoProduct.ProductCorrectionPriceIncreases != null)
                         {
