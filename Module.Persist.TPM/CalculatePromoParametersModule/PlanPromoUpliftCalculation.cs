@@ -187,6 +187,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 // сбрасываем uplift
                 // PriceIncrease
                 currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = null;
+                currentPromo.PlanPromoUpliftPercentPI = null;
 
                 //Получаем все продукты по этому промо
                 List<PromoProductPriceIncrease> currentPromoProducts = context.Set<PromoProductPriceIncrease>()
@@ -301,6 +302,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             if (success)
                             {
                                 currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = planUplift.CountedPlanUpliftPI;
+                                currentPromo.PlanPromoUpliftPercentPI = planUplift.CountedPlanUpliftPI;
                                 context.SaveChanges();
 
                                 upliftMessage = GetMessagePromoList(promoSubrangeList);
@@ -511,6 +513,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (singleSubrangeSuccess)
             {
                 currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = countedPlanUplift.CountedPlanUpliftPI;
+                currentPromo.PlanPromoUpliftPercentPI = countedPlanUplift.CountedPlanUpliftPI;
                 context.SaveChanges();
 
                 message = GetMessagePromoList(usedPromoes);
@@ -542,6 +545,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (success)
                 {
                     currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = countedPlanUplift.CountedPlanUpliftPI;
+                    currentPromo.PlanPromoUpliftPercentPI = countedPlanUplift.CountedPlanUpliftPI;
                     context.SaveChanges();
 
                     message = GetMessagePromoList(promoQueryList);
@@ -550,9 +554,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     return countedPlanUplift;
                 }
                 //Если не нашли промо, но есть коррекции
-                else if (countedPlanUplift.CountedPlanUplift != 0)
+                else if (countedPlanUplift.CountedPlanUpliftPI != 0)
                 {
                     currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = countedPlanUplift.CountedPlanUpliftPI;
+                    currentPromo.PlanPromoUpliftPercentPI = countedPlanUplift.CountedPlanUpliftPI;
                     context.SaveChanges();
 
                     message = "Не найдено Promo для расчета Uplift. Uplift рассчитан по корректировкам";

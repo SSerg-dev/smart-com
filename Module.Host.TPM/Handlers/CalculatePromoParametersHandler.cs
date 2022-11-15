@@ -160,7 +160,7 @@ namespace Module.Host.TPM.Handlers
 
                                     PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUpliftPI(promoId, context, out upliftMessage, needResetUpliftCorrectionsPI, UserId);
 
-                                    if (planPromoUpliftPercent.CountedPlanUplift != -1)
+                                    if (planPromoUpliftPercent.CountedPlanUpliftPI != -1)
                                     {
                                         logLine = string.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUpliftPI);
                                         handlerLogger.Write(true, logLine, "Message");
@@ -204,7 +204,7 @@ namespace Module.Host.TPM.Handlers
 
                                     PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUpliftPI(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
 
-                                    if (planPromoUpliftPercent.CountedPlanUplift != -1)
+                                    if (planPromoUpliftPercent.CountedPlanUpliftPI != -1)
                                     {
                                         logLine = string.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUpliftPI);
                                         handlerLogger.Write(true, logLine, "Message");
