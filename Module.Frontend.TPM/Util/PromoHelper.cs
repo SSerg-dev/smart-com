@@ -401,7 +401,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatus.Name", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "PromoTypes.Name", Header = "Promo Types Name", Quoting = false }
+                new Column() { Order = 0, Field = "PromoTypes.Name", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
@@ -472,7 +473,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatusName", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false }
+                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
