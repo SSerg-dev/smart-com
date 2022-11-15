@@ -1005,6 +1005,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (!currentPromo.IsPriceIncrease)
             {
                 newUplift = currentPromo.PlanPromoUpliftPercent;
+                currentPromo.PlanPromoUpliftPercentPI = currentPromo.PlanPromoUpliftPercent;
+                currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = currentPromo.PlanPromoUpliftPercent;
             }
             if (newUplift != null)
             {
