@@ -164,7 +164,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoOnApprovalIncidents, opt => opt.Ignore())
                     .ForMember(pTo => pTo.CurrentDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
             });
             var mapperPromoBack = cfgPromoBack.CreateMapper();
             //var cfgBTLPromoBack = new MapperConfiguration(cfg =>

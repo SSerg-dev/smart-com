@@ -2276,7 +2276,7 @@
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
         }
 
-        if (!record.data.IsPriceIncrease) {
+        if (!record.data.IsPriceIncrease || record.data.TPMmode == 'RS') {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -3786,7 +3786,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
-        if (!record.data.IsPriceIncrease) {
+        if (!record.data.IsPriceIncrease || record.data.TPMmode == 'RS') {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);

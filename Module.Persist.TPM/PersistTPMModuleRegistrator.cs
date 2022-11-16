@@ -167,10 +167,10 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RollingScenario>();
             modelBuilder.Entity<PromoProductCorrectionView>();
 
-            modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease);
+            modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
-            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases);
-            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithMany(g => g.ProductCorrectionPriceIncreases);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithMany(g => g.ProductCorrectionPriceIncreases).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProductPriceIncreasesView>().ToTable("PromoProductPriceIncreasesView");
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>().ToTable("PromoProductCorrectionPriceIncreaseView"); 
         }

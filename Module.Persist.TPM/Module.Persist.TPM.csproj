@@ -3255,6 +3255,10 @@
     <Compile Include="Migrations\202211141026437_Fix_Unique_PromoProductsCorrection.Designer.cs">
       <DependentUpon>202211141026437_Fix_Unique_PromoProductsCorrection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211161022275_Add_Promo_CascadeDelete_PriceIncrease.cs" />
+    <Compile Include="Migrations\202211161022275_Add_Promo_CascadeDelete_PriceIncrease.Designer.cs">
+      <DependentUpon>202211161022275_Add_Promo_CascadeDelete_PriceIncrease.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6146,6 +6150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211141026437_Fix_Unique_PromoProductsCorrection.resx">
       <DependentUpon>202211141026437_Fix_Unique_PromoProductsCorrection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211161022275_Add_Promo_CascadeDelete_PriceIncrease.resx">
+      <DependentUpon>202211161022275_Add_Promo_CascadeDelete_PriceIncrease.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

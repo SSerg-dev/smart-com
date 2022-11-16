@@ -1002,7 +1002,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void DistributePlanPromoUpliftToProductsPriceIncrease(Promo currentPromo, DatabaseContext context, Guid UserId)
         {
             double? newUplift = currentPromo.PlanPromoUpliftPercentPI;
-            if (!currentPromo.IsPriceIncrease)
+            if (!currentPromo.IsPriceIncrease || currentPromo.TPMmode == Model.Interfaces.TPMmode.RS)
             {
                 newUplift = currentPromo.PlanPromoUpliftPercent;
                 currentPromo.PlanPromoUpliftPercentPI = currentPromo.PlanPromoUpliftPercent;
