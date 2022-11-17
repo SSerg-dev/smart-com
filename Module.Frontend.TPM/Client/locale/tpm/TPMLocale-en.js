@@ -929,8 +929,8 @@
         'ActualPromoNSV': 'Actual Promo NSV',
         'GrowthAcceleration': 'GA',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'ApolloExport': 'Apollo export',
-        'IsApolloExport': 'Apollo export',
+        'ApolloExport': 'Anaplan Export',
+        'IsApolloExport': 'Anaplan Export',
         'GAInExcnange': 'GA InExchange',
         'IsInExchange': 'InExchange',
 
@@ -2267,7 +2267,8 @@
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
         'TPMmode': 'Indicator',
-        'IsPriceIncrease': 'Price Increase'
+        'IsPriceIncrease': 'Price Increase',
+        'IsApolloExport': 'Anaplan Export'
     },
     'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 

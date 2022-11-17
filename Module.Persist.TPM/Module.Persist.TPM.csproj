@@ -3259,6 +3259,10 @@
     <Compile Include="Migrations\202211161022275_Add_Promo_CascadeDelete_PriceIncrease.Designer.cs">
       <DependentUpon>202211161022275_Add_Promo_CascadeDelete_PriceIncrease.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211170949320_UpdatePromoROIReportView_IsApolloExport.cs" />
+    <Compile Include="Migrations\202211170949320_UpdatePromoROIReportView_IsApolloExport.Designer.cs">
+      <DependentUpon>202211170949320_UpdatePromoROIReportView_IsApolloExport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6153,6 +6157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211161022275_Add_Promo_CascadeDelete_PriceIncrease.resx">
       <DependentUpon>202211161022275_Add_Promo_CascadeDelete_PriceIncrease.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211170949320_UpdatePromoROIReportView_IsApolloExport.resx">
+      <DependentUpon>202211170949320_UpdatePromoROIReportView_IsApolloExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

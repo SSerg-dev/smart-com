@@ -294,6 +294,13 @@
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetROIPercentLSV'), dataIndex: 'PlanPromoNetROIPercentLSV', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoROIPercentLSV'), dataIndex: 'ActualPromoROIPercentLSV', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetROIPercentLSV'), dataIndex: 'ActualPromoNetROIPercentLSV', format: '0.00' },
+                {
+                    text: l10n.ns('tpm', 'PromoROIReport').value('IsApolloExport'),
+                    dataIndex: 'IsApolloExport',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
             ]
         }
     }, {

@@ -830,6 +830,7 @@
 					p.[ActualPromoVolume],
 					p.[ActualPromoIncrementalVolume],
 					p.[ActualPromoNetIncrementalVolume],
+					p.[IsApolloExport],
 					p.[Disabled],
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
