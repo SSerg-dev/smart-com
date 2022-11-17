@@ -709,6 +709,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 foreach (PromoProductCorrectionPriceIncrease promoProductsCorrection in currentPromoProducts.SelectMany(g => g.ProductCorrectionPriceIncreases).Where(x => !x.Disabled))
                 {
+                    if (currentPromo.TPMmode == Model.Interfaces.TPMmode.RS)
+                    {
+                        promoProductsCorrection.PlanProductUpliftPercentCorrected = promoProductsCorrection.PromoProductPriceIncrease.PromoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled && g.TempId == null).PlanProductUpliftPercentCorrected;
+                    }
                     summPlanIncremental += promoProductsCorrection.PromoProductPriceIncrease.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
                 }
                 summPlanBaseline += currentPromoProducts.Sum(x => x.PlanProductBaselineLSV);
