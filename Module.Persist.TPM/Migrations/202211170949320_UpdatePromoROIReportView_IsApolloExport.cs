@@ -11,6 +11,7 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             Sql(ViewMigrations.UpdatePromoROIReportViewString(defaultSchema));
+            SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
             Sql(SqlString);
         }
         
