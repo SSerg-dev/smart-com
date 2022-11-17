@@ -88,7 +88,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             rollingScenario.Disabled = true;
             rollingScenario.DeletedDate = DateTimeOffset.Now;
             rollingScenario.PromoStatus = promoStatusCancelled;
-            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g=>g.TPMmode == TPMmode.RS));
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g => g.TPMmode == TPMmode.RS));
             Context.SaveChanges();
         }
         public static void OnApprovalRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
@@ -228,6 +228,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ProductId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
             });
             var mapperPromoProductBack = cfgPromoProductBack.CreateMapper();
@@ -357,9 +358,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                                     promoProductsCorrectionRS.PromoProductId = promoProduct.Id;
                                     promoProductsCorrectionRS.PromoProduct = promoProduct;
                                 }
-                                
+
                             }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
+                            //priceIncrease
+                            List<PromoProductPriceIncrease> pppis = Context.Set<PromoProductPriceIncrease>().Where(g => g.PromoProductId == promoProductRS.Id).ToList();
+                            Context.Set<PromoProductPriceIncrease>().RemoveRange(pppis);
+
                             //promoRS.PromoProducts.Remove(promoProductRS);
                             Context.Set<PromoProduct>().Remove(promoProductRS);
                         }

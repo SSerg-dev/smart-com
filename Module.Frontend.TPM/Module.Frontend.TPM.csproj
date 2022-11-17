@@ -513,6 +513,7 @@
     <Compile Include="FunctionalHelpers\RSPeriod\RSPeriodHelper.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
+    <Compile Include="Util\GetExceptionMessage.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
