@@ -3759,6 +3759,7 @@
 
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
+        debugger;
         //вырубает кнопки в RS режиме
         if (promoeditorcustom.TPMmode == 1) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
@@ -3767,6 +3768,18 @@
                     item.setDisabled(true);
                 }
             });
+            if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
+                promoeditorcustom.down('#btn_recalculatePromo').hide();
+                promoeditorcustom.down('#btn_resetPromo').show();
+            } else if ((App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'administrator'
+                || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'demandplanning' || App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator')
+                && record.data.PromoStatusSystemName != 'Draft' && record.data.PromoStatusSystemName != 'Cancelled') {
+                promoeditorcustom.down('#btn_recalculatePromo').show();
+                promoeditorcustom.down('#btn_resetPromo').hide();
+            } else {
+                promoeditorcustom.down('#btn_recalculatePromo').hide();
+                promoeditorcustom.down('#btn_resetPromo').hide();
+            }
         }
         else if (record.data.PromoStatusSystemName == 'Draft' && App.UserInfo.getCurrentRole().SystemName.toLowerCase() == 'supportadministrator') {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
@@ -3780,7 +3793,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
             promoeditorcustom.down('#btn_resetPromo').hide();
         }
-
+        
         //чтобы убрать кнопку Recalculate при копировании промо в календаре
         if (isCopy) {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
