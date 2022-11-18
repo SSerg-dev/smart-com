@@ -2276,7 +2276,7 @@
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
         }
 
-        if (!record.data.IsPriceIncrease || record.data.TPMmode == 'RS') {
+        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -3759,7 +3759,7 @@
 
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
-        debugger;
+        
         //вырубает кнопки в RS режиме
         if (promoeditorcustom.TPMmode == 1) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
@@ -3799,7 +3799,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
-        if (!record.data.IsPriceIncrease || record.data.TPMmode == 'RS') {
+        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
