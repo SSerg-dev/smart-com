@@ -90,11 +90,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         needReturnToOnApprovalStatus = true;
                     }
                     // PriceIncrease
-                    if (promo.PromoPriceIncrease.PromoProductPriceIncreases != null)
+                    if (promo.PromoPriceIncrease.PromoProductPriceIncreases.Where(x => !x.Disabled) != null)
                     {
                         if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
                         {
-                            PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
+                            PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.ZREP == promoProduct.ZREP && !g.Disabled);
                             promoProductPriceIncrease.Disabled = true;
                             promoProductPriceIncrease.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                         }
