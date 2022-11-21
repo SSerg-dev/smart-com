@@ -197,4 +197,5 @@ with DAG(
     
     upd_promoproduct=update_promoproduct(parameters)
     
-    parameters_calculation >> truncate_temp >> add_new_promoproduct >> upd_promoproduct
+    # parameters_calculation >> truncate_temp >> add_new_promoproduct >> upd_promoproduct
+    parameters_calculation >> truncate_temp >> add_new_promoproduct

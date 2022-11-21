@@ -143,4 +143,5 @@ with DAG(
         wait_for_completion = True,
     )
     
-    child_dag_config >> trigger_jupiter_update_promo_copy >>  update_params >> update_promoproductscorrection
+    # child_dag_config >> trigger_jupiter_update_promo_copy >>  update_params >> update_promoproductscorrection
+    child_dag_config >> trigger_jupiter_update_promo_copy
