@@ -133,8 +133,8 @@ with DAG(
     
     child_dag_config = create_child_dag_config(parameters)
     
-    update_params = update_parameters(parameters)
-    update_promoproductscorrection = update_promoproductscorrection_table(parameters)
+    # update_params = update_parameters(parameters)
+    # update_promoproductscorrection = update_promoproductscorrection_table(parameters)
     
     trigger_jupiter_update_promo_copy = TriggerDagRunOperator(
         task_id="trigger_jupiter_update_promo_copy",

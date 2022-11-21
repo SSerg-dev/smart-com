@@ -195,7 +195,7 @@ with DAG(
                                  params={'PROCESS_DIR':PROMOPRODUCT_PROCESS_DIR},  
                                 )
     
-    upd_promoproduct=update_promoproduct(parameters)
+    # upd_promoproduct=update_promoproduct(parameters)
     
     # parameters_calculation >> truncate_temp >> add_new_promoproduct >> upd_promoproduct
     parameters_calculation >> truncate_temp >> add_new_promoproduct
