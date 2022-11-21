@@ -156,6 +156,7 @@
         { name: 'ActualPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: false },
         { name: 'IsPriceIncrease', type: 'bool', hidden: false, isDefault: true },
+        { name: 'IsApolloExport', type: 'bool', hidden: false, isDefault: true },
 
     ],
     proxy: {

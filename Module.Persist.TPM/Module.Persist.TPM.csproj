@@ -3263,6 +3263,10 @@
     <Compile Include="Migrations\202211170949320_UpdatePromoROIReportView_IsApolloExport.Designer.cs">
       <DependentUpon>202211170949320_UpdatePromoROIReportView_IsApolloExport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211210904433_Add_PromoPriceIncreaseROIReportView.cs" />
+    <Compile Include="Migrations\202211210904433_Add_PromoPriceIncreaseROIReportView.Designer.cs">
+      <DependentUpon>202211210904433_Add_PromoPriceIncreaseROIReportView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6160,6 +6164,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211170949320_UpdatePromoROIReportView_IsApolloExport.resx">
       <DependentUpon>202211170949320_UpdatePromoROIReportView_IsApolloExport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211210904433_Add_PromoPriceIncreaseROIReportView.resx">
+      <DependentUpon>202211210904433_Add_PromoPriceIncreaseROIReportView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

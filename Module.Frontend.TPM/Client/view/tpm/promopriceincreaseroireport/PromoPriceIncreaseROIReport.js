@@ -173,13 +173,6 @@
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
                 },
-                {
-                    text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('IsPriceIncrease'),
-                    dataIndex: 'IsPriceIncrease',
-                    renderer: function (value) {
-                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
-                    }
-                },
                 { text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('PlanInstoreMechanicName'), dataIndex: 'PlanInstoreMechanicName' },
                 { text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('PlanInstoreMechanicTypeName'), dataIndex: 'PlanInstoreMechanicTypeName' },
                 { text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('PlanInstoreMechanicDiscount'), dataIndex: 'PlanInstoreMechanicDiscount', format: '0' },
@@ -301,6 +294,20 @@
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('PlanPromoNetROIPercentLSV'), dataIndex: 'PlanPromoNetROIPercentLSV', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('ActualPromoROIPercentLSV'), dataIndex: 'ActualPromoROIPercentLSV', format: '0.00' },
                 { xtype: 'numbercolumn', text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('ActualPromoNetROIPercentLSV'), dataIndex: 'ActualPromoNetROIPercentLSV', format: '0.00' },
+                {
+                    text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('IsPriceIncrease'),
+                    dataIndex: 'IsPriceIncrease',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
+                {
+                    text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('IsApolloExport'),
+                    dataIndex: 'IsApolloExport',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
             ]
         }
     }, {
