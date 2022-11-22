@@ -26,7 +26,7 @@ with DAG(
     trigger_jupiter_start_night_processing = TriggerDagRunOperator(
         task_id="trigger_jupiter_start_night_processing",
         trigger_dag_id="jupiter_start_night_processing",  
-        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":SCHEMA},
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":SCHEMA,"parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
         wait_for_completion = True,
     )
     
