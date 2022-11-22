@@ -528,6 +528,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("ResetPromo");
             builder.Entity<Promo>().Collection.Action("ChangeResponsible");
             builder.Entity<Promo>().Collection.Action("MassApprove");
+            builder.Entity<Promo>().Collection.Action("SendForApproval");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
             builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
             builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");

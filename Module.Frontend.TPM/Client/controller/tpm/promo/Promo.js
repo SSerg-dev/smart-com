@@ -330,11 +330,14 @@
             }
             var promoController = App.app.getController('tpm.promo.Promo');
             promoController.massApprovalButtonDisable(grid, store);
+            promoController.massSendForApprovalButtonDisable(grid, store);
         });
 
         store.on('beforeload', function (store) {
             var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
             maButton.setDisabled(true);
+            var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
+            msfaButton.setDisabled(true);
         });
         // RSmode
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -404,6 +407,23 @@
             !this.compareFilters(filter, onApprovalGAFilterGAM);
 
         maButton.setDisabled(isDisabled);
+    },
+
+    massSendForApprovalButtonDisable: function (grid, store) {
+        var filters = store.filters.items;        
+        var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
+        var isDisabled = true;
+        var statuscount = 0
+        filters.forEach(function (item) {
+            if (item.property == 'PromoStatusName' && item.value == 'Draft(published)') {
+                isDisabled = false;
+            }
+            if (item.property == 'PromoStatusName') {
+                statuscount++;
+            }
+        });
+
+        msfaButton.setDisabled(isDisabled);
     },
 
     compareFilters: function (filter1, filter2) {

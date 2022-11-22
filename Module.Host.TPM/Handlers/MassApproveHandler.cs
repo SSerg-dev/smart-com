@@ -1,17 +1,10 @@
-﻿using Interfaces.Core.Common;
-using Looper.Core;
+﻿using Looper.Core;
 using Looper.Parameters;
 using Module.Host.TPM.Actions;
-using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Persist;
 using ProcessingHost.Handlers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility.LogWriter;
 
 namespace Module.Host.TPM.Handlers

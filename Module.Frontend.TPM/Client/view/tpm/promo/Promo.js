@@ -43,121 +43,141 @@
     dockedItems: [{
         xtype: 'custombigtoolbar',
         dock: 'right',
-        items: [{
-            xtype: 'widthexpandbutton',
-            ui: 'fill-gray-button-toolbar',
-            text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
-            glyph: 0xf13d,
-            glyph1: 0xf13e,
-            target: function () {
-                return this.up('toolbar');
+        items: [
+            {
+                xtype: 'widthexpandbutton',
+                ui: 'fill-gray-button-toolbar',
+                text: l10n.ns('core', 'selectablePanelButtons').value('toolbarCollapse'),
+                glyph: 0xf13d,
+                glyph1: 0xf13e,
+                target: function () {
+                    return this.up('toolbar');
+                },
+                toggleCollapse: function () {
+                    var target = this.getTarget();
+                    var isCollapsed = this.isCollapsed();
+                    target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
+                    if (isCollapsed) {
+                        target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
+                        target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
+
+
+
+                    } else {
+                        target.down('#createbutton').setUI('create-promo-btn-toolbar');
+                        target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
+                    }
+                    target.isExpanded = !target.isExpanded;
+                },
             },
-            toggleCollapse: function () {
-                var target = this.getTarget();
-                var isCollapsed = this.isCollapsed();
-                target.setWidth(isCollapsed ? target.maxWidth : target.minWidth);
-                if (isCollapsed) {
-                    target.down('#createbutton').setUI('create-promo-btn-toolbar-expanded');
-                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateExpanded'));
 
-
-
-                } else {
-                    target.down('#createbutton').setUI('create-promo-btn-toolbar');
-                    target.down('#createbutton').setText(l10n.ns('tpm', 'Schedule').value('CreateCollapsed'));
+            {
+                itemId: 'createbutton',
+                action: 'Post',
+                glyph: 0xf0f3,
+                text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+                tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+                ui: 'create-promo-btn'
+            },
+            //     {
+            //     itemId: 'createbutton',
+            //     action: 'Post',
+            //     glyph: 0xf0f3,
+            //     text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            //     tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
+            //     ui: 'create-promo-btn'
+            // }, {
+            //     itemId: 'createinoutbutton',
+            //     action: 'Post',
+            //     glyph: 0xf0f3,
+            //     text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+            //     tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
+            //     ui: 'create-promo-btn'
+            // },
+            {
+                itemId: 'updatebutton',
+                action: 'Patch',
+                glyph: 0xf64f,
+                text: l10n.ns('core', 'crud').value('updateButtonText'),
+                tooltip: l10n.ns('core', 'crud').value('updateButtonText')
+            },
+            {
+                itemId: 'deletebutton',
+                action: 'Delete',
+                glyph: 0xf5e8,
+                text: l10n.ns('core', 'crud').value('deleteButtonText'),
+                tooltip: l10n.ns('core', 'crud').value('deleteButtonText')
+            },
+            {
+                itemId: 'historybutton',
+                resource: 'Historical{0}',
+                action: 'Get{0}',
+                glyph: 0xf2da,
+                text: l10n.ns('core', 'crud').value('historyButtonText'),
+                tooltip: l10n.ns('core', 'crud').value('historyButtonText')
+            },
+            '-',
+            {
+                itemId: 'extfilterbutton',
+                glyph: 0xf349,
+                text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
+                tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
+            },
+            {
+                itemId: 'deletedbutton',
+                resource: 'Deleted{0}',
+                action: 'Get{0}',
+                glyph: 0xf258,
+                text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
+                tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+            },
+            {
+                itemId: 'canchangestateonlybutton',
+                action: 'GetCanChangeState{0}',
+                glyph: 0xf5c7,
+                text: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
+                tooltip: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
+            },
+            {
+                itemId: 'canchangeresponsible',
+                resource: 'Promoes',
+                action: 'ChangeResponsible',
+                glyph: 0xf00f,
+                text: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
+                tooltip: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
+            },
+            {
+                glyph: 0xf0d7,
+                action: 'MassApprove',
+                resource: 'Promoes',
+                itemId: 'massapprovalbutton',
+                disabled: true,
+                text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
+                tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
+            },
+            {
+                glyph: 0xfaba,
+                action: 'SendForApproval',
+                resource: 'Promoes',
+                itemId: 'sendforapprovalbutton',
+                disabled: false,
+                text: l10n.ns('tpm', 'Promo').value('MassSendForApprovalButtonText'),
+                tooltip: l10n.ns('tpm', 'Promo').value('MassSendForApprovalButtonText')
+            },
+            '-', '->', '-',
+            {
+                itemId: 'extfilterclearbutton',
+                ui: 'blue-button-toolbar',
+                disabled: true,
+                glyph: 0xf232,
+                text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+                tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
+                overCls: '',
+                style: {
+                    'cursor': 'default'
                 }
-                target.isExpanded = !target.isExpanded;
-            },
-        },
-
-        {
-            itemId: 'createbutton',
-            action: 'Post',
-            glyph: 0xf0f3,
-            text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-            tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-            ui: 'create-promo-btn'
-        },
-        //     {
-        //     itemId: 'createbutton',
-        //     action: 'Post',
-        //     glyph: 0xf0f3,
-        //     text: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-        //     tooltip: l10n.ns('tpm', 'Promo').value('CreateCollapsed'),
-        //     ui: 'create-promo-btn'
-        // }, {
-        //     itemId: 'createinoutbutton',
-        //     action: 'Post',
-        //     glyph: 0xf0f3,
-        //     text: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-        //     tooltip: l10n.ns('tpm', 'Promo').value('CreateInOutCollapsed'),
-        //     ui: 'create-promo-btn'
-        // },
-        {
-            itemId: 'updatebutton',
-            action: 'Patch',
-            glyph: 0xf64f,
-            text: l10n.ns('core', 'crud').value('updateButtonText'),
-            tooltip: l10n.ns('core', 'crud').value('updateButtonText')
-        }, {
-            itemId: 'deletebutton',
-            action: 'Delete',
-            glyph: 0xf5e8,
-            text: l10n.ns('core', 'crud').value('deleteButtonText'),
-            tooltip: l10n.ns('core', 'crud').value('deleteButtonText')
-        }, {
-            itemId: 'historybutton',
-            resource: 'Historical{0}',
-            action: 'Get{0}',
-            glyph: 0xf2da,
-            text: l10n.ns('core', 'crud').value('historyButtonText'),
-            tooltip: l10n.ns('core', 'crud').value('historyButtonText')
-        }, '-', {
-            itemId: 'extfilterbutton',
-            glyph: 0xf349,
-            text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),
-            tooltip: l10n.ns('core', 'toptoolbar').value('filterButtonText')
-        }, {
-            itemId: 'deletedbutton',
-            resource: 'Deleted{0}',
-            action: 'Get{0}',
-            glyph: 0xf258,
-            text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
-            tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
-        }, {
-            itemId: 'canchangestateonlybutton',
-            action: 'GetCanChangeState{0}',
-            glyph: 0xf5c7,
-            text: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
-            tooltip: l10n.ns('tpm', 'Promo').value('ChangeStateOnlyButtonText'),
-        }, {
-            itemId: 'canchangeresponsible',
-            resource: 'Promoes',
-            action: 'ChangeResponsible',
-            glyph: 0xf00f,
-            text: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
-            tooltip: l10n.ns('tpm', 'Promo').value('ChangeResponsible'),
-        }, {
-            glyph: 0xf0d7,
-            action: 'MassApprove',
-            resource: 'Promoes',
-            itemId: 'massapprovalbutton',
-            disabled: true,
-            text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
-            tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
-        },
-            '-', '->', '-', {
-            itemId: 'extfilterclearbutton',
-            ui: 'blue-button-toolbar',
-            disabled: true,
-            glyph: 0xf232,
-            text: l10n.ns('core', 'filter').value('filterEmptyStatus'),
-            tooltip: l10n.ns('core', 'filter').value('filterEmptyStatus'),
-            overCls: '',
-            style: {
-                'cursor': 'default'
             }
-        }]
+        ]
     }],
 
     items: [{

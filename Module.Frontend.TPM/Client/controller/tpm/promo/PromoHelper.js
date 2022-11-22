@@ -9,6 +9,10 @@
                 'promo #massapprovalbutton': {
                     click: this.onMassApprovalButtonClick
                 },
+                //promo Mass send for approval
+                'promo #sendforapprovalbutton': {
+                    click: this.onSendForApprovalButtonClick
+                },
                 // promo activity
                 'promoactivity #promoActivity_step2 #exportAllPromoProducts': {
                     click: this.onActivityExportPromoProductsClick
@@ -748,5 +752,78 @@
         };
 
         return filter;
+    },
+    onSendForApprovalButtonClick: function (button) {
+        var me = this;
+        var panel = button.up('panel');
+        Ext.Msg.show({
+            title: l10n.ns('tpm', 'text').value('Confirmation'),
+            msg: l10n.ns('tpm', 'Promo').value('ConfirmSendForApproval'),
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    me.onOkSendForApprovalClick(btn, me, panel);
+                }
+            },
+            icon: Ext.Msg.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                yes: l10n.ns('tpm', 'button').value('confirm'),
+                no: l10n.ns('tpm', 'button').value('cancel')
+            }
+        });
+    },
+    onOkSendForApprovalClick: function (button, me, window) {
+        window.setLoading(true);
+        var params = this.getParamsForMassApprove();
+        if (params.end >= 0) {
+            if (!params.store.data.hasRange(params.start, params.end)) {
+                params.store.on('guaranteedrange', this.onFullLoadedStore, this);
+                //Заставляем догрузить недостающие записи
+                params.store.getRange(params.start, params.end);
+            } else {
+                this.onFullLoadedStore();
+            }
+        } else {
+            window.setLoading(false);
+            App.Notify.pushError("There is no promo to send for approval!");
+        }
+    },
+    onFullLoadedStore: function () {
+        var params = this.getParamsForMassApprove();
+        params.store.removeListener('guaranteedrange', this.onFullLoadedStore, this);
+        var records = params.store.getRange(params.start, params.end);
+        var promoNumbers = "";
+        records.forEach(function (el) {
+            promoNumbers += el.data.Number + ",";
+        })
+
+        var window = Ext.ComponentQuery.query('#sendforapprovalbutton')[0].up('panel');
+        if (promoNumbers != "") {
+            $.ajax({
+                dataType: 'json',
+                url: '/odata/Promoes/SendForApproval',
+                type: 'POST',
+                data: promoNumbers,
+                success: function (response) {
+                    var data = Ext.JSON.decode(response.value);
+                    if (data.success) {
+                        window.setLoading(false);
+                        App.Notify.pushInfo('Mass Send For approval task created successfully');
+                        App.System.openUserTasksPanel();
+                    }
+                    else {
+                        window.setLoading(false);
+                        App.Notify.pushError(l10n.ns('tpm', 'text').value('failedStatusLoad'));
+                    }
+                },
+                error: function (data) {
+                    window.setLoading(false);
+                    App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+                }
+            });
+        } else {
+            window.setLoading(false);
+            App.Notify.pushError("There is no promo to approve!");
+        }
     },
 });

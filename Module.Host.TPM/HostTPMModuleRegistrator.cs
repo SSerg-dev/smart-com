@@ -95,6 +95,7 @@ namespace Module.Host.TPM
                 new Handlers.ReapprovingHandler(),
                 new Handlers.ExportHandler(),
                 new Handlers.MassApproveHandler(),
+                new Handlers.MassSendForApprovalHandler(),
                 new Handlers.SendingFilesToBlobHandler(),
                 new Handlers.FullXLSXRPAEventImportHandler(),
                 new Handlers.RSperiodExpiredHandler()
