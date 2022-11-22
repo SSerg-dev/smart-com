@@ -192,7 +192,7 @@ with DAG(
     
     add_new_promoproduct = BashOperator(task_id="add_new_promoproduct",
                                  do_xcom_push=True,
-                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="ProcessPath")}}{{params.PROCESS_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_PROMOPRODUCT\" "1" ',
+                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="ProcessPath")}}{{params.PROCESS_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_PROMOPRODUCT_YA\" "1" ',
                                  params={'PROCESS_DIR':PROMOPRODUCT_PROCESS_DIR},  
                                 )
     
