@@ -6,6 +6,7 @@ from airflow.operators.bash import BashOperator
 from airflow.utils.trigger_rule import TriggerRule
 from airflow.decorators import dag, task
 import uuid
+from datetime import datetime
 
 SCHEMA = "Jupiter"
 
