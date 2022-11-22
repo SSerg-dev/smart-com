@@ -17,8 +17,8 @@ with DAG(
     dag_id="jupiter_main_dispatcher",
     start_date=pendulum.datetime(2022, 7, 28, 7, 20, tz="UTC"),
     catchup=False,
-    schedule_interval=None,
-#     schedule_interval='20 7 * * *',
+    # schedule_interval=None,
+    schedule_interval='0 22 * * *',
     tags=["jupiter", "dev","main"],
 ) as dag:
     handler_id=generate_handler_id()
