@@ -112,7 +112,7 @@ def set_night_processing_progress_flag_up(parameters:dict):
 def create_night_processing_wait_handler(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-	handler_id = parameters["HandlerId"]
+    handler_id = parameters["HandlerId"]
     result = odbc_hook.run(sql=f"""exec [{schema}].[CreateNightProcessingWaitHandler] @HandlerId = ? """,parameters=(handler_id))
     print(result)
 
