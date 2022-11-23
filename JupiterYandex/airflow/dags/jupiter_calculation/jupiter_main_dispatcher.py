@@ -19,7 +19,7 @@ with DAG(
     start_date=datetime(2022, 11, 22),
     catchup=False,
     # schedule_interval=None,
-    schedule_interval='0 7 * * *',
+    schedule_interval='30 22 * * *',
     tags=["jupiter", "dev","main"],
     default_args={'retries': 2},
 ) as dag:
