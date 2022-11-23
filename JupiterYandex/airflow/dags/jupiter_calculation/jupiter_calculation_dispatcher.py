@@ -21,6 +21,7 @@ with DAG(
     catchup=False,
     schedule_interval=None,
     tags=TAGS,
+    default_args={'retries': 2},	
 ) as dag:
     
     handler_id=generate_handler_id()

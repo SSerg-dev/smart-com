@@ -21,6 +21,7 @@ with DAG(
     # schedule_interval=None,
     schedule_interval='0 7 * * *',
     tags=["jupiter", "dev","main"],
+    default_args={'retries': 2},
 ) as dag:
     handler_id=generate_handler_id()
     

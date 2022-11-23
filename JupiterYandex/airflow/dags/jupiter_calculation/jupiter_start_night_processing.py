@@ -126,6 +126,7 @@ with DAG(
     catchup=False,
     tags=["jupiter", "dev"],
     render_template_as_native_obj=True,
+    default_args={'retries': 2},	
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
