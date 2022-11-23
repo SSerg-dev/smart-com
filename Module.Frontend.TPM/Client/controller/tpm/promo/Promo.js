@@ -422,7 +422,9 @@
                 statuscount++;
             }
         });
-
+        if (statuscount > 1) {
+            isDisabled = true;
+        }
         msfaButton.setDisabled(isDisabled);
     },
 

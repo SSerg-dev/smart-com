@@ -20,7 +20,7 @@ namespace Module.Persist.TPM.Migrations
             AddPrimaryKey($"{defaultSchema}.PromoProductCorrectionPriceIncrease", "Id");
             CreateIndex($"{defaultSchema}.PromoProductCorrectionPriceIncrease", "PromoProductPriceIncreaseId");
             AddForeignKey($"{defaultSchema}.PromoProductCorrectionPriceIncrease", "PromoProductPriceIncreaseId", $"{defaultSchema}.PromoProductPriceIncrease", "Id");
-            Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreaseViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdatePromoProductCorrectionPriceIncreaseViewString(defaultSchema));
             Sql(ViewMigrations.UpdatePromoProductPriceIncreasesViewString(defaultSchema));
         }
         

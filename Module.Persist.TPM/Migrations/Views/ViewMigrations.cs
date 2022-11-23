@@ -944,7 +944,10 @@
 			return UpdatePromoPriceIncreaseROIReportViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoPriceIncreaseROIReportViewSqlString = @"
-			DROP VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView]
+			IF EXISTS(SELECT 'view exists' FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = N'PromoPriceIncreaseROIReportView'AND TABLE_SCHEMA = 'DefaultSchemaSetting')
+				BEGIN
+					DROP VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView]
+				END
 			GO
 
 			CREATE   VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView] AS
@@ -1567,7 +1570,10 @@
 			return UpdatePromoProductCorrectionPriceIncreaseViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoProductCorrectionPriceIncreaseViewSqlString = @"
-			DROP VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
+			IF EXISTS(SELECT 'view exists' FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = N'PromoProductCorrectionPriceIncreaseView'AND TABLE_SCHEMA = 'DefaultSchemaSetting')
+				BEGIN
+					DROP VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
+				END
 			GO
 				CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
 			AS

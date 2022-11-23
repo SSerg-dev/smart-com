@@ -33,7 +33,8 @@ namespace Module.Host.TPM.Actions
         {
             using (DatabaseContext context = new DatabaseContext())
             {
-                var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString())).ToList();
+                DateTimeOffset tomorrow = DateTimeOffset.Now.AddDays(1).Date;
+                var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString()) && x.StartDate > tomorrow).ToList();
 
                 ValidatePromoes(ref promoList);
                 TryToApproval(promoList, context);
