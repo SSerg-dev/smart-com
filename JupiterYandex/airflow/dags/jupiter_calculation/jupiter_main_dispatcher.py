@@ -16,10 +16,10 @@ def generate_handler_id():
 
 with DAG(
     dag_id="jupiter_main_dispatcher",
-    start_date=datetime(2022, 11, 21),
+    start_date=datetime(2022, 11, 22),
     catchup=False,
     # schedule_interval=None,
-    schedule_interval='0 22 * * *',
+    schedule_interval='0 7 * * *',
     tags=["jupiter", "dev","main"],
 ) as dag:
     handler_id=generate_handler_id()
