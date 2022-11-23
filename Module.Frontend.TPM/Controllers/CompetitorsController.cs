@@ -146,7 +146,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return InternalServerError(GetExceptionMessage.GetInnerException(ex));
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -324,12 +324,12 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    return InternalServerError(ex);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(ex));
                 }
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return InternalServerError(GetExceptionMessage.GetInnerException(ex));
             }
 
             return Updated(model);
@@ -348,7 +348,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 

@@ -214,11 +214,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             if (promoProductPriceIncrease.ProductCorrectionPriceIncreases.Count > 0)
                             {
-                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().Disabled = true;
-                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().DeletedDate = DateTimeOffset.UtcNow;
-                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().ChangeDate = DateTimeOffset.UtcNow;
-                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().UserId = user.Id;
-                                promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault().UserName = user.Name;
+                                foreach (PromoProductCorrectionPriceIncrease productCorrectionPriceIncrease in promoProductPriceIncrease.ProductCorrectionPriceIncreases)
+                                {
+                                    productCorrectionPriceIncrease.Disabled = true;
+                                    productCorrectionPriceIncrease.DeletedDate = DateTimeOffset.UtcNow;
+                                    productCorrectionPriceIncrease.ChangeDate = DateTimeOffset.UtcNow;
+                                    productCorrectionPriceIncrease.UserId = user.Id;
+                                    productCorrectionPriceIncrease.UserName = user.Name;
+                                }                                
                             }
                         }
                     }
@@ -711,7 +714,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     if (currentPromo.TPMmode == Model.Interfaces.TPMmode.RS)
                     {
-                        promoProductsCorrection.PlanProductUpliftPercentCorrected = promoProductsCorrection.PromoProductPriceIncrease.PromoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled && g.TempId == null).PlanProductUpliftPercentCorrected;
+                        PromoProductsCorrection productsCorrection = promoProductsCorrection.PromoProductPriceIncrease.PromoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled && g.TempId == null);
+                        if (productsCorrection != null)
+                        {
+                            promoProductsCorrection.PlanProductUpliftPercentCorrected = productsCorrection.PlanProductUpliftPercentCorrected;
+                        }                        
                     }
                     summPlanIncremental += promoProductsCorrection.PromoProductPriceIncrease.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
                 }

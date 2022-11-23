@@ -5,6 +5,7 @@ using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -47,9 +48,9 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             DateTime dt = dateFilter ?? DateTime.Now;
 
-            IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root" 
+            IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
                 || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
-            
+
             foreach (ClientTree q in query)
             {
                 if (q.DistrMarkUp == 0)
@@ -150,17 +151,17 @@ namespace Module.Frontend.TPM.Controllers
                 else
                 {
                     ClientTree rootNode = Context.Set<ClientTree>().Where(x => x.ObjectId == 5000000 && !x.EndDate.HasValue).FirstOrDefault();
-                
+
                     return Json(new
                     {
                         success = true,
-                        children = new ClientTreeNode(rootNode, false, false, true)                        
+                        children = new ClientTreeNode(rootNode, false, false, true)
                     });
                 }
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
         [ClaimsAuthorize]
@@ -211,7 +212,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
         /// <summary>
@@ -302,7 +303,7 @@ namespace Module.Frontend.TPM.Controllers
             List<ClientTreeNode> addedNodes = new List<ClientTreeNode>();
             List<ClientTree> filterList = filterTreeList.ToList();
 
-            addedNodes.Add(tree);            
+            addedNodes.Add(tree);
 
             // если найден корень, возвращаем всё дерево
             if (!filterList.Any(n => n.Type == "root"))
@@ -352,18 +353,18 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     int objectId = int.Parse(clientObjectId);
                     ClientTree checkedClient = activeTree.FirstOrDefault(n => n.ObjectId == objectId);
-                    
-					if (checkedClient != null)
-					{
-						ClientTreeNode currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
-						while (currentNode == null)
-						{
-							checkedClient = activeTree.First(n => n.ObjectId == checkedClient.parentId);
-							currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == checkedClient.ObjectId);
-						}
-						if (currentNode.Type != "root" && filterList.Any(n => n.ObjectId == currentNode.ObjectId))
-							currentNode.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, true, false));
-					}
+
+                    if (checkedClient != null)
+                    {
+                        ClientTreeNode currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == objectId);
+                        while (currentNode == null)
+                        {
+                            checkedClient = activeTree.First(n => n.ObjectId == checkedClient.parentId);
+                            currentNode = addedNodes.FirstOrDefault(n => n.ObjectId == checkedClient.ObjectId);
+                        }
+                        if (currentNode.Type != "root" && filterList.Any(n => n.ObjectId == currentNode.ObjectId))
+                            currentNode.AddChild(GetChildrenTreeNode(currentNode, activeTree, addedNodes, true, false));
+                    }
                 }
             }
             else
@@ -441,7 +442,7 @@ namespace Module.Frontend.TPM.Controllers
 
                         break;
                     }
-                    
+
                     ClientTree parent = activeTree.Where(x => x.ObjectId == currentNode.parentId).FirstOrDefault();
                     bool isNodeChecked = linkedNodes.Any(x => x.ObjectId == parent.ObjectId);
                     ClientTreeNode treeNodeParent = new ClientTreeNode(parent, true, false, false, isNodeChecked);
@@ -450,8 +451,8 @@ namespace Module.Frontend.TPM.Controllers
                     treeNodeParent.AddChild(currentNode);
 
                     // выбираем узлы, которые располагаются на одном уровне с текущим и добавляем их в дерево (чтобы вид открывшегося дерева был такой же, каким был когда производится выбор узлов)
-                    List<ClientTree> currentNodeFellows = activeTree.Where(x => x.parentId == currentNode.parentId 
-                            && x.ObjectId != currentNode.ObjectId  
+                    List<ClientTree> currentNodeFellows = activeTree.Where(x => x.parentId == currentNode.parentId
+                            && x.ObjectId != currentNode.ObjectId
                             && x.Type != "root").ToList();
                     foreach (var node in currentNodeFellows)
                     {
@@ -540,30 +541,30 @@ namespace Module.Frontend.TPM.Controllers
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
 
-			if (branch == null)
-			{
-				return GetTreeForLevel("root");
-			}
-			else
-			{
-				return Json(new
-				{
-					success = branch != null,
-					children = branch
-				});
-			}
-		}
+            if (branch == null)
+            {
+                return GetTreeForLevel("root");
+            }
+            else
+            {
+                return Json(new
+                {
+                    success = branch != null,
+                    children = branch
+                });
+            }
+        }
 
-		/// <summary>
-		/// Получить потомков
-		/// </summary>
-		/// <param name="clientTree">Текущий узел</param>
-		/// <param name="activeTree">Активное дерево</param>
-		/// <param name="addedNodes">Отфильтрованные узлы</param>
-		/// <param name="full">Получить всех потомков или толькло для текущего уровня</param>
-		/// <param name="expandAll">Раскрывать ли потомков</param>
-		/// <returns></returns>
-		private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll, List<ClientTree> linkedNodes = null)
+        /// <summary>
+        /// Получить потомков
+        /// </summary>
+        /// <param name="clientTree">Текущий узел</param>
+        /// <param name="activeTree">Активное дерево</param>
+        /// <param name="addedNodes">Отфильтрованные узлы</param>
+        /// <param name="full">Получить всех потомков или толькло для текущего уровня</param>
+        /// <param name="expandAll">Раскрывать ли потомков</param>
+        /// <returns></returns>
+        private List<ClientTreeNode> GetChildrenTreeNode(ClientTreeNode clientTree, IQueryable<ClientTree> activeTree, List<ClientTreeNode> addedNodes, bool full, bool expandAll, List<ClientTree> linkedNodes = null)
         {
             List<ClientTreeNode> children = new List<ClientTreeNode>();
             IQueryable<ClientTree> clientTreeList = activeTree.Where(x => x.parentId == clientTree.ObjectId && x.parentId != x.ObjectId);
@@ -600,7 +601,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             activeTree = GetConstraintedQuery();
             ClientTree parent = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
             string fullPathClientName = model.Name;
@@ -624,7 +625,8 @@ namespace Module.Frontend.TPM.Controllers
             var result = mapper.Map(model, proxy);
 
             //Проверка DemandCode
-            if (!CheckDemandCode(model)) {
+            if (!CheckDemandCode(model))
+            {
                 string msg = "There is a ClientTree with such DemandCode";
                 return Json(new { success = false, message = msg });
             }
@@ -708,7 +710,7 @@ namespace Module.Frontend.TPM.Controllers
                     if (model.DemandCode != currentRecord.DemandCode)
                     {
                         if (!currentRecord.IsBaseClient)
-                            ClientTreeBrandTechesController.ResetClientTreeBrandTechDemandGroup(model.DemandCode, firstchildNodes,currentRecord, Context);
+                            ClientTreeBrandTechesController.ResetClientTreeBrandTechDemandGroup(model.DemandCode, firstchildNodes, currentRecord, Context);
                         else
                             ClientTreeBrandTechesController.ResetClientTreeBrandTechDemandGroup(model.DemandCode, new List<ClientTree>() { currentRecord }, currentRecord, Context);
                     }
@@ -729,7 +731,7 @@ namespace Module.Frontend.TPM.Controllers
                         }
                     }
                 }
-                model.DeviationCoefficient = model.IsBaseClient 
+                model.DeviationCoefficient = model.IsBaseClient
                                                 ? model.DeviationCoefficient / -10000
                                                 : 0;
 
@@ -753,7 +755,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -790,7 +792,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -824,7 +826,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             activeTree = GetConstraintedQuery();
             ClientTree clientTree = activeTree.Where(x => x.Id == key).FirstOrDefault();
-            List<ClientTreeNode> nodes = new List<ClientTreeNode>();            
+            List<ClientTreeNode> nodes = new List<ClientTreeNode>();
 
             //получаем всех предков
             while (clientTree.Type != "root")
@@ -873,7 +875,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -985,7 +987,8 @@ namespace Module.Frontend.TPM.Controllers
         /// </summary>
         /// <param name="tree"></param>
         /// <returns></returns>
-        public bool CheckDemandCode(ClientTree tree) {
+        public bool CheckDemandCode(ClientTree tree)
+        {
             return String.IsNullOrEmpty(tree.DemandCode) || !GetConstraintedQuery().Any(y => y.DemandCode == tree.DemandCode && tree.ObjectId != y.ObjectId);
         }
 
@@ -1010,11 +1013,11 @@ namespace Module.Frontend.TPM.Controllers
                 ClientTree clientTree = Context.Set<ClientTree>().Find(clientTreeId);
                 if (clientTree == null)
                     return NotFound();
-          
+
                 // удаляем старую картинку если была
                 if (clientTree.LogoFileName != null)
                 {
-                    if(fileDispatcher.IsExists(directory, clientTree.LogoFileName))
+                    if (fileDispatcher.IsExists(directory, clientTree.LogoFileName))
                     {
                         fileDispatcher.DeleteFile(Path.Combine(directory, clientTree.LogoFileName));
                     }
@@ -1040,7 +1043,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 string directory = Core.Settings.AppSettingsManager.GetSetting("CLIENT_TREE_DIRECTORY", "ClientTreeLogoFiles");
                 string logDir = Core.Settings.AppSettingsManager.GetSetting<string>("HANDLER_LOG_TYPE", "File");
-               
+
                 if (logDir == "Azure")
                 {
                     return FileUtility.DownloadFileAzure(directory, fileName);
@@ -1069,7 +1072,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     fileDispatcher.DeleteFile(Path.Combine(directory, currentClient.LogoFileName));
                 }
-              
+
                 currentClient.LogoFileName = null;
                 await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "The file from selected client was removed successfully." }));

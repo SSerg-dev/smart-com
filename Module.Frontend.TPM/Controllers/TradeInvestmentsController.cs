@@ -268,7 +268,7 @@ namespace Module.Frontend.TPM.Controllers {
 
                 return StatusCode(HttpStatusCode.NoContent);
             } catch (Exception e) {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -479,7 +479,7 @@ namespace Module.Frontend.TPM.Controllers {
             if (exc != null && (exc.Number == 2627 || exc.Number == 2601)) {
                 return InternalServerError(new Exception("This Trade Investment has already existed"));
             } else {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 

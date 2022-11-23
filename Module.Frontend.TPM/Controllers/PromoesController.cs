@@ -183,7 +183,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -860,7 +860,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return InternalServerError(GetExceptionMessage.GetInnerException(ex));
             }
         }
 
@@ -882,7 +882,7 @@ namespace Module.Frontend.TPM.Controllers
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
 
@@ -1135,7 +1135,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
         [ClaimsAuthorize]
@@ -1292,7 +1292,7 @@ namespace Module.Frontend.TPM.Controllers
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
         }
@@ -1381,7 +1381,7 @@ namespace Module.Frontend.TPM.Controllers
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
         }

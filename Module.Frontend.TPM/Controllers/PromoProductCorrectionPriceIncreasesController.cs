@@ -160,7 +160,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
     }

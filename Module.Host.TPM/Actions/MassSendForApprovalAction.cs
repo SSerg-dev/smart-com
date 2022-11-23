@@ -1,4 +1,5 @@
 ﻿using Interfaces.Implementation.Action;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
@@ -34,7 +35,7 @@ namespace Module.Host.TPM.Actions
             using (DatabaseContext context = new DatabaseContext())
             {
                 DateTimeOffset tomorrow = DateTimeOffset.Now.AddDays(1).Date;
-                var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString()) && x.StartDate > tomorrow).ToList();
+                var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString()) && x.StartDate > tomorrow && x.TPMmode == TPMmode.Current).ToList();
 
                 ValidatePromoes(ref promoList);
                 TryToApproval(promoList, context);
