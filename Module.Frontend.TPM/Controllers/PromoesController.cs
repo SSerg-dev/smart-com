@@ -365,7 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
-                    .Include(g => g.PromoPriceIncrease)
+                    .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(y => y.ProductCorrectionPriceIncreases))
                     .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {

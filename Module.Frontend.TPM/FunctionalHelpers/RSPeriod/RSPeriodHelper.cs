@@ -164,8 +164,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoOnApprovalIncidents, opt => opt.Ignore())
                     .ForMember(pTo => pTo.CurrentDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
+                cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
             });
             var mapperPromoBack = cfgPromoBack.CreateMapper();
             //var cfgBTLPromoBack = new MapperConfiguration(cfg =>
@@ -244,6 +249,40 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             });
             var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
 
+            var cfgPromoPriceIncreaseBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
+            });
+            var mapperPromoPriceIncreaseBack = cfgPromoPriceIncreaseBack.CreateMapper();
+            var cfgPromoProductPriceIncreaseBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncreaseId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.Ignore());
+            });
+            var mapperPromoProductPriceIncreaseBack = cfgPromoProductPriceIncreaseBack.CreateMapper();
+            var cfgPromoProductCorrectionPriceIncreaseBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreaseId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncrease, opt => opt.Ignore());
+            });
+            var mapperPromoProductCorrectionPriceIncreaseBack = cfgPromoProductCorrectionPriceIncreaseBack.CreateMapper();
+
             Guid promoStatusOnApproval = Context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == StateNames.ON_APPROVAL).Id;
             List<Guid> promoRSids = promoesRS.Select(h => h.Id).ToList();
             promoesRS = Context.Set<Promo>()
@@ -260,6 +299,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .Include(g => g.PromoApprovedIncidents)
                     .Include(g => g.CurrentDayIncrementals)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
                 .Where(x => promoRSids.Contains(x.Id)).ToList();
 
             List<int> promoRSnumbers = promoesRS.Select(h => h.Number).Cast<int>().ToList();
@@ -269,7 +309,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
-                .Where(x => promoRSnumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
+                    .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
+                    .Where(x => promoRSnumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
             List<int> numbers = promos.Select(g => g.Number).Cast<int>().ToList();
             foreach (Promo promoRS in promoesRS.ToList())
             {
@@ -362,11 +403,36 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             }
                             mapperPromoProductBack.Map(promoProductRS, promoProduct);
                             //priceIncrease
-                            List<PromoProductPriceIncrease> pppis = Context.Set<PromoProductPriceIncrease>().Where(g => g.PromoProductId == promoProductRS.Id).ToList();
-                            Context.Set<PromoProductPriceIncrease>().RemoveRange(pppis);
+                            var promoProductPI = promo.PromoPriceIncrease.PromoProductPriceIncreases
+                                .FirstOrDefault(f => f.PromoProductId == promoProduct.Id && !f.Disabled);
+                            var promoProductPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled);
+
+                            var promoProductCorrectionPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                .FirstOrDefault(f => !f.Disabled);
+
+                            
+                            PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                .FirstOrDefault(f => f.ZREP == promoProduct.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                .FirstOrDefault(f => !f.Disabled);
+                            if (promoProductsCorrectionPI != null)
+                            {
+                                mapperPromoProductCorrectionPriceIncreaseBack.Map(promoProductCorrectionPIRS, promoProductsCorrectionPI);
+                                //MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductCorrectionPIRS.Id);
+                                Context.Set<PromoProductCorrectionPriceIncrease>().Remove(promoProductCorrectionPIRS);
+                            }
+                            else
+                            {
+                                promoProductCorrectionPIRS.PromoProductPriceIncreaseId = promoProductPI.Id;
+                                promoProductCorrectionPIRS.PromoProductPriceIncrease = promoProductPI;
+                            }
+
+
+                            mapperPromoProductPriceIncreaseBack.Map(promoProductPIRS, promoProductPI);
 
                             //promoRS.PromoProducts.Remove(promoProductRS);
-                            Context.Set<PromoProduct>().Remove(promoProductRS);
+                            Context.Set<PromoProductPriceIncrease>().Remove(promoProductPIRS);
                         }
                         else // новый PromoProduct
                         {
