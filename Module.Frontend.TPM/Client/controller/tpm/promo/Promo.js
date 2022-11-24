@@ -410,11 +410,24 @@
     },
 
     massSendForApprovalButtonDisable: function (grid, store) {
-        var filters = store.filters.items;        
+        debugger;
+        var filters = store.filters.items;
+        
         var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
         var isDisabled = true;
-        var statuscount = 0
-        filters.forEach(function (item) {
+        var statuscount = 0;
+        var arrayFilters = [];
+        filters.forEach(function (item) {            
+            arrayFilters.push({ property: item.property, value: item.value });
+        });
+        if (store.extendedFilter.filter) {
+            var extFilters = store.getExtendedFilter().filter.rules;
+            extFilters.forEach(function (item) {            
+                arrayFilters.push({ property: item.property, value: item.value });
+            });
+        }
+        arrayFilters = [...new Map(arrayFilters.map((item) => [item["id"], item])).values()]
+        arrayFilters.forEach(function (item) {
             if (item.property == 'PromoStatusName' && item.value == 'Draft(published)') {
                 isDisabled = false;
             }
@@ -2767,7 +2780,7 @@
         record.data.DocumentNumber = promoActivityStep2.down('textfield[name=DocumentNumber]').getValue();
         record.data.PlanPromoUpliftPercent = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercent]').getValue();
         record.data.PlanPromoUpliftPercentPI = promoActivityStep2.down('triggerfielddetails[name=PlanPromoUpliftPercentPI]').getValue();
-        
+
         var needRecountUplift = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckbox').getValue();
         if (needRecountUplift === true) {
             record.data.NeedRecountUplift = false;
@@ -3172,7 +3185,7 @@
         var planPromoIncrementalLSVPI = promoActivityStep2.down('[name=PlanPromoIncrementalLSVPI]');
         var planPromoLSVPI = promoActivityStep2.down('[name=PlanPromoLSVPI]');
         var planPostPromoEffectPI = promoActivityStep2.down('[name=PlanPromoPostPromoEffectLSVPI]');
-        
+
         var actualPromoUpliftPercent = promoActivityStep2.down('[name=ActualPromoUpliftPercent]');
         var actualPromoBaselineLSV = promoActivityStep2.down('[name=ActualPromoBaselineLSV]');
         var actualPromoIncrementalLSV = promoActivityStep2.down('[name=ActualPromoIncrementalLSV]');
@@ -3685,7 +3698,7 @@
             //if (documentNumber.crudAccess.indexOf(currentRole) === -1) {
             //    documentNumber.setReadOnly(true);
             //}
-            
+
             planPromoUpliftPercent.setValue(record.data.PlanPromoUpliftPercent);
             promoUpliftLockedUpdateCheckbox.setValue(!record.data.NeedRecountUplift);
             planPromoUpliftPercent.defaultValue = !record.data.NeedRecountUplift;
@@ -3781,7 +3794,7 @@
 
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
-        
+
         //вырубает кнопки в RS режиме
         if (promoeditorcustom.TPMmode == 1) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
@@ -3815,7 +3828,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
             promoeditorcustom.down('#btn_resetPromo').hide();
         }
-        
+
         //чтобы убрать кнопку Recalculate при копировании промо в календаре
         if (isCopy) {
             promoeditorcustom.down('#btn_recalculatePromo').hide();
