@@ -35,6 +35,7 @@ namespace Module.Host.TPM.Actions
             using (DatabaseContext context = new DatabaseContext())
             {
                 DateTimeOffset tomorrow = DateTimeOffset.Now.AddDays(1).Date;
+                ChangeTimeZoneUtil.ResetTimeZone(tomorrow);
                 var promoList = context.Set<Promo>().Where(x => !x.Disabled && PromoesList.Contains(x.Number.ToString()) && x.StartDate > tomorrow && x.TPMmode == TPMmode.Current).ToList();
 
                 ValidatePromoes(ref promoList);

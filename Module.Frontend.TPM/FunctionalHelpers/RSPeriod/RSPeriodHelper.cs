@@ -248,7 +248,43 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
             });
             var mapperPromoProductsCorrectionBack = cfgPromoProductsCorrectionBack.CreateMapper();
-
+            var cfgPromoProductWithCorrBack = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.MapFrom(f => f.PromoProductsCorrections.Where(g => !g.Disabled)))
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.MapFrom(f => f.PromoProductPriceIncreases.Where(g => !g.Disabled)))
+                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncreaseId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.MapFrom(f => f.ProductCorrectionPriceIncreases.Where(g => !g.Disabled)));
+                cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())
+                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreaseId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncrease, opt => opt.Ignore());
+            });
+            var mapperPromoProductWithCorrBack = cfgPromoProductWithCorrBack.CreateMapper();
             var cfgPromoPriceIncreaseBack = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
@@ -378,70 +414,119 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             promoProductTreeRS.TPMmode = TPMmode.Current;
                         }
                     }
-                    foreach (PromoProduct promoProductRS in promoRS.PromoProducts.ToList())
+                    var Zreps = promo.PromoProducts.Where(g => !g.Disabled).Select(f => f.ZREP);
+                    var ZrepsRS = promoRS.PromoProducts.Where(g => !g.Disabled).Select(f => f.ZREP);
+                    var OutZreps = new List<string>();
+                    foreach (var zrep in Zreps)
+                    {
+                        if (!ZrepsRS.Contains(zrep))
+                        {
+                            OutZreps.Add(zrep);                            
+                        }
+                    }
+                    foreach (PromoProduct promoProductRS in promoRS.PromoProducts.Where(g => !g.Disabled).ToList())
                     {
                         if (promo.PromoProducts.Select(g => g.ProductId).Contains(promoProductRS.ProductId)) // существующий PromoProduct
                         {
                             PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(g => g.ProductId == promoProductRS.ProductId && !g.Disabled);
-                            foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections.ToList())
+
+                            if (promoProduct != null && !OutZreps.Contains(promoProductRS.ZREP))
                             {
-                                PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled);
-                                if (promoProductsCorrection != null)
+                                foreach (PromoProductsCorrection promoProductsCorrectionRS in promoProductRS.PromoProductsCorrections.ToList())
                                 {
-                                    mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
-                                    MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
-                                    //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
-                                    Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                    PromoProductsCorrection promoProductsCorrection = promoProduct.PromoProductsCorrections.FirstOrDefault(g => !g.Disabled);
+                                    if (promoProductsCorrection != null)
+                                    {
+                                        mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
+                                        MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
+                                        //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
+                                        Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                    }
+                                    else
+                                    {
+                                        promoProductsCorrectionRS.TPMmode = TPMmode.Current;
+                                        promoProductsCorrectionRS.PromoProductId = promoProduct.Id;
+                                        promoProductsCorrectionRS.PromoProduct = promoProduct;
+                                    }
+
+                                }
+                                mapperPromoProductBack.Map(promoProductRS, promoProduct);
+                                //priceIncrease
+                                PromoProductPriceIncrease promoProductPI = promo.PromoPriceIncrease.PromoProductPriceIncreases
+                                    .FirstOrDefault(f => f.PromoProductId == promoProduct.Id && !f.Disabled);
+                                PromoProductPriceIncrease promoProductPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                    .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled);
+
+                                PromoProductCorrectionPriceIncrease promoProductCorrectionPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                    .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                    .FirstOrDefault(f => !f.Disabled);
+
+                                PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
+                                    .FirstOrDefault(f => f.ZREP == promoProduct.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                    .FirstOrDefault(f => !f.Disabled);
+
+                                if (promoProductsCorrectionPI != null)
+                                {
+                                    mapperPromoProductCorrectionPriceIncreaseBack.Map(promoProductCorrectionPIRS, promoProductsCorrectionPI);
+                                    //MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductCorrectionPIRS.Id);
+                                    Context.Set<PromoProductCorrectionPriceIncrease>().Remove(promoProductCorrectionPIRS);
                                 }
                                 else
                                 {
-                                    promoProductsCorrectionRS.TPMmode = TPMmode.Current;
-                                    promoProductsCorrectionRS.PromoProductId = promoProduct.Id;
-                                    promoProductsCorrectionRS.PromoProduct = promoProduct;
+                                    if (promoProductCorrectionPIRS != null)
+                                    {
+                                        promoProductCorrectionPIRS.PromoProductPriceIncreaseId = promoProductPI.Id;
+                                        promoProductCorrectionPIRS.PromoProductPriceIncrease = promoProductPI;
+                                    }
                                 }
 
-                            }
-                            mapperPromoProductBack.Map(promoProductRS, promoProduct);
-                            //priceIncrease
-                            var promoProductPI = promo.PromoPriceIncrease.PromoProductPriceIncreases
-                                .FirstOrDefault(f => f.PromoProductId == promoProduct.Id && !f.Disabled);
-                            var promoProductPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
-                                .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled);
 
-                            var promoProductCorrectionPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
-                                .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
-                                .FirstOrDefault(f => !f.Disabled);
-                            
-                            PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
-                                .FirstOrDefault(f => f.ZREP == promoProduct.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
-                                .FirstOrDefault(f => !f.Disabled);
+                                mapperPromoProductPriceIncreaseBack.Map(promoProductPIRS, promoProductPI);
 
-                            if (promoProductsCorrectionPI != null)
-                            {
-                                mapperPromoProductCorrectionPriceIncreaseBack.Map(promoProductCorrectionPIRS, promoProductsCorrectionPI);
-                                //MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductCorrectionPIRS.Id);
-                                Context.Set<PromoProductCorrectionPriceIncrease>().Remove(promoProductCorrectionPIRS);
+                                //promoRS.PromoProducts.Remove(promoProductRS);
+                                Context.Set<PromoProductPriceIncrease>().Remove(promoProductPIRS);
                             }
-                            else
+                            else if (promoProduct == null && !OutZreps.Contains(promoProductRS.ZREP))
                             {
-                                if (promoProductCorrectionPIRS != null)
+                                PromoProduct promoProduct1 = mapperPromoProductWithCorrBack.Map<PromoProduct>(promoProductRS);
+                                promoProduct1.Promo = promo;
+                                promoProduct1.PromoId = promo.Id;
+                                foreach (PromoProductPriceIncrease productPriceIncrease in promoProduct1.PromoProductPriceIncreases)
                                 {
-                                    promoProductCorrectionPIRS.PromoProductPriceIncreaseId = promoProductPI.Id;
-                                    promoProductCorrectionPIRS.PromoProductPriceIncrease = promoProductPI;
-                                }                                
+                                    productPriceIncrease.PromoPriceIncrease = promo.PromoPriceIncrease;
+                                    productPriceIncrease.PromoPriceIncreaseId = promo.PromoPriceIncrease.Id;
+                                }
+                                Context.Set<PromoProduct>().Add(promoProduct1);
+                                Context.SaveChanges();
                             }
-
-
-                            mapperPromoProductPriceIncreaseBack.Map(promoProductPIRS, promoProductPI);
-
-                            //promoRS.PromoProducts.Remove(promoProductRS);
-                            Context.Set<PromoProductPriceIncrease>().Remove(promoProductPIRS);
                         }
                         else // новый PromoProduct
                         {
                             promoProductRS.PromoId = promo.Id;
                             promoProductRS.Promo = promo;
                             promoProductRS.TPMmode = TPMmode.Current;
+                        }
+                    }
+                    if (OutZreps.Count > 0)
+                    {
+                        foreach (var zrep in OutZreps)
+                        {
+                            PromoProduct promoProduct = promo.PromoProducts.FirstOrDefault(f => f.ZREP == zrep && !f.Disabled);
+                            promoProduct.DeletedDate = DateTimeOffset.Now;
+                            promoProduct.Disabled = true;
+                            foreach (var correction in promoProduct.PromoProductsCorrections)
+                            {
+                                correction.DeletedDate = DateTimeOffset.Now;
+                                correction.Disabled = true;
+                            }
+                            PromoProductPriceIncrease promoProductPriceIncrease = promoProduct.PromoProductPriceIncreases.FirstOrDefault(f => !f.Disabled);
+                            promoProductPriceIncrease.DeletedDate = DateTimeOffset.Now;
+                            promoProductPriceIncrease.Disabled = true;
+                            foreach (var correction in promoProductPriceIncrease.ProductCorrectionPriceIncreases)
+                            {
+                                correction.DeletedDate = DateTimeOffset.Now;
+                                correction.Disabled = true;
+                            }
                         }
                     }
                     promo.PromoStatusId = promoStatusOnApproval;
