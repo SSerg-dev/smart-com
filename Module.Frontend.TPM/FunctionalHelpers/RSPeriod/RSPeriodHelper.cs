@@ -411,11 +411,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             var promoProductCorrectionPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
                                 .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
                                 .FirstOrDefault(f => !f.Disabled);
-
                             
                             PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
                                 .FirstOrDefault(f => f.ZREP == promoProduct.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
                                 .FirstOrDefault(f => !f.Disabled);
+
                             if (promoProductsCorrectionPI != null)
                             {
                                 mapperPromoProductCorrectionPriceIncreaseBack.Map(promoProductCorrectionPIRS, promoProductsCorrectionPI);
@@ -424,8 +424,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                             }
                             else
                             {
-                                promoProductCorrectionPIRS.PromoProductPriceIncreaseId = promoProductPI.Id;
-                                promoProductCorrectionPIRS.PromoProductPriceIncrease = promoProductPI;
+                                if (promoProductCorrectionPIRS != null)
+                                {
+                                    promoProductCorrectionPIRS.PromoProductPriceIncreaseId = promoProductPI.Id;
+                                    promoProductCorrectionPIRS.PromoProductPriceIncrease = promoProductPI;
+                                }                                
                             }
 
 
