@@ -163,6 +163,7 @@ with DAG(
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,
+    default_args={'retries': 2},	
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
