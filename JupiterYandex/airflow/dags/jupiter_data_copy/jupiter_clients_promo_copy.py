@@ -132,7 +132,8 @@ def create_dag_config_copy_from_db(parameters:dict, clients):
           "emails":clients[0]["Email"],
           "drop_files_if_errors":True,
           "copy_mode":COPY_MODE_DATABASE,
-          "source_path":f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{clients[0]["ClientObjectId"]}_{pendulum.now().strftime("%Y%m%d%H%M%S")}/'   
+          "source_path":f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{clients[0]["ClientObjectId"]}_{pendulum.now().strftime("%Y%m%d%H%M%S")}/',
+          "Id":clients[0]["Id"],		  
          }
     return conf
 
@@ -149,7 +150,8 @@ def create_dag_config_copy_from_adls(parameters:dict, db_conf:dict,clients):
           "client_name":client["ClientPrefix"],
           "emails":client["Email"],
           "drop_files_if_errors":True,
-          "source_path":db_conf["source_path"],   
+          "source_path":db_conf["source_path"],
+          "Id":client["Id"],				  
             }
         conf_list.append(conf)
         
