@@ -120,12 +120,14 @@ def get_clients_to_copy(parameters:dict):
   
 with DAG(
     dag_id='jupiter_clients_promo_copy_dispatcher',
-    schedule_interval=None,
-    start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
+    # schedule_interval=None,
+    start_date=pendulum.datetime(2022, 11, 27, tz="UTC"),
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,
-    default_args={'retries': 2},	
+    default_args={'retries': 2},
+    max_active_runs=1,
+    schedule_interval='*/10 * * * *',
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
