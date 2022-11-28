@@ -42,6 +42,7 @@ BCP_SEPARATOR = '0x01'
 CSV_SEPARATOR = '\u0001'
 TAGS=["jupiter","promo","dev"]
 PARAMETERS_FILE = 'PARAMETERS.csv'
+SCHEMA='Scenario'
 
 def separator_convert_hex_to_string(sep):
     sep_map = {'0x01':'\x01'}
@@ -63,7 +64,7 @@ def get_parameters(**kwargs):
     parent_run_id = dag_run.conf.get('parent_run_id')
     run_id = urllib.parse.quote_plus(parent_run_id) if parent_run_id else urllib.parse.quote_plus(kwargs['run_id'])
     
-    schema = dag_run.conf.get('schema')
+    schema = SCHEMA
     upload_date = kwargs['logical_date'].strftime("%Y-%m-%d %H:%M:%S")
     file_name = dag_run.conf.get('FileName')
     create_date = dag_run.conf.get('CreateDate')
@@ -128,7 +129,6 @@ with DAG(
     default_args={'retries': 2},
     max_active_runs=1,
     schedule_interval='*/10 * * * *',
-    params={"schema": "Scenario"},
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
