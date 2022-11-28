@@ -128,6 +128,7 @@ with DAG(
     default_args={'retries': 2},
     max_active_runs=1,
     schedule_interval='*/10 * * * *',
+    params={"schema": "Scenario"},
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
