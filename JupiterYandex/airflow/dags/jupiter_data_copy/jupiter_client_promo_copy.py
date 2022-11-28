@@ -211,13 +211,13 @@ with DAG(
         bash_command='hadoop dfs -cp {{ti.xcom_pull(task_ids="get_parameters",key="SourcePath")}} {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}} ',
     )
     
-    jupiter_send_copy_successful_notification = EmailOperator( 
-          task_id='jupiter_send_copy_successful_notification', 
-          to='{{ti.xcom_pull(task_ids="get_parameters")["Emails"]}}', 
-          subject='Copy promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}}', 
-          html_content='Promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}} copied successful.',
-          trigger_rule=TriggerRule.NONE_FAILED,
-    )
+    # jupiter_send_copy_successful_notification = EmailOperator( 
+          # task_id='jupiter_send_copy_successful_notification', 
+          # to='{{ti.xcom_pull(task_ids="get_parameters")["Emails"]}}', 
+          # subject='Copy promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}}', 
+          # html_content='Promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}} copied successful.',
+          # trigger_rule=TriggerRule.NONE_FAILED,
+    # )
     
     set_client_upload_processing_flag_complete = set_client_upload_processing_flag_complete(parameters)
     set_client_upload_processing_flag_error = set_client_upload_processing_flag_error(parameters)
@@ -234,15 +234,15 @@ with DAG(
         bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}} ',
     )
     
-    jupiter_send_copy_error_notification = EmailOperator( 
-          task_id='jupiter_send_copy_error_notification', 
-          to='{{ti.xcom_pull(task_ids="get_parameters")["Emails"]}}', 
-          subject='Error copy promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}}', 
-          html_content='Promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}} copied with errors. Please contact administrator.',
-          trigger_rule=TriggerRule.ONE_FAILED,
-    )
+    # jupiter_send_copy_error_notification = EmailOperator( 
+          # task_id='jupiter_send_copy_error_notification', 
+          # to='{{ti.xcom_pull(task_ids="get_parameters")["Emails"]}}', 
+          # subject='Error copy promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}}', 
+          # html_content='Promo for client {{ti.xcom_pull(task_ids="get_parameters")["ClientName"]}} copied with errors. Please contact administrator.',
+          # trigger_rule=TriggerRule.ONE_FAILED,
+    # )
     
-    child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> trigger_jupiter_client_promo_copy_table >> [jupiter_send_copy_successful_notification,set_client_upload_processing_flag_complete,set_client_upload_processing_flag_error,jupiter_send_copy_error_notification]
+    child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> trigger_jupiter_client_promo_copy_table >> [set_client_upload_processing_flag_complete,set_client_upload_processing_flag_error]
     child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> trigger_jupiter_client_promo_copy_table >> check_drop_data_if_failure >> drop_uploaded_data
-    child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> copy_from_existing >> [jupiter_send_copy_successful_notification,set_client_upload_processing_flag_complete,set_client_upload_processing_flag_error,jupiter_send_copy_error_notification]
+    child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> copy_from_existing >> [set_client_upload_processing_flag_complete,set_client_upload_processing_flag_error]
     child_dag_config >> set_client_upload_processing_flag_up >> create_client_upload_wait_handler >> if_load_from_database >> copy_from_existing >> check_drop_data_if_failure >> drop_uploaded_data
