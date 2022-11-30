@@ -583,11 +583,7 @@ namespace Module.Host.TPM.Actions
 
             foreach (var promoProductsCorrection in promoProductsCorrectionChangeIncidents)
             {
-                var currentPromoProductsCorrection = databaseContext.Set<PromoProductsCorrection>().FirstOrDefault(x => x.PromoProductId == promoProductsCorrection.PromoProductId && !x.Disabled);
-                if (currentPromoProductsCorrection != null)
-                {
-                    PromoProductsCorrectionsController.CreateChangesIncident(databaseContext.Set<ChangesIncident>(), currentPromoProductsCorrection);
-                }
+                PromoProductsCorrectionsController.CreateChangesIncident(databaseContext.Set<ChangesIncident>(), promoProductsCorrection);
             }
 
             databaseContext.SaveChanges();
