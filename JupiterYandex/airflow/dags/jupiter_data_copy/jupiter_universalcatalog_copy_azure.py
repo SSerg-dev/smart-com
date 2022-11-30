@@ -39,7 +39,7 @@ MSSQL_CONNECTION_NAME = 'odbc_jupiter'
 HDFS_CONNECTION_NAME = 'webhdfs_default'
 VAULT_CONNECTION_NAME = 'vault_default'
 AZURE_CONNECTION_NAME = 'azure_jupiter_sp'
-TAGS=["jupiter", "promo", "copy"]
+TAGS=["jupiter", "azure", "copy"]
 
 
 @task(multiple_outputs=True)
