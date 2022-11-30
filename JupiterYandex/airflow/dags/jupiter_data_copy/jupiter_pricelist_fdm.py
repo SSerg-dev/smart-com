@@ -27,6 +27,7 @@ import json
 import pandas as pd
 import glob
 import os
+import base64
 
 import struct
 from contextlib import closing
