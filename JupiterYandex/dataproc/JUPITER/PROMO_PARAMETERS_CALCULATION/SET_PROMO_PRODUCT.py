@@ -17,7 +17,8 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
     sc = SparkContext.getOrCreate();
     spark = SparkSession(sc)
     #####*Get AM Products*
-
+    
+    notInOutCalcPlanPromoDF = notInOutCalcPlanPromoDF.withColumn("InOutProductIds",upper(col("InOutProductIds")))
     setProductDF = notInOutCalcPlanPromoDF\
       .join(promoProductTreeDF, promoProductTreeDF.PromoId == notInOutCalcPlanPromoDF.Id, 'inner')\
       .join(productTreeDF, productTreeDF.ObjectId == promoProductTreeDF.ProductTreeObjectId, 'inner')\
@@ -87,7 +88,8 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
         filteredArray.append([f[0], f[1], f[2], item.pNumber, item.promoId])
         
     filteredProductDF = spark.createDataFrame(filteredArray, filteredProductSchema)
-
+    filteredProductDF = filteredProductDF.withColumn('Id',upper(col('Id'))).withColumn('filteredPromoId',upper(col('filteredPromoId')))
+    
     # display(filteredProductDF)
 
     #####*Get Union Filtered Products DF *
