@@ -508,6 +508,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
             builder.Entity<Promo>().Collection.Action("GetUserDashboardsCount");
+            builder.Entity<Promo>().Collection.Action("GetLiveMetricsDashboard");
             builder.Entity<Promo>().Collection.Action("GetApprovalHistory");
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");

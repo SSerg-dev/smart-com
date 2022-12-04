@@ -308,6 +308,7 @@
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
 
     'tpm.userdashboard.UserDashboard',
+    'tpm.metricsdashboard.MetricsDashboard',
     'tpm.clientdashboard.ClientDashboard',
 
     'tpm.clientkpidata.ClientKPIData',

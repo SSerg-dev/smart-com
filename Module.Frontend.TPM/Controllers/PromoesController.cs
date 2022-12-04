@@ -1355,6 +1355,14 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.InternalServerError, JsonConvert.SerializeObject(new { Error = "Fail to role" }));
         }
 
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetLiveMetricsDashboard(ODataQueryOptions<Promo> options)
+        {
+
+            return Content(HttpStatusCode.OK, LiveMetricsDashboard.GetLiveMetricsDashboard(authorizationManager, Context));
+        }
+
         private FilterContainer GetFilter(Delta<Promo> patch, string fieldName)
         {
             object fieldValue;

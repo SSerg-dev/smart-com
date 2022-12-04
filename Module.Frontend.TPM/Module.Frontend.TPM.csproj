@@ -333,6 +333,7 @@
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\controller\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\controller\tpm\rsmode\RSmode.js" />
+    <Content Include="Client\controller\tpm\metricsdashboard\MetricsDashboard.js" />
     <Content Include="Client\model\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
@@ -486,6 +487,7 @@
     <Compile Include="Controllers\ClientDashboardViewsController.cs" />
     <Compile Include="Controllers\NonPromoSupportBrandTechesController.cs" />
     <Compile Include="Controllers\ActualTradeInvestmentsController.cs" />
+    <Compile Include="Util\LiveMetricsDashboard .cs" />
     <Compile Include="Util\UserDashboard.cs" />
     <Content Include="Client\controller\tpm\actualLSV\ActualLSV.js" />
     <Content Include="Client\controller\tpm\btl\BTL.js" />
@@ -1061,6 +1063,8 @@
     <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />
     <Content Include="Client\view\tpm\tradeinvestment\ImportTradeInvestmentParamForm.js" />
+    <Content Include="Client\view\tpm\metricsdashboard\MetricsDashboard.js" />
+    <Content Include="Client\view\tpm\metricsdashboard\MetricsDashboardPanel.js" />
     <Content Include="Client\view\tpm\userdashboard\UserDashboard.js" />
     <Content Include="Client\view\tpm\userdashboard\UserDashboardPanel.js" />
     <Content Include="Content\custom-color-scheme-rs-mode.css" />

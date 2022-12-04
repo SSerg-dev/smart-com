@@ -2,6 +2,8 @@
     'mainmenu': {
         'ProductItem': 'Product',
         'UserDashboard': 'User Dashboard',
+        'BusinessMetrics': 'Business Metrics',
+        'MetricsDashboard': 'Metrics Dashboard',
         'SubrangeItem': 'Subrange',
         'CategoryItem': 'Category',
         'BrandItem': 'Brand',
