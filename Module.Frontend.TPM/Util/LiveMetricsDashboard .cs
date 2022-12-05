@@ -116,7 +116,7 @@ namespace Module.Frontend.TPM.Util
             IQueryable<PromoGridView> query = Context.Set<PromoGridView>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
-
+            query = query.Where(x => !x.IsOnHold);
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator")
             {
@@ -124,6 +124,5 @@ namespace Module.Frontend.TPM.Util
             }
             return query;
         }
-       
     }
 }

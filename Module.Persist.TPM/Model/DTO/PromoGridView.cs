@@ -51,6 +51,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string PlanInstoreMechanicTypeName { get; set; }
         public string ProductHierarchy { get; set; }
         public bool IsOnInvoice { get; set; }
+        public bool IsOnHold { get; set; }
         public bool IsApolloExport { get; set; }
 
         //private double deviationCoefficient;
