@@ -123,7 +123,7 @@ def generate_entity_list(parameters:dict):
 
 with DAG(
     dag_id='jupiter_atlas_copy_azure',
-    schedule_interval='0 20 * * *',
+    schedule_interval='30 19 * * *',
     start_date=pendulum.datetime(2022, 11, 29, tz="UTC"),
     catchup=False,
     tags=TAGS,
