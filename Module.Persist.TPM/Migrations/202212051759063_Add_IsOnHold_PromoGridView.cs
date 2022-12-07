@@ -9,7 +9,6 @@ namespace Module.Persist.TPM.Migrations
         public override void Up()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            Sql(ViewMigrations.GetPromoROIReportViewString(defaultSchema));
             Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
         }
         
