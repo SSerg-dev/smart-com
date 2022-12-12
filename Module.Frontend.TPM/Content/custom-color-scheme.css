@@ -3393,10 +3393,23 @@ x-slider-inner:before {
         text-align: center;
         font-weight: 600;
     }
-    .user-dashboard-panel .title-count-lsv {
-        color: lightgray;
+
+    .user-dashboard-panel .title-name-metrics {
+        color: black;
         text-align: center;
         font-weight: 600;
+    }
+
+    .user-dashboard-panel .title-count-metrics {
+        color: black;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .user-dashboard-panel .title-count-metrics-lsv {
+        color: lightgray;
+        text-align: center;
+        font-weight: 400;
     }
 
     .user-dashboard-panel .glyph-image {

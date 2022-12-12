@@ -118,26 +118,28 @@
         var dateStart = new Date();
         dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
 
-        var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, 7*8);
+        var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, 7 * 8);
         var filter = {
             operator: "and",
             rules: [
-            {
-                property: "DispatchesStart", operation: "lessthanorequal", value: dateEnd
-            }, {
-                property: "DispatchesStart", operation: "greaterthanorequal", value: dateStart
-            }, {
-                property: "PromoStatusName", operation: "in", value: ['Draft(published)', 'On Approval']
-            }
-            //    , {
-            //    operator: "or",
-            //    rules: [{
-            //        property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            //    },
-            //    {
-            //        property: "PromoStatusName", operation: "Equals", value: 'Draft(published)'
-            //    }]
-            //}
+                {
+                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
+                },
+                {
+                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
+                },
+                {
+                    property: "PromoStatusName", operation: "In", value: ['Draft(published)', 'On Approval']
+                }
+                //    , {
+                //    operator: "or",
+                //    rules: [{
+                //        property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                //    },
+                //    {
+                //        property: "PromoStatusName", operation: "Equals", value: 'Draft(published)'
+                //    }]
+                //}
             ]
         };
         var widget = 'promo';
@@ -158,9 +160,9 @@
             operator: "and",
             rules: [
                 {
-                    property: "DispatchesStart", operation: "<=", value: dateEnd
+                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
                 }, {
-                    property: "DispatchesStart", operation: ">=", value: dateStart
+                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
                 },
                 this.getFinishedFilter()
             ]
@@ -183,9 +185,9 @@
             operator: "and",
             rules: [
                 {
-                    property: "DispatchesStart", operation: "<=", value: dateEnd
+                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
                 }, {
-                    property: "DispatchesStart", operation: ">=", value: dateStart
+                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
                 },
                 this.getFinishedFilter()
             ]
@@ -211,7 +213,6 @@
         var parameters = { userrole: userrole };
 
         App.Util.makeRequestWithCallback('Promoes', 'GetLiveMetricsDashboard', parameters, function (data) {
-
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
                 var buttons;
@@ -246,7 +247,7 @@
                 if (view.down('#' + buttons.panel))
                     view.down('#' + buttons.panel).add(button);
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
-                
+
                 //PCT
                 buttons = me.getPCT();
                 var button = Ext.widget('metricsdashboadpanel');

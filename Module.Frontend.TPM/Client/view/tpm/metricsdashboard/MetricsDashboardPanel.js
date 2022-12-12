@@ -86,28 +86,31 @@
                         xtype: 'label',
                         itemId: 'NameLabel',
 
-                        cls: 'title-count',
+                        cls: 'title-name-metrics',
                         width: '100%',
                         text: '0',
-                        height: '50%',
+                        height: '33%',
+                        flex: 1,
                     },
                     {
                         xtype: 'label',
                         itemId: 'CountLabel',
 
-                        cls: 'title-count',
+                        cls: 'title-count-metrics',
                         width: '100%',
                         text: '0',
-                        height: '50%',
+                        height: '33%',
+                        flex: 1,
                     },
                     {
                         xtype: 'label',
                         itemId: 'CountLabel_LSV',
                         
-                        cls: 'title-count-lsv',
+                        cls: 'title-count-metrics-lsv',
                         width: '100%',
                         text: '0',
-                        height: '50%',
+                        height: '33%',
+                        flex: 1,
                     }
                 ],
             }]
