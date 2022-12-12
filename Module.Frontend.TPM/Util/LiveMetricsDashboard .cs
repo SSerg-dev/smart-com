@@ -106,7 +106,7 @@ namespace Module.Frontend.TPM.Util
                                         ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation
                                     });
             filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
-
+            //нужно проверять не просто finished, а не заполненные finished
             var pad = filteredPromoes.Count();
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
