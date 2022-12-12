@@ -67,7 +67,7 @@ namespace Module.Frontend.TPM.Util
             var checkStatuses = new string[] { "Closed", "Finished" };
 
             var endDate = DateTime.Now.AddDays(-7 * 7);
-            var startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            var startDate = new DateTime(endDate.Year, 1, 1);
 
             var filteredPromoes = promoes.Where(x => x.EndDate >= startDate && x.EndDate <= endDate);
 
@@ -93,7 +93,7 @@ namespace Module.Frontend.TPM.Util
             var checkStatuses = new string[] { "Closed", "Finished" };
 
             var endDate = DateTime.Now.AddDays(-7 * 7);
-            var startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            var startDate = new DateTime(endDate.Year, 1, 1);
 
             var filteredPromoes = promoes.Where(x => 
                                     x.EndDate >= startDate && x.EndDate <= endDate
