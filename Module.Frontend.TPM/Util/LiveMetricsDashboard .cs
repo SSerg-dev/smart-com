@@ -26,7 +26,15 @@ namespace Module.Frontend.TPM.Util
             var pctMetric = GetPCT(promoes);
             var padMetric = GetPAD(promoes);
 
-            return JsonConvert.SerializeObject(new { PPA = ppaMetric.Item1, PCT = pctMetric.Item1, PAD = padMetric.Item1, PPA_LSV = ppaMetric.Item2, PCT_LSV = pctMetric.Item2, PAD_LSV = padMetric.Item2 });
+            return JsonConvert.SerializeObject(new 
+            { 
+                PPA = Math.Round(ppaMetric.Item1, 0, MidpointRounding.AwayFromZero),
+                PCT = Math.Round(pctMetric.Item1, 0, MidpointRounding.AwayFromZero), 
+                PAD = Math.Round(padMetric.Item1, 0, MidpointRounding.AwayFromZero), 
+                PPA_LSV = Math.Round(ppaMetric.Item2, 3, MidpointRounding.AwayFromZero),
+                PCT_LSV = Math.Round(pctMetric.Item2, 3, MidpointRounding.AwayFromZero),
+                PAD_LSV = Math.Round(padMetric.Item2, 3, MidpointRounding.AwayFromZero)
+            });
         }
 
         private static Tuple<double, double> GetPPA(IQueryable<PromoGridView> promoes)
@@ -69,6 +77,7 @@ namespace Module.Frontend.TPM.Util
             if (allCheckPromoes > 0)
             {
                 var pct = (double)closedPromoes / allCheckPromoes;
+                //нужно проверять не просто finished, а не заполненные finished
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
                 return new Tuple<double, double>(pct * 100, pctLsv.Value);

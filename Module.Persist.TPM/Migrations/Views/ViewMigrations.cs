@@ -21,7 +21,7 @@
                               pr.ProductHierarchy, pr.PlanPromoNetIncrementalNSV, pr.PlanPromoIncrementalNSV, pr.InOut, CAST(ROUND(CAST(pr.PlanPromoIncrementalLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoIncrementalLSV, 
                               CAST(ROUND(CAST(pr.PlanPromoBaselineLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoBaselineLSV, pr.LastChangedDate, pr.LastChangedDateFinance, pr.LastChangedDateDemand, pts.Name AS PromoTypesName, 
                               pr.IsGrowthAcceleration, pr.IsApolloExport, CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient, pr.ActualPromoLSVByCompensation, pr.PlanPromoLSV, pr.ActualPromoLSV, 
-                              pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode, CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END as IsOnHold
+                              pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode, CAST(CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END AS BIT) as IsOnHold, CAST(CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END AS BIT) as IsOnHold, (CASE WHEN ActualPromoLSVByCompensation > 0 THEN ABS(ActualPromoLSV - ActualPromoLSVByCompensation) / ActualPromoLSVByCompensation ELSE 0 END) as ActualPromoLSVdiffPercent
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN

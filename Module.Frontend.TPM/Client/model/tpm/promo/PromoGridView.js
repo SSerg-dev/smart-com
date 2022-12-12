@@ -92,6 +92,7 @@
         { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSVdiffPercent', useNull: true, type: 'float', hidden: true, isDefault: false },
 
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },

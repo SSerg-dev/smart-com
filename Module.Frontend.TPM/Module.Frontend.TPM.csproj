@@ -401,6 +401,7 @@
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTechDetail.js" />
     <Content Include="Client\view\tpm\eventtype\EventType.js" />
+    <Content Include="Client\view\tpm\metricsdashboard\ClientDashboardClientYearChooseWindow.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\plancogstn\HistoricalPlanCOGSTn.js" />

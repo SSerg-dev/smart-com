@@ -3263,6 +3263,10 @@
     <Compile Include="Migrations\202212051759063_Add_IsOnHold_PromoGridView.Designer.cs">
       <DependentUpon>202212051759063_Add_IsOnHold_PromoGridView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212070941222_Add_MetricsDashboard_AP.cs" />
+    <Compile Include="Migrations\202212070941222_Add_MetricsDashboard_AP.Designer.cs">
+      <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6151,6 +6155,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212051759063_Add_IsOnHold_PromoGridView.resx">
       <DependentUpon>202212051759063_Add_IsOnHold_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212070941222_Add_MetricsDashboard_AP.resx">
+      <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

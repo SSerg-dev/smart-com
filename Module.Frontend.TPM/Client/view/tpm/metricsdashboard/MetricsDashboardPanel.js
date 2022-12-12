@@ -1,8 +1,8 @@
 ﻿Ext.define('App.view.tpm.metricsdashboard.MetricsDashboardPanel', {
 
     extend: 'Ext.panel.Panel',
-    alias: 'widget.userdashboadpanel',
-    name: 'userdashboadpanel',
+    alias: 'widget.metricsdashboadpanel',
+    name: 'metricsdashboadpanel',
     
     layout: {
         type: 'vbox', 
@@ -44,50 +44,73 @@
         },
         {
             layout: {
-                type: 'hbox',  
-                pack: "center",
-                align: "middle"
+                type: 'vbox',  
+                //pack: "center",
+                align: "stretch"
             },
             xtype: 'container', 
             listeners: {
                 resize: function (panel) {
                     var item = panel.up('panel').up('container'); 
                     panel.setHeight(item.getHeight() * 0.45);
-                    panel.down('#glyphOk').setWidth(panel.getHeight()* 0.8);
-                    panel.down('#glyphOk').setHeight(panel.getHeight() * 0.8);
-                    panel.down('#glyphOk').style = 'padding-bottom:' + panel.getHeight() * 0.01 + 'px'; 
-                    Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.20 + panel.getWidth() * 0.08) + 'px'); 
-                    Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', item.getHeight() * 0.05 + 'px');   
+                    Ext.get(panel.down('#NameLabel').id).setStyle('font-size', (item.getHeight() * 0.04 + panel.getWidth() * 0.08) + 'px');
+                    //Ext.get(panel.down('#NameLabel').id).setStyle('padding-top', item.getHeight() * 0.05 + 'px');
+                    Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.04 + panel.getWidth() * 0.08) + 'px');
+                    //Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', item.getHeight() * 0.1 + 'px');
+                    Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.02 + panel.getWidth() * 0.08) + 'px');
+                    //Ext.get(panel.down('#CountLabel_LSV').id).setStyle('padding-top', item.getHeight() * 0.15 + 'px');
                       
                     if (panel.getHeight() < 80) {  
-                        Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.32 + panel.getWidth() * 0.01) + 'px');
-                        Ext.get(panel.down('#CountLabel').id).setStyle('padding-top',( item.getHeight() * 0.05 ) + 'px ');   
+                        Ext.get(panel.down('#NameLabel').id).setStyle('font-size', (item.getHeight() * 0.5 + panel.getWidth() * 0.01) + 'px');
+                        //Ext.get(panel.down('#NameLabel').id).setStyle('padding-top', (item.getHeight() * 0.05) + 'px ');
+                        Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.5 + panel.getWidth() * 0.01) + 'px');
+                        //Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', (item.getHeight() * 0.1) + 'px ');
+                        Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.03 + panel.getWidth() * 0.01) + 'px');
+                        //Ext.get(panel.down('#CountLabel_LSV').id).setStyle('padding-top', (item.getHeight() * 0.15) + 'px ');
 
                     }
                 }
             },
             width: '100%',  
             itemId: 'titleCountPanel',
-            items: [
-                {
-                    xtype: 'label',
-                    itemId: 'CountLabel',
-
-                     width: '100%', 
-                    cls: 'title-count',
-                    text: '0',
-                    height: '100%', 
+            items: [{
+                flex: 1,
+                xtype: 'fieldset',
+                border: false,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch',
                 },
-                {
-                    xtype: 'image', 
-                    itemId: 'glyphOk',
+                items: [
+                    {
+                        xtype: 'label',
+                        itemId: 'NameLabel',
 
-                   // width: '50%',  
-                    height: '80%', 
-                    src:'/Bundles/style/images/ok.png',
-                    visible: false, 
-                },
-            ],
+                        cls: 'title-count',
+                        width: '100%',
+                        text: '0',
+                        height: '50%',
+                    },
+                    {
+                        xtype: 'label',
+                        itemId: 'CountLabel',
+
+                        cls: 'title-count',
+                        width: '100%',
+                        text: '0',
+                        height: '50%',
+                    },
+                    {
+                        xtype: 'label',
+                        itemId: 'CountLabel_LSV',
+                        
+                        cls: 'title-count-lsv',
+                        width: '100%',
+                        text: '0',
+                        height: '50%',
+                    }
+                ],
+            }]
         },
         {
             layout: {
