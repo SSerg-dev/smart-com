@@ -36,14 +36,10 @@
     <add key="RUNTIME_ENVIROMENT" value="Smartcom-TPM" />
     <add key="DatabaseContext" value="Server=STSVH-SQL01,1433; Database=TPM_MovingAzure_Main_Test_Current; Persist Security Info=True;User ID=userdb;Password=qwerty1;MultipleActiveResultSets=True" />
     <add key="KVnameOfDatabaseContext" value="DatabaseContext" />
-	<add key="AllowNotificationsSending" value="false" />
+	  <add key="AllowNotificationsSending" value="false" />
 	
-	<add key="BlobConnectionType" value="Key" />
-    <add key="BlobStorageKey" value="W5MRvSWl+tvThXXoBmC8t/pHV/y8B1CfQrV8cm1xR0x+K2oqzPcKPSgZ3ooLXDSMacxMTcQr3EHvQ2dzZNrr5g==" />
-    <add key="BlobStorageName" value="jupiterdevasa" />
-    <add key="BlobStorageContainer" value="tpmdemo" />
-    <add key="BlobStorageSAS" value="sv=2019-12-12&amp;ss=bfqt&amp;srt=c&amp;sp=rwdlacupx&amp;se=2020-11-19T23:49:26Z&amp;st=2020-11-19T15:49:26Z&amp;spr=https&amp;sig=2dO%2BPo7bMNfxvoh9ljzcAZdY6iNu8v%2BTYk4pBVtJzp0%3D" />
-    <!--Elastic-->
+    <add key="HANDLER_LOG_TYPE" value="File" />
+	<!--Elastic-->
     <add key="ElasticHistoryIndexName" value="TPMDev1_elastic_index_01" />
     <add key="ElasticHistoryTypeName" value="entry" />
     <add key="ElasticHost" value="http://localhost:9200" />

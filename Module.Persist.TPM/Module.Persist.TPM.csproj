@@ -3267,6 +3267,10 @@
     <Compile Include="Migrations\202212070941222_Add_MetricsDashboard_AP.Designer.cs">
       <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212131549427_ForView.cs" />
+    <Compile Include="Migrations\202212131549427_ForView.Designer.cs">
+      <DependentUpon>202212131549427_ForView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6158,6 +6162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212070941222_Add_MetricsDashboard_AP.resx">
       <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212131549427_ForView.resx">
+      <DependentUpon>202212131549427_ForView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
