@@ -6,6 +6,7 @@
         this.listen({
             component: {
                 'metricsdashboard #panel1': {
+                    beforerender: this.onMetricsDashboardBeforeRender,
                     afterrender: this.onRender
                 },
                 'metricsdashboard button[itemId!=ok]': {
@@ -22,6 +23,148 @@
         this.getCard(window);
     },
 
+    onMetricsDashboardBeforeRender: function (panel) {
+        
+        panel.setLoading(true);
+        var me = this;
+        var metricsDashboardController = me;
+        var metricsDashboardClientPeriodChoose = Ext.widget('metricsdashboardclientperiodchoosewindow');
+        var clientTreeField = metricsDashboardController.getClientTreeField(metricsDashboardClientPeriodChoose);
+
+        metricsDashboardClientPeriodChoose.down('#choose').addListener('click', metricsDashboardController.onMetricsDashboardClientPeriodChooseButtonClick);
+
+        var clientTreeStore = metricsDashboardController.getClientTreeStore();
+        var clientTreeStoreProxy = clientTreeStore.getProxy();
+        
+        panel['choosenClientTreeRecord'] = new App.model.tpm.clienttree.ClientTree();
+        panel['choosenYear'] = null;
+
+        clientTreeStoreProxy.extraParams.needBaseClients = true;
+        clientTreeStoreProxy.extraParams['node'] = 'root';
+
+        // Получаем базовых клиентов для текущего пользователя.
+        // Если только один базовый, то выбираем его по умолчанию.
+        metricsDashboardClientPeriodChoose.setLoading(true);
+        clientTreeStore.on({
+            load: {
+                fn: function (store, records) {
+                    panel['loaderState'] = true;
+                    var baseClients = [];
+
+                    var stack = records;
+                    while (stack.length > 0) {
+                        var currentNode = stack.pop();
+                        if (currentNode) {
+                            if (currentNode.IsBaseClient) {
+                                baseClients.push(currentNode);
+                            }
+
+                            var childs = [];
+                            if ((currentNode.raw && currentNode.raw.children)) {
+                                childs = Array.isArray(currentNode.raw.children) ? currentNode.raw.children : [currentNode.raw.children];
+                            }
+                            else if (currentNode.children) {
+                                childs = currentNode.children;
+                            }
+
+                            childs.forEach(function (x) {
+                                stack.push(x);
+                            })
+                        }
+                    }
+
+                    if (baseClients.length == 1) {
+                        clientTreeField.setValue(new App.model.tpm.clienttree.ClientTree({
+                            Id: baseClients[0].Id,
+                            Name: baseClients[0].Name,
+                            ObjectId: baseClients[0].ObjectId,
+                            IsOnInvoice: baseClients[0].IsOnInvoice,
+                        }));
+
+                        metricsDashboardClientPeriodChoose.down('#choose').fireEvent('click', metricsDashboardClientPeriodChoose.down('#choose'));
+                    }
+                    else {
+                        metricsDashboardClientPeriodChoose.show(null, function () {
+                            panel.setLoading(false);
+                        });
+                    }
+
+                    clientTreeStoreProxy.extraParams.needBaseClients = false;
+                    delete clientTreeStoreProxy.extraParams.node;
+                },
+                single: true
+            }
+        });
+
+        clientTreeStore.load();
+    },
+
+    getClientTreeField: function (parent) {
+        var clientTreeField = null;
+        if (parent) {
+            clientTreeField = parent.down('#ClientTreeField');
+        }
+        else {
+            clientTreeField = Ext.ComponentQuery.query('#ClientTreeField')[0];
+        }
+        return clientTreeField;
+    },
+
+    getClientTreeStore: function () {
+        var clientTreeStore = Ext.create('Ext.data.Store', {
+            model: 'App.model.tpm.clienttree.ClientTree',
+        });
+
+        return clientTreeStore;
+    },
+
+    onMetricsDashboardClientPeriodChooseButtonClick: function (button) {
+        var me = this;
+        var metricsDashboardController = me;
+        var clientDashboard = Ext.ComponentQuery.query('clientdashboard')[0];
+        var metricsDashboardClientYearWindowChoose = button.up('metricsdashboardclientperiodchoosewindow');
+        var clientTreeField = metricsDashboardClientYearWindowChoose.down('#ClientTreeField');
+        var yearField = metricsDashboardClientYearWindowChoose.down('#YearField');
+
+        clientTreeField.validate();
+        yearField.validate();
+
+        var selectedClientRecord = clientTreeField.getRecord();
+        var selectedYear = yearField.getValue();
+
+        if (clientTreeField.isValid() && yearField.isValid()) {
+            clientDashboard.show();
+            var accountInformationButton = clientDashboard.down('#accountInformationButton');
+            var promoWeeksButton = clientDashboard.down('#promoWeeksButton');
+            var accountInformation = clientDashboard.down('accountinformation');
+            var accountInformationRS = clientDashboard.down('accountinformationrs');
+
+            clientDashboard['choosenClientTreeRecord'] = selectedClientRecord;
+            clientDashboard['choosenYear'] = selectedYear;
+
+            if (selectedClientRecord.data.IsOnInvoice != null) {
+                if (selectedClientRecord.data.IsOnInvoice) {
+                    accountInformation.down('#accountInformationClientType').setText('On Invoice');
+                    accountInformationRS.down('#accountInformationClientTypeRS').setText('On Invoice');
+                } else {
+                    accountInformation.down('#accountInformationClientType').setText('Off Invoice');
+                    accountInformationRS.down('#accountInformationClientTypeRS').setText('Off Invoice');
+                }
+            } else {
+                accountInformation.down('#accountInformationClientType').setText('');
+                accountInformationRS.down('#accountInformationClientTypeRS').setText('');
+            }
+
+            accountInformation.down('#accountInformationClientText').setText(selectedClientRecord.data.Name);
+            accountInformation.down('#accountInformationYearText').setText(selectedYear);
+
+            accountInformationRS.down('#accountInformationClientTextRS').setText(selectedClientRecord.data.Name);
+            accountInformationRS.down('#accountInformationYearTextRS').setText(selectedYear);
+
+            metricsDashboardController.loadStoreWithFilters(clientDashboard, metricsDashboardController.fillAccountInformationCallback, metricsDashboardController.fillPromoWeeksCallback, false);
+            button.up('window').close();
+        }
+    },
     onButtonClick2: function (window) {
         var panel = window.up().up();
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];

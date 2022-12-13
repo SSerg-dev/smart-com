@@ -2903,7 +2903,8 @@
     'ClientDashboard': {
         'SelectClient': 'Select client',
         'SelectYear': 'Select year',
-        'Details': 'Details'
+        'Details': 'Details',
+        'SelectPeriod': 'Select period',
     },
 
     'ClientDashboardPromoWeeksPanel': {

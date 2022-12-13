@@ -3356,6 +3356,17 @@ x-slider-inner:before {
     padding: 10px;
 }
 
+.user-dashboard .title-panel-first {
+    background: #157fcc;
+    font-weight: 600;
+    padding: 7px;
+    margin: 0px 7px 0px 7px;
+}
+
+    .user-dashboard .title-panel-first .client-style {
+        border-bottom: 1px dotted #5858b5;
+    }
+
 .user-dashboard .panel-element-first {
     padding: 7px;
 }
