@@ -12,7 +12,9 @@
                 'metricsdashboard button[itemId!=ok]': {
                     click: this.onButtonClick2
                 },
-
+                'metricsdashboard #clickPanel': {
+                    afterrender: this.onClientPanelAfterRender
+                },
 
 
             }
@@ -20,11 +22,41 @@
     },
 
     onRender: function (window) {
-        this.getCard(window);
+        //this.getCard(window);
+    },
+
+    onClientPanelAfterRender: function (panel) {
+        var metricsDashboardController = this;
+        panel.body.addListener('click', function () {
+            metricsDashboardController.onClickPanelClick(panel);
+        });
+    },
+    onClickPanelClick: function (panel) {
+        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
+        var metricsDashboard = panel.up('metricsdashboard');
+        var metricsDashboardClientPeriodChooseWindow = Ext.widget('metricsdashboardclientperiodchoosewindow');
+        var clientTreeField = metricsDashboardController.getClientTreeField(metricsDashboardClientPeriodChooseWindow);
+        var periodField = metricsDashboardClientPeriodChooseWindow.down('#PeriodField');
+
+        var clientTreeRecord = metricsDashboard['choosenClientTreeRecord'];
+        var periodRecord = metricsDashboard['choosenPeriod'];
+        if (clientTreeRecord) {
+            clientTreeField.setValue(new App.model.tpm.clienttree.ClientTree({
+                Id: clientTreeRecord.data.Id,
+                Name: clientTreeRecord.data.Name,
+                ObjectId: clientTreeRecord.data.ObjectId,
+                IsOnInvoice: clientTreeRecord.data.IsOnInvoice,
+            }));
+        }
+
+        metricsDashboardClientPeriodChooseWindow.down('#choose').addListener('click', metricsDashboardController.onMetricsDashboardClientPeriodChooseButtonClick);
+        metricsDashboardClientPeriodChooseWindow.show();
+
+        periodField.setValue(periodRecord);
     },
 
     onMetricsDashboardBeforeRender: function (panel) {
-        
+
         panel.setLoading(true);
         var me = this;
         var metricsDashboardController = me;
@@ -35,11 +67,11 @@
 
         var clientTreeStore = metricsDashboardController.getClientTreeStore();
         var clientTreeStoreProxy = clientTreeStore.getProxy();
-        
-        panel['choosenClientTreeRecord'] = new App.model.tpm.clienttree.ClientTree();
-        panel['choosenYear'] = null;
 
-        clientTreeStoreProxy.extraParams.needBaseClients = true;
+        panel.up('metricsdashboard')['choosenClientTreeRecord'] = new App.model.tpm.clienttree.ClientTree();
+        panel.up('metricsdashboard')['choosenPeriod'] = null;
+
+        clientTreeStoreProxy.extraParams.needBaseClients = false;
         clientTreeStoreProxy.extraParams['node'] = 'root';
 
         // Получаем базовых клиентов для текущего пользователя.
@@ -118,50 +150,76 @@
         return clientTreeStore;
     },
 
-    onMetricsDashboardClientPeriodChooseButtonClick: function (button) {
-        var me = this;
-        var metricsDashboardController = me;
-        var clientDashboard = Ext.ComponentQuery.query('clientdashboard')[0];
-        var metricsDashboardClientYearWindowChoose = button.up('metricsdashboardclientperiodchoosewindow');
-        var clientTreeField = metricsDashboardClientYearWindowChoose.down('#ClientTreeField');
-        var yearField = metricsDashboardClientYearWindowChoose.down('#YearField');
+    onTrigger1Click: function (picker) {
+        var picker = picker.createPicker();
+        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
+        var clientTreeField = metricsDashboardController.getClientTreeField();
+        var clientTreeStore = metricsDashboardController.getClientTreeStore();
+        var clientTreeStoreProxy = clientTreeStore.getProxy();
 
-        clientTreeField.validate();
-        yearField.validate();
+        if (clientTreeField.getRecord()) {
+            clientTreeStoreProxy.extraParams.clientObjectId = clientTreeField.getRecord().data.ObjectId;
+        } else {
+            clientTreeStoreProxy.extraParams.clientObjectId = null;
+        }
 
-        var selectedClientRecord = clientTreeField.getRecord();
-        var selectedYear = yearField.getValue();
+        if (picker) {
+            var clientTree = picker.down(this.selectorWidget);
+            var clientTreeGrid = clientTree.down('basetreegrid');
+            var clientTreeGridStore = clientTreeGrid.getStore();
 
-        if (clientTreeField.isValid() && yearField.isValid()) {
-            clientDashboard.show();
-            var accountInformationButton = clientDashboard.down('#accountInformationButton');
-            var promoWeeksButton = clientDashboard.down('#promoWeeksButton');
-            var accountInformation = clientDashboard.down('accountinformation');
-            var accountInformationRS = clientDashboard.down('accountinformationrs');
-
-            clientDashboard['choosenClientTreeRecord'] = selectedClientRecord;
-            clientDashboard['choosenYear'] = selectedYear;
-
-            if (selectedClientRecord.data.IsOnInvoice != null) {
-                if (selectedClientRecord.data.IsOnInvoice) {
-                    accountInformation.down('#accountInformationClientType').setText('On Invoice');
-                    accountInformationRS.down('#accountInformationClientTypeRS').setText('On Invoice');
-                } else {
-                    accountInformation.down('#accountInformationClientType').setText('Off Invoice');
-                    accountInformationRS.down('#accountInformationClientTypeRS').setText('Off Invoice');
-                }
-            } else {
-                accountInformation.down('#accountInformationClientType').setText('');
-                accountInformationRS.down('#accountInformationClientTypeRS').setText('');
+            clientTree.chooseMode = false;
+            if (clientTreeField.getRecord()) {
+                clientTree.choosenClientObjectId = clientTreeField.getRecord().data.ObjectId;
             }
 
-            accountInformation.down('#accountInformationClientText').setText(selectedClientRecord.data.Name);
-            accountInformation.down('#accountInformationYearText').setText(selectedYear);
+            clientTreeGridStore.addListener('load', function () {
+                metricsDashboardController.showCheckboxesForOnlyBaseClients(clientTreeGridStore.getRootNode().childNodes, clientTreeGrid.getChecked());
+            });
 
-            accountInformationRS.down('#accountInformationClientTextRS').setText(selectedClientRecord.data.Name);
-            accountInformationRS.down('#accountInformationYearTextRS').setText(selectedYear);
+            clientTreeGrid.addListener('checkchange', metricsDashboardController.onClientTreeCheckChange);
+            clientTree.down('basetreegrid').up('window').down('#select').addListener('click', function () { metricsDashboardController.onSelectClientTreeInPicker(picker, clientTreeGrid.getChecked()[0]); });
 
-            metricsDashboardController.loadStoreWithFilters(clientDashboard, metricsDashboardController.fillAccountInformationCallback, metricsDashboardController.fillPromoWeeksCallback, false);
+            picker.show();
+
+            var header = clientTree.getHeader();
+            var splitter = clientTree.down('#splitter_1');
+            var settings = clientTree.down('#clientTreeSettingsPanel');
+            var addNodeButton = clientTree.down('#addNode');
+            var deleteNodeButton = clientTree.down('#deleteNode');
+
+            header.hide();
+            splitter.hide();
+            settings.hide();
+            addNodeButton.hide();
+            deleteNodeButton.hide();
+        }
+    },
+
+    onMetricsDashboardClientPeriodChooseButtonClick: function (button) {
+        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');;
+        var metricsDashboardClientYearWindowChoose = button.up('metricsdashboardclientperiodchoosewindow');
+        var metricsDashboard = Ext.ComponentQuery.query('metricsdashboard')[0];
+        var clientTreeField = metricsDashboardClientYearWindowChoose.down('#ClientTreeField');
+        var periodField = metricsDashboardClientYearWindowChoose.down('#PeriodField');
+        var panel1 = Ext.ComponentQuery.query('container #panel1')[0];
+        var panel2 = Ext.ComponentQuery.query('container #panel2')[0];
+        var period = Ext.ComponentQuery.query('#PeriodMetricsId')[0];
+        var client = Ext.ComponentQuery.query('#ClientMetricsId')[0];
+        clientTreeField.validate();
+        periodField.validate();
+
+        var selectedClientRecord = clientTreeField.getRecord();
+        var selectedPeriod = periodField.getValue();
+
+        if (clientTreeField.isValid() && periodField.isValid()) {
+            metricsDashboard['choosenClientTreeRecord'] = selectedClientRecord;
+            metricsDashboard['choosenPeriod'] = selectedPeriod;
+            panel1.items.clear();
+            panel2.items.clear();
+            metricsDashboardController.getCard(panel1);
+            period.setText(periodField.getRawValue());
+            client.setText(clientTreeField.getValue());
             button.up('window').close();
         }
     },
@@ -353,8 +411,13 @@
         var me = this;
         var userrole = breeze.DataType.String.fmtOData(currentRole);
 
-        var parameters = { userrole: userrole };
+        var clientTreeRecord = view['choosenClientTreeRecord'];
+        var periodRecord = view['choosenPeriod'];
 
+        var parameters = {
+            userrole: userrole, clientTreeId: clientTreeRecord.get('Id'), period: periodRecord.ticks
+        };
+        debugger;
         App.Util.makeRequestWithCallback('Promoes', 'GetLiveMetricsDashboard', parameters, function (data) {
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);

@@ -36,8 +36,8 @@
             listeners: {
                 beforerender: function (picker) {
                     var newOnTrigger1Click = function () {
-                        var clientDashboardController = App.app.getController('tpm.clientdashboard.ClientDashboard');
-                        clientDashboardController.onTrigger1Click(picker);
+                        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
+                        metricsDashboardController.onTrigger1Click(picker);
                     }
                     picker.onTrigger1Click = newOnTrigger1Click;
                 }
@@ -48,22 +48,13 @@
             itemId: 'PeriodField',
             editable: false,
             fieldLabel: l10n.ns('tpm', 'ClientDashboard').value('SelectPeriod'),
+            //listeners: {
+            //    added: function (field) {
+            //        var currentDate = new Date();
+            //        field.setValue(currentDate.getFullYear());
+            //    }
+            //}
         },
-        {
-            xtype: 'numberfield',
-            itemId: 'YearField',
-            fieldLabel: l10n.ns('tpm', 'ClientDashboard').value('SelectYear'),
-            name: 'year',
-            allowBlank: false,
-            allowOnlyWhiteSpace: false,
-            componentCls: 'client-dashboard-client-year-choose-window-item client-dashboard-client-year-choose-window-item-last',
-            listeners: {
-                added: function (field) {
-                    var currentDate = new Date();
-                    field.setValue(currentDate.getFullYear());
-                }
-            }
-        }
     ],
     buttons: [
         {

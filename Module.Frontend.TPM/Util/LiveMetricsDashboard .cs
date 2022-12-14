@@ -1,4 +1,5 @@
-﻿using Core.Security;
+﻿using Core.MarsCalendar;
+using Core.Security;
 using Core.Security.Models;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Interfaces;
@@ -18,26 +19,30 @@ namespace Module.Frontend.TPM.Util
     public static class LiveMetricsDashboard
     {
 
-        public static string GetLiveMetricsDashboard(IAuthorizationManager authorizationManager, DatabaseContext Context)
+        public static string GetLiveMetricsDashboard(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId, long Period)
         {
+            MarsDate marsDate = new MarsDate(Period);
+            DateTimeOffset periodStartDate = marsDate.PeriodStartDate();
+            DateTimeOffset periodEndDate = marsDate.PeriodEndDate();
+
             var promoes = GetConstraintedQueryPromo(authorizationManager, Context);
 
             var ppaMetric = GetPPA(promoes);
             var pctMetric = GetPCT(promoes);
             var padMetric = GetPAD(promoes);
 
-            return JsonConvert.SerializeObject(new 
-            { 
-                PPA = Math.Round(ppaMetric.Item1, 0, MidpointRounding.AwayFromZero),
-                PCT = Math.Round(pctMetric.Item1, 0, MidpointRounding.AwayFromZero), 
-                PAD = Math.Round(padMetric.Item1, 0, MidpointRounding.AwayFromZero), 
-                PPA_LSV = Math.Round(ppaMetric.Item2, 3, MidpointRounding.AwayFromZero),
-                PCT_LSV = Math.Round(pctMetric.Item2, 3, MidpointRounding.AwayFromZero),
-                PAD_LSV = Math.Round(padMetric.Item2, 3, MidpointRounding.AwayFromZero)
+            return JsonConvert.SerializeObject(new
+            {
+                PPA = Math.Round(ppaMetric.Value, 0, MidpointRounding.AwayFromZero),
+                PCT = Math.Round(pctMetric.Value, 0, MidpointRounding.AwayFromZero),
+                PAD = Math.Round(padMetric.Value, 0, MidpointRounding.AwayFromZero),
+                PPA_LSV = Math.Round(ppaMetric.ValueLSV, 3, MidpointRounding.AwayFromZero),
+                PCT_LSV = Math.Round(pctMetric.ValueLSV, 3, MidpointRounding.AwayFromZero),
+                PAD_LSV = Math.Round(padMetric.ValueLSV, 3, MidpointRounding.AwayFromZero)
             });
         }
 
-        private static Tuple<double, double> GetPPA(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPPA(IQueryable<PromoGridView> promoes)
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
@@ -55,14 +60,14 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => readyStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new Tuple<double, double>(ppa * 100, ppaLsv.Value);
+                return new ModelReturn{ Value = ppa * 100, ValueLSV = ppaLsv.Value };
             }
             else
             {
-                return new Tuple<double, double>(0, 0);
+                return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
-        private static Tuple<double, double> GetPCT(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPCT(IQueryable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
@@ -77,30 +82,31 @@ namespace Module.Frontend.TPM.Util
             if (allCheckPromoes > 0)
             {
                 var pct = (double)closedPromoes / allCheckPromoes;
-                //нужно проверять не просто finished, а не заполненные finished
+                //нужно проверять не просто finished, а не заполненные finished????
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new Tuple<double, double>(pct * 100, pctLsv.Value);
+                return new ModelReturn { Value = pct * 100, ValueLSV = pctLsv.Value };
             }
             else
             {
-                return new Tuple<double, double>(0, 0);
+                return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
 
-        private static Tuple<double, double> GetPAD(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPAD(IQueryable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
             var endDate = DateTime.Now.AddDays(-7 * 7);
             var startDate = new DateTime(endDate.Year, 1, 1);
 
-            var filteredPromoes = promoes.Where(x => 
+            var filteredPromoes = promoes.Where(x =>
                                     x.EndDate >= startDate && x.EndDate <= endDate
                                     && x.ActualPromoLSV != null && x.ActualPromoLSV != 0
                                     && x.ActualPromoLSVByCompensation != null && x.ActualPromoLSVByCompensation != 0
                                     && checkStatuses.Contains(x.PromoStatusName))
-                                    .Select(x => new {
+                                    .Select(x => new
+                                    {
                                         x.ActualPromoLSV,
                                         x.ActualPromoLSVByCompensation,
                                         ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation
@@ -110,7 +116,7 @@ namespace Module.Frontend.TPM.Util
             var pad = filteredPromoes.Count();
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
-            return new Tuple<double, double>(pad, padLsv);
+            return new ModelReturn { Value = pad, ValueLSV = padLsv };
         }
 
         private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context)
@@ -132,6 +138,11 @@ namespace Module.Frontend.TPM.Util
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
             return query;
+        }
+        class ModelReturn
+        {
+            public double Value { get; set; }
+            public double ValueLSV { get; set; }
         }
     }
 }

@@ -97,7 +97,9 @@
                     ],
                 },
                 {
-                    xtype: 'container',
+                    xtype: 'panel',
+                    cls: 'panel-metrics',
+                    itemId:'clickPanel',
                     layout: {
                         type: 'hbox',
                         align: 'stretch'
@@ -115,7 +117,7 @@
                                 {
                                     xtype: 'label',
                                     text: 'Client',
-                                    itemId: 'ClientId',
+                                    itemId: 'ClientMetricsId',
                                     cls: 'client-style'
                                 },
                                 {
@@ -138,12 +140,12 @@
                             items: [
                                 {
                                     xtype: 'label',
-                                    text: 'Period Metrics:',
+                                    text: 'Period Metrics: ',
                                 },
                                 {
                                     xtype: 'label',
                                     text: '',
-                                    itemId:'PeriodId'
+                                    itemId:'PeriodMetricsId'
                                 }
                             ]
                         }

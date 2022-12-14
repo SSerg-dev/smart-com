@@ -3369,6 +3369,10 @@ x-slider-inner:before {
     background-position: right !important;
 }
 
+.user-dashboard .panel-metrics {
+    background: #90a4ae;
+}
+
 .user-dashboard-panel {
     padding-right: 15px;
     align-items: stretch;

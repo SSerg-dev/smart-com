@@ -1357,10 +1357,10 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetLiveMetricsDashboard(ODataQueryOptions<Promo> options)
+        public IHttpActionResult GetLiveMetricsDashboard(ODataQueryOptions<Promo> options, int clientTreeId, long period)
         {
 
-            return Content(HttpStatusCode.OK, LiveMetricsDashboard.GetLiveMetricsDashboard(authorizationManager, Context));
+            return Content(HttpStatusCode.OK, LiveMetricsDashboard.GetLiveMetricsDashboard(authorizationManager, Context, clientTreeId, period));
         }
 
         private FilterContainer GetFilter(Delta<Promo> patch, string fieldName)
