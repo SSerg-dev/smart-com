@@ -25,23 +25,23 @@
             displayField: 'Name',
             allowBlank: false,
             editable: false,
-            hideNotHierarchyBtns: true,
+            //hideNotHierarchyBtns: true,
             store: {
                 model: 'App.model.tpm.clienttree.ClientTree',
                 autoLoad: false,
                 root: {}
             },
-            onSelectButtonClick: function () { },
-            onSelectionChange: function () { },
-            listeners: {
-                beforerender: function (picker) {
-                    var newOnTrigger1Click = function () {
-                        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
-                        metricsDashboardController.onTrigger1Click(picker);
-                    }
-                    picker.onTrigger1Click = newOnTrigger1Click;
-                }
-            }
+            //onSelectButtonClick: function () { },
+            //onSelectionChange: function () { },
+            //listeners: {
+            //    beforerender: function (picker) {
+            //        var newOnTrigger1Click = function () {
+            //            var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
+            //            metricsDashboardController.onTrigger1Click(picker);
+            //        }
+            //        picker.onTrigger1Click = newOnTrigger1Click;
+            //    }
+            //}
         },
         {
             xtype: 'custommarsdatefield',

@@ -25,7 +25,7 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset periodStartDate = marsDate.PeriodStartDate();
             DateTimeOffset periodEndDate = marsDate.PeriodEndDate();
 
-            var promoes = GetConstraintedQueryPromo(authorizationManager, Context);
+            var promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
 
             var ppaMetric = GetPPA(promoes);
             var pctMetric = GetPCT(promoes);
@@ -119,7 +119,7 @@ namespace Module.Frontend.TPM.Util
             return new ModelReturn { Value = pad, ValueLSV = padLsv };
         }
 
-        private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context)
+        private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -128,7 +128,10 @@ namespace Module.Frontend.TPM.Util
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-            IQueryable<PromoGridView> query = Context.Set<PromoGridView>().AsNoTracking();
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.Id == ClientTreeId);
+            IQueryable<PromoGridView> query = Context.Set<PromoGridView>()
+                .AsNoTracking()
+                .Where(g=>g.ClientHierarchy.Contains(client.FullPathName));
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
             query = query.Where(x => !x.IsOnHold);

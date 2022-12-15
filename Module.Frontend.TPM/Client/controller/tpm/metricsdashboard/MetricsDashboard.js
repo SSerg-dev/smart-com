@@ -150,52 +150,6 @@
         return clientTreeStore;
     },
 
-    onTrigger1Click: function (picker) {
-        var picker = picker.createPicker();
-        var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');
-        var clientTreeField = metricsDashboardController.getClientTreeField();
-        var clientTreeStore = metricsDashboardController.getClientTreeStore();
-        var clientTreeStoreProxy = clientTreeStore.getProxy();
-
-        if (clientTreeField.getRecord()) {
-            clientTreeStoreProxy.extraParams.clientObjectId = clientTreeField.getRecord().data.ObjectId;
-        } else {
-            clientTreeStoreProxy.extraParams.clientObjectId = null;
-        }
-
-        if (picker) {
-            var clientTree = picker.down(this.selectorWidget);
-            var clientTreeGrid = clientTree.down('basetreegrid');
-            var clientTreeGridStore = clientTreeGrid.getStore();
-
-            clientTree.chooseMode = false;
-            if (clientTreeField.getRecord()) {
-                clientTree.choosenClientObjectId = clientTreeField.getRecord().data.ObjectId;
-            }
-
-            clientTreeGridStore.addListener('load', function () {
-                metricsDashboardController.showCheckboxesForOnlyBaseClients(clientTreeGridStore.getRootNode().childNodes, clientTreeGrid.getChecked());
-            });
-
-            clientTreeGrid.addListener('checkchange', metricsDashboardController.onClientTreeCheckChange);
-            clientTree.down('basetreegrid').up('window').down('#select').addListener('click', function () { metricsDashboardController.onSelectClientTreeInPicker(picker, clientTreeGrid.getChecked()[0]); });
-
-            picker.show();
-
-            var header = clientTree.getHeader();
-            var splitter = clientTree.down('#splitter_1');
-            var settings = clientTree.down('#clientTreeSettingsPanel');
-            var addNodeButton = clientTree.down('#addNode');
-            var deleteNodeButton = clientTree.down('#deleteNode');
-
-            header.hide();
-            splitter.hide();
-            settings.hide();
-            addNodeButton.hide();
-            deleteNodeButton.hide();
-        }
-    },
-
     onMetricsDashboardClientPeriodChooseButtonClick: function (button) {
         var metricsDashboardController = App.app.getController('tpm.metricsdashboard.MetricsDashboard');;
         var metricsDashboardClientYearWindowChoose = button.up('metricsdashboardclientperiodchoosewindow');
