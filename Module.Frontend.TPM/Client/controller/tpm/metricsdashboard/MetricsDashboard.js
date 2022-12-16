@@ -193,8 +193,9 @@
                 vc.removeCls('associated-directory');
             }
 
-            Ext.suspendLayouts();
+            Ext.suspendLayouts();            
             vc.removeAll();
+            MenuMgr.setCurrentMenu(MenuMgr.getCurrentMenu().getParent()); // очистеть меню
             vc.add(view);
             Ext.resumeLayouts(true);
 
@@ -371,7 +372,6 @@
         var parameters = {
             userrole: userrole, clientTreeId: clientTreeRecord.get('Id'), period: periodRecord.ticks
         };
-        debugger;
         App.Util.makeRequestWithCallback('Promoes', 'GetLiveMetricsDashboard', parameters, function (data) {
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
