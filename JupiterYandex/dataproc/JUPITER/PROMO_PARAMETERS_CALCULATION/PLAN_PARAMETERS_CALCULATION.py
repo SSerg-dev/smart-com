@@ -60,9 +60,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-10-20_manual__2022-10-20T11%3A44%3A47.061208%2B00%3A00_", '
- '"ProcessDate": "2022-10-20", "Schema": "Jupiter", "HandlerId": '
- '"7ac7ab63-c489-4a51-a90a-6ae1beabf723"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_", '
+ '"ProcessDate": "2022-12-05", "Schema": "Jupiter", "HandlerId": '
+ '"6bc06c65-d2c0-4898-be2e-c33e437a3d9d"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -179,7 +179,9 @@ promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map[
 .withColumn("IsInExchange",col("IsInExchange").cast(BooleanType()))\
 .withColumn("IsGAManagerApproved",col("IsGAManagerApproved").cast(BooleanType()))
 promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=schemas_map["PromoStatus"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-promoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProduct"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+promoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProduct"])\
+.withColumn("Disabled",col("Disabled").cast(BooleanType()))\
+.withColumn("AverageMarker",col("AverageMarker").cast(BooleanType()))
 productDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProductDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProduct01DF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
@@ -581,7 +583,7 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
 
 
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
-calcPlanPromoProductDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
+calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
 ####*Promo support calculation*
 
