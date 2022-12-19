@@ -13,8 +13,8 @@
         flex: 1, 
     },
     
-    width: '25.25%',  
-    cls:'user-dashboard-panel',
+    width: '50%',  
+    cls:'metrics-dashboard-panel',
     items: [
         {
             layout: {
@@ -57,7 +57,7 @@
                     //Ext.get(panel.down('#NameLabel').id).setStyle('padding-top', item.getHeight() * 0.05 + 'px');
                     Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.04 + panel.getWidth() * 0.08) + 'px');
                     //Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', item.getHeight() * 0.1 + 'px');
-                    Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.02 + panel.getWidth() * 0.08) + 'px');
+                    Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.018 + panel.getWidth() * 0.08) + 'px');
                     //Ext.get(panel.down('#CountLabel_LSV').id).setStyle('padding-top', item.getHeight() * 0.15 + 'px');
                       
                     if (panel.getHeight() < 80) {  

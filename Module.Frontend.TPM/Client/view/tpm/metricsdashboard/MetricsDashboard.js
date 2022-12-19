@@ -55,7 +55,7 @@
     },
 
     height: '100%',
-    cls: 'user-dashboard',
+    cls: 'metrics-dashboard',
     items: [
 
         {
@@ -78,7 +78,6 @@
                         type: 'hbox',
                     },
                     xtype: 'container',
-                    cls: 'panel-lablel',
                     itemId: 'labelPanel',
                     items: [
                         {
@@ -99,7 +98,7 @@
                 {
                     xtype: 'panel',
                     cls: 'panel-metrics',
-                    itemId:'clickPanel',
+                    itemId: 'clickPanel',
                     layout: {
                         type: 'hbox',
                         align: 'stretch'
@@ -145,43 +144,93 @@
                                 {
                                     xtype: 'label',
                                     text: '',
-                                    itemId:'PeriodMetricsId'
+                                    itemId: 'PeriodMetricsId'
                                 }
                             ]
                         }
                     ]
                 },
                 {
+                    xtype: 'container',
+                    flex: 1,
+                    padding: '0 0 14 0',
                     layout: {
                         type: 'hbox',
+                        align: 'stretch'
                     },
-
-                    xtype: 'container',
-                    itemId: 'panel1',
-                    cls: 'panel-element-first',
-
                     items: [
+                        {
+                            xtype: 'container',
+                            flex: 1,
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch'
+                            },
+                            items: [
+                                {
+                                    layout: {
+                                        type: 'hbox',
+                                    },
+                                    xtype: 'container',
+                                    itemId: 'panel1',
+                                    cls: 'panel-element-first',
+                                    flex: 1,
+                                    items: [
 
-                    ],
+                                    ],
+                                },
+                                {
+                                    layout: {
+                                        type: 'hbox',
+                                    },
+                                    xtype: 'container',
+                                    itemId: 'panel2',
+                                    cls: 'panel-element-second',                                    
+                                    flex: 1,
+                                    items: [
+
+                                    ],
+                                },
+                            ]
+                        },
+                        {
+                            xtype: 'container',
+                            flex: 1,
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch'
+                            },
+                            items: [
+                                {
+                                    layout: {
+                                        type: 'hbox',
+                                    },
+                                    xtype: 'container',
+                                    itemId: 'panel3',
+                                    cls: 'panel-element-first',
+                                    flex: 1,
+                                    items: [
+
+                                    ],
+                                },
+                                {
+                                    layout: {
+                                        type: 'hbox',
+                                    },
+                                    xtype: 'container',
+                                    itemId: 'panel4',
+                                    cls: 'panel-element-second',
+                                    flex: 1,
+                                    items: [
+
+                                    ],
+                                },
+                            ]
+                        },
+                    ]
                 },
-                {
-                    layout: {
-                        type: 'hbox',
-                    },
-                    xtype: 'container',
-                    cls: 'panel-element-second',
-                    itemId: 'panel2',
-                    items: [
-
-                    ],
-                },
-
             ],
         },
 
     ],
-
-
-
-
 });

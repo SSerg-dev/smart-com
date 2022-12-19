@@ -404,8 +404,8 @@
                 }
 
                 button.down('button').setText(buttons.text);
-                if (view.down('#' + buttons.panel))
-                    view.down('#' + buttons.panel).add(button);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
 
                 //PCT
@@ -435,8 +435,8 @@
                 }
 
                 button.down('button').setText(buttons.text);
-                if (view.down('#' + buttons.panel))
-                    view.down('#' + buttons.panel).add(button);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
 
                 //PAD
@@ -466,8 +466,8 @@
                 }
 
                 button.down('button').setText(buttons.text);
-                if (view.down('#' + buttons.panel))
-                    view.down('#' + buttons.panel).add(button);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
 
                 mask.hide();
