@@ -332,5 +332,5 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
     calcPlanPromoProductDF = calcPlanPromoProductDF.select(promoProductCols)
     print('Plan product parameters calculation completed!')
     
-    return calcPlanPromoProductDF,logPromoProductDF
+    return calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF
     
