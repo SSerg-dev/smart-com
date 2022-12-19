@@ -162,11 +162,13 @@ with DAG(
     
     child_dag_config = create_child_dag_config(parameters)
     
-    trigger_jupiter_block_promo = TriggerDagRunOperator(
-        task_id="trigger_jupiter_block_promo",
-        trigger_dag_id="jupiter_block_promo",  
-        conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
-        wait_for_completion = True,
-    )
+    # trigger_jupiter_block_promo = TriggerDagRunOperator(
+        # task_id="trigger_jupiter_block_promo",
+        # trigger_dag_id="jupiter_block_promo",  
+        # conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
+        # wait_for_completion = True,
+    # )
     
-    promo_filtering_for_recalculation >> child_dag_config >> trigger_jupiter_block_promo
+    # promo_filtering_for_recalculation >> child_dag_config >> trigger_jupiter_block_promo
+	
+    promo_filtering_for_recalculation
