@@ -18,8 +18,8 @@ with DAG(
     dag_id="jupiter_main_dispatcher",
     start_date=datetime(2022, 11, 22),
     catchup=False,
-    # schedule_interval=None,
-    schedule_interval='30 22 * * *',
+    schedule_interval=none,
+    # schedule_interval='30 22 * * *',
     tags=["jupiter", "dev","main"],
     default_args={'retries': 2},
 ) as dag:
