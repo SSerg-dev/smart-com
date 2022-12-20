@@ -356,6 +356,48 @@
         var buttonColor = '#eef2fc';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
+    getPPAperiod: function () {
+        var dateStart = new Date();
+        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
+
+        var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, 7 * 8);
+        var filter = null;
+        var widget = 'promo';
+        var text = "Actions";
+        var panel = 'panel3';
+        var image = 'adjust_data.png';
+        var color = '#00009b';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getPCTperiod: function () {
+        var dateStart = new Date();
+        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
+
+        dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        var filter = null;
+        var widget = 'promo';
+        var text = "Actions";
+        var panel = 'panel3';
+        var image = 'adjust_data.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getPSFA: function () {
+        var dateStart = new Date();
+        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
+
+        dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        var filter = null;
+        var widget = 'promo';
+        var text = "Actions";
+        var panel = 'panel3';
+        var image = 'adjust_data.png';
+        var color = '#0e0d9e';
+        var buttonColor = '#eef2fc';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
     getCard: function (window) {
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         var view = window.up('metricsdashboard');
@@ -387,9 +429,9 @@
                 button.down('#CountLabel').setText(result.PPA + '%');
                 button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_LSV);
 
-                if (result.PAD >= 95) {
+                if (result.PPA >= 95) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PAD >= 90) {
+                } else if (result.PPA >= 90) {
                     button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
@@ -418,9 +460,9 @@
                 button.down('#CountLabel').setText(result.PCT + '%');
                 button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
 
-                if (result.PAD >= 90) {
+                if (result.PCT >= 90) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PAD >= 85) {
+                } else if (result.PCT >= 85) {
                     button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
@@ -469,6 +511,102 @@
                 if (view.query('#' + buttons.panel)[0])
                     view.query('#' + buttons.panel)[0].add(button);
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
+
+                //PPA period
+                //buttons = me.getPPAperiod();
+                //var button = Ext.widget('metricsdashboadpanel');
+                //button.widget = buttons.widget;
+                //button.filter = buttons.filter;
+
+                //button.down('#NameLabel').setText('PPA');
+                //button.down('#CountLabel').setText(result.PPA + '%');
+                //button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_LSV);
+
+                //if (result.PAD >= 95) {
+                //    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                //} else if (result.PAD >= 90) {
+                //    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                //} else {
+                //    button.down('#glyphRight').style = 'background-color:' + 'red';
+                //}
+
+                //button.down('button').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                //if (buttons.style) {
+                //    button.down('#CountLabel').addCls('panel-time-critical-standart');
+                //}
+
+                //button.down('button').setText(buttons.text);
+                //if (view.query('#' + buttons.panel)[0])
+                //    view.query('#' + buttons.panel)[0].add(button);
+                //button.down('#buttonText').setDisabled(true);
+                //button.down('#buttonArrow').setDisabled(true);
+
+                //PCT period
+                //buttons = me.getPCTperiod();
+                //var button = Ext.widget('metricsdashboadpanel');
+                //button.widget = buttons.widget;
+                //button.filter = buttons.filter;
+
+                //button.down('#NameLabel').setText('PCT');
+                //button.down('#CountLabel').setText(result.PCT + '%');
+                //button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
+
+                //if (result.PAD >= 90) {
+                //    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                //} else if (result.PAD >= 85) {
+                //    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                //} else {
+                //    button.down('#glyphRight').style = 'background-color:' + 'red';
+                //}
+
+                //button.down('button').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
+                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                //if (buttons.style) {
+                //    button.down('#CountLabel').addCls('panel-time-critical-standart');
+                //}
+
+                //button.down('button').setText(buttons.text);
+                //if (view.query('#' + buttons.panel)[0])
+                //    view.query('#' + buttons.panel)[0].add(button);
+                //button.down('#buttonText').setDisabled(true);
+                //button.down('#buttonArrow').setDisabled(true);
+
+                //PCT period
+                buttons = me.getPSFA();
+                var button = Ext.widget('metricsdashboadpanel');
+                button.widget = buttons.widget;
+                button.filter = buttons.filter;
+
+                button.down('#NameLabel').setText('P-SFA');
+                button.down('#CountLabel').setText(result.PCT + '%');
+                button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
+
+                if (result.PSFA >= 80) {
+                    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                } else if (result.PSFA >= 75) {
+                    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                } else {
+                    button.down('#glyphRight').style = 'background-color:' + 'red';
+                }
+
+                button.down('button').style = 'background-color:' + buttons.buttonColor;
+                button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
+                button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
+                button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                if (buttons.style) {
+                    button.down('#CountLabel').addCls('panel-time-critical-standart');
+                }
+
+                button.down('button').setText(buttons.text);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
+                button.down('#buttonText').setDisabled(true);
+                button.down('#buttonArrow').setDisabled(true);
 
                 mask.hide();
             }

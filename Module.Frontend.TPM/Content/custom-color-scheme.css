@@ -3479,7 +3479,7 @@ x-slider-inner:before {
     }
 
 .metrics-dashboard-panel {
-    padding-right: 15px;
+    padding: 0px 7px 0px 7px;
     align-items: stretch;
 }
 

@@ -9,6 +9,8 @@
         resize: function (panel) {
             var item = panel.down('#panel1');
             var item2 = panel.down('#panel2');
+            var item3 = panel.down('#panel3');
+            var item4 = panel.down('#panel4');
             var titlePanel = panel.down('#labelPanel');
             titlePanel.setHeight(panel.getHeight() * 0.07);
 
@@ -18,6 +20,8 @@
             Ext.get(titlePanel.down('#labelSecond').id).setStyle('font-size', titlePanel.getHeight() * 0.4 + 'px');
             item.setHeight(panel.getHeight() * 0.45);
             item2.setHeight(panel.getHeight() * 0.45);
+            item3.setHeight(panel.getHeight() * 0.45);
+            item4.setHeight(panel.getHeight() * 0.45);
             for (var position in item.items.items) {
                 var element = item.items.items[position];
                 element.down('#glyphRightPanel').setHeight(item.getHeight() * 0.35);
@@ -28,7 +32,6 @@
                 element.down('#buttonPanel').down('button').setHeight(item.getHeight() * 0.19);
 
                 Ext.get(panel.down('#buttonText').id + '-btnInnerEl').setStyle('font-size', panel.down('#buttonText').getHeight() * 0.3 + 'px');
-
             }
             for (var position in item2.items.items) {
                 var element = item2.items.items[position];
@@ -40,7 +43,28 @@
                 element.down('#buttonPanel').down('button').setHeight(item.getHeight() * 0.19);
 
                 Ext.get(panel.down('#buttonText').id + '-btnInnerEl').setStyle('font-size', panel.down('#buttonText').getHeight() * 0.3 + 'px');
+            }
+            for (var position in item3.items.items) {
+                var element = item3.items.items[position];
+                element.down('#glyphRightPanel').setHeight(item.getHeight() * 0.35);
+                element.down('#glyphRight').setHeight(item.getHeight() * 0.35 * 0.70)
+                element.down('#glyphRight').setWidth(item.getHeight() * 0.35 * 0.70);
+                element.down('#titleCountPanel').setHeight(item.getHeight() * 0.45);
+                element.down('#buttonPanel').setHeight(item.getHeight() * 0.19);
+                element.down('#buttonPanel').down('button').setHeight(item.getHeight() * 0.19);
 
+                Ext.get(panel.down('#buttonText').id + '-btnInnerEl').setStyle('font-size', panel.down('#buttonText').getHeight() * 0.3 + 'px');
+            }
+            for (var position in item4.items.items) {
+                var element = item4.items.items[position];
+                element.down('#glyphRightPanel').setHeight(item.getHeight() * 0.35);
+                element.down('#glyphRight').setHeight(item.getHeight() * 0.35 * 0.70)
+                element.down('#glyphRight').setWidth(item.getHeight() * 0.35 * 0.70);
+                element.down('#titleCountPanel').setHeight(item.getHeight() * 0.45);
+                element.down('#buttonPanel').setHeight(item.getHeight() * 0.19);
+                element.down('#buttonPanel').down('button').setHeight(item.getHeight() * 0.19);
+
+                Ext.get(panel.down('#buttonText').id + '-btnInnerEl').setStyle('font-size', panel.down('#buttonText').getHeight() * 0.3 + 'px');
             }
         }
     },
