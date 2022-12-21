@@ -63,7 +63,7 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => readyStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn{ Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
+                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
             }
             else
             {
@@ -134,11 +134,19 @@ namespace Module.Frontend.TPM.Util
                                     && x.ActualPromoIncrementalLSV != null && x.ActualPromoIncrementalLSV != 0
                                     && x.PlanPromoIncrementalLSV != null && x.PlanPromoIncrementalLSV != 0
                                     && x.StartDate >= startDate && x.StartDate <= endDate);
-            var sfaLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoIncrementalLSV.Value - x.PlanPromoIncrementalLSV.Value));
-            var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
-            sfa = (1 - sfa) * 100;
 
-            return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero).ToString() };
+            if (filteredPromoes.Count() > 0)
+            {
+                var sfaLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoIncrementalLSV.Value - x.PlanPromoIncrementalLSV.Value));
+                var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
+                sfa = (1 - sfa) * 100;
+
+                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero).ToString() };
+            }
+            else
+            {
+                return new ModelReturn { Value = "0", ValueLSV = "0" };
+            }
         }
 
         private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)

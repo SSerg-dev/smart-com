@@ -158,6 +158,7 @@
         var periodField = metricsDashboardClientYearWindowChoose.down('#PeriodField');
         var panel1 = Ext.ComponentQuery.query('container #panel1')[0];
         var panel2 = Ext.ComponentQuery.query('container #panel2')[0];
+        var panel3 = Ext.ComponentQuery.query('container #panel3')[0];
         var period = Ext.ComponentQuery.query('#PeriodMetricsId')[0];
         var client = Ext.ComponentQuery.query('#ClientMetricsId')[0];
         clientTreeField.validate();
@@ -171,6 +172,7 @@
             metricsDashboard['choosenPeriod'] = selectedPeriod;
             panel1.items.clear();
             panel2.items.clear();
+            panel3.items.clear();
             metricsDashboardController.getCard(panel1);
             period.setText(periodField.getRawValue());
             client.setText(clientTreeField.getValue());
@@ -488,13 +490,11 @@
                 button.filter = buttons.filter;
 
                 button.down('#NameLabel').setText('PAD');
-                button.down('#CountLabel').setText(result.PAD + '%');
+                button.down('#CountLabel').setText(result.PAD);
                 button.down('#CountLabel_LSV').setText('LSV: ' + result.PAD_LSV);
 
-                if (result.PAD == 100) {
+                if (result.PAD.split("/")[0] == "0") {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PAD >= 95) {
-                    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
                 }
@@ -583,8 +583,8 @@
                 button.filter = buttons.filter;
 
                 button.down('#NameLabel').setText('P-SFA');
-                button.down('#CountLabel').setText(result.PCT + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
+                button.down('#CountLabel').setText(result.PSFA + '%');
+                button.down('#CountLabel_LSV').setText('LSV: ' + result.PSFA_LSV);
 
                 if (result.PSFA >= 80) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
