@@ -99,7 +99,9 @@
 
         { name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true },
 
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
+        { name: 'WorkflowStep', type: 'string', hidden: false, isDefault: true },
+        { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

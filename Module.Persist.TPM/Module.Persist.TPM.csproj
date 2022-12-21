@@ -3271,6 +3271,10 @@
     <Compile Include="Migrations\202212131549427_ForView.Designer.cs">
       <DependentUpon>202212131549427_ForView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212201313304_WorkflowStep_PromoGridView.cs" />
+    <Compile Include="Migrations\202212201313304_WorkflowStep_PromoGridView.Designer.cs">
+      <DependentUpon>202212201313304_WorkflowStep_PromoGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6165,6 +6169,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212131549427_ForView.resx">
       <DependentUpon>202212131549427_ForView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212201313304_WorkflowStep_PromoGridView.resx">
+      <DependentUpon>202212201313304_WorkflowStep_PromoGridView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

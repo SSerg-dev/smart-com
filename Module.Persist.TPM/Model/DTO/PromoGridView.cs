@@ -97,5 +97,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? ActualPromoBaselineLSV { get; set; }
         public double? ActualPromoIncrementalLSV { get; set; }
         public double? ActualPromoLSVdiffPercent { get; set; }
+        public string WorkflowStep { get; set; }
+        public string InvoiceNumber { get; set; }
     }
 }

@@ -3413,6 +3413,7 @@ x-slider-inner:before {
         text-align: center;
         font-weight: 600;
     }
+
     .user-dashboard-panel .title-count-lsv {
         color: lightgray;
         text-align: center;
@@ -3437,6 +3438,106 @@ x-slider-inner:before {
     .user-dashboard-panel .title-glyph {
         padding-top: 1ex;
         padding-left: 1ex;
+    }
+
+.metrics-dashboard {
+}
+
+    .metrics-dashboard .title-first {
+        color: #57697c;
+        font-weight: 600;
+    }
+
+    .metrics-dashboard .title-second {
+        color: #57697c;
+    }
+
+    .metrics-dashboard .panel-metrics .x-panel-body-default {
+        background: #cbd5e1;
+    }
+
+    .metrics-dashboard .title-panel-first {
+        background: #157fcc;
+        font-weight: 600;
+        padding: 7px;
+        margin: 0px 7px 0px 7px;
+    }
+
+    .metrics-dashboard .panel-element-first {
+        padding: 7px;
+    }
+
+    .metrics-dashboard .panel-element-second {
+        padding: 7px;
+    }
+
+.metrics-dashboard-panel {
+    padding-right: 15px;
+    align-items: stretch;
+}
+
+    .metrics-dashboard-panel .x-panel-body {
+        box-shadow: inset 0 0 2px;
+    }
+
+    .metrics-dashboard-panel .x-btn-inner-center {
+        text-align: left !important;
+    }
+
+    .metrics-dashboard-panel .button-text-first {
+        box-shadow: inset 1px -5px 0 0.1px rgba(50,50,50,.4);
+    }
+
+    .metrics-dashboard-panel .button-text-second {
+        box-shadow: inset -1px -4px 0px 1px rgba(50, 50, 50, 0.4);
+    }
+
+    .metrics-dashboard-panel .x-btn-default-small {
+        border-width: 0px;
+    }
+
+
+        .metrics-dashboard-panel .x-btn-default-small .x-btn-inner {
+            color: black;
+        }
+
+    .metrics-dashboard-panel .title-count {
+        color: black;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .metrics-dashboard-panel .title-name-metrics {
+        color: black;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .metrics-dashboard-panel .title-count-metrics {
+        color: black;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .metrics-dashboard-panel .title-count-metrics-lsv {
+        color: lightgray;
+        text-align: center;
+        font-weight: 400;
+    }
+
+    .metrics-dashboard-panel .glyph-image {
+        border-radius: 100px;
+        margin: 0.45ex !important;
+    }
+
+    .metrics-dashboard-panel .panel-time-critical-standart {
+        color: red !important;
+        padding-top: 0px !important;
+        padding-bottom: 10px;
+    }
+
+    .metrics-dashboard-panel .panel-time-critical-zero {
+        color: green !important;
     }
 
 .form-info-trigger {
@@ -4960,7 +5061,7 @@ x-slider-inner:before {
     color: #5c6064;
 }
 
-.x-grid-row-selected .x-grid-td, .x-panel-blue-selectable-panel-framed .x-grid-row-selected .x-grid-cell{
+.x-grid-row-selected .x-grid-td, .x-panel-blue-selectable-panel-framed .x-grid-row-selected .x-grid-cell {
     background-color: #FFF3E4;
 }
 
@@ -4980,7 +5081,7 @@ x-slider-inner:before {
     color: #5c6064;
 }
 
-.x-panel-blue-panel .jspDrag{
+.x-panel-blue-panel .jspDrag {
     background-color: #FFF3E4;
 }
 
