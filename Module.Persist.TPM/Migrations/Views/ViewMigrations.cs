@@ -51,7 +51,8 @@
 									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Planning' 
 								 ELSE ''  
 							  END), 
-							  '') as WorkflowStep
+							  '') as WorkflowStep,
+							  pr.InvoiceNumber
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
