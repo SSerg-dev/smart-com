@@ -37,3 +37,20 @@ def generate_adls_to_hdfs_copy_file_command(azure_connection_name, src_path, dst
     """
 
     return script
+	
+
+def generate_hdfs_to_adls_copy_folder_command(azure_connection_name, src_path, dst_path):
+    azure_conn = BaseHook.get_connection(azure_connection_name)
+    
+    
+    script = f"""
+    export AZCOPY_AUTO_LOGIN_TYPE=SPN
+    export AZCOPY_SPA_APPLICATION_ID={azure_conn.login} 
+    export AZCOPY_SPA_CLIENT_SECRET={azure_conn.password}
+    export AZCOPY_TENANT_ID={azure_conn.extra_dejson['extra__azure__tenantId']}
+    
+    hdfs dfs -get {src_path} /tmp/entity && azcopy copy /tmp/entity {dst_path} --recursive && rm -rf /tmp/entity   
+    
+    """
+
+    return script	
