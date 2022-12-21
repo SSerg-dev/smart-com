@@ -33,12 +33,12 @@ namespace Module.Frontend.TPM.Util
 
             return JsonConvert.SerializeObject(new
             {
-                PPA = Math.Round(ppaMetric.Value, 0, MidpointRounding.AwayFromZero),
-                PCT = Math.Round(pctMetric.Value, 0, MidpointRounding.AwayFromZero),
-                PAD = Math.Round(padMetric.Value, 0, MidpointRounding.AwayFromZero),
-                PPA_LSV = Math.Round(ppaMetric.ValueLSV, 3, MidpointRounding.AwayFromZero),
-                PCT_LSV = Math.Round(pctMetric.ValueLSV, 3, MidpointRounding.AwayFromZero),
-                PAD_LSV = Math.Round(padMetric.ValueLSV, 3, MidpointRounding.AwayFromZero)
+                PPA = ppaMetric,
+                PCT = pctMetric,
+                PAD = padMetric,
+                PPA_LSV = ppaMetric,
+                PCT_LSV = pctMetric,
+                PAD_LSV = padMetric
             });
         }
 
@@ -60,11 +60,11 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => readyStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn{ Value = ppa * 100, ValueLSV = ppaLsv.Value };
+                return new ModelReturn{ Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
             }
             else
             {
-                return new ModelReturn { Value = 0, ValueLSV = 0 };
+                return new ModelReturn { Value = "0", ValueLSV = "0" };
             }
         }
         private static ModelReturn GetPCT(IQueryable<PromoGridView> promoes)
@@ -85,11 +85,11 @@ namespace Module.Frontend.TPM.Util
                 //нужно проверять не просто finished, а не заполненные finished????
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = pct * 100, ValueLSV = pctLsv.Value };
+                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
             }
             else
             {
-                return new ModelReturn { Value = 0, ValueLSV = 0 };
+                return new ModelReturn { Value = "0", ValueLSV = "0" };
             }
         }
 
@@ -111,12 +111,13 @@ namespace Module.Frontend.TPM.Util
                                         x.ActualPromoLSVByCompensation,
                                         ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation
                                     });
+            var total = filteredPromoes.Count();
             filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
             //нужно проверять не просто finished, а не заполненные finished
-            var pad = filteredPromoes.Count();
+            var pad = $"{filteredPromoes.Count()}/{total}";
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
-            return new ModelReturn { Value = pad, ValueLSV = padLsv };
+            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero).ToString() };
         }
 
         private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)
@@ -144,8 +145,8 @@ namespace Module.Frontend.TPM.Util
         }
         class ModelReturn
         {
-            public double Value { get; set; }
-            public double ValueLSV { get; set; }
+            public string Value { get; set; }
+            public string ValueLSV { get; set; }
         }
     }
 }
