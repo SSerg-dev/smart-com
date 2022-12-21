@@ -49,7 +49,7 @@ def generate_hdfs_to_adls_copy_folder_command(azure_connection_name, src_path, d
     export AZCOPY_SPA_CLIENT_SECRET={azure_conn.password}
     export AZCOPY_TENANT_ID={azure_conn.extra_dejson['extra__azure__tenantId']}
     
-    hdfs dfs -get {src_path} /tmp/entity && azcopy copy /tmp/entity/* {dst_path}/ --recursive && rm -rf /tmp/entity   
+    hdfs dfs -get {src_path} /tmp/entity && azcopy copy /tmp/entity/* {dst_path} --recursive && rm -rf /tmp/entity   
     
     """
 
