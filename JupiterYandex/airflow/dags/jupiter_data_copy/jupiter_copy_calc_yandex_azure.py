@@ -124,8 +124,8 @@ def generate_entity_list(parameters:dict):
 
 with DAG(
     dag_id='jupiter_copy_calc_yandex_azure',
-    schedule_interval='30 20 * * *',
-    start_date=pendulum.datetime(2022, 11, 29, tz="UTC"),
+    schedule_interval='0 4 * * *',
+    start_date=pendulum.datetime(2022, 12, 21, tz="UTC"),
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,
