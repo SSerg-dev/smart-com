@@ -30,15 +30,18 @@ namespace Module.Frontend.TPM.Util
             var ppaMetric = GetPPA(promoes);
             var pctMetric = GetPCT(promoes);
             var padMetric = GetPAD(promoes);
+            var psfaMetric = GetPSFA(promoes, marsDate);
 
             return JsonConvert.SerializeObject(new
             {
-                PPA = ppaMetric,
-                PCT = pctMetric,
-                PAD = padMetric,
-                PPA_LSV = ppaMetric,
-                PCT_LSV = pctMetric,
-                PAD_LSV = padMetric
+                PPA = ppaMetric.Value,
+                PCT = pctMetric.Value,
+                PAD = padMetric.Value,
+                PSFA = psfaMetric.Value,
+                PPA_LSV = ppaMetric.ValueLSV,
+                PCT_LSV = pctMetric.ValueLSV,
+                PAD_LSV = padMetric.ValueLSV,
+                PSFA_LSV = psfaMetric.ValueLSV
             });
         }
 
@@ -118,6 +121,24 @@ namespace Module.Frontend.TPM.Util
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
             return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero).ToString() };
+        }
+        private static ModelReturn GetPSFA(IQueryable<PromoGridView> promoes, MarsDate marsDate)
+        {
+            var checkStatuses = new string[] { "Closed" };
+
+            var startDate = marsDate.PeriodStartDate();
+            var endDate = marsDate.PeriodEndDate();
+
+            var filteredPromoes = promoes.Where(x =>
+                                    checkStatuses.Contains(x.PromoStatusName)
+                                    && x.ActualPromoIncrementalLSV != null && x.ActualPromoIncrementalLSV != 0
+                                    && x.PlanPromoIncrementalLSV != null && x.PlanPromoIncrementalLSV != 0
+                                    && x.StartDate >= startDate && x.StartDate <= endDate);
+            var sfaLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoIncrementalLSV.Value - x.PlanPromoIncrementalLSV.Value));
+            var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
+            sfa = (1 - sfa) * 100;
+
+            return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero).ToString() };
         }
 
         private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)
