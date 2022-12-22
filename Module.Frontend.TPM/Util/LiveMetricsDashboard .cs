@@ -51,9 +51,9 @@ namespace Module.Frontend.TPM.Util
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
             var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted" };
 
-            var startDate = DateTime.Now.AddDays(7 * 8);
+            var endDate = DateTime.Now.AddDays(7 * 8);
 
-            var filteredPromoes = promoes.Where(x => x.DispatchesStart >= startDate && x.DispatchesStart <= DateTime.Now);
+            var filteredPromoes = promoes.Where(x => x.DispatchesStart <= endDate && x.DispatchesStart >= DateTime.Now);
 
             var readyPromoes = filteredPromoes.Count(x => readyStatuses.Contains(x.PromoStatusName));
             var allPromoes = filteredPromoes.Count(x => !notCheckStatuses.Contains(x.PromoStatusName));
