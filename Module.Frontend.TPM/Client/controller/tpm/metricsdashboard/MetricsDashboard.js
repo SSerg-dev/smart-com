@@ -318,10 +318,10 @@
             operator: "and",
             rules: [
                 {
-                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
+                    property: "EndDate", operation: "LessOrEqual", value: dateEnd
                 },
                 {
-                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
+                    property: "EndDate", operation: "GreaterOrEqual", value: dateStart
                 },
                 {
                     property: "PromoStatusName", operation: "Equals", value: 'Finished'
@@ -346,9 +346,9 @@
             operator: "and",
             rules: [
                 {
-                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
+                    property: "EndDate", operation: "LessOrEqual", value: dateEnd
                 }, {
-                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
+                    property: "EndDate", operation: "GreaterOrEqual", value: dateStart
                 },
                 this.getFinishedFilter()
             ]
