@@ -3279,6 +3279,10 @@
     <Compile Include="Migrations\202212220559501_Empty22122022.Designer.cs">
       <DependentUpon>202212220559501_Empty22122022.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212221128121_Add_InvoiceFilter_AP.cs" />
+    <Compile Include="Migrations\202212221128121_Add_InvoiceFilter_AP.Designer.cs">
+      <DependentUpon>202212221128121_Add_InvoiceFilter_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6179,6 +6183,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212220559501_Empty22122022.resx">
       <DependentUpon>202212220559501_Empty22122022.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212221128121_Add_InvoiceFilter_AP.resx">
+      <DependentUpon>202212221128121_Add_InvoiceFilter_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

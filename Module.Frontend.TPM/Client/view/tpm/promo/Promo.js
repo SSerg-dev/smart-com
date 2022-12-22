@@ -145,7 +145,16 @@
             disabled: true,
             text: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText'),
             tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
-        },
+            },
+            {
+                glyph: 0xf0d7,
+                action: 'InvoiceFilter',
+                resource: 'Promoes',
+                itemId: 'invoicefilterbutton',
+                disabled: false,
+                text: l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'),
+                tooltip: l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText')
+            },
             '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
@@ -408,6 +417,11 @@
                 xtype: 'numbercolumn',
                 text: l10n.ns('tpm', 'Promo').value('PlanPromoBaselineLSV'),
                 dataIndex: 'PlanPromoBaselineLSV',
+                width: 110,
+            }, {
+                xtype: 'numbercolumn',
+                text: l10n.ns('tpm', 'Promo').value('PlanPromoLSV'),
+                dataIndex: 'PlanPromoLSV',
                 width: 110,
             }, {
                 text: l10n.ns('tpm', 'Promo').value('Mechanic'),

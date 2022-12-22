@@ -9,6 +9,10 @@
                 'promo #massapprovalbutton': {
                     click: this.onMassApprovalButtonClick
                 },
+                //invoce filter on/off
+                'promo #invoicefilterbutton': {
+                    click: this.onInvoiceFilterButtonClick
+                },
                 // promo activity
                 'promoactivity #promoActivity_step2 #exportAllPromoProducts': {
                     click: this.onActivityExportPromoProductsClick
@@ -62,6 +66,25 @@
         } else {
             window.setLoading(false);
             App.Notify.pushError("There is no promo to approve!");
+        }
+    },
+
+    onInvoiceFilterButtonClick: function (button) {
+        var me = this;
+        var panel = button.up('panel');
+        var grid = Ext.ComponentQuery.query('#promoGrid')[0].down('grid');
+        var store = grid.getStore();
+        
+        var filter = store.fixedFilters['InvoiceOnFilter'];
+        if (filter) {
+            store.removeFixedFilter('InvoiceOnFilter');
+            button.setText(l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'));
+            button.setTooltip(l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'));
+        }
+        else {
+            store.setFixedFilter('InvoiceOnFilter', this.getInvoiceOnFilter());
+            button.setText(l10n.ns('tpm', 'Promo').value('InvoiceFilterOffButtonText'));
+            button.setTooltip(l10n.ns('tpm', 'Promo').value('InvoiceFilterOffButtonText'));
         }
     },
 
@@ -745,6 +768,108 @@
                     ]
                 }
             ]
+        };
+
+        return filter;
+    },
+
+    getInvoiceFilter: function () {
+        var dateStart = new Date();
+        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
+
+        var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, - 7 * 7);
+        dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        var filter = {
+            operator: "and",
+            rules: [
+                {
+                    property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
+                },
+                {
+                    property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
+                },
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'Finished'
+                }
+            ]
+        };
+
+        return filter;
+    },
+
+    getInvoiceOnFilter: function () {
+        var filter = {
+            operator: "or",
+            rules: [{
+                operator: "and",
+                rules: [
+                    {
+                        property: "InOut", operation: "Equals", value: false
+                    },
+                    {
+                        property: "ActualPromoUpliftPercent", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoUpliftPercent", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoBaselineLSV", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoBaselineLSV", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoLSV", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoLSV", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "InvoiceNumber", operation: "Equals", value: ''
+                    }
+                ]
+            }, {
+                operator: "and",
+                rules: [
+                    {
+                        property: "InOut", operation: "Equals", value: true
+                    },
+                    {
+                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoLSV", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoLSV", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: 0
+                    },
+                    {
+                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: null
+                    },
+                    {
+                        property: "InvoiceNumber", operation: "Equals", value: ''
+                    }
+                ]
+            }],
+
         };
 
         return filter;

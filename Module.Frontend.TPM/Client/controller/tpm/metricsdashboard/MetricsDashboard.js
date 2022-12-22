@@ -319,10 +319,13 @@
             rules: [
                 {
                     property: "DispatchesStart", operation: "LessOrEqual", value: dateEnd
-                }, {
+                },
+                {
                     property: "DispatchesStart", operation: "GreaterOrEqual", value: dateStart
                 },
-                this.getFinishedFilter()
+                {
+                    property: "PromoStatusName", operation: "Equals", value: 'Finished'
+                }
             ]
         };
         var widget = 'promo';

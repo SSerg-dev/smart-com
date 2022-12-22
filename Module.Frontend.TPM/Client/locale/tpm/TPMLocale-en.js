@@ -891,6 +891,8 @@
         'ActualInStoreMechanicDiscountTip': 'Actual discount instore with co investment from client',
         'ChangeStateOnlyButtonText': 'Dependent on me',
         'MassApprovalButtonText': 'Mass Approve',
+        'InvoiceFilterOnButtonText': 'Invoice filter On',
+        'InvoiceFilterOffButtonText': 'Invoice filter Off',
         'ChangeResponsible': 'Change Responsible',
         'CreateCollapsed': 'Create<br>Promo',
         'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
@@ -932,6 +934,7 @@
         'GAInExcnange': 'GA InExchange',
         'IsInExchange': 'InExchange',
         'WorkflowStep': 'Workflow Step',
+        'PlanPromoLSV': 'Plan Promo LSV',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
