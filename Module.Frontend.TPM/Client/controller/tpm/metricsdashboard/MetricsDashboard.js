@@ -419,6 +419,9 @@
         var parameters = {
             userrole: userrole, clientTreeId: clientTreeRecord.get('Id'), period: periodRecord.ticks
         };
+        var clientFullPathFilter = {
+            property: "ClientHierarchy", operation: "StartsWith", value: clientTreeRecord.get('FullPathName')
+        };
         App.Util.makeRequestWithCallback('Promoes', 'GetLiveMetricsDashboard', parameters, function (data) {
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
@@ -429,6 +432,7 @@
                 var button = Ext.widget('metricsdashboadpanel');
                 button.widget = buttons.widget;
                 button.filter = buttons.filter;
+                button.filter.rules.push(clientFullPathFilter);
 
                 button.down('#NameLabel').setText('PPA');
                 button.down('#CountLabel').setText(result.PPA + '%');
@@ -460,6 +464,7 @@
                 var button = Ext.widget('metricsdashboadpanel');
                 button.widget = buttons.widget;
                 button.filter = buttons.filter;
+                button.filter.rules.push(clientFullPathFilter);
 
                 button.down('#NameLabel').setText('PCT');
                 button.down('#CountLabel').setText(result.PCT + '%');
@@ -491,6 +496,7 @@
                 var button = Ext.widget('metricsdashboadpanel');
                 button.widget = buttons.widget;
                 button.filter = buttons.filter;
+                button.filter.rules.push(clientFullPathFilter);
 
                 button.down('#NameLabel').setText('PAD');
                 button.down('#CountLabel').setText(result.PAD);
