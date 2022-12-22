@@ -85,7 +85,6 @@ namespace Module.Frontend.TPM.Util
             if (allCheckPromoes > 0)
             {
                 var pct = (double)closedPromoes / allCheckPromoes;
-                //нужно проверять не просто finished, а не заполненные finished????
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
                 return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
@@ -116,7 +115,6 @@ namespace Module.Frontend.TPM.Util
                                     });
             var total = filteredPromoes.Count();
             filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
-            //нужно проверять не просто finished, а не заполненные finished
             var pad = $"{filteredPromoes.Count()}/{total}";
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
