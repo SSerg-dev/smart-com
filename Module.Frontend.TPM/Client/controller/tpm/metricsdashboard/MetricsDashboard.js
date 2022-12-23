@@ -436,7 +436,8 @@
 
                 button.down('#NameLabel').setText('PPA');
                 button.down('#CountLabel').setText(result.PPA + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_LSV);
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PPA_LSV;
 
                 if (result.PPA >= 95) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
@@ -468,7 +469,8 @@
 
                 button.down('#NameLabel').setText('PCT');
                 button.down('#CountLabel').setText(result.PCT + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PCT_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PCT_LSV;
 
                 if (result.PCT >= 90) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
@@ -500,7 +502,8 @@
 
                 button.down('#NameLabel').setText('PAD');
                 button.down('#CountLabel').setText(result.PAD);
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PAD_LSV);
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PAD_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PAD_LSV;
 
                 if (result.PAD.split("/")[0] == "0") {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
@@ -593,7 +596,8 @@
 
                 button.down('#NameLabel').setText('P-SFA');
                 button.down('#CountLabel').setText(result.PSFA + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PSFA_LSV);
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PSFA_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PSFA_LSV;
 
                 if (result.PSFA >= 80) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';

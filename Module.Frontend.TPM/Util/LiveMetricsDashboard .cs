@@ -63,11 +63,11 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => readyStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
+                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = "0" };
+                return new ModelReturn { Value = "0", ValueLSV = 0 };
             }
         }
         private static ModelReturn GetPCT(IQueryable<PromoGridView> promoes)
@@ -87,11 +87,11 @@ namespace Module.Frontend.TPM.Util
                 var pct = (double)closedPromoes / allCheckPromoes;
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 3, MidpointRounding.AwayFromZero).ToString() };
+                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 3, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = "0" };
+                return new ModelReturn { Value = "0", ValueLSV = 0 };
             }
         }
 
@@ -118,7 +118,7 @@ namespace Module.Frontend.TPM.Util
             var pad = $"{filteredPromoes.Count()}/{total}";
             var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
 
-            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero).ToString() };
+            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero) };
         }
         private static ModelReturn GetPSFA(IQueryable<PromoGridView> promoes, MarsDate marsDate)
         {
@@ -139,11 +139,11 @@ namespace Module.Frontend.TPM.Util
                 var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
                 sfa = (1 - sfa) * 100;
 
-                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero).ToString() };
+                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = "0" };
+                return new ModelReturn { Value = "0", ValueLSV = 0 };
             }
         }
 
@@ -173,7 +173,7 @@ namespace Module.Frontend.TPM.Util
         class ModelReturn
         {
             public string Value { get; set; }
-            public string ValueLSV { get; set; }
+            public double ValueLSV { get; set; }
         }
     }
 }

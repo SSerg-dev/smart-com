@@ -147,7 +147,7 @@
             tooltip: l10n.ns('tpm', 'Promo').value('MassApprovalButtonText')
             },
             {
-                glyph: 0xf0d7,
+                glyph: 0xf236,
                 action: 'InvoiceFilter',
                 resource: 'Promoes',
                 itemId: 'invoicefilterbutton',

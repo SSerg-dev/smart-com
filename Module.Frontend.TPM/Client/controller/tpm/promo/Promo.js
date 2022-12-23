@@ -335,7 +335,9 @@
 
         store.on('beforeload', function (store) {
             var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+            var ifButton = grid.up().down('custombigtoolbar').down('#invoicefilterbutton');
             maButton.setDisabled(true);
+            ifButton.setDisabled(true);
         });
         // RSmode
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -473,11 +475,17 @@
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
         var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
         var ifButton = grid.up().down('custombigtoolbar').down('#invoicefilterbutton');
-        
-        var onInvoiceFilter = promoHelperController.getInvoiceFilter();
-        var isDisabled = !this.compareFilters(filter, onInvoiceFilter);
+        if (filter != null) {
+            var noClientfilter = JSON.parse(JSON.stringify(filter));
+            noClientfilter.rules = noClientfilter.rules.filter(item => item.property != 'ClientHierarchy');
 
-        ifButton.setDisabled(isDisabled);
+            var onInvoiceFilter = promoHelperController.getInvoiceFilter();
+            var isDisabled = !this.compareFilters(noClientfilter, onInvoiceFilter);
+
+            ifButton.setDisabled(isDisabled);
+        }
+        else
+            ifButton.setDisabled(true);
     },
 
     onBasicPanelAfterrender: function (component, eOpts) {

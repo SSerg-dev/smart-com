@@ -111,6 +111,23 @@
                         text: '0',
                         height: '33%',
                         flex: 1,
+                        listeners: {
+                            render: function (label) {
+                                var view = label;
+                                label.tip = Ext.create('Ext.tip.ToolTip', {
+                                    target: view.el,
+                                    delegate: view.itemSelector,
+                                    trackMouse: true,
+                                    style: 'font-size: 25px !important',
+                                    renderTo: Ext.getBody(),
+                                    listeners: {
+                                        beforeshow: function updateTipBody(tip) {
+                                            tip.update(view.rawText);
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
                 ],
             }]
