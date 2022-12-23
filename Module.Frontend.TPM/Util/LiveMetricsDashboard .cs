@@ -45,7 +45,7 @@ namespace Module.Frontend.TPM.Util
             });
         }
 
-        private static ModelReturn GetPPA(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPPA(IEnumerable<PromoGridView> promoes)
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
@@ -70,7 +70,7 @@ namespace Module.Frontend.TPM.Util
                 return new ModelReturn { Value = "0", ValueLSV = 0 };
             }
         }
-        private static ModelReturn GetPCT(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
@@ -95,7 +95,7 @@ namespace Module.Frontend.TPM.Util
             }
         }
 
-        private static ModelReturn GetPAD(IQueryable<PromoGridView> promoes)
+        private static ModelReturn GetPAD(IEnumerable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
@@ -111,16 +111,17 @@ namespace Module.Frontend.TPM.Util
                                     {
                                         x.ActualPromoLSV,
                                         x.ActualPromoLSVByCompensation,
-                                        ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation
+                                        ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation.Value,
+                                        PAD_LSV = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value)
                                     });
             var total = filteredPromoes.Count();
             filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
             var pad = $"{filteredPromoes.Count()}/{total}";
-            var padLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value));
+            var padLsv = filteredPromoes.Sum(x => x.PAD_LSV);
 
             return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero) };
         }
-        private static ModelReturn GetPSFA(IQueryable<PromoGridView> promoes, MarsDate marsDate)
+        private static ModelReturn GetPSFA(IEnumerable<PromoGridView> promoes, MarsDate marsDate)
         {
             var checkStatuses = new string[] { "Closed" };
 
@@ -147,7 +148,7 @@ namespace Module.Frontend.TPM.Util
             }
         }
 
-        private static IQueryable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)
+        private static IEnumerable<PromoGridView> GetConstraintedQueryPromo(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -168,7 +169,7 @@ namespace Module.Frontend.TPM.Util
             {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
-            return query;
+            return query.ToList();
         }
         class ModelReturn
         {
