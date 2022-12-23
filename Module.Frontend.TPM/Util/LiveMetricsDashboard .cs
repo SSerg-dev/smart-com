@@ -63,7 +63,7 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 3, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
@@ -87,7 +87,7 @@ namespace Module.Frontend.TPM.Util
                 var pct = (double)closedPromoes / allCheckPromoes;
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 3, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Module.Frontend.TPM.Util
             var pad = $"{filteredPromoes.Count()}/{total}";
             var padLsv = filteredPromoes.Sum(x => x.PAD_LSV);
 
-            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 3, MidpointRounding.AwayFromZero) };
+            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
         }
         private static ModelReturn GetPSFA(IEnumerable<PromoGridView> promoes, MarsDate marsDate)
         {
@@ -140,7 +140,7 @@ namespace Module.Frontend.TPM.Util
                 var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
                 sfa = (1 - sfa) * 100;
 
-                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 3, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
