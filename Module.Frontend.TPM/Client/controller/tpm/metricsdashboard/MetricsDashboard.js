@@ -167,7 +167,7 @@
         var selectedClientRecord = clientTreeField.getRecord();
         var selectedPeriod = periodField.getValue();
         
-        if (selectedClientRecord.data.Type == 'root') {
+        if (selectedClientRecord.data.Type == 'root' || selectedClientRecord.data.Type == 'Group') {
             Ext.Msg.show({
                 title: l10n.ns('tpm', 'text').value('Information'),
                 msg: 'Only client and chain level customers are available for selection',
@@ -183,7 +183,7 @@
                 }
             });
         }
-        if (clientTreeField.isValid() && periodField.isValid() && selectedClientRecord.data.Type != 'root') {
+        if (clientTreeField.isValid() && periodField.isValid() && selectedClientRecord.data.Type != 'root' && selectedClientRecord.data.Type != 'Group') {
             metricsDashboard['choosenClientTreeRecord'] = selectedClientRecord;
             metricsDashboard['choosenPeriod'] = selectedPeriod;
             panel1.items.clear();

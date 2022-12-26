@@ -47,7 +47,7 @@
         text: l10n.ns('tpm', 'mainmenu').value('BusinessMetrics'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('BusinessMetrics'),
         scale: 'medium',
-        glyph: 0xF56E,
+        glyph: 0xF873,
         rsMode: true,
         currentMode: true,
         children: [
@@ -55,7 +55,7 @@
                 text: l10n.ns('tpm', 'mainmenu').value('MetricsDashboard'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsDashboard'),
                 scale: 'medium',
-                glyph: 0xfa1c,
+                glyph: 0xF873,
                 rsMode: true,
                 currentMode: true,
                 widget: 'metricsdashboard'

@@ -78,11 +78,11 @@
         var filter = store.fixedFilters['InvoiceOnFilter'];
         if (filter) {
             store.removeFixedFilter('InvoiceOnFilter');
-            button.addCls('showEditablePromo-btn-active');
+            button.removeCls('showEditablePromo-btn-active');
         }
         else {
             store.setFixedFilter('InvoiceOnFilter', this.getInvoiceOnFilter());
-            button.removeCls('showEditablePromo-btn-active');
+            button.addCls('showEditablePromo-btn-active');
         }
     },
 

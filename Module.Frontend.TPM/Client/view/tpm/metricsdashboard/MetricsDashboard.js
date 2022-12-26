@@ -139,14 +139,14 @@
                             items: [
                                 {
                                     xtype: 'label',
-                                    text: 'Client',
-                                    itemId: 'ClientMetricsId',
-                                    cls: 'client-style'
+                                    text: 'Live Metrics: ',
                                 },
                                 {
                                     xtype: 'label',
-                                    text: ' :Live Metrics',
-                                }
+                                    text: 'Client',
+                                    itemId: 'ClientMetricsId',
+                                    cls: 'client-style'
+                                },                                
                             ]
 
 
