@@ -3451,12 +3451,12 @@ x-slider-inner:before {
 }
 
     .metrics-dashboard .title-first {
-        color: #157fcc;
+        color: #57697c;
         font-weight: 600;
     }
 
     .metrics-dashboard .title-second {
-        color: #157fcc;
+        color: #57697c;
     }
 
     .metrics-dashboard .panel-metrics .x-panel-body-default {
@@ -3465,6 +3465,7 @@ x-slider-inner:before {
 
     .metrics-dashboard .title-panel-first {
         background: #3f6895;
+        color: white;
         font-weight: 600;
         padding: 7px;
         margin: 0px 7px 0px 7px;

@@ -78,13 +78,11 @@
         var filter = store.fixedFilters['InvoiceOnFilter'];
         if (filter) {
             store.removeFixedFilter('InvoiceOnFilter');
-            button.setText(l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'));
-            button.setTooltip(l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'));
+            button.addCls('showEditablePromo-btn-active');
         }
         else {
             store.setFixedFilter('InvoiceOnFilter', this.getInvoiceOnFilter());
-            button.setText(l10n.ns('tpm', 'Promo').value('InvoiceFilterOffButtonText'));
-            button.setTooltip(l10n.ns('tpm', 'Promo').value('InvoiceFilterOffButtonText'));
+            button.removeCls('showEditablePromo-btn-active');
         }
     },
 

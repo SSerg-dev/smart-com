@@ -47,6 +47,7 @@
             xtype: 'custommarsdatefield',
             itemId: 'PeriodField',
             editable: false,
+            allowBlank: false,
             fieldLabel: l10n.ns('tpm', 'ClientDashboard').value('SelectPeriod'),
             //listeners: {
             //    added: function (field) {

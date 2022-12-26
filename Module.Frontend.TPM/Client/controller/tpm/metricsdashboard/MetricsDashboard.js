@@ -166,8 +166,24 @@
 
         var selectedClientRecord = clientTreeField.getRecord();
         var selectedPeriod = periodField.getValue();
-
-        if (clientTreeField.isValid() && periodField.isValid()) {
+        
+        if (selectedClientRecord.data.Type == 'root') {
+            Ext.Msg.show({
+                title: l10n.ns('tpm', 'text').value('Information'),
+                msg: 'Only client and chain level customers are available for selection',
+                icon: Ext.Msg.INFO,
+                buttons: Ext.Msg.OK,
+                fn: function (btn) {
+                    if (btn === 'ok') {
+                        return;
+                    }
+                },
+                buttonText: {
+                    ok: l10n.ns('tpm', 'button').value('ok')
+                }
+            });
+        }
+        if (clientTreeField.isValid() && periodField.isValid() && selectedClientRecord.data.Type != 'root') {
             metricsDashboard['choosenClientTreeRecord'] = selectedClientRecord;
             metricsDashboard['choosenPeriod'] = selectedPeriod;
             panel1.items.clear();

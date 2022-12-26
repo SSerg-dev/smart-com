@@ -151,7 +151,8 @@
                 action: 'InvoiceFilter',
                 resource: 'Promoes',
                 itemId: 'invoicefilterbutton',
-                disabled: false,
+                cls: 'showEditablePromo-btn-active',
+                disabled: true,
                 text: l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'),
                 tooltip: l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText')
             },
