@@ -8,6 +8,7 @@ using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
+using Persist.Model.Settings;
 using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
@@ -25,23 +26,31 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset periodStartDate = marsDate.PeriodStartDate();
             DateTimeOffset periodEndDate = marsDate.PeriodEndDate();
 
-            var promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
-
-            var ppaMetric = GetPPA(promoes);
-            var pctMetric = GetPCT(promoes);
-            var padMetric = GetPAD(promoes);
-            var psfaMetric = GetPSFA(promoes, marsDate);
+            IEnumerable<PromoGridView> promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
+            ModelColor metricSettings = GetMetricSettings(Context.Set<Setting>().Where(g => g.Name.Contains("METRICS_")).ToList());
+            ModelReturn ppaMetric = GetPPA(promoes);
+            ModelReturn pctMetric = GetPCT(promoes);
+            ModelReturn padMetric = GetPAD(promoes);
+            ModelReturn psfaMetric = GetPSFA(promoes, marsDate);
 
             return JsonConvert.SerializeObject(new
             {
                 PPA = ppaMetric.Value,
                 PCT = pctMetric.Value,
                 PAD = padMetric.Value,
+                PADDEN = padMetric.Value2,
                 PSFA = psfaMetric.Value,
                 PPA_LSV = ppaMetric.ValueLSV,
                 PCT_LSV = pctMetric.ValueLSV,
                 PAD_LSV = padMetric.ValueLSV,
-                PSFA_LSV = psfaMetric.ValueLSV
+                PSFA_LSV = psfaMetric.ValueLSV,
+                PPA_YELLOW = metricSettings.PPAYellow,
+                PPA_GREEN = metricSettings.PPAGreen,
+                PCT_YELLOW = metricSettings.PCTYellow,
+                PCT_GREEN = metricSettings.PCTGreen,
+                PSFA_YELLOW = metricSettings.PSFAYellow,
+                PSFA_GREEN = metricSettings.PSFAGreen,
+                PAD_MIN = metricSettings.PADMin
             });
         }
 
@@ -63,11 +72,11 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = 0 };
+                return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
         private static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
@@ -87,11 +96,11 @@ namespace Module.Frontend.TPM.Util
                 var pct = (double)closedPromoes / allCheckPromoes;
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = 0 };
+                return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
 
@@ -116,10 +125,10 @@ namespace Module.Frontend.TPM.Util
                                     });
             var total = filteredPromoes.Count();
             filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
-            var pad = $"{filteredPromoes.Count()}/{total}";
+            //var pad = $"{filteredPromoes.Count()}/{total}";
             var padLsv = filteredPromoes.Sum(x => x.PAD_LSV);
 
-            return new ModelReturn { Value = pad, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
+            return new ModelReturn { Value = filteredPromoes.Count(), Value2 = total, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
         }
         private static ModelReturn GetPSFA(IEnumerable<PromoGridView> promoes, MarsDate marsDate)
         {
@@ -140,11 +149,11 @@ namespace Module.Frontend.TPM.Util
                 var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
                 sfa = (1 - sfa) * 100;
 
-                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero).ToString(), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
-                return new ModelReturn { Value = "0", ValueLSV = 0 };
+                return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
 
@@ -160,7 +169,7 @@ namespace Module.Frontend.TPM.Util
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.Id == ClientTreeId);
             IQueryable<PromoGridView> query = Context.Set<PromoGridView>()
                 .AsNoTracking()
-                .Where(g=>g.ClientHierarchy.Contains(client.FullPathName));
+                .Where(g => g.ClientHierarchy.Contains(client.FullPathName));
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, TPMmode.Current, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
             query = query.Where(x => !x.IsOnHold);
@@ -171,10 +180,34 @@ namespace Module.Frontend.TPM.Util
             }
             return query.ToList();
         }
+        private static ModelColor GetMetricSettings(List<Setting> settings)
+        {
+            return new ModelColor
+            {
+                PPAGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PPA_GREEN")).Value),
+                PPAYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PPA_YELLOW")).Value),
+                PCTGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PCT_GREEN")).Value),
+                PCTYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PCT_YELLOW")).Value),
+                PADMin = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PAD_MIN")).Value),
+                PSFAGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PSFA_GREEN")).Value),
+                PSFAYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PSFA_YELLOW")).Value),
+            };
+        }
         class ModelReturn
         {
-            public string Value { get; set; }
+            public double Value { get; set; }
+            public int Value2 { get; set; }
             public double ValueLSV { get; set; }
+        }
+        class ModelColor
+        {
+            public int PPAGreen { get; set; }
+            public int PPAYellow { get; set; }
+            public int PCTGreen { get; set; }
+            public int PCTYellow { get; set; }
+            public int PADMin { get; set; }
+            public int PSFAGreen { get; set; }
+            public int PSFAYellow { get; set; }
         }
     }
 }

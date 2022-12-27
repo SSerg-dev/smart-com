@@ -458,7 +458,7 @@
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
                 var buttons;
-
+                debugger;
                 //PPA
                 buttons = me.getPPA();
                 var button = Ext.widget('metricsdashboadpanel');
@@ -471,9 +471,9 @@
                 button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_LSV / 1000000, 2));
                 button.down('#CountLabel_LSV').rawText = result.PPA_LSV;
 
-                if (result.PPA >= 95) {
+                if (result.PPA >= result.PPA_GREEN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PPA >= 90) {
+                } else if (result.PPA >= result.PPA_YELLOW) {
                     button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
@@ -504,9 +504,9 @@
                 button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PCT_LSV / 1000000, 2));
                 button.down('#CountLabel_LSV').rawText = result.PCT_LSV;
 
-                if (result.PCT >= 90) {
+                if (result.PCT >= result.PCT_GREEN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PCT >= 85) {
+                } else if (result.PCT >= result.PCT_YELLOW) {
                     button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
@@ -533,11 +533,11 @@
                 button.filter.rules.push(clientFullPathFilter);
 
                 button.down('#NameLabel').setText('PAD');
-                button.down('#CountLabel').setText(result.PAD);
+                button.down('#CountLabel').setText(result.PAD + ' / ' + result.PADDEN);
                 button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PAD_LSV / 1000000, 2));
                 button.down('#CountLabel_LSV').rawText = result.PAD_LSV;
 
-                if (result.PAD.split("/")[0] == "0") {
+                if (result.PADDEN < result.PAD_MIN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
@@ -631,9 +631,9 @@
                 button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PSFA_LSV / 1000000, 2));
                 button.down('#CountLabel_LSV').rawText = result.PSFA_LSV;
 
-                if (result.PSFA >= 80) {
+                if (result.PSFA >= result.PSFA_GREEN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PSFA >= 75) {
+                } else if (result.PSFA >= result.PSFA_YELLOW) {
                     button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
