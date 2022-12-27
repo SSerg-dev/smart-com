@@ -159,6 +159,7 @@
         var panel1 = Ext.ComponentQuery.query('container #panel1')[0];
         var panel2 = Ext.ComponentQuery.query('container #panel2')[0];
         var panel3 = Ext.ComponentQuery.query('container #panel3')[0];
+        var panel4 = Ext.ComponentQuery.query('container #panel4')[0];
         var period = Ext.ComponentQuery.query('#PeriodMetricsId')[0];
         var client = Ext.ComponentQuery.query('#ClientMetricsId')[0];
         clientTreeField.validate();
@@ -186,9 +187,22 @@
         if (clientTreeField.isValid() && periodField.isValid() && selectedClientRecord.data.Type != 'root' && selectedClientRecord.data.Type != 'Group') {
             metricsDashboard['choosenClientTreeRecord'] = selectedClientRecord;
             metricsDashboard['choosenPeriod'] = selectedPeriod;
-            panel1.items.clear();
-            panel2.items.clear();
-            panel3.items.clear();
+            var panel1Items = Ext.ComponentQuery.query('#panel1 metricsdashboadpanel');
+            if (panel1Items.length > 0) {
+                panel1Items.forEach(element => panel1.remove(element));
+            }
+            var panel2Items = Ext.ComponentQuery.query('#panel2 metricsdashboadpanel');
+            if (panel2Items.length > 0) {
+                panel2Items.forEach(element => panel2.remove(element));
+            }
+            var panel3Items = Ext.ComponentQuery.query('#panel3 metricsdashboadpanel');
+            if (panel3Items.length > 0) {
+                panel3Items.forEach(element => panel3.remove(element));
+            }
+            var panel4Items = Ext.ComponentQuery.query('#panel4 metricsdashboadpanel');
+            if (panel4Items.length > 0) {
+                panel4Items.forEach(element => panel4.remove(element));
+            }
             metricsDashboardController.getCard(panel1);
             period.setText(periodField.getRawValue());
             client.setText(clientTreeField.getValue());
@@ -201,7 +215,9 @@
         var promoController = App.app.getController('core.Main');
         var vc = promoController.getViewContainer(),
             view = vc.getComponent(panel.widget);
-
+        if (panel.filter === null) {
+            return;
+        }
         if (!view) {
             view = Ext.widget(panel.widget);
 
@@ -211,7 +227,7 @@
                 vc.removeCls('associated-directory');
             }
 
-            Ext.suspendLayouts();            
+            Ext.suspendLayouts();
             vc.removeAll();
             MenuMgr.setCurrentMenu(MenuMgr.getCurrentMenu().getParent()); // очистеть меню
             vc.add(view);
@@ -412,11 +428,11 @@
         dateStart = new Date(dateStart.getFullYear(), 0, 1);
         var filter = null;
         var widget = 'promo';
-        var text = "Actions";
+        var text = "";
         var panel = 'panel3';
         var image = 'adjust_data.png';
-        var color = '#0e0d9e';
-        var buttonColor = '#eef2fc';
+        var color = '#edf1fb';
+        var buttonColor = '#edf1fb';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
     getCard: function (window) {
@@ -623,10 +639,10 @@
                     button.down('#glyphRight').style = 'background-color:' + 'red';
                 }
 
-                button.down('button').style = 'background-color:' + buttons.buttonColor;
-                button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
-                button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
-                button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                button.down('button').style = 'background-color:' + '#fff';
+                button.down('#buttonPanel').style = 'background-color:' + '#fff';
+                button.down('#buttonArrow').style = 'background-color:' + '#fff';
+                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
                 if (buttons.style) {
                     button.down('#CountLabel').addCls('panel-time-critical-standart');
                 }
@@ -634,8 +650,8 @@
                 button.down('button').setText(buttons.text);
                 if (view.query('#' + buttons.panel)[0])
                     view.query('#' + buttons.panel)[0].add(button);
-                button.down('#buttonText').setDisabled(true);
-                button.down('#buttonArrow').setDisabled(true);
+                //button.down('#buttonText').setDisabled(true);
+                //button.down('#buttonArrow').setDisabled(true);
 
                 mask.hide();
             }
