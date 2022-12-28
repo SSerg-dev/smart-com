@@ -540,7 +540,7 @@
                 button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PAD_LSV / 1000000, 2));
                 button.down('#CountLabel_LSV').rawText = result.PAD_LSV;
 
-                if (result.PADDEN < result.PAD_MIN) {
+                if (result.PAD <= result.PAD_MIN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
                 } else {
                     button.down('#glyphRight').style = 'background-color:' + 'red';
