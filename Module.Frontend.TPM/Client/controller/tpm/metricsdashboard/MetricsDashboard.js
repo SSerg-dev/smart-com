@@ -642,7 +642,7 @@
                 button.down('button').style = 'background-color:' + '#fff';
                 button.down('#buttonPanel').style = 'background-color:' + '#fff';
                 button.down('#buttonArrow').style = 'background-color:' + '#fff';
-                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
                 if (buttons.style) {
                     button.down('#CountLabel').addCls('panel-time-critical-standart');
                 }
