@@ -483,9 +483,12 @@
             var isDisabled = !this.compareFilters(noClientfilter, onInvoiceFilter);
 
             ifButton.setDisabled(isDisabled);
+            ifButton.setVisible(!isDisabled);
         }
-        else
+        else {
             ifButton.setDisabled(true);
+            ifButton.setVisible(false);
+        }
     },
 
     onBasicPanelAfterrender: function (component, eOpts) {

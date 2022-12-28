@@ -148,8 +148,9 @@
             },
             {
                 glyph: 0xf236,
-                action: 'InvoiceFilter',
-                resource: 'Promoes',
+                //action: 'InvoiceFilter',
+                //resource: 'Promoes',
+                hidden: true,
                 itemId: 'invoicefilterbutton',
                 disabled: true,
                 text: l10n.ns('tpm', 'Promo').value('InvoiceFilterOnButtonText'),
