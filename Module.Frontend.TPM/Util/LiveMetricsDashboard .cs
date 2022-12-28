@@ -113,20 +113,12 @@ namespace Module.Frontend.TPM.Util
 
             var filteredPromoes = promoes.Where(x =>
                                     x.EndDate >= startDate && x.EndDate <= endDate
+                                    && checkStatuses.Contains(x.PromoStatusName)
                                     && x.ActualPromoLSV != null && x.ActualPromoLSV != 0
-                                    && x.ActualPromoLSVByCompensation != null && x.ActualPromoLSVByCompensation != 0
-                                    && checkStatuses.Contains(x.PromoStatusName))
-                                    .Select(x => new
-                                    {
-                                        x.ActualPromoLSV,
-                                        x.ActualPromoLSVByCompensation,
-                                        ActualPromoLSVdiff = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value) / x.ActualPromoLSVByCompensation.Value,
-                                        PAD_LSV = Math.Abs(x.ActualPromoLSV.Value - x.ActualPromoLSVByCompensation.Value)
-                                    });
+                                    && x.ActualPromoLSVByCompensation != null && x.ActualPromoLSVByCompensation != 0);
             var total = filteredPromoes.Count();
-            filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiff > 0.1);
-            //var pad = $"{filteredPromoes.Count()}/{total}";
-            var padLsv = filteredPromoes.Sum(x => x.PAD_LSV);
+            filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiffPercent > 0.1);
+            var padLsv = filteredPromoes.Select(x => new { ActualPromoLSV = x.ActualPromoLSV.Value, ActualPromoLSVByCompensation = x.ActualPromoLSVByCompensation.Value }).Sum(x => Math.Abs(x.ActualPromoLSV - x.ActualPromoLSVByCompensation));
 
             return new ModelReturn { Value = filteredPromoes.Count(), Value2 = total, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
         }
