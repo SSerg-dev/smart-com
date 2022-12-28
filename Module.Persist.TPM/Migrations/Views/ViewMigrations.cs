@@ -22,6 +22,7 @@
                               CAST(ROUND(CAST(pr.PlanPromoBaselineLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoBaselineLSV, pr.LastChangedDate, pr.LastChangedDateFinance, pr.LastChangedDateDemand, pts.Name AS PromoTypesName, 
                               pr.IsGrowthAcceleration, pr.IsApolloExport, CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient, pr.ActualPromoLSVByCompensation, pr.PlanPromoLSV, pr.ActualPromoLSV, 
                               pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode, CAST(CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END AS BIT) as IsOnHold, (CASE WHEN ActualPromoLSVByCompensation > 0 THEN ABS(ActualPromoLSV - ActualPromoLSVByCompensation) / ActualPromoLSVByCompensation ELSE 0 END) as ActualPromoLSVdiffPercent,
+							  pr.PlanPromoIncrementalLSV AS PlanPromoIncrementalLSVRaw,
 							  IIF(ps.SystemName = 'OnApproval', 
 							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
 							  CASE   

@@ -245,7 +245,7 @@
             operator: "and",
             rules: [
                 {
-                    property: "PromoStatusName", operation: "Equals", value: 'Finished'
+                    property: "PromoStatusName", operation: "In", value: ['Finished', 'Closed']
                 },
                 {
                     operator: "or",
@@ -381,6 +381,8 @@
                     property: "EndDate", operation: "LessOrEqual", value: dateEnd
                 }, {
                     property: "EndDate", operation: "GreaterOrEqual", value: dateStart
+                }, {
+                    property: "ActualPromoLSVdiffPercent", operation: "GreaterThan", value: 0.1
                 },
                 this.getFinishedFilter()
             ]
@@ -449,7 +451,9 @@
         var periodRecord = view['choosenPeriod'];
 
         var parameters = {
-            userrole: userrole, clientTreeId: clientTreeRecord.get('Id'), period: periodRecord.ticks
+            userrole: userrole,
+            clientTreeId: clientTreeRecord.get('Id'),
+            period: periodRecord.toString()
         };
         var clientFullPathFilter = {
             property: "ClientHierarchy", operation: "StartsWith", value: clientTreeRecord.get('FullPathName')
@@ -458,7 +462,6 @@
             if (data) {
                 var result = Ext.JSON.decode(data.httpResponse.data.value);
                 var buttons;
-                debugger;
                 //PPA
                 buttons = me.getPPA();
                 var button = Ext.widget('metricsdashboadpanel');
@@ -627,18 +630,29 @@
                 button.filter = buttons.filter;
 
                 button.down('#NameLabel').setText('P-SFA');
-                button.down('#CountLabel').setText(result.PSFA + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PSFA_LSV / 1000000, 2));
-                button.down('#CountLabel_LSV').rawText = result.PSFA_LSV;
 
-                if (result.PSFA >= result.PSFA_GREEN) {
-                    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                } else if (result.PSFA >= result.PSFA_YELLOW) {
-                    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
-                } else {
-                    button.down('#glyphRight').style = 'background-color:' + 'red';
+                var periodStart = periodRecord.getPeriodStartDate();
+                var diffTime = Math.abs(periodStart - new Date());
+                var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays < 60) {
+                    button.down('#CountLabel').setText('-');
+                    button.down('#CountLabel_LSV').setText('LSV: -');
+                    button.down('#CountLabel_LSV').rawText = '-';
+                    button.down('#glyphRight').style = 'background-color:' + 'lightgrey';
                 }
-
+                else {
+                    button.down('#CountLabel').setText(result.PSFA + '%');
+                    button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PSFA_LSV / 1000000, 2));
+                    button.down('#CountLabel_LSV').rawText = result.PSFA_LSV;
+                    if (result.PSFA >= result.PSFA_GREEN) {
+                        button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                    } else if (result.PSFA >= result.PSFA_YELLOW) {
+                        button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                    } else {
+                        button.down('#glyphRight').style = 'background-color:' + 'red';
+                    }
+                }
                 button.down('button').style = 'background-color:' + '#fff';
                 button.down('#buttonPanel').style = 'background-color:' + '#fff';
                 button.down('#buttonArrow').style = 'background-color:' + '#fff';

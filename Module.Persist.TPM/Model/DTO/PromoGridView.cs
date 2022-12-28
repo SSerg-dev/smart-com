@@ -87,6 +87,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? PlanPromoIncrementalNSV { get; set; }
         public bool? InOut { get; set; }
         public double? PlanPromoIncrementalLSV { get; set; }
+        public double? PlanPromoIncrementalLSVRaw { get; set; } //точное значение без округления
         public double? PlanPromoBaselineLSV { get; set; }
         public bool IsGrowthAcceleration { get; set; }
         public bool IsInExchange { get; set; }

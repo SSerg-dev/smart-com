@@ -3287,6 +3287,10 @@
     <Compile Include="Migrations\202212271114363_Add_Settings_Metrics.Designer.cs">
       <DependentUpon>202212271114363_Add_Settings_Metrics.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs" />
+    <Compile Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.Designer.cs">
+      <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6193,6 +6197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212271114363_Add_Settings_Metrics.resx">
       <DependentUpon>202212271114363_Add_Settings_Metrics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.resx">
+      <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

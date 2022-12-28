@@ -1357,7 +1357,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult GetLiveMetricsDashboard(ODataQueryOptions<Promo> options, int clientTreeId, long period)
+        public IHttpActionResult GetLiveMetricsDashboard(ODataQueryOptions<Promo> options, int clientTreeId, string period)
         {
 
             return Content(HttpStatusCode.OK, LiveMetricsDashboard.GetLiveMetricsDashboard(authorizationManager, Context, clientTreeId, period));

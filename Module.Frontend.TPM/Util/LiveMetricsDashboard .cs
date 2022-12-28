@@ -20,7 +20,7 @@ namespace Module.Frontend.TPM.Util
     public static class LiveMetricsDashboard
     {
 
-        public static string GetLiveMetricsDashboard(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId, long Period)
+        public static string GetLiveMetricsDashboard(IAuthorizationManager authorizationManager, DatabaseContext Context, int ClientTreeId, string Period)
         {
             MarsDate marsDate = new MarsDate(Period);
             DateTimeOffset periodStartDate = marsDate.PeriodStartDate();
@@ -137,8 +137,8 @@ namespace Module.Frontend.TPM.Util
 
             if (filteredPromoes.Count() > 0)
             {
-                var sfaLsv = filteredPromoes.Sum(x => Math.Abs(x.ActualPromoIncrementalLSV.Value - x.PlanPromoIncrementalLSV.Value));
-                var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSV.Value);
+                var sfaLsv = Math.Abs(filteredPromoes.Sum(x =>x.ActualPromoIncrementalLSV.Value) - filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value));
+                var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value);
                 sfa = (1 - sfa) * 100;
 
                 return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
