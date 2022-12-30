@@ -805,37 +805,42 @@
                         property: "InOut", operation: "Equals", value: false
                     },
                     {
-                        property: "ActualPromoUpliftPercent", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoUpliftPercent", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoBaselineLSV", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoBaselineLSV", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoLSV", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoLSV", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "InvoiceNumber", operation: "Equals", value: ''
+                        operator: "or",
+                        rules: [
+                            {
+                                property: "ActualPromoUpliftPercent", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoUpliftPercent", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoBaselineLSV", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoBaselineLSV", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoIncrementalLSV", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoIncrementalLSV", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoLSV", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoLSV", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoLSVByCompensation", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoLSVByCompensation", operation: "Equals", value: null
+                            },
+                            {
+                                property: "InvoiceNumber", operation: "NotEqual", value: null
+                            }
+                        ]
                     }
                 ]
             }, {
@@ -845,25 +850,30 @@
                         property: "InOut", operation: "Equals", value: true
                     },
                     {
-                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoIncrementalLSV", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoLSV", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoLSV", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: 0
-                    },
-                    {
-                        property: "ActualPromoLSVByCompensation", operation: "NotEqual", value: null
-                    },
-                    {
-                        property: "InvoiceNumber", operation: "Equals", value: ''
+                        operator: "or",
+                        rules: [
+                            {
+                                property: "ActualPromoIncrementalLSV", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoIncrementalLSV", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoLSV", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoLSV", operation: "Equals", value: null
+                            },
+                            {
+                                property: "ActualPromoLSVByCompensation", operation: "Equals", value: 0
+                            },
+                            {
+                                property: "ActualPromoLSVByCompensation", operation: "Equals", value: null
+                            },
+                            {
+                                property: "InvoiceNumber", operation: "NotEqual", value: null
+                            }
+                        ]
                     }
                 ]
             }],
