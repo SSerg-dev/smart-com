@@ -3,113 +3,95 @@
     extend: 'Ext.panel.Panel',
     alias: 'widget.metricsdashboadpanel',
     name: 'metricsdashboadpanel',
-    
+
     layout: {
-        type: 'vbox', 
+        type: 'vbox',
     },
     defaults: {
-        xtype: 'panel', 
+        xtype: 'panel',
         header: false,
-        flex: 1, 
     },
-    
-    width: '50%',  
-    cls:'metrics-dashboard-panel',
+    width: '50%',
+    height: '100%',
+    cls: 'metrics-dashboard-panel',
     items: [
         {
             layout: {
-                type: 'hbox',  
+                type: 'hbox',
             },
-            listeners: {
-                resize: function (panel) {
-                    var item = panel.up('panel').up('container');   
-                    panel.setHeight(item.getHeight() * 0.35);
-                    panel.down('#glyphRight').setHeight(panel.getHeight() * 0.70);
-                    panel.down('#glyphRight').setWidth(panel.getHeight() * 0.70);  
-                }
-            },
-            itemId:'glyphRightPanel',
-            xtype: 'container',  
-            minHeight: 1, 
-            cls: 'title-glyph',
+            flex: 2,
+            xtype: 'container',
+            //minHeight: 1,
+            width: '100%',
+            //cls: 'title-glyph',
             items: [
                 {
                     xtype: 'image',
-                    itemId:'glyphRight', 
-                    flex: 1, 
+                    //shrinkWrap: true,
+                    itemId: 'glyphRight',
                     style: 'background-color: red',
-                    cls:'glyph-image'
+                    flex: 1,
+                    cls: 'glyph-image'
                 },
+                {
+                    layout: {
+                        type: 'vbox',
+                        align: 'center'
+                    },
+                    flex: 2,
+                    height: '100%',
+                    cls: 'container-metrics',
+                    xtype: 'container',
+                    items: [
+                        {
+                            xtype: 'label',
+                            itemId: 'NameLabel',
+
+                            cls: 'title-name-metrics',
+                            text: '0',
+                            //width: '100%',
+                            flex: 1,
+                        },
+                        {
+                            xtype: 'label',
+                            itemId: 'CountLabel',
+                            cls: 'title-count-metrics',
+                            //width: '100%',
+                            text: '0',
+                            //height: '50%',
+                            flex: 1,
+                        },
+                    ]
+                },
+
             ],
         },
         {
             layout: {
-                type: 'vbox',  
-                //pack: "center",
+                type: 'vbox',
+                pack: "center",
                 align: "stretch"
             },
-            xtype: 'container', 
-            listeners: {
-                resize: function (panel) {
-                    var item = panel.up('panel').up('container'); 
-                    panel.setHeight(item.getHeight() * 0.45);
-                    Ext.get(panel.down('#NameLabel').id).setStyle('font-size', (item.getHeight() * 0.04 + panel.getWidth() * 0.08) + 'px');
-                    //Ext.get(panel.down('#NameLabel').id).setStyle('padding-top', item.getHeight() * 0.05 + 'px');
-                    Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.04 + panel.getWidth() * 0.08) + 'px');
-                    //Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', item.getHeight() * 0.1 + 'px');
-                    Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.018 + panel.getWidth() * 0.08) + 'px');
-                    //Ext.get(panel.down('#CountLabel_LSV').id).setStyle('padding-top', item.getHeight() * 0.15 + 'px');
-                      
-                    if (panel.getHeight() < 80) {  
-                        Ext.get(panel.down('#NameLabel').id).setStyle('font-size', (item.getHeight() * 0.5 + panel.getWidth() * 0.01) + 'px');
-                        //Ext.get(panel.down('#NameLabel').id).setStyle('padding-top', (item.getHeight() * 0.05) + 'px ');
-                        Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (item.getHeight() * 0.5 + panel.getWidth() * 0.01) + 'px');
-                        //Ext.get(panel.down('#CountLabel').id).setStyle('padding-top', (item.getHeight() * 0.1) + 'px ');
-                        Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (item.getHeight() * 0.03 + panel.getWidth() * 0.01) + 'px');
-                        //Ext.get(panel.down('#CountLabel_LSV').id).setStyle('padding-top', (item.getHeight() * 0.15) + 'px ');
-
-                    }
-                }
-            },
-            width: '100%',  
+            flex: 2,
+            xtype: 'container',
+            width: '100%',
             itemId: 'titleCountPanel',
             items: [{
+                xtype: 'container',
                 flex: 1,
-                xtype: 'fieldset',
-                border: false,
                 layout: {
                     type: 'vbox',
-                    align: 'stretch',
+                    align: 'center'
                 },
                 items: [
                     {
                         xtype: 'label',
-                        itemId: 'NameLabel',
-
-                        cls: 'title-name-metrics',
-                        width: '100%',
-                        text: '0',
-                        height: '33%',
-                        flex: 1,
-                    },
-                    {
-                        xtype: 'label',
-                        itemId: 'CountLabel',
-
-                        cls: 'title-count-metrics',
-                        width: '100%',
-                        text: '0',
-                        height: '33%',
-                        flex: 1,
-                    },
-                    {
-                        xtype: 'label',
                         itemId: 'CountLabel_LSV',
-                        
+
                         cls: 'title-count-metrics-lsv',
                         width: '100%',
+                        //height: '50%',
                         text: '0',
-                        height: '33%',
                         flex: 1,
                         listeners: {
                             render: function (label) {
@@ -134,39 +116,20 @@
         },
         {
             layout: {
-                type: 'hbox',  
+                type: 'hbox',
             },
-            
-            xtype: 'container', 
+            flex: 1,
+            xtype: 'container',
             width: '100%',
-
-           // height: '1%',
-            listeners: {
-                resize: function (panel) {
-                    var item = panel.up('panel').up('container'); 
-                    panel.setHeight(item.getHeight() * 0.19);
-                    panel.down('button').setHeight(item.getHeight() * 0.19); 
-                    panel.down('#buttonText').style = 'font-size:' + panel.down('#buttonText') * 0.5 + 'px !important';
-
-                    Ext.get(panel.down('#buttonText').id + '-btnInnerEl').setStyle('font-size', panel.down('#buttonText').getHeight() * 0.3 + 'px');
-                    Ext.get(panel.down('#buttonArrow').id + '-btnIconEl').setStyle('font-size', panel.down('button').getHeight() * 0.7 + 'px');
-                    Ext.get(panel.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-top', panel.down('button').getHeight() * 0.29 + 'px');
-
-                    if (panel.down('button').getHeight() < 30) {
-                        Ext.get(panel.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-top','0px');
-
-                    }
-                }
-            },
-            itemId:'buttonPanel',
+            itemId: 'buttonPanel',
             items: [
                 {
                     height: '100%',
                     cls: 'button-text-first',
                     width: '85%',
-                    xtype: 'button',  
-                    itemId:'buttonText'
-                    
+                    xtype: 'button',
+                    itemId: 'buttonText'
+
                 },
                 {
                     height: '100%',
@@ -177,8 +140,16 @@
                     glyph: 0xF142,
                 }
             ],
+            listeners: {
+                resize: function (panel) {
+                    var item = panel.up('panel').up('container');
+                    Ext.get(panel.down('#buttonArrow').id + '-btnIconEl').setStyle('font-size', panel.down('button').getHeight() * 0.7 + 'px');
+                    Ext.get(panel.down('#buttonArrow').id + '-btnIconEl').setStyle('padding-top', panel.down('button').getHeight() * 0.29 + 'px');
+
+                }
+            },
         },
-       ],
+    ],
     widget: null,
     filter: null
 });
