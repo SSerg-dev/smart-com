@@ -3446,10 +3446,12 @@ x-slider-inner:before {
     .metrics-dashboard .title-first {
         color: #57697c;
         font-weight: 600;
+        font-size: x-large;
     }
 
     .metrics-dashboard .title-second {
         color: #57697c;
+        font-size: x-large;
     }
 
     .metrics-dashboard .panel-metrics .x-panel-body-default {
@@ -3473,8 +3475,8 @@ x-slider-inner:before {
     }
 
 .metrics-dashboard-panel {
-    padding-right: 15px;
-    align-items: stretch;
+    padding: 0px 7px 0px 7px;
+    /*align-items: stretch;*/
 }
 
     .metrics-dashboard-panel .x-panel-body {
@@ -3483,6 +3485,7 @@ x-slider-inner:before {
 
     .metrics-dashboard-panel .x-btn-inner-center {
         text-align: left !important;
+        font-size: large;
     }
 
     .metrics-dashboard-panel .button-text-first {
@@ -3493,10 +3496,13 @@ x-slider-inner:before {
         box-shadow: inset -1px -4px 0px 1px rgba(50, 50, 50, 0.4);
     }
 
+        .metrics-dashboard-panel .button-text-second .x-btn-icon-el {
+            font-size: large;
+        }
+
     .metrics-dashboard-panel .x-btn-default-small {
         border-width: 0px;
     }
-
 
         .metrics-dashboard-panel .x-btn-default-small .x-btn-inner {
             color: black;
@@ -3508,27 +3514,42 @@ x-slider-inner:before {
         font-weight: 600;
     }
 
+    .metrics-dashboard-panel .container-metrics .x-box-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .metrics-dashboard-panel .title-name-metrics {
         color: black;
         text-align: center;
         font-weight: 600;
+        font-size: 4em;
+        display: flex;
+        align-items: center;
     }
 
     .metrics-dashboard-panel .title-count-metrics {
         color: black;
         text-align: center;
         font-weight: 600;
+        font-size: 4em;
+        display: flex;
+        align-items: center;
     }
 
     .metrics-dashboard-panel .title-count-metrics-lsv {
         color: lightgray;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-weight: 400;
+        font-size: 4em;
     }
 
     .metrics-dashboard-panel .glyph-image {
         border-radius: 100%;
-        margin: 0.45ex !important;
+        margin: 1.55ex !important;
     }
 
     .metrics-dashboard-panel .panel-time-critical-standart {
