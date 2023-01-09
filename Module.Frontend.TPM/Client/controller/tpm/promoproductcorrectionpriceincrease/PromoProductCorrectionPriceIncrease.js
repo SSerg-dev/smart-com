@@ -75,7 +75,7 @@
                 'promoproductcorrectionpriceincrease #exportcorrectionxlsxbutton': {
                     click: this.onExportCorrectionPIButtonClick
                 },
-                '#ppcuploadfilewindow #userOk': {
+                '#ppcuploadfilewindowpi #userOk': {
                     click: this.onUploadFileOkButtonClick
                 },
             }
@@ -606,7 +606,7 @@
 
         var editor = Ext.create('App.view.core.common.UploadFileWindow', {
             title: l10n.ns('core').value('uploadFileWindowTitle'),
-            itemId: 'ppcuploadfilewindow',
+            itemId: 'ppcuploadfilewindowpi',
             parentGrid: grid,
             resource: resource,
             action: action,
