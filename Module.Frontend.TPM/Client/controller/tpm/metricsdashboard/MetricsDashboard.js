@@ -396,42 +396,30 @@
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
     getPPAperiod: function () {
-        var dateStart = new Date();
-        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
-
-        var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, 7 * 8);
-        var filter = null;
-        var widget = 'promo';
-        var text = "Actions";
-        var panel = 'panel3';
-        var image = 'adjust_data.png';
-        var color = '#00009b';
-        var buttonColor = '#eef2fc';
-        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
-    },
-    getPCTperiod: function () {
-        var dateStart = new Date();
-        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
-
-        dateStart = new Date(dateStart.getFullYear(), 0, 1);
-        var filter = null;
-        var widget = 'promo';
-        var text = "Actions";
-        var panel = 'panel3';
-        var image = 'adjust_data.png';
-        var color = '#0e0d9e';
-        var buttonColor = '#eef2fc';
-        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
-    },
-    getPSFA: function () {
-        var dateStart = new Date();
-        dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
-
-        dateStart = new Date(dateStart.getFullYear(), 0, 1);
         var filter = null;
         var widget = 'promo';
         var text = "";
         var panel = 'panel3';
+        var image = 'adjust_data.png';
+        var color = '#edf1fb';
+        var buttonColor = '#edf1fb';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getPCTperiod: function () {
+        var filter = null;
+        var widget = 'promo';
+        var text = "";
+        var panel = 'panel3';
+        var image = 'adjust_data.png';
+        var color = '#edf1fb';
+        var buttonColor = '#edf1fb';
+        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
+    },
+    getPSFA: function () {
+        var filter = null;
+        var widget = 'promo';
+        var text = "";
+        var panel = 'panel4';
         var image = 'adjust_data.png';
         var color = '#edf1fb';
         var buttonColor = '#edf1fb';
@@ -560,70 +548,67 @@
                 Ext.get(button.down('#buttonArrow').id + '-btnIconEl').setStyle('color', buttons.color);
 
                 //PPA period
-                //buttons = me.getPPAperiod();
-                //var button = Ext.widget('metricsdashboadpanel');
-                //button.widget = buttons.widget;
-                //button.filter = buttons.filter;
+                buttons = me.getPPAperiod();
+                var button = Ext.widget('metricsdashboadpanel');
+                button.widget = buttons.widget;
+                button.filter = buttons.filter;
 
-                //button.down('#NameLabel').setText('PPA');
-                //button.down('#CountLabel').setText(result.PPA + '%');
-                //button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_LSV);
+                button.down('#NameLabel').setText('PPA');
+                button.down('#CountLabel').setText(result.PPA_PERIOD + '%');
+                button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_PERIOD_LSV);
 
-                //if (result.PAD >= 95) {
-                //    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                //} else if (result.PAD >= 90) {
-                //    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
-                //} else {
-                //    button.down('#glyphRight').style = 'background-color:' + 'red';
-                //}
+                if (result.PPA_PERIOD >= result.PPA_PERIOD_GREEN) {
+                    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                } else if (result.PPA_PERIOD >= result.PPA_PERIOD_YELLOW) {
+                    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                } else {
+                    button.down('#glyphRight').style = 'background-color:' + 'red';
+                }
 
-                //button.down('button').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
-                //if (buttons.style) {
-                //    button.down('#CountLabel').addCls('panel-time-critical-standart');
-                //}
+                button.down('button').style = 'background-color:' + '#fff';
+                button.down('#buttonPanel').style = 'background-color:' + '#fff';
+                button.down('#buttonArrow').style = 'background-color:' + '#fff';
+                button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                if (buttons.style) {
+                    button.down('#CountLabel').addCls('panel-time-critical-standart');
+                }
 
-                //button.down('button').setText(buttons.text);
-                //if (view.query('#' + buttons.panel)[0])
-                //    view.query('#' + buttons.panel)[0].add(button);
-                //button.down('#buttonText').setDisabled(true);
-                //button.down('#buttonArrow').setDisabled(true);
+                button.down('button').setText(buttons.text);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
 
                 //PCT period
-                //buttons = me.getPCTperiod();
-                //var button = Ext.widget('metricsdashboadpanel');
-                //button.widget = buttons.widget;
-                //button.filter = buttons.filter;
+                buttons = me.getPCTperiod();
+                var button = Ext.widget('metricsdashboadpanel');
+                button.widget = buttons.widget;
+                button.filter = buttons.filter;
 
-                //button.down('#NameLabel').setText('PCT');
-                //button.down('#CountLabel').setText(result.PCT + '%');
-                //button.down('#CountLabel_LSV').setText('LSV: ' + result.PCT_LSV);
+                button.down('#NameLabel').setText('PCT');
+                button.down('#CountLabel').setText(result.PCT_PERIOD + '%');
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PCT_PERIOD_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PCT_PERIOD_LSV;
 
-                //if (result.PAD >= 90) {
-                //    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
-                //} else if (result.PAD >= 85) {
-                //    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
-                //} else {
-                //    button.down('#glyphRight').style = 'background-color:' + 'red';
-                //}
+                if (result.PCT_PERIOD >= result.PCT_PERIOD_GREEN) {
+                    button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
+                } else if (result.PCT_PERIOD >= result.PCT_PERIOD_YELLOW) {
+                    button.down('#glyphRight').style = 'background-color:' + '#FFB74D';
+                } else {
+                    button.down('#glyphRight').style = 'background-color:' + 'red';
+                }
 
-                //button.down('button').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#buttonPanel').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#buttonArrow').style = 'background-color:' + buttons.buttonColor;
-                //button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
-                //if (buttons.style) {
-                //    button.down('#CountLabel').addCls('panel-time-critical-standart');
-                //}
+                button.down('button').style = 'background-color:' + '#fff';
+                button.down('#buttonPanel').style = 'background-color:' + '#fff';
+                button.down('#buttonArrow').style = 'background-color:' + '#fff';
+                button.down('#glyphRight').setSrc('/Bundles/style/images/' + buttons.image);
+                if (buttons.style) {
+                    button.down('#CountLabel').addCls('panel-time-critical-standart');
+                }
 
-                //button.down('button').setText(buttons.text);
-                //if (view.query('#' + buttons.panel)[0])
-                //    view.query('#' + buttons.panel)[0].add(button);
-                //button.down('#buttonText').setDisabled(true);
-                //button.down('#buttonArrow').setDisabled(true);
+                button.down('button').setText(buttons.text);
+                if (view.query('#' + buttons.panel)[0])
+                    view.query('#' + buttons.panel)[0].add(button);
 
-                //PCT period
+                //PSFA
                 buttons = me.getPSFA();
                 var button = Ext.widget('metricsdashboadpanel');
                 button.widget = buttons.widget;
