@@ -21,7 +21,9 @@ with DAG(
     # schedule_interval=None,
     schedule_interval='30 22 * * *',
     tags=["jupiter", "dev","main"],
-    default_args={'retries': 2},
+    default_args={'retries': 2,
+	'email': ['aleksey.loktev@smartcom.software','ilya.chernoskutov@smartcom.software'],
+	'email_on_failure': True},
 ) as dag:
     handler_id=generate_handler_id()
     
