@@ -164,6 +164,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<RollingScenario>();
             modelBuilder.Entity<PromoProductCorrectionView>();
+            modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
         }
 
 
@@ -1227,6 +1228,9 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("PromoProductCorrectionDelete");
+
+            builder.EntitySet<MetricsLiveHistory>("MetricsLiveHistories");
+            builder.Entity<MetricsLiveHistory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MetricsLiveHistory>("MetricsLiveHistories");
         }
 
 

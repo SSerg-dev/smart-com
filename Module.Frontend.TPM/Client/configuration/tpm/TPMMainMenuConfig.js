@@ -59,6 +59,16 @@
                 rsMode: true,
                 currentMode: true,
                 widget: 'metricsdashboard'
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('MetricsLiveHistory'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsLiveHistory'),
+                scale: 'medium',
+                glyph: 0xF2DA,
+                rsMode: true,
+                currentMode: true,
+                roles: ['Administrator', 'FunctionalExpert', 'SupportAdministrator'],
+                widget: 'metricslivehistory'
             }
         ]
     },

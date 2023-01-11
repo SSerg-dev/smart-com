@@ -4,6 +4,7 @@
         'UserDashboard': 'User Dashboard',
         'BusinessMetrics': 'Business Metrics',
         'MetricsDashboard': 'Metrics Dashboard',
+        'MetricsLiveHistory': 'Metrics Live History',
         'SubrangeItem': 'Subrange',
         'CategoryItem': 'Category',
         'BrandItem': 'Brand',
@@ -193,7 +194,8 @@
         'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
-        'RSmode': 'RS'
+        'RSmode': 'RS',
+        'MetricsLiveHistory':'Metrics Live History'
     },
 
     'text': {
@@ -2970,5 +2972,13 @@
         'EndDate': 'End Date',
         'PromoStatusName': 'Status',
     },
-    'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity']
+    'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity'],
+    'MetricsLiveHistory': {
+        'Type': 'Type',
+        'Date': 'Date',
+        'ClientTreeId': 'Client',
+        'ClientHierarchy': 'Client',
+        'Value': 'Percent',
+        'ValueLSV': 'LSV',
+    }
 });

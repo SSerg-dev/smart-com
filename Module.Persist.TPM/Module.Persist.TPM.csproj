@@ -3291,6 +3291,10 @@
     <Compile Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.Designer.cs">
       <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301111334445_Add_MetricsLiveHistory.cs" />
+    <Compile Include="Migrations\202301111334445_Add_MetricsLiveHistory.Designer.cs">
+      <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -3432,6 +3436,7 @@
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
+    <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
@@ -6200,6 +6205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.resx">
       <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301111334445_Add_MetricsLiveHistory.resx">
+      <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
