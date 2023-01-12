@@ -408,6 +408,7 @@
     <Compile Include="Handlers\CreateCoefficientSI2SOHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\MainNightProcessingHelper.cs" />
     <Compile Include="Handlers\MainNightProcessing\RestartMainNightProcessingHandler.cs" />
+    <Compile Include="Handlers\MetricsLiveHistoryHandler.cs" />
     <Compile Include="Handlers\NightProcessingWaitHandler.cs" />
     <Compile Include="Handlers\Notifications\ProductSyncFailNotificationHandler.cs" />
     <Compile Include="Handlers\ExportHandler.cs" />

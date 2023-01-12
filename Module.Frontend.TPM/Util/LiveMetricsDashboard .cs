@@ -64,7 +64,7 @@ namespace Module.Frontend.TPM.Util
             });
         }
 
-        private static ModelReturn GetPPA(IEnumerable<PromoGridView> promoes)
+        public static ModelReturn GetPPA(IEnumerable<PromoGridView> promoes)
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
@@ -89,7 +89,7 @@ namespace Module.Frontend.TPM.Util
                 return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
-        private static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
+        public static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
@@ -248,13 +248,13 @@ namespace Module.Frontend.TPM.Util
                 PCTPeriodYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PCT_YELLOW")).Value),
             };
         }
-        class ModelReturn
+        public class ModelReturn
         {
             public double Value { get; set; }
             public int Value2 { get; set; }
             public double ValueLSV { get; set; }
         }
-        class ModelColor
+        public class ModelColor
         {
             public int PPAGreen { get; set; }
             public int PPAYellow { get; set; }
