@@ -325,4 +325,6 @@
 
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
+
+    'tpm.metricslivehistory.MetricsLiveHistory',
 ]);

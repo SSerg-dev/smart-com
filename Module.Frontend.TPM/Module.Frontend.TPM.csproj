@@ -320,6 +320,7 @@
     <Content Include="Client\controller\tpm\competitorbrandtech\DeletedCompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
     <Content Include="Client\controller\tpm\eventtype\EventType.js" />
+    <Content Include="Client\controller\tpm\metricslivehistory\MetricsLiveHistory.js" />
     <Content Include="Client\controller\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
@@ -349,6 +350,7 @@
     <Content Include="Client\model\tpm\competitor\DeletedCompetitor.js" />
     <Content Include="Client\model\tpm\competitor\HistoricalCompetitor.js" />
     <Content Include="Client\model\tpm\eventtype\EventType.js" />
+    <Content Include="Client\model\tpm\metricslivehistory\MetricsLiveHistory.js" />
     <Content Include="Client\model\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\PlanCOGSTn.js" />
@@ -402,6 +404,7 @@
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTechDetail.js" />
     <Content Include="Client\view\tpm\eventtype\EventType.js" />
     <Content Include="Client\view\tpm\metricsdashboard\MetricsDashboardClientPeriodChooseWindow.js" />
+    <Content Include="Client\view\tpm\metricslivehistory\MetricsLiveHistory.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\view\tpm\plancogstn\DeletedPlanCOGSTnDetail.js" />
     <Content Include="Client\view\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
@@ -463,6 +466,7 @@
     <Compile Include="Controllers\HistoricalPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
+    <Compile Include="Controllers\MetricsLiveHistoriesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
@@ -1740,6 +1744,7 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

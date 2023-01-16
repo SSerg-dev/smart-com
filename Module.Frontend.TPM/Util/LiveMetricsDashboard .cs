@@ -31,6 +31,8 @@ namespace Module.Frontend.TPM.Util
             ModelReturn ppaMetric = GetPPA(promoes);
             ModelReturn pctMetric = GetPCT(promoes);
             ModelReturn padMetric = GetPAD(promoes);
+            ModelReturn ppaPeriodMetric = GetPPAperiod(promoes);
+            ModelReturn pctPeriodMetric = GetPCTperiod(promoes);
             ModelReturn psfaMetric = GetPSFA(promoes, marsDate);
 
             return JsonConvert.SerializeObject(new
@@ -50,11 +52,97 @@ namespace Module.Frontend.TPM.Util
                 PCT_GREEN = metricSettings.PCTGreen,
                 PSFA_YELLOW = metricSettings.PSFAYellow,
                 PSFA_GREEN = metricSettings.PSFAGreen,
-                PAD_MIN = metricSettings.PADMin
+                PAD_MIN = metricSettings.PADMin,
+                PPA_PERIOD_YELLOW = metricSettings.PPAPeriodYellow,
+                PPA_PERIOD_GREEN = metricSettings.PPAPeriodGreen,
+                PCT_PERIOD_YELLOW = metricSettings.PCTPeriodYellow,
+                PCT_PERIOD_GREEN = metricSettings.PCTPeriodGreen,
+                PPA_PERIOD = ppaPeriodMetric.Value,
+                PCT_PERIOD = pctPeriodMetric.Value,
+                PPA_PERIOD_LSV = ppaPeriodMetric.ValueLSV,
+                PCT_PERIOD_LSV = pctPeriodMetric.ValueLSV,
             });
         }
 
-        private static ModelReturn GetPPA(IEnumerable<PromoGridView> promoes)
+        public static ModelReturn GetPPA(IEnumerable<PromoGridView> promoes)
+        {
+            var readyStatuses = new string[] { "Approved", "Planned" };
+            var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
+            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted" };
+
+            var endDate = DateTime.Now.AddDays(7 * 8);
+
+            var filteredPromoes = promoes.Where(x => x.DispatchesStart <= endDate && x.DispatchesStart >= DateTime.Now);
+
+            var readyPromoes = filteredPromoes.Count(x => readyStatuses.Contains(x.PromoStatusName));
+            var allPromoes = filteredPromoes.Count(x => !notCheckStatuses.Contains(x.PromoStatusName));
+
+            if (allPromoes > 0)
+            {
+                var ppa = (double)readyPromoes / allPromoes;
+                var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
+
+                return new ModelReturn { 
+                    Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), 
+                    ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero),
+                    ValueReal = ppa,
+                    ValueLSVReal = (double)ppaLsv
+                };
+            }
+            else
+            {
+                return new ModelReturn { Value = 0, ValueLSV = 0, ValueReal = 0, ValueLSVReal = 0 };
+            }
+        }
+        public static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
+        {
+            var checkStatuses = new string[] { "Closed", "Finished" };
+
+            var endDate = DateTime.Now.AddDays(-7 * 7);
+            var startDate = new DateTime(endDate.Year, 1, 1);
+
+            var filteredPromoes = promoes.Where(x => x.EndDate >= startDate && x.EndDate <= endDate);
+
+            var closedPromoes = filteredPromoes.Count(x => x.PromoStatusName == "Closed");
+            var allCheckPromoes = filteredPromoes.Count(x => checkStatuses.Contains(x.PromoStatusName));
+
+            if (allCheckPromoes > 0)
+            {
+                var pct = (double)closedPromoes / allCheckPromoes;
+                var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
+
+                return new ModelReturn { 
+                    Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero),
+                    ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero),
+                    ValueReal = pct,
+                    ValueLSVReal = (double)pctLsv
+                };
+            }
+            else
+            {
+                return new ModelReturn { Value = 0, ValueLSV = 0, ValueReal = 0, ValueLSVReal = 0 };
+            }
+        }
+
+        private static ModelReturn GetPAD(IEnumerable<PromoGridView> promoes)
+        {
+            var checkStatuses = new string[] { "Closed", "Finished" };
+
+            var endDate = DateTime.Now.AddDays(-7 * 7);
+            var startDate = new DateTime(endDate.Year, 1, 1);
+
+            var filteredPromoes = promoes.Where(x =>
+                                    x.EndDate >= startDate && x.EndDate <= endDate
+                                    && checkStatuses.Contains(x.PromoStatusName)
+                                    && x.ActualPromoLSV != null && x.ActualPromoLSV != 0
+                                    && x.ActualPromoLSVByCompensation != null && x.ActualPromoLSVByCompensation != 0);
+            var total = filteredPromoes.Count();
+            filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiffPercent > 0.1);
+            var padLsv = filteredPromoes.Select(x => new { ActualPromoLSV = x.ActualPromoLSV.Value, ActualPromoLSVByCompensation = x.ActualPromoLSVByCompensation.Value }).Sum(x => Math.Abs(x.ActualPromoLSV - x.ActualPromoLSVByCompensation));
+
+            return new ModelReturn { Value = filteredPromoes.Count(), Value2 = total, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
+        }
+        private static ModelReturn GetPPAperiod(IEnumerable<PromoGridView> promoes)
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
@@ -79,7 +167,7 @@ namespace Module.Frontend.TPM.Util
                 return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
-        private static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
+        private static ModelReturn GetPCTperiod(IEnumerable<PromoGridView> promoes)
         {
             var checkStatuses = new string[] { "Closed", "Finished" };
 
@@ -102,25 +190,6 @@ namespace Module.Frontend.TPM.Util
             {
                 return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
-        }
-
-        private static ModelReturn GetPAD(IEnumerable<PromoGridView> promoes)
-        {
-            var checkStatuses = new string[] { "Closed", "Finished" };
-
-            var endDate = DateTime.Now.AddDays(-7 * 7);
-            var startDate = new DateTime(endDate.Year, 1, 1);
-
-            var filteredPromoes = promoes.Where(x =>
-                                    x.EndDate >= startDate && x.EndDate <= endDate
-                                    && checkStatuses.Contains(x.PromoStatusName)
-                                    && x.ActualPromoLSV != null && x.ActualPromoLSV != 0
-                                    && x.ActualPromoLSVByCompensation != null && x.ActualPromoLSVByCompensation != 0);
-            var total = filteredPromoes.Count();
-            filteredPromoes = filteredPromoes.Where(x => x.ActualPromoLSVdiffPercent > 0.1);
-            var padLsv = filteredPromoes.Select(x => new { ActualPromoLSV = x.ActualPromoLSV.Value, ActualPromoLSVByCompensation = x.ActualPromoLSVByCompensation.Value }).Sum(x => Math.Abs(x.ActualPromoLSV - x.ActualPromoLSVByCompensation));
-
-            return new ModelReturn { Value = filteredPromoes.Count(), Value2 = total, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
         }
         private static ModelReturn GetPSFA(IEnumerable<PromoGridView> promoes, MarsDate marsDate)
         {
@@ -183,15 +252,21 @@ namespace Module.Frontend.TPM.Util
                 PADMin = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PAD_MIN")).Value),
                 PSFAGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PSFA_GREEN")).Value),
                 PSFAYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PSFA_YELLOW")).Value),
+                PPAPeriodGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PPA_GREEN")).Value),
+                PPAPeriodYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PPA_YELLOW")).Value),
+                PCTPeriodGreen = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PCT_GREEN")).Value),
+                PCTPeriodYellow = int.Parse(settings.FirstOrDefault(g => g.Name.Contains("METRICS_PCT_YELLOW")).Value),
             };
         }
-        class ModelReturn
+        public class ModelReturn
         {
             public double Value { get; set; }
             public int Value2 { get; set; }
             public double ValueLSV { get; set; }
+            public double ValueReal { get; set; }
+            public double ValueLSVReal { get; set; }
         }
-        class ModelColor
+        public class ModelColor
         {
             public int PPAGreen { get; set; }
             public int PPAYellow { get; set; }
@@ -200,6 +275,10 @@ namespace Module.Frontend.TPM.Util
             public int PADMin { get; set; }
             public int PSFAGreen { get; set; }
             public int PSFAYellow { get; set; }
+            public int PPAPeriodGreen { get; set; }
+            public int PPAPeriodYellow { get; set; }
+            public int PCTPeriodGreen { get; set; }
+            public int PCTPeriodYellow { get; set; }
         }
     }
 }
