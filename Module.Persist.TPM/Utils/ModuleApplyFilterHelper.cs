@@ -180,9 +180,15 @@ namespace Module.Persist.TPM.Utils
         /// <param name="filter"></param>
         /// <param name="filterMode"></param>
         /// <returns></returns>
-        public static IQueryable<PromoGridView> ApplyFilter(IQueryable<PromoGridView> query, TPMmode mode, FilterQueryModes filterMode = FilterQueryModes.Active)
+        public static IQueryable<PromoGridView> ApplyFilter(IQueryable<PromoGridView> query, TPMmode mode, List<string> clients, IQueryable<ClientTreeHierarchyView> hierarchy, FilterQueryModes filterMode = FilterQueryModes.Active)
         {
-                        
+            if (clients.Count > 0)
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clients);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
+                var ddd = query.ToList();
+            }
             switch (mode)
             {
                 case TPMmode.Current:
@@ -202,7 +208,7 @@ namespace Module.Persist.TPM.Utils
                     break;
             }
             return query;
-        }              
+        }
 
         /// <summary>
         /// Применение фильтра по ограничениям к Промо для Календаря
@@ -524,7 +530,7 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS: 
+                case TPMmode.RS:
                     query = query.Where(x => x.row_number == 1 && !x.Disabled);
                     break;
             }

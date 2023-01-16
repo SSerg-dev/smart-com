@@ -3295,6 +3295,10 @@
     <Compile Include="Migrations\202301111334445_Add_MetricsLiveHistory.Designer.cs">
       <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.cs" />
+    <Compile Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.Designer.cs">
+      <DependentUpon>202301160650238_Add_MetricsLiveHistoryHandler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6208,6 +6212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301111334445_Add_MetricsLiveHistory.resx">
       <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.resx">
+      <DependentUpon>202301160650238_Add_MetricsLiveHistoryHandler.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

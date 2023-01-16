@@ -32,20 +32,36 @@ namespace Module.Host.TPM.Handlers
                 handlerLogger.Write(true, String.Format("Calculate Metrics Live History started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
                 using (DatabaseContext context = new DatabaseContext())
                 {
-                    List<ClientTreeHierarchyView> clientTreeHierarchyView = context.Set<ClientTreeHierarchyView>().Skip(3).ToList();
+                    List<ClientTreeHierarchyView> clientTreeHierarchyView = context.Set<ClientTreeHierarchyView>().ToList();
+                    clientTreeHierarchyView = clientTreeHierarchyView.Skip(3).ToList();
+                    List<MetricsLiveHistory> metricsLiveHistories = new List<MetricsLiveHistory>();
                     foreach (ClientTreeHierarchyView treeHierarchyView in clientTreeHierarchyView)
                     {
-                        List<string> clientsString = treeHierarchyView.Hierarchy.Split('.').ToList();
-                        List<int> clients = clientsString.ConvertAll(int.Parse);
                         int generalClient = treeHierarchyView.Id;
-                        var promoes = GetConstraintedQueryPromo(context, clients);
+                        List<PromoGridView> promoes = GetConstraintedQueryPromo(context, generalClient);
                         var Ppa = LiveMetricsDashboard.GetPPA(promoes);
                         var Pct = LiveMetricsDashboard.GetPCT(promoes);
                         // записывать
+                        metricsLiveHistories.Add(new MetricsLiveHistory
+                        {
+                            ClientTreeId = generalClient,
+                            Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value,
+                            Type = TypeMetrics.PPA,
+                            Value = Ppa.ValueReal,
+                            ValueLSV = Ppa.ValueLSVReal
+                        });
+                        metricsLiveHistories.Add(new MetricsLiveHistory
+                        {
+                            ClientTreeId = generalClient,
+                            Date = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).Value,
+                            Type = TypeMetrics.PCT,
+                            Value = Pct.ValueReal,
+                            ValueLSV = Pct.ValueLSVReal
+                        });
                     }
-
-
-                    
+                    context.Set<MetricsLiveHistory>().AddRange(metricsLiveHistories);
+                    context.SaveChanges();
+                    handlerLogger.Write(true, string.Format("Metrics Live Histories records add {0}.", metricsLiveHistories.Count), "Message");
                 }
             }
             catch (Exception e)
@@ -70,16 +86,17 @@ namespace Module.Host.TPM.Handlers
                 }
             }
         }
-        private static IEnumerable<PromoGridView> GetConstraintedQueryPromo(DatabaseContext Context, List<int> clients)
+        private static List<PromoGridView> GetConstraintedQueryPromo(DatabaseContext Context, int clientId)
         {
 
 
             IQueryable<PromoGridView> query = Context.Set<PromoGridView>()
                 .AsNoTracking()
-                .Where(g => clients.Contains((int)g.ClientTreeId));
+                .Where(x => !x.IsOnHold);
+
+            List<string> clients = new List<string> { clientId.ToString() };
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, TPMmode.Current, FilterQueryModes.Active);
-            query = query.Where(x => !x.IsOnHold);
+            query = ModuleApplyFilterHelper.ApplyFilter(query, TPMmode.Current, clients, hierarchy, FilterQueryModes.Active);
             return query.ToList();
         }
     }

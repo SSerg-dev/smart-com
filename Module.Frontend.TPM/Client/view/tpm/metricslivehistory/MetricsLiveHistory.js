@@ -84,13 +84,22 @@
             },
             items: [
                 {
-                    xtype: 'numbercolumn',
+                    xtype: 'booleancolumn',
                     text: l10n.ns('tpm', 'MetricsLiveHistory').value('Type'),
                     dataIndex: 'Type',
                     width: 130,
-                    //items: [
-                    //    { xtype: 'combobox' }
-                    //]
+                    renderer: function (value) {
+                        return value;
+                    },
+                    trueText: 'PCT',
+                    falseText: 'PPA',
+                    filter: {
+                        type: 'bool',
+                        store: [
+                            [0, 'PPA'],
+                            [1, 'PCT']
+                        ]
+                    }
                 },
                 {
                     xtype: 'datecolumn',
@@ -107,19 +116,21 @@
                         xtype: 'treefsearchfield',
                         trigger2Cls: '',
                         selectorWidget: 'clienttree',
-                        valueField: 'FullPathName',
-                        displayField: 'FullPathName',
+                        valueField: 'ObjectId',
+                        displayField: 'ObjectId',
                         multiSelect: true,
-                        operator: 'conts',
+                        operator: 'eq',
                         store: {
                             model: 'App.model.tpm.clienttree.ClientTree',
                             autoLoad: false,
                             root: {}
                         },
                     },
-                    renderer: function (value) {
-                        return renderWithDelimiter(value, ' > ', '  ');
-                    }
+                    //renderer: function (value) {
+                    //    debugger;
+                    //    return value;
+                    //    //return renderWithDelimiter(value, ' > ', '  ');
+                    //}
                 },
                 {
                     xtype: 'numbercolumn',

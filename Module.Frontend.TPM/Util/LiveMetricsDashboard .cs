@@ -82,11 +82,16 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { 
+                    Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), 
+                    ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero),
+                    ValueReal = ppa,
+                    ValueLSVReal = (double)ppaLsv
+                };
             }
             else
             {
-                return new ModelReturn { Value = 0, ValueLSV = 0 };
+                return new ModelReturn { Value = 0, ValueLSV = 0, ValueReal = 0, ValueLSVReal = 0 };
             }
         }
         public static ModelReturn GetPCT(IEnumerable<PromoGridView> promoes)
@@ -106,11 +111,16 @@ namespace Module.Frontend.TPM.Util
                 var pct = (double)closedPromoes / allCheckPromoes;
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { 
+                    Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero),
+                    ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero),
+                    ValueReal = pct,
+                    ValueLSVReal = (double)pctLsv
+                };
             }
             else
             {
-                return new ModelReturn { Value = 0, ValueLSV = 0 };
+                return new ModelReturn { Value = 0, ValueLSV = 0, ValueReal = 0, ValueLSVReal = 0 };
             }
         }
 
@@ -253,6 +263,8 @@ namespace Module.Frontend.TPM.Util
             public double Value { get; set; }
             public int Value2 { get; set; }
             public double ValueLSV { get; set; }
+            public double ValueReal { get; set; }
+            public double ValueLSVReal { get; set; }
         }
         public class ModelColor
         {
