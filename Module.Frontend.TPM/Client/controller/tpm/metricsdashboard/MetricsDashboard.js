@@ -552,10 +552,10 @@
                 var button = Ext.widget('metricsdashboadpanel');
                 button.widget = buttons.widget;
                 button.filter = buttons.filter;
-
                 button.down('#NameLabel').setText('PPA');
                 button.down('#CountLabel').setText(result.PPA_PERIOD + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + result.PPA_PERIOD_LSV);
+                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_PERIOD_LSV / 1000000, 2));
+                button.down('#CountLabel_LSV').rawText = result.PPA_PERIOD_LSV;
 
                 if (result.PPA_PERIOD >= result.PPA_PERIOD_GREEN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';

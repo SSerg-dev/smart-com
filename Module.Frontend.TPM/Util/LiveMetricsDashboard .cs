@@ -25,14 +25,18 @@ namespace Module.Frontend.TPM.Util
             MarsDate marsDate = new MarsDate(Period);
             DateTimeOffset periodStartDate = marsDate.PeriodStartDate();
             DateTimeOffset periodEndDate = marsDate.PeriodEndDate();
+            MarsDate PW4D1 = marsDate.AddWeeks(-4);
+            DateTimeOffset PW4D1Date = PW4D1.StartDate();
+            int days = Convert.ToInt32((periodEndDate - periodStartDate).TotalDays);
 
             IEnumerable<PromoGridView> promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
             ModelColor metricSettings = GetMetricSettings(Context.Set<Setting>().Where(g => g.Name.Contains("METRICS_")).ToList());
+            List<MetricsLiveHistory> metricsLives = Context.Set<MetricsLiveHistory>().Where(g => g.Date >= periodStartDate && g.Date <= periodEndDate).ToList();
             ModelReturn ppaMetric = GetPPA(promoes);
             ModelReturn pctMetric = GetPCT(promoes);
             ModelReturn padMetric = GetPAD(promoes);
-            ModelReturn ppaPeriodMetric = GetPPAperiod(promoes);
-            ModelReturn pctPeriodMetric = GetPCTperiod(promoes);
+            ModelReturn ppaPeriodMetric = GetPPAperiod(metricsLives, days);
+            ModelReturn pctPeriodMetric = GetPCTperiod(metricsLives, PW4D1Date);
             ModelReturn psfaMetric = GetPSFA(promoes, marsDate);
 
             return JsonConvert.SerializeObject(new
@@ -142,49 +146,30 @@ namespace Module.Frontend.TPM.Util
 
             return new ModelReturn { Value = filteredPromoes.Count(), Value2 = total, ValueLSV = Math.Round(padLsv, 2, MidpointRounding.AwayFromZero) };
         }
-        private static ModelReturn GetPPAperiod(IEnumerable<PromoGridView> promoes)
+        private static ModelReturn GetPPAperiod(List<MetricsLiveHistory> metricsLives, int days)
         {
-            var readyStatuses = new string[] { "Approved", "Planned" };
-            var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
-            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted" };
-
-            var endDate = DateTime.Now.AddDays(7 * 8);
-
-            var filteredPromoes = promoes.Where(x => x.DispatchesStart <= endDate && x.DispatchesStart >= DateTime.Now);
-
-            var readyPromoes = filteredPromoes.Count(x => readyStatuses.Contains(x.PromoStatusName));
-            var allPromoes = filteredPromoes.Count(x => !notCheckStatuses.Contains(x.PromoStatusName));
-
-            if (allPromoes > 0)
+            if (metricsLives.Count > 0)
             {
-                var ppa = (double)readyPromoes / allPromoes;
-                var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
+                var ppa = metricsLives.Sum(g=>g.Value) / days;
+                var ppaLsv = metricsLives.Sum(g => g.ValueLSV) / days;
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
                 return new ModelReturn { Value = 0, ValueLSV = 0 };
             }
         }
-        private static ModelReturn GetPCTperiod(IEnumerable<PromoGridView> promoes)
+        private static ModelReturn GetPCTperiod(List<MetricsLiveHistory> metricsLives, DateTimeOffset PW4D1Date)
         {
-            var checkStatuses = new string[] { "Closed", "Finished" };
+            MetricsLiveHistory liveHistory = metricsLives.FirstOrDefault(g => g.Date >= PW4D1Date && g.Date <= PW4D1Date.AddDays(1));
 
-            var endDate = DateTime.Now.AddDays(-7 * 7);
-            var startDate = new DateTime(endDate.Year, 1, 1);
-
-            var filteredPromoes = promoes.Where(x => x.EndDate >= startDate && x.EndDate <= endDate);
-
-            var closedPromoes = filteredPromoes.Count(x => x.PromoStatusName == "Closed");
-            var allCheckPromoes = filteredPromoes.Count(x => checkStatuses.Contains(x.PromoStatusName));
-
-            if (allCheckPromoes > 0)
+            if (liveHistory != null)
             {
-                var pct = (double)closedPromoes / allCheckPromoes;
-                var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
+                var pct = liveHistory.Value;
+                var pctLsv = liveHistory.ValueLSV;
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(pctLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
