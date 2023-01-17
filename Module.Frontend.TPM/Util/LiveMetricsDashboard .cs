@@ -149,10 +149,11 @@ namespace Module.Frontend.TPM.Util
         }
         private static ModelReturn GetPPAperiod(List<MetricsLiveHistory> metricsLives, int days)
         {
-            if (metricsLives.Count > 0)
+            var metricsLivesPPA = metricsLives.Where(g => g.Type == TypeMetrics.PPA).ToList();
+            if (metricsLivesPPA.Count > 0)
             {
-                var ppa = metricsLives.Sum(g=>g.Value) / days;
-                var ppaLsv = metricsLives.Sum(g => g.ValueLSV) / days;
+                var ppa = metricsLivesPPA.Sum(g=>g.Value) / days;
+                var ppaLsv = metricsLivesPPA.Sum(g => g.ValueLSV) / days;
 
                 return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv, 2, MidpointRounding.AwayFromZero) };
             }
@@ -163,7 +164,7 @@ namespace Module.Frontend.TPM.Util
         }
         private static ModelReturn GetPCTperiod(List<MetricsLiveHistory> metricsLives, DateTimeOffset PW4D1Date)
         {
-            MetricsLiveHistory liveHistory = metricsLives.FirstOrDefault(g => g.Date >= PW4D1Date && g.Date <= PW4D1Date.AddDays(1));
+            MetricsLiveHistory liveHistory = metricsLives.FirstOrDefault(g => g.Date >= PW4D1Date && g.Date <= PW4D1Date.AddDays(1) && g.Type == TypeMetrics.PCT);
 
             if (liveHistory != null)
             {

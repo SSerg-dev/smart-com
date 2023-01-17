@@ -48,7 +48,7 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('BusinessMetrics'),
         scale: 'medium',
         glyph: 0xF873,
-        rsMode: true,
+        rsMode: false,
         currentMode: true,
         children: [
             {
