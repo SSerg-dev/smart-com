@@ -29,9 +29,10 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset PW4D1Date = PW4D1.StartDate();
             int days = Convert.ToInt32((periodEndDate - periodStartDate).TotalDays);
 
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.Id == ClientTreeId);
             IEnumerable<PromoGridView> promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
             ModelColor metricSettings = GetMetricSettings(Context.Set<Setting>().Where(g => g.Name.Contains("METRICS_")).ToList());
-            List<MetricsLiveHistory> metricsLives = Context.Set<MetricsLiveHistory>().Where(g => g.Date >= periodStartDate && g.Date <= periodEndDate).ToList();
+            List<MetricsLiveHistory> metricsLives = Context.Set<MetricsLiveHistory>().Where(g => g.Date >= periodStartDate && g.Date <= periodEndDate && g.ClientTreeId == client.ObjectId).ToList();
             ModelReturn ppaMetric = GetPPA(promoes);
             ModelReturn pctMetric = GetPCT(promoes);
             ModelReturn padMetric = GetPAD(promoes);
