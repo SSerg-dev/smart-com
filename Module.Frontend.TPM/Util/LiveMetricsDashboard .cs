@@ -27,7 +27,17 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset periodEndDate = marsDate.PeriodEndDate();
             MarsDate PW4D1 = marsDate.AddWeeks(-4);
             DateTimeOffset PW4D1Date = PW4D1.StartDate();
-            int days = Convert.ToInt32((periodEndDate - periodStartDate).TotalDays);
+            MarsDate dateToday = new MarsDate(DateTimeOffset.Now);
+            int days = 0;
+            if (dateToday.Period == marsDate.Period && dateToday.Year == marsDate.Year)
+            {
+                days = Convert.ToInt32((dateToday.EndDate() - periodStartDate).TotalDays) -1;
+            }
+            else
+            {
+                days = Convert.ToInt32((periodEndDate - periodStartDate).TotalDays);
+            }
+
 
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.Id == ClientTreeId);
             IEnumerable<PromoGridView> promoes = GetConstraintedQueryPromo(authorizationManager, Context, ClientTreeId);
@@ -87,8 +97,9 @@ namespace Module.Frontend.TPM.Util
                 var ppa = (double)readyPromoes / allPromoes;
                 var ppaLsv = filteredPromoes.Where(x => negativeStatuses.Contains(x.PromoStatusName)).Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { 
-                    Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), 
+                return new ModelReturn
+                {
+                    Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero),
                     ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero),
                     ValueReal = ppa,
                     ValueLSVReal = (double)ppaLsv
@@ -116,7 +127,8 @@ namespace Module.Frontend.TPM.Util
                 var pct = (double)closedPromoes / allCheckPromoes;
                 var pctLsv = filteredPromoes.Where(x => x.PromoStatusName == "Finished").Sum(x => x.PlanPromoLSV);
 
-                return new ModelReturn { 
+                return new ModelReturn
+                {
                     Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero),
                     ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero),
                     ValueReal = pct,
@@ -152,7 +164,7 @@ namespace Module.Frontend.TPM.Util
             var metricsLivesPPA = metricsLives.Where(g => g.Type == TypeMetrics.PPA).ToList();
             if (metricsLivesPPA.Count > 0)
             {
-                var ppa = metricsLivesPPA.Sum(g=>g.Value) / days;
+                var ppa = metricsLivesPPA.Sum(g => g.Value) / days;
                 var ppaLsv = metricsLivesPPA.Sum(g => g.ValueLSV) / days;
 
                 return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv, 2, MidpointRounding.AwayFromZero) };
@@ -193,7 +205,7 @@ namespace Module.Frontend.TPM.Util
 
             if (filteredPromoes.Count() > 0)
             {
-                var sfaLsv = Math.Abs(filteredPromoes.Sum(x =>x.ActualPromoIncrementalLSV.Value) - filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value));
+                var sfaLsv = Math.Abs(filteredPromoes.Sum(x => x.ActualPromoIncrementalLSV.Value) - filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value));
                 var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value);
                 sfa = (1 - sfa) * 100;
 
