@@ -104,7 +104,12 @@
                                     renderTo: Ext.getBody(),
                                     listeners: {
                                         beforeshow: function updateTipBody(tip) {
-                                            tip.update(view.rawText);
+                                            if (view.rawText == 0) {
+                                                tip.update('0');
+                                            }
+                                            else {
+                                                tip.update(view.rawText);
+                                            }                                            
                                         }
                                     }
                                 });

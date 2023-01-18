@@ -56,7 +56,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsDashboard'),
                 scale: 'medium',
                 glyph: 0xF873,
-                rsMode: true,
+                rsMode: false,
                 currentMode: true,
                 widget: 'metricsdashboard'
             },
@@ -65,7 +65,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsLiveHistory'),
                 scale: 'medium',
                 glyph: 0xF2DA,
-                rsMode: true,
+                rsMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'SupportAdministrator'],
                 widget: 'metricslivehistory'
