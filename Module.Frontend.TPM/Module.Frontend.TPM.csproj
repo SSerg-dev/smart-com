@@ -492,7 +492,7 @@
     <Compile Include="Controllers\ClientDashboardViewsController.cs" />
     <Compile Include="Controllers\NonPromoSupportBrandTechesController.cs" />
     <Compile Include="Controllers\ActualTradeInvestmentsController.cs" />
-    <Compile Include="Util\LiveMetricsDashboard .cs" />
+    <Compile Include="Util\LiveMetricsDashboard.cs" />
     <Compile Include="Util\UserDashboard.cs" />
     <Content Include="Client\controller\tpm\actualLSV\ActualLSV.js" />
     <Content Include="Client\controller\tpm\btl\BTL.js" />
