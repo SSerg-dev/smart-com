@@ -600,7 +600,15 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
+            if (model.DemandCode != null)
+            {
+                if (model.DemandCode == "" || model.DemandCode == " ")
+                {
+                    model.DemandCode = null;
+                }
+            }
+
             activeTree = GetConstraintedQuery();
             ClientTree parent = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
             string fullPathClientName = model.Name;
@@ -654,6 +662,14 @@ namespace Module.Frontend.TPM.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (model.DemandCode != null)
+            {
+                if (model.DemandCode == "" || model.DemandCode == " ")
+                {
+                    model.DemandCode = null;
+                }
             }
 
             try
