@@ -653,7 +653,7 @@ namespace Module.Frontend.TPM.Controllers
 
             Context.Entry(result).Reload();
 
-            return Json(new { success = true, children = result });
+            return Json(new { success = true, children = result }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
         [ClaimsAuthorize]
