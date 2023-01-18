@@ -137,6 +137,7 @@
                     text: l10n.ns('tpm', 'MetricsLiveHistory').value('Value'),
                     dataIndex: 'Value',
                     width: 110,
+                    format: '0.00000'
                 },
                 {
                     xtype: 'numbercolumn',
