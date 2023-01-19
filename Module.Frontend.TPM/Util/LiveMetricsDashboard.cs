@@ -86,7 +86,7 @@ namespace Module.Frontend.TPM.Util
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
-            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted" };
+            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted", "Started", "Finished", "Closed" };
 
             var endDate = DateTime.Now.AddDays(7 * 8);
 
