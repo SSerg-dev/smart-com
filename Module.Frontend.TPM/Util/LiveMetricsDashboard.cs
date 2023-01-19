@@ -29,9 +29,12 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset PW4D1Date = PW4D1.StartDate();
             MarsDate dateToday = new MarsDate(DateTimeOffset.Now);
             int days = 0;
+            DateTimeOffset todayEnddate = dateToday.DayEndDate();
+            todayEnddate = new DateTimeOffset(todayEnddate.Year, todayEnddate.Month, todayEnddate.Day -1, 23, 59, 59, 999, new TimeSpan(0, 0, 0));
+
             if (dateToday.Period == marsDate.Period && dateToday.Year == marsDate.Year)
             {
-                days = Convert.ToInt32((dateToday.EndDate() - periodStartDate).TotalDays) -1;
+                days = Convert.ToInt32((todayEnddate - periodStartDate).TotalDays);
             }
             else
             {
@@ -83,7 +86,7 @@ namespace Module.Frontend.TPM.Util
         {
             var readyStatuses = new string[] { "Approved", "Planned" };
             var negativeStatuses = new string[] { "On Approval", "Draft(published)" };
-            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted" };
+            var notCheckStatuses = new string[] { "Draft", "Cancelled", "Deleted", "Started", "Finished", "Closed" };
 
             var endDate = DateTime.Now.AddDays(7 * 8);
 
