@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-09-28_manual__2022-09-28T13%3A08%3A03.931229%2B00%3A00_", '
- '"ProcessDate": "2022-09-28", "Schema": "Jupiter", "HandlerId": '
- '"99b5b5ac-ce95-4b9f-ab64-1b4f347b8f8b"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-18_scheduled__2023-01-17T22%3A30%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-18", "Schema": "Jupiter", "HandlerId": '
+ '"9f5ac6b2-e20a-421b-97c0-b6f5aae8e107"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -695,6 +695,8 @@ print(filteredProductDF.count())
 
 activeAssortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'false')
 
+filteredProductDF = filteredProductDF.withColumn('Id', upper(filteredProductDF.Id))
+
 cols = filteredProductDF.columns
 
 resultFilteredProductDF = filteredProductDF\
@@ -716,8 +718,6 @@ inoutPromoByProductCiDF = inoutPromoByProductCiDF\
   .dropDuplicates()
 
 promoByProductCiDF = notInoutPromoByProductCiDF.union(inoutPromoByProductCiDF)
-
-#####*Result*
 
 titleMessage = '[INFO]: PROMO FILTERING'
 titleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)
