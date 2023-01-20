@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-10-20_manual__2022-10-20T11%3A44%3A47.061208%2B00%3A00_", '
- '"ProcessDate": "2022-10-20", "Schema": "Jupiter", "HandlerId": '
- '"7ac7ab63-c489-4a51-a90a-6ae1beabf723"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-09", "Schema": "Jupiter", "HandlerId": '
+ '"f18a98f9-3b2e-449a-ba96-e247d63d5b7c"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -311,6 +311,10 @@ disabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoId
 # print('promoSupportPromoDF count:', promoSupportPromoDF.count())
 # print('activePromoSupportPromoDF count:', activePromoSupportPromoDF.count())
 # print('disabledPromoSupportPromoDF count:', disabledPromoSupportPromoDF.count())
+
+# btl
+btlDF = btlDF.where(col('Disabled') == 'False')
+btlPromoDF = btlPromoDF.where(col('Disabled') == 'False')
 
 # AM
 assortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'False')
