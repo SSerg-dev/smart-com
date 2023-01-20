@@ -119,7 +119,8 @@ namespace Module.Host.TPM.Util
             notValidRecords = new List<Tuple<IEntity<Guid>, string>>();
             errors = new List<string>();
             SpreadsheetDocument book = SpreadsheetDocument.Open(filePath, false);
-            WorksheetPart wSheet = book.WorkbookPart.WorksheetParts.FirstOrDefault();
+            StringValue sID = book.WorkbookPart.Workbook.Descendants<Sheet>().FirstOrDefault().Id;
+            WorksheetPart wSheet = (WorksheetPart)book.WorkbookPart.GetPartById(sID.ToString());
             using (OpenXmlReader reader = OpenXmlReader.Create(wSheet))
             {
                 Row row;
