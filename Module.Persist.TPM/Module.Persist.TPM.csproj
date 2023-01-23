@@ -3259,6 +3259,10 @@
     <Compile Include="Migrations\202210141137249_Alter_NightTaskCreate_Proc.Designer.cs">
       <DependentUpon>202210141137249_Alter_NightTaskCreate_Proc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202301230818222_ChangeCorrectionUniqueIndex.cs" />
+    <Compile Include="Migrations\202301230818222_ChangeCorrectionUniqueIndex.Designer.cs">
+      <DependentUpon>202301230818222_ChangeCorrectionUniqueIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6144,6 +6148,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210141137249_Alter_NightTaskCreate_Proc.resx">
       <DependentUpon>202210141137249_Alter_NightTaskCreate_Proc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301230818222_ChangeCorrectionUniqueIndex.resx">
+      <DependentUpon>202301230818222_ChangeCorrectionUniqueIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

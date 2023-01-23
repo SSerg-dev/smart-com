@@ -1,6 +1,7 @@
 ﻿using Core.Data;
 using Module.Persist.TPM.Model.Interfaces;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -19,6 +20,8 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? ModifiedDate { get; set; }
         public double? PlanProductUpliftPercentCorrected { get; set; }
 
+        [StringLength(128)]
+        [Index("Unique_PromoProductsCorrection", 4, IsUnique = true)]
         public string TempId { get; set; }
 
         public Guid? UserId { get; set; }
