@@ -46,6 +46,7 @@
                 Name: clientTreeRecord.data.Name,
                 ObjectId: clientTreeRecord.data.ObjectId,
                 IsOnInvoice: clientTreeRecord.data.IsOnInvoice,
+                FullPathName: clientTreeRecord.data.FullPathName
             }));
         }
 
@@ -430,11 +431,10 @@
         var view = window.up('metricsdashboard');
         var mask = new Ext.LoadMask(view, { msg: "Please wait..." });
 
-
         mask.show();
         var me = this;
         var userrole = breeze.DataType.String.fmtOData(currentRole);
-
+        
         var clientTreeRecord = view['choosenClientTreeRecord'];
         var periodRecord = view['choosenPeriod'];
 
@@ -554,7 +554,7 @@
                 button.filter = buttons.filter;
                 button.down('#NameLabel').setText('PPA');
                 button.down('#CountLabel').setText(result.PPA_PERIOD + '%');
-                debugger;
+                
                 if (result.PPA_PERIOD_LSV != 0) {
                     button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_PERIOD_LSV / 1000000, 2));
                     button.down('#CountLabel_LSV').rawText = result.PPA_PERIOD_LSV;
