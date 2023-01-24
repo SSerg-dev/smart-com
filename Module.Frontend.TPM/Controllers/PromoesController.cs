@@ -817,6 +817,15 @@ namespace Module.Frontend.TPM.Controllers
                     PromoHelper.CalculateSumInvoiceProduct(Context, model);
                     CreateTaskCalculateActual(model.Id);
                 }
+                if (model.IsInExchange == false && promoCopy.IsInExchange == true)
+                {
+                    // unlink дочерние промо
+                    var PromoesUnlink = Context.Set<Promo>().Where(p => p.MasterPromoId == model.Id && !p.Disabled).ToList();
+                    foreach (var childpromo in PromoesUnlink)
+                    {
+                        childpromo.MasterPromoId = null;
+                    }
+                }
                 Context.SaveChanges();
 
                 if (!needToCreateDemandIncident)
