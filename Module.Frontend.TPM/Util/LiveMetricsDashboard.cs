@@ -102,7 +102,7 @@ namespace Module.Frontend.TPM.Util
 
                 return new ModelReturn
                 {
-                    Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero),
+                    Value = Math.Truncate(ppa * 100),
                     ValueLSV = Math.Round(ppaLsv.Value, 2, MidpointRounding.AwayFromZero),
                     ValueReal = ppa,
                     ValueLSVReal = (double)ppaLsv
@@ -132,7 +132,7 @@ namespace Module.Frontend.TPM.Util
 
                 return new ModelReturn
                 {
-                    Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero),
+                    Value = Math.Truncate(pct * 100),
                     ValueLSV = Math.Round(pctLsv.Value, 2, MidpointRounding.AwayFromZero),
                     ValueReal = pct,
                     ValueLSVReal = (double)pctLsv
@@ -170,7 +170,7 @@ namespace Module.Frontend.TPM.Util
                 var ppa = metricsLivesPPA.Sum(g => g.Value) / days;
                 var ppaLsv = metricsLivesPPA.Sum(g => g.ValueLSV) / days;
 
-                return new ModelReturn { Value = Math.Round(ppa * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(ppaLsv, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Truncate(ppa * 100), ValueLSV = Math.Round(ppaLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
@@ -186,7 +186,7 @@ namespace Module.Frontend.TPM.Util
                 var pct = liveHistory.Value;
                 var pctLsv = liveHistory.ValueLSV;
 
-                return new ModelReturn { Value = Math.Round(pct * 100, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(pctLsv, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Truncate(pct * 100), ValueLSV = Math.Round(pctLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
@@ -212,7 +212,7 @@ namespace Module.Frontend.TPM.Util
                 var sfa = sfaLsv / filteredPromoes.Sum(x => x.PlanPromoIncrementalLSVRaw.Value);
                 sfa = (1 - sfa) * 100;
 
-                return new ModelReturn { Value = Math.Round(sfa, 0, MidpointRounding.AwayFromZero), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
+                return new ModelReturn { Value = Math.Truncate(sfa), ValueLSV = Math.Round(sfaLsv, 2, MidpointRounding.AwayFromZero) };
             }
             else
             {
