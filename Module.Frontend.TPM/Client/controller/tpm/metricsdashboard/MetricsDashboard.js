@@ -344,9 +344,15 @@
     getPCT: function () {
         var dateStart = new Date();
         dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
-
+        
         var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, - 7 * 7);
-        dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        if (dateStart.getFullYear() != dateEnd.getFullYear()) {
+            dateStart = new Date(dateStart.getFullYear() - 1, 0, 1);
+        }
+        else {
+            dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        }
+        
         var filter = {
             operator: "and",
             rules: [
@@ -374,7 +380,12 @@
         dateStart.setHours(dateStart.getHours() + (dateStart.getTimezoneOffset() / 60) + 3);
 
         var dateEnd = Ext.Date.add(dateStart, Ext.Date.DAY, - 7 * 7);
-        dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        if (dateStart.getFullYear() != dateEnd.getFullYear()) {
+            dateStart = new Date(dateStart.getFullYear() - 1, 0, 1);
+        }
+        else {
+            dateStart = new Date(dateStart.getFullYear(), 0, 1);
+        }
         var filter = {
             operator: "and",
             rules: [
