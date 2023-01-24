@@ -566,13 +566,13 @@
                 button.down('#NameLabel').setText('PPA');
                 button.down('#CountLabel').setText(result.PPA_PERIOD + '%');
                 
-                if (result.PPA_PERIOD_LSV != 0) {
-                    button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_PERIOD_LSV / 1000000, 2));
-                    button.down('#CountLabel_LSV').rawText = result.PPA_PERIOD_LSV;
-                }
-                else {
+                //if (result.PPA_PERIOD_LSV != 0) {
+                //    button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PPA_PERIOD_LSV / 1000000, 2));
+                //    button.down('#CountLabel_LSV').rawText = result.PPA_PERIOD_LSV;
+                //}
+                //else {
                     button.down('#CountLabel_LSV').setVisible(false);
-                }
+                //}
                 
 
                 if (result.PPA_PERIOD >= result.PPA_PERIOD_GREEN) {
@@ -603,8 +603,9 @@
 
                 button.down('#NameLabel').setText('PCT');
                 button.down('#CountLabel').setText(result.PCT_PERIOD + '%');
-                button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PCT_PERIOD_LSV / 1000000, 2));
-                button.down('#CountLabel_LSV').rawText = result.PCT_PERIOD_LSV;
+                //button.down('#CountLabel_LSV').setText('LSV: ' + Ext.util.Format.round(result.PCT_PERIOD_LSV / 1000000, 2));
+                //button.down('#CountLabel_LSV').rawText = result.PCT_PERIOD_LSV;
+                button.down('#CountLabel_LSV').setVisible(false);
 
                 if (result.PCT_PERIOD >= result.PCT_PERIOD_GREEN) {
                     button.down('#glyphRight').style = 'background-color:' + '#66BB6A';
