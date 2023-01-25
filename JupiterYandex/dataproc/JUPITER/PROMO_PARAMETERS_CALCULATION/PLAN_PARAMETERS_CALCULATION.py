@@ -60,9 +60,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_", '
- '"ProcessDate": "2022-12-05", "Schema": "Jupiter", "HandlerId": '
- '"6bc06c65-d2c0-4898-be2e-c33e437a3d9d"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-19_scheduled__2023-01-18T22%3A30%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-19", "Schema": "Jupiter", "HandlerId": '
+ '"218e123f-c88f-4962-88f9-8d1acf0e5951"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -189,7 +189,7 @@ productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=
 promoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductTree"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
+clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"]).withColumn("DemandCode", when(col("DemandCode")=="\0",lit(None)).otherwise(col("DemandCode")))
 clientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeHierarchyView"])
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
