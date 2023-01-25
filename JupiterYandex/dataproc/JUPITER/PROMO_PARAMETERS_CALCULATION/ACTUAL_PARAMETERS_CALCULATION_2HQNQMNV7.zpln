@@ -3,7 +3,7 @@
     {
       "text": "%md\n####Notebook \"ACTUAL_PARAMETERS_CALCULATION\". \n####*Main night actual parameters recalculation notebook. Get actual parameters for promo, promoproduct*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:57.312",
+      "dateUpdated": "2023-01-24 10:45:57.130",
       "progress": 0,
       "config": {
         "tableHide": true,
@@ -35,18 +35,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493463_2061452587",
+      "jobName": "paragraph_1674201871371_573876212",
       "id": "20220811-123004_1411750556",
-      "dateCreated": "2022-11-23 11:54:53.463",
-      "dateStarted": "2022-12-05 07:55:57.314",
-      "dateFinished": "2022-12-05 07:55:57.320",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:45:57.138",
+      "dateFinished": "2023-01-24 10:45:57.142",
       "status": "FINISHED"
     },
     {
       "title": "Function checks whether we in notebook or python",
       "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:57.414",
+      "dateUpdated": "2023-01-24 10:45:57.238",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -73,17 +73,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_1991680164",
+      "jobName": "paragraph_1674201871371_543481997",
       "id": "paragraph_1660554861938_314618819",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:57.416",
-      "dateFinished": "2022-12-05 07:55:57.641",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:45:57.247",
+      "dateFinished": "2023-01-24 10:46:24.513",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json\nimport subprocess",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:57.716",
+      "dateUpdated": "2023-01-24 10:46:24.571",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -110,17 +110,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_1748895905",
+      "jobName": "paragraph_1674201871371_921966172",
       "id": "20220811-123004_618106294",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:57.718",
-      "dateFinished": "2022-12-05 07:55:57.935",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:24.580",
+      "dateFinished": "2023-01-24 10:46:25.005",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\ndatesDimSchema \u003d StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])\n\ninputLogMessageSchema \u003d StructType([\n  StructField(\"logMessage\", StringType(), False)\n])",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:58.018",
+      "dateUpdated": "2023-01-24 10:46:25.080",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -147,17 +147,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_817527876",
+      "jobName": "paragraph_1674201871371_1441690175",
       "id": "20220811-123004_644564687",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:58.020",
-      "dateFinished": "2022-12-05 07:55:58.239",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:25.088",
+      "dateFinished": "2023-01-24 10:46:25.310",
       "status": "FINISHED"
     },
     {
-      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \u0027\n \u0027\"/JUPITER/RAW/#MAINTENANCE/2022-10-20_manual__2022-10-20T11%3A44%3A47.061208%2B00%3A00_\", \u0027\n \u0027\"ProcessDate\": \"2022-10-20\", \"Schema\": \"Jupiter\", \"HandlerId\": \u0027\n \u0027\"7ac7ab63-c489-4a51-a90a-6ae1beabf723\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \u0027\n \u0027\"/JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_\", \u0027\n \u0027\"ProcessDate\": \"2023-01-23\", \"Schema\": \"Jupiter\", \"HandlerId\": \u0027\n \u0027\"6c143ff4-3d0f-4181-a4ce-ce20b9265a31\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:58.320",
+      "dateUpdated": "2023-01-24 10:46:25.388",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -183,17 +183,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_2119144722",
+      "jobName": "paragraph_1674201871371_839228835",
       "id": "paragraph_1660554908442_1434817015",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:58.322",
-      "dateFinished": "2022-12-05 07:55:58.593",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:25.396",
+      "dateFinished": "2023-01-24 10:46:25.819",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nsc \u003d SparkContext.getOrCreate();\n\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\nhandlerId\u003des.input_params.get(\"HandlerId\")\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)\n\nimport SUPPORT_FUNCTIONS as sp",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:58.622",
+      "dateUpdated": "2023-01-24 10:46:25.896",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -218,24 +218,55 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2022-11-30_scheduled__2022-11-29T22%3A30%3A00%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+            "data": "INPUT_PARAMS\u003d{\"MaintenancePathPrefix\": \"/JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_\", \"ProcessDate\": \"2023-01-23\", \"Schema\": \"Jupiter\", \"HandlerId\": \"6c143ff4-3d0f-4181-a4ce-ce20b9265a31\"}\nSETTINGS_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_PARAMETERS.csv\nhdfs:///JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_PARAMETERS.csv\n\nprocessDate: 2023-01-23\npipelineRunId: manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00\npipelineSubfolderName: None\n\nSETTING_RAW_DIR: hdfs:///JUPITER/RAW\nSETTING_PROCESS_DIR: hdfs:///JUPITER/PROCESS\nSETTING_OUTPUT_DIR: hdfs:///JUPITER/OUTPUT\nMAINTENANCE_PATH_PREFIX: /JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_\nSYSTEM_NAME: JUPITER\nSETTING_BRANCH_NAME: \nOther settings - list \"systemParametersDF\" data frame\nEXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\nDefined functions:\ngetFilesList(path) - list files recursively\n    path - root path\ngetShowString(df, n\u003d20, truncate\u003dTrue, vertical\u003dFalse) - prints Spark DataFrame\ngetSchemasMap(schemas_dir) - creates dictionanry with Spark Schemas, schemas_dir - directory with json files with schemas\n"
           }
         ]
       },
       "apps": [],
-      "runtimeInfos": {},
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d0"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d1"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d2"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d3"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d4"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d5"
+            },
+            {
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d6"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_593063368",
+      "jobName": "paragraph_1674201871371_2061297969",
       "id": "20220811-123004_424311855",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:58.624",
-      "dateFinished": "2022-12-05 07:55:58.844",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:25.904",
+      "dateFinished": "2023-01-24 10:46:33.049",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nDIRECTORY \u003d SETTING_RAW_DIR + \u0027/SOURCES/\u0027\n\n# PROMO_PATH \u003d DIRECTORY + \u0027JUPITER/Promo.PARQUET\u0027\n# PROMOPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProduct.PARQUET\u0027\n# PROMOSUPPORTPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/PromoSupportPromo.PARQUET\u0027\n\nPROMO_PATH \u003d SETTING_PROCESS_DIR + \u0027/Promo/Promo.parquet\u0027\nPROMOPRODUCT_PATH \u003d SETTING_PROCESS_DIR + \u0027/PromoProduct/PromoProduct.parquet\u0027\nPROMOSUPPORTPROMO_PATH \u003d SETTING_PROCESS_DIR + \u0027/PromoSupportPromo/PromoSupportPromo.parquet\u0027\n\n# input promo to compare values after calculation\nINPUT_PROMO_PATH \u003d DIRECTORY + \u0027JUPITER/Promo\u0027\n\nPROMOSTATUS_PATH \u003d DIRECTORY + \u0027JUPITER/PromoStatus\u0027\nPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/Product\u0027\nPRODUCTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/ProductTree\u0027\nPROMOPRODUCTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProductTree\u0027\nPRICELIST_PATH \u003d DIRECTORY + \u0027JUPITER/PriceList\u0027\nBASELINE_PATH \u003d DIRECTORY + \u0027JUPITER/BaseLine\u0027\nSHARES_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTreeBrandTech\u0027\nCLIENTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTree\u0027\nCLIENTHIERARCHY_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTreeHierarchyView\u0027\nDATESDIM_PATH \u003d DIRECTORY + \u0027UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv\u0027\nCORRECTION_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProductsCorrection\u0027\nINCREMENTAL_PATH \u003d DIRECTORY + \u0027JUPITER/IncrementalPromo\u0027\nPROMOSTATUS_PATH \u003d DIRECTORY + \u0027JUPITER/PromoStatus\u0027\nCOGS_PATH \u003d DIRECTORY + \u0027JUPITER/COGS\u0027\nCOGSTn_PATH \u003d DIRECTORY + \u0027JUPITER/PlanCOGSTn\u0027\nTI_PATH \u003d DIRECTORY + \u0027JUPITER/TradeInvestment\u0027\nACTUALCOGS_PATH \u003d DIRECTORY + \u0027JUPITER/ActualCOGS\u0027\nACTUALCOGSTn_PATH \u003d DIRECTORY + \u0027JUPITER/ActualCOGSTn\u0027\nACTUALTI_PATH \u003d DIRECTORY + \u0027JUPITER/ActualTradeInvestment\u0027\nBTL_PATH \u003d DIRECTORY + \u0027JUPITER/BTL\u0027\nBTLPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/BTLPromo\u0027\nPROMOSUPPORT_PATH \u003d DIRECTORY + \u0027JUPITER/PromoSupport\u0027\nBUDGETITEM_PATH \u003d DIRECTORY + \u0027JUPITER/BudgetItem\u0027\nBUDGETSUBITEM_PATH \u003d DIRECTORY + \u0027JUPITER/BudgetSubItem\u0027\nASSORTMENTMARTIX_PATH \u003d DIRECTORY + \u0027JUPITER/AssortmentMatrix\u0027\nBRANDTECH_PATH \u003d DIRECTORY + \u0027JUPITER/BrandTech\u0027\nCHANGESINCIDENTS_PATH \u003d DIRECTORY + \u0027JUPITER/ChangesIncident\u0027\nRATISHOPPER_PATH \u003d DIRECTORY + \u0027JUPITER/RATIShopper\u0027\n\nFILTERED_PROMO_PATH \u003d SETTING_PROCESS_DIR + \u0027/BlockedPromo/BlockedPromo.parquet\u0027\n\nINPUT_FILE_LOG_PATH \u003d SETTING_PROCESS_DIR + \u0027/Logs/\u0027 + handlerId + \u0027.csv\u0027\n# OUTPUT_LOG_PATH \u003d  SETTING_PROCESS_DIR + \u0027/Logs/\u0027\n# OUTPUT_FILE_LOG_PATH \u003d OUTPUT_LOG_PATH + handlerId + \u0027.csv\u0027\n# OUTPUT_TEMP_FILE_LOG_PATH \u003d OUTPUT_LOG_PATH + handlerId + \u0027temp.csv\u0027\n\nPROMO_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_OUTPUT_DIR + \u0027/Promo/Promo.CSV\u0027\nPROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_OUTPUT_DIR + \u0027/PromoProduct/PromoProduct.CSV\u0027\nPROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_OUTPUT_DIR + \u0027/PromoSupportPromo/PromoSupportPromo.CSV\u0027\n\n# DEBUG OUTPUT\n# OUTPUT_SOURCE_PROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/SourcePromo/SourcePromo.csv\u0027\n# OUTPUT_PROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/Promo/Promo.csv\u0027\n# OUTPUT_SOURCE_PROMOPRODUCT_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/SourcePromoProduct/SourcePromoProduct.csv\u0027\n# OUTPUT_PROMOPRODUCT_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/PromoProduct/PromoProduct.csv\u0027\n# OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/SourcePromoSupportPromo/SourcePromoSupportPromo.csv\u0027\n# OUTPUT_PROMOSUPPORTPROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_OUTPUT_DIR + \u0027/Actual/PromoSupportPromo/PromoSupportPromo.csv\u0027",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:58.925",
+      "dateUpdated": "2023-01-24 10:46:33.110",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -262,18 +293,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_1135567070",
+      "jobName": "paragraph_1674201871371_669281830",
       "id": "20220811-123004_400393776",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:58.927",
-      "dateFinished": "2022-12-05 07:55:59.148",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:33.118",
+      "dateFinished": "2023-01-24 10:46:33.338",
       "status": "FINISHED"
     },
     {
       "title": "Load raw entities schemas from json files to map",
       "text": "%pyspark\nSCHEMAS_DIR\u003dSETTING_RAW_DIR + \u0027/SCHEMAS/\u0027\nschemas_map \u003d sp.getSchemasMap(SCHEMAS_DIR)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:59.227",
+      "dateUpdated": "2023-01-24 10:46:33.418",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -300,17 +331,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_718613303",
+      "jobName": "paragraph_1674201871371_1878748283",
       "id": "paragraph_1660555260465_1606094102",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:59.229",
-      "dateFinished": "2022-12-05 07:55:59.648",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:33.425",
+      "dateFinished": "2023-01-24 10:46:34.355",
       "status": "FINISHED"
     },
     {
-      "text": "%pyspark\npromoDF \u003d spark.read.format(\"parquet\").load(PROMO_PATH) \npromoSupportPromoDF \u003d spark.read.format(\"parquet\").load(PROMOSUPPORTPROMO_PATH)\npromoProductDF \u003d spark.read.format(\"parquet\").load(PROMOPRODUCT_PATH)\n\npriceListDF \u003d spark.read.csv(PRICELIST_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoStatusDF \u003d spark.read.csv(PROMOSTATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ninputPromoDF \u003d spark.read.csv(INPUT_PROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproduct01DF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF \u003d spark.read.csv(PRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ProductTree\"])\npromoProductTreeDF \u003d spark.read.csv(PROMOPRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF \u003d spark.read.csv(SHARES_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF \u003d spark.read.csv(CLIENTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTree\"])\nclientHierarchyDF \u003d spark.read.csv(CLIENTHIERARCHY_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeHierarchyView\"])\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF \u003d spark.read.csv(CORRECTION_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF \u003d spark.read.csv(BTL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF \u003d spark.read.csv(BTLPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF \u003d spark.read.csv(INCREMENTAL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF \u003d spark.read.csv(COGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF \u003d spark.read.csv(COGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF \u003d spark.read.csv(TI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsDF \u003d spark.read.csv(ACTUALCOGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualCOGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsTnDF \u003d spark.read.csv(ACTUALCOGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualTiDF \u003d spark.read.csv(ACTUALTI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualTradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF \u003d spark.read.csv(PROMOSUPPORT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF \u003d spark.read.csv(BUDGETITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF \u003d spark.read.csv(BUDGETSUBITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF \u003d spark.read.csv(ASSORTMENTMARTIX_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF \u003d spark.read.csv(BRANDTECH_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nchangesIncidentsDF \u003d spark.read.csv(CHANGESINCIDENTS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nratiShopperDF \u003d spark.read.csv(RATISHOPPER_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF \u003d spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
+      "text": "%pyspark\npromoDF \u003d spark.read.format(\"parquet\").load(PROMO_PATH) \npromoSupportPromoDF \u003d spark.read.format(\"parquet\").load(PROMOSUPPORTPROMO_PATH)\npromoProductDF \u003d spark.read.format(\"parquet\").load(PROMOPRODUCT_PATH)\n\npriceListDF \u003d spark.read.csv(PRICELIST_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoStatusDF \u003d spark.read.csv(PROMOSTATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ninputPromoDF \u003d spark.read.csv(INPUT_PROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproduct01DF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF \u003d spark.read.csv(PRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ProductTree\"])\npromoProductTreeDF \u003d spark.read.csv(PROMOPRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF \u003d spark.read.csv(SHARES_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF \u003d spark.read.csv(CLIENTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTree\"]).withColumn(\"DemandCode\", when(col(\"DemandCode\")\u003d\u003d\"\\0\",lit(None)).otherwise(col(\"DemandCode\")))\nclientHierarchyDF \u003d spark.read.csv(CLIENTHIERARCHY_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeHierarchyView\"])\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF \u003d spark.read.csv(CORRECTION_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF \u003d spark.read.csv(BTL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF \u003d spark.read.csv(BTLPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF \u003d spark.read.csv(INCREMENTAL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF \u003d spark.read.csv(COGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF \u003d spark.read.csv(COGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF \u003d spark.read.csv(TI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsDF \u003d spark.read.csv(ACTUALCOGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualCOGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsTnDF \u003d spark.read.csv(ACTUALCOGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualTiDF \u003d spark.read.csv(ACTUALTI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ActualTradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF \u003d spark.read.csv(PROMOSUPPORT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF \u003d spark.read.csv(BUDGETITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF \u003d spark.read.csv(BUDGETSUBITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF \u003d spark.read.csv(ASSORTMENTMARTIX_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF \u003d spark.read.csv(BRANDTECH_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nchangesIncidentsDF \u003d spark.read.csv(CHANGESINCIDENTS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nratiShopperDF \u003d spark.read.csv(RATISHOPPER_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF \u003d spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:55:59.729",
+      "dateUpdated": "2023-01-24 10:46:34.426",
       "progress": 100,
       "config": {
         "editorSetting": {
@@ -343,33 +374,33 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3662"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d7"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3663"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d8"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3664"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d9"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3665"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d10"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_1752462826",
+      "jobName": "paragraph_1674201871371_1383614889",
       "id": "20220811-123004_268370752",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:55:59.732",
-      "dateFinished": "2022-12-05 07:56:03.633",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:34.434",
+      "dateFinished": "2023-01-24 10:46:38.944",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\ntry:\n inputLogMessageDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"\\u0001\").option(\"header\",\"true\").load(INPUT_FILE_LOG_PATH)\n print(\u0027Log has been already made\u0027)\nexcept:\n inputLogMessageDF \u003d spark.createDataFrame(sc.emptyRDD(), inputLogMessageSchema)\n print(\u0027Init log\u0027)\n  \n\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:03.635",
+      "dateUpdated": "2023-01-24 10:46:39.038",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -407,24 +438,24 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3666"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d11"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_2089965142",
+      "jobName": "paragraph_1674201871371_1186278414",
       "id": "20220811-123004_1935569230",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:56:03.637",
-      "dateFinished": "2022-12-05 07:56:04.765",
+      "dateCreated": "2023-01-20 08:04:31.371",
+      "dateStarted": "2023-01-24 10:46:39.046",
+      "dateFinished": "2023-01-24 10:46:40.127",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Date transformation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:04.839",
+      "dateUpdated": "2023-01-24 10:46:40.146",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -454,17 +485,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_978401283",
+      "jobName": "paragraph_1674201871372_892397917",
       "id": "20220811-123004_968871950",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:56:04.841",
-      "dateFinished": "2022-12-05 07:56:04.845",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:40.154",
+      "dateFinished": "2023-01-24 10:46:40.157",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\npriceListDF \u003d priceListDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(priceListDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(priceListDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\nbaselineDF \u003d baselineDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(baselineDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\n\nassortmentMatrixDF \u003d assortmentMatrixDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(assortmentMatrixDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(assortmentMatrixDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027CreateDate\u0027, date_add(to_date(assortmentMatrixDF.CreateDate, \u0027yyyy-MM-dd\u0027), 1))\n\ntiDF \u003d tiDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(tiDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(tiDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\ncogsDF \u003d cogsDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(cogsDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(cogsDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\ncogsTnDF \u003d cogsTnDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(cogsTnDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(cogsTnDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\nactualTiDF \u003d actualTiDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(actualTiDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(actualTiDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\nactualCogsDF \u003d actualCogsDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(actualCogsDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(actualCogsDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\nactualCogsTnDF \u003d actualCogsTnDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(actualCogsTnDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(actualCogsTnDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:04.941",
+      "dateUpdated": "2023-01-24 10:46:40.254",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -491,17 +522,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493464_536404329",
+      "jobName": "paragraph_1674201871372_676887613",
       "id": "20220811-123004_1118321935",
-      "dateCreated": "2022-11-23 11:54:53.464",
-      "dateStarted": "2022-12-05 07:56:04.943",
-      "dateFinished": "2022-12-05 07:56:05.312",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:40.262",
+      "dateFinished": "2023-01-24 10:46:40.787",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Prepare dataframes for calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:05.343",
+      "dateUpdated": "2023-01-24 10:46:40.862",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -531,17 +562,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_74246215",
+      "jobName": "paragraph_1674201871372_715815018",
       "id": "20220811-123004_893043481",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:05.345",
-      "dateFinished": "2022-12-05 07:56:05.349",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:40.870",
+      "dateFinished": "2023-01-24 10:46:40.873",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nfilteredPromoDF \u003d filteredPromoDF.dropDuplicates()\n\n# promoProduct\npromoProductCols \u003d promoProductDF.columns\nallCalcActualPromoProductDF \u003d promoProductDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\nallCalcActualPromoProductIdsDF \u003d allCalcActualPromoProductDF.select(col(\u0027Id\u0027))\ndisabledPromoProductDF \u003d promoProductDF.join(allCalcActualPromoProductIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoProductDF[\u0027*\u0027])\n\n# print(\u0027promoProducts count:\u0027, promoProductDF.count())\n# print(\u0027notDisabledPromoProducts count:\u0027, allCalcActualPromoProductDF.count())\n# print(\u0027disabledPromoProducts count:\u0027, disabledPromoProductDF.count())\n\n# promo\ncalcActualPromoDF \u003d promoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# all promo\npromoCols \u003d promoDF.columns\nallCalcActualPromoDF \u003d promoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\nallCalcActualPromoIdsDF \u003d allCalcActualPromoDF.select(col(\u0027Id\u0027))\ndisabledPromoDF \u003d promoDF.join(allCalcActualPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoDF[\u0027*\u0027])\n\n# print(\u0027promoDF count:\u0027, promoDF.count())\n# print(\u0027notDisabledPromoDF count:\u0027, allCalcActualPromoDF.count())\n# print(\u0027disabledPromoDF count:\u0027, disabledPromoDF.count())\n\n# priceList\nactualParamsPriceListDF \u003d priceListDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .select(\\\n           to_date(col(\u0027StartDate\u0027), \u0027yyyy-MM-dd\u0027).alias(\u0027priceStartDate\u0027)\n          ,to_date(col(\u0027EndDate\u0027), \u0027yyyy-MM-dd\u0027).alias(\u0027priceEndDate\u0027)\n          ,col(\u0027ProductId\u0027).alias(\u0027priceProductId\u0027)\n          ,col(\u0027Price\u0027).cast(DecimalType(30,6))\n          ,col(\u0027ClientTreeId\u0027).alias(\u0027priceClientTreeId\u0027)\n         )\n\n# incremental\nactualParamsIncrementalDF \u003d incrementalDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .select(\\\n           col(\u0027PromoId\u0027).alias(\u0027incrementalPromoId\u0027)\n          ,col(\u0027ProductId\u0027).alias(\u0027incrementalProductId\u0027)\n          ,col(\u0027PlanPromoIncrementalCases\u0027)\n         )\n\n# support\npromoSupportDF \u003d promoSupportDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\npromoSupportPromoCols \u003d promoSupportPromoDF.columns\nactivePromoSupportPromoDF \u003d promoSupportPromoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027).select(promoSupportPromoCols)\nactivePromoSupportPromoIdsDF \u003d activePromoSupportPromoDF.select(col(\u0027Id\u0027))\ndisabledPromoSupportPromoDF \u003d promoSupportPromoDF.join(activePromoSupportPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoSupportPromoCols)\n\n# print(\u0027promoSupportPromoDF count:\u0027, promoSupportPromoDF.count())\n# print(\u0027activePromoSupportPromoDF count:\u0027, activePromoSupportPromoDF.count())\n# print(\u0027disabledPromoSupportPromoDF count:\u0027, disabledPromoSupportPromoDF.count())\n\n# AM\nassortmentMatrixDF \u003d assortmentMatrixDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# COGS, TI, BrandTech\nbrandTechDF \u003d brandTechDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\ntiDF \u003d tiDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\ncogsDF \u003d cogsDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\ncogsTnDF \u003d cogsTnDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\n\nactualTiDF \u003d actualTiDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\nactualCogsDF \u003d actualCogsDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\nactualCogsTnDF \u003d actualCogsTnDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\n\nactiveChangesIncidentsDF \u003d changesIncidentsDF\\\n  .withColumn(\u0027ItemId\u0027, upper(col(\u0027ItemId\u0027)))\\\n  .where(col(\u0027ProcessDate\u0027).isNull())\n\nactualCogsCiIdsDF \u003d activeChangesIncidentsDF.where(col(\u0027DirectoryName\u0027) \u003d\u003d \u0027PromoActualCOGS\u0027).select(activeChangesIncidentsDF.ItemId.alias(\u0027Id\u0027))\nactualCogsTnCiIdsDF \u003d activeChangesIncidentsDF.where(col(\u0027DirectoryName\u0027) \u003d\u003d \u0027PromoActualCOGSTn\u0027).select(activeChangesIncidentsDF.ItemId.alias(\u0027Id\u0027))\nactualTiCiIdsDF \u003d activeChangesIncidentsDF.where(col(\u0027DirectoryName\u0027) \u003d\u003d \u0027PromoActualTradeInvestment\u0027).select(activeChangesIncidentsDF.ItemId.alias(\u0027Id\u0027))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:05.445",
+      "dateUpdated": "2023-01-24 10:46:40.970",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -568,17 +599,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_822475356",
+      "jobName": "paragraph_1674201871372_504981722",
       "id": "20220811-123004_896401649",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:05.447",
-      "dateFinished": "2022-12-05 07:56:06.018",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:40.977",
+      "dateFinished": "2023-01-24 10:46:41.701",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\n#status list for actual parameters recalculation\nactualParametersStatuses \u003d [\u0027Finished\u0027]\n\n# notCheckPromoStatusList \u003d [\u0027Draft\u0027,\u0027Cancelled\u0027,\u0027Deleted\u0027,\u0027Closed\u0027]\nnotCheckPromoStatusList \u003d [\u0027Cancelled\u0027,\u0027Deleted\u0027]",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:06.048",
+      "dateUpdated": "2023-01-24 10:46:41.778",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -605,17 +636,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1012835424",
+      "jobName": "paragraph_1674201871372_1749767323",
       "id": "20220811-123004_1922472434",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:06.050",
-      "dateFinished": "2022-12-05 07:56:06.267",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:41.785",
+      "dateFinished": "2023-01-24 10:46:42.005",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nlightPromoDF \u003d promoDF\\\n  .where((col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027))\\\n  .select(\\\n           col(\u0027Id\u0027).alias(\u0027promoIdCol\u0027)\n          ,col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\n          ,col(\u0027BrandTechId\u0027).alias(\u0027promoBrandTechId\u0027)\n          ,col(\u0027PromoStatusId\u0027).alias(\u0027promoStatusId\u0027)\n          ,col(\u0027StartDate\u0027).alias(\u0027promoStartDate\u0027)\n          ,col(\u0027EndDate\u0027).alias(\u0027promoEndDate\u0027)\n          ,col(\u0027DispatchesStart\u0027).alias(\u0027promoDispatchesStart\u0027)\n          ,col(\u0027ClientTreeKeyId\u0027).alias(\u0027promoClientTreeKeyId\u0027)\n          ,col(\u0027ClientTreeId\u0027).alias(\u0027promoClientTreeId\u0027)\n          ,col(\u0027IsOnInvoice\u0027).alias(\u0027promoIsOnInvoice\u0027)\n          ,col(\u0027InOut\u0027).alias(\u0027promoInOut\u0027)\n          ,col(\u0027LoadFromTLC\u0027).alias(\u0027promoLoadFromTLC\u0027)\n          ,col(\u0027PlanPromoBaselineLSV\u0027)\n          ,col(\u0027ActualPromoBaselineLSV\u0027)\n          ,col(\u0027ActualPromoLSVSO\u0027)\n          ,col(\u0027ActualPromoPostPromoEffectLSV\u0027)\n         )\n\nlightPromoDF \u003d lightPromoDF\\\n  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId \u003d\u003d clientTreeDF.Id, \u0027inner\u0027)\\\n  .select(\\\n           lightPromoDF[\u0027*\u0027]\n          ,to_date(clientTreeDF.EndDate, \u0027yyyy-MM-dd\u0027).alias(\u0027ctEndDate\u0027)\n          ,col(\u0027PostPromoEffectW1\u0027).alias(\u0027promoClientPostPromoEffectW1\u0027)\n          ,col(\u0027PostPromoEffectW2\u0027).alias(\u0027promoClientPostPromoEffectW2\u0027)\n          )\\\n  .where(col(\u0027ctEndDate\u0027).isNull())\\\n  .drop(\u0027ctEndDate\u0027)\n\ncalcActualPromoDF \u003d calcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d calcActualPromoDF.PromoStatusId, \u0027left\u0027)\\\n  .select(\\\n           calcActualPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\\\n  .where((col(\u0027promoStatusSystemName\u0027).isin(*actualParametersStatuses)) \u0026 (col(\u0027LoadFromTLC\u0027) \u003d\u003d \u0027False\u0027))\n\nactualPromoProductDF \u003d allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol \u003d\u003d allCalcActualPromoProductDF.PromoId, \u0027left\u0027)\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d lightPromoDF.promoStatusId, \u0027left\u0027)\\\n  .select(\\\n           allCalcActualPromoProductDF[\u0027*\u0027]\n          ,lightPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\\\n  .where((col(\u0027promoStatusSystemName\u0027).isin(*actualParametersStatuses)) \u0026 (col(\u0027promoLoadFromTLC\u0027) \u003d\u003d \u0027False\u0027))\n\nfinCloPromoProductDF \u003d allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol \u003d\u003d allCalcActualPromoProductDF.PromoId, \u0027left\u0027)\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d lightPromoDF.promoStatusId, \u0027left\u0027)\\\n  .select(\\\n           allCalcActualPromoProductDF[\u0027*\u0027]\n          ,lightPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\\\n  .where((col(\u0027promoStatusSystemName\u0027).isin([\u0027Finished\u0027,\u0027Closed\u0027])) \u0026 (col(\u0027promoLoadFromTLC\u0027) \u003d\u003d \u0027False\u0027))\n\nactualsLoadPromoDF \u003d actualPromoProductDF\\\n  .select(\\\n           actualPromoProductDF.promoIdCol\n          ,actualPromoProductDF.promoNumber\n          ,actualPromoProductDF.ActualProductPCQty\n         )\n\nfinCloLoadActualsPromoDF \u003d finCloPromoProductDF\\\n  .select(\\\n           finCloPromoProductDF.promoIdCol\n          ,finCloPromoProductDF.promoNumber\n          ,finCloPromoProductDF.ActualProductPCQty\n         )\n\nactualsLoadPromoIdDF \u003d actualsLoadPromoDF\\\n  .groupBy([\u0027promoIdCol\u0027,\u0027promoNumber\u0027])\\\n  .agg(sum(\u0027ActualProductPCQty\u0027).alias(\u0027sumActualProductPCQtyByPromo\u0027))\\\n  .where((~col(\u0027sumActualProductPCQtyByPromo\u0027).isNull()) | (col(\u0027sumActualProductPCQtyByPromo\u0027) !\u003d 0))\\\n  .orderBy(\u0027promoNumber\u0027)\n\nfinCloLoadActualsPromoIdDF \u003d finCloLoadActualsPromoDF\\\n  .groupBy([\u0027promoIdCol\u0027,\u0027promoNumber\u0027])\\\n  .agg(sum(\u0027ActualProductPCQty\u0027).alias(\u0027sumActualProductPCQtyByPromo\u0027))\\\n  .where((~col(\u0027sumActualProductPCQtyByPromo\u0027).isNull()) | (col(\u0027sumActualProductPCQtyByPromo\u0027) !\u003d 0))\\\n  .orderBy(\u0027promoNumber\u0027)\n\ncalcActualPromoProductDF \u003d actualPromoProductDF\\\n  .join(actualsLoadPromoIdDF, \u0027promoIdCol\u0027, \u0027inner\u0027)\\\n  .select(actualPromoProductDF[\u0027*\u0027])\n\ncalcActualPromoProductIdsDF \u003d calcActualPromoProductDF.select(col(\u0027Id\u0027))\nnotCalcActualPromoProductDF \u003d allCalcActualPromoProductDF.join(calcActualPromoProductIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(allCalcActualPromoProductDF[\u0027*\u0027])\n\ncalcActualPromoDF \u003d calcActualPromoDF\\\n  .join(actualsLoadPromoIdDF, actualsLoadPromoIdDF.promoIdCol \u003d\u003d calcActualPromoDF.Id, \u0027inner\u0027)\\\n  .select(calcActualPromoDF[\u0027*\u0027])\n\ncalcActualPromoProductDF \u003d calcActualPromoProductDF\\\n  .join(productDF, productDF.Id \u003d\u003d calcActualPromoProductDF.ProductId, \u0027left\u0027)\\\n  .select(\\\n           calcActualPromoProductDF[\u0027*\u0027]\n          ,productDF.UOM_PC2Case\n          ,productDF.CaseVolume\n          ,productDF.PCVolume\n         )\n\ncalcActualPromoDF \u003d calcActualPromoDF\\\n  .join(lightPromoDF, lightPromoDF.promoNumber \u003d\u003d calcActualPromoDF.Number, \u0027inner\u0027)\\\n  .select(\\\n           calcActualPromoDF[\u0027*\u0027]\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\n# print(allCalcActualPromoProductDF.count())\n# print(calcActualPromoProductDF.count())\n# print(notCalcActualPromoProductDF.count())\n# print(calcActualPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:06.350",
+      "dateUpdated": "2023-01-24 10:46:42.086",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -642,17 +673,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1773464202",
+      "jobName": "paragraph_1674201871372_779413607",
       "id": "20220811-123004_1901429482",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:06.352",
-      "dateFinished": "2022-12-05 07:56:07.275",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:42.093",
+      "dateFinished": "2023-01-24 10:46:43.323",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nimport ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS as actual_product_params_calculation_process\ncalcActualPromoProductDF,allCalcActualPromoDF,logPricePromoDF \u003d actual_product_params_calculation_process.run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCalcActualPromoDF,promoProductCols)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:07.353",
+      "dateUpdated": "2023-01-24 10:46:43.394",
       "progress": 100,
       "config": {
         "editorSetting": {
@@ -690,24 +721,24 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3673"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d18"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_2089520379",
+      "jobName": "paragraph_1674201871372_408800198",
       "id": "20220811-123004_303343058",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:07.355",
-      "dateFinished": "2022-12-05 07:56:42.313",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:46:43.402",
+      "dateFinished": "2023-01-24 10:47:18.290",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Promo support calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:42.386",
+      "dateUpdated": "2023-01-24 10:47:18.334",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -737,17 +768,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_13111800",
+      "jobName": "paragraph_1674201871372_704612521",
       "id": "20220811-123004_1463305961",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:42.388",
-      "dateFinished": "2022-12-05 07:56:42.393",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:47:18.341",
+      "dateFinished": "2023-01-24 10:47:18.344",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nallCalcActualPromoDF \u003d allCalcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d allCalcActualPromoDF.PromoStatusId, \u0027left\u0027)\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol \u003d\u003d allCalcActualPromoDF.Id, \u0027left\u0027)\\\n  .select(\\\n           allCalcActualPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\ncalcActualSupportPromoDF \u003d allCalcActualPromoDF\\\n  .where(~col(\u0027promoStatusSystemName\u0027).isin(*notCheckPromoStatusList))\n\ncalcActualSupportPromoIdsDF \u003d calcActualSupportPromoDF.select(col(\u0027Id\u0027))\nnotCalcActualSupportPromoDF \u003d allCalcActualPromoDF.join(calcActualSupportPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(allCalcActualPromoDF[\u0027*\u0027])",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:42.488",
+      "dateUpdated": "2023-01-24 10:47:18.441",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -774,17 +805,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_458079812",
+      "jobName": "paragraph_1674201871372_1175803394",
       "id": "20220811-123004_287775989",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:42.490",
-      "dateFinished": "2022-12-05 07:56:43.019",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:47:18.449",
+      "dateFinished": "2023-01-24 10:47:19.072",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nimport ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS as actual_support_params_calculation_process\ncalcActualSupportPromoDF,allPromoSupportPromoDF \u003d actual_support_params_calculation_process.run(promoSupportDF,activePromoSupportPromoDF,calcActualSupportPromoDF,btlDF,btlPromoDF,budgetItemDF,budgetSubItemDF,promoSupportPromoCols)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:56:43.091",
+      "dateUpdated": "2023-01-24 10:47:19.149",
       "progress": 100,
       "config": {
         "editorSetting": {
@@ -822,36 +853,36 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3683"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d28"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3693"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d38"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3703"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d48"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3713"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d58"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3720"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d65"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1803321511",
+      "jobName": "paragraph_1674201871372_657253018",
       "id": "20220811-123004_1287163625",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:56:43.093",
-      "dateFinished": "2022-12-05 07:58:54.309",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:47:19.160",
+      "dateFinished": "2023-01-24 10:49:36.854",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Actual promo parameters calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:58:54.409",
+      "dateUpdated": "2023-01-24 10:49:36.881",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -881,17 +912,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1118777940",
+      "jobName": "paragraph_1674201871372_1491051669",
       "id": "20220811-123004_2067110041",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:58:54.411",
-      "dateFinished": "2022-12-05 07:58:54.415",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:36.888",
+      "dateFinished": "2023-01-24 10:49:36.891",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nallCalcActualPromoDF \u003d calcActualSupportPromoDF.union(notCalcActualSupportPromoDF)\n\nallCalcActualPromoDF \u003d allCalcActualPromoDF\\\n  .join(brandTechDF, brandTechDF.Id \u003d\u003d allCalcActualPromoDF.BrandTechId, \u0027left\u0027)\\\n  .join(actualCogsCiIdsDF, actualCogsCiIdsDF.Id \u003d\u003d allCalcActualPromoDF.Id, \u0027left\u0027)\\\n  .join(actualCogsTnCiIdsDF, actualCogsTnCiIdsDF.Id \u003d\u003d allCalcActualPromoDF.Id, \u0027left\u0027)\\\n  .join(actualTiCiIdsDF, actualTiCiIdsDF.Id \u003d\u003d allCalcActualPromoDF.Id, \u0027left\u0027)\\\n  .select(\\\n           allCalcActualPromoDF[\u0027*\u0027]\n          ,brandTechDF.BrandsegTechsub.alias(\u0027promoBrandTechName\u0027)\n          ,actualCogsCiIdsDF.Id.alias(\u0027acogsId\u0027)\n          ,actualCogsCiIdsDF.Id.alias(\u0027acogstnId\u0027)\n          ,actualTiCiIdsDF.Id.alias(\u0027atiId\u0027)\n         )\\\n  .withColumn(\u0027UseActualCOGS\u0027, when(~col(\u0027acogstnId\u0027).isNull(), True).otherwise(col(\u0027UseActualCOGS\u0027)))\\\n  .withColumn(\u0027UseActualTI\u0027, when(~col(\u0027atiId\u0027).isNull(), True).otherwise(col(\u0027UseActualTI\u0027)))\\\n  .dropDuplicates()\n\ncalcActualPromoDF \u003d allCalcActualPromoDF\\\n  .join(finCloLoadActualsPromoIdDF, finCloLoadActualsPromoIdDF.promoIdCol \u003d\u003d allCalcActualPromoDF.Id, \u0027inner\u0027)\\\n  .where((col(\u0027promoStatusSystemName\u0027) \u003d\u003d \u0027Finished\u0027) | ~col(\u0027acogstnId\u0027).isNull() | ~col(\u0027atiId\u0027).isNull())\n\ncalcActualPromoIdsDF \u003d calcActualPromoDF.select(col(\u0027Id\u0027))\nnotCalcActualPromoDF \u003d allCalcActualPromoDF.join(calcActualPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(allCalcActualPromoDF[\u0027*\u0027])",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:58:54.511",
+      "dateUpdated": "2023-01-24 10:49:36.988",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -918,17 +949,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_150532798",
+      "jobName": "paragraph_1674201871372_1932802643",
       "id": "20220811-123004_1857000984",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:58:54.514",
-      "dateFinished": "2022-12-05 07:58:56.044",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:36.995",
+      "dateFinished": "2023-01-24 10:49:38.628",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\n# display(calcActualPromoDF.select(col(\u0027Number\u0027),col(\u0027promoStatusSystemName\u0027),col(\u0027UseActualCOGS\u0027),col(\u0027UseActualTI\u0027),col(\u0027acogstnId\u0027),col(\u0027atiId\u0027)))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:58:56.115",
+      "dateUpdated": "2023-01-24 10:49:38.697",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -955,17 +986,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1637718841",
+      "jobName": "paragraph_1674201871372_499778782",
       "id": "20220811-123004_1195835276",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:58:56.122",
-      "dateFinished": "2022-12-05 07:58:56.340",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:38.704",
+      "dateFinished": "2023-01-24 10:49:38.925",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nimport ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS as actual_promo_params_calculation_process\ncalcActualPromoDF,logCOGS,logTI,logCOGSTn,logActualCOGS,logActualTI,logActualCOGSTn \u003d actual_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPromoDF,promoDF,actualCogsDF,actualCogsTnDF,actualTiDF)\n\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:58:56.422",
+      "dateUpdated": "2023-01-24 10:49:39.005",
       "progress": 100,
       "config": {
         "editorSetting": {
@@ -1003,45 +1034,45 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3721"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d66"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3724"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d69"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3727"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d72"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3730"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d75"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3731"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d76"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3734"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d79"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3737"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d82"
             },
             {
-              "jobUrl": "http://rc1a-dataproc-c-jffofjwfk66ktxhi.mdb.yandexcloud.net:36367/jobs/job?id\u003d3741"
+              "jobUrl": "http://rc1a-dataproc-d-rsjzl8hotu696wy1.mdb.yandexcloud.net:44391/jobs/job?id\u003d86"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_1478555380",
+      "jobName": "paragraph_1674201871372_99260757",
       "id": "20220811-123004_1333915211",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:58:56.425",
-      "dateFinished": "2022-12-05 07:59:06.635",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:39.012",
+      "dateFinished": "2023-01-24 10:49:50.752",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Result*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:06.733",
+      "dateUpdated": "2023-01-24 10:49:50.822",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1071,17 +1102,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_144720414",
+      "jobName": "paragraph_1674201871372_798075772",
       "id": "20220811-123004_413619826",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:59:06.735",
-      "dateFinished": "2022-12-05 07:59:06.739",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:50.833",
+      "dateFinished": "2023-01-24 10:49:50.837",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\n# promoproduct\nnotCalcActualPromoProductDF \u003d notCalcActualPromoProductDF.select(promoProductCols)\ncalcActualPromoProductDF \u003d calcActualPromoProductDF.select(promoProductCols)\nallCalcActualPromoProductDF \u003d calcActualPromoProductDF.union(notCalcActualPromoProductDF)\nresultPromoProductDF \u003d allCalcActualPromoProductDF.union(disabledPromoProductDF)\nresultPromoProductDF.drop(\u0027$QCCount\u0027)\n# ---\n\n# promo\nnotCalcActualPromoDF \u003d notCalcActualPromoDF.select(promoCols)\ncalcActualPromoDF \u003d calcActualPromoDF.select(promoCols)\nallCalcActualPromoDF \u003d calcActualPromoDF.union(notCalcActualPromoDF)\nresultPromoDF \u003d allCalcActualPromoDF.union(disabledPromoDF)\nresultPromoDF \u003d resultPromoDF.drop(\u0027$QCCount\u0027)\n# ---\n\n# promosuportpromo\nresultPromoSupportPromoDF \u003d allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)\n# ---",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:06.835",
+      "dateUpdated": "2023-01-24 10:49:50.933",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1108,17 +1139,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_967064867",
+      "jobName": "paragraph_1674201871372_284331990",
       "id": "20220811-123004_170531880",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:59:06.838",
-      "dateFinished": "2022-12-05 07:59:08.771",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:50.941",
+      "dateFinished": "2023-01-24 10:49:53.025",
       "status": "FINISHED"
     },
     {
       "text": "%md\n####*Set last changed date*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:08.839",
+      "dateUpdated": "2023-01-24 10:49:53.043",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1148,17 +1179,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493465_38215582",
+      "jobName": "paragraph_1674201871372_1794339834",
       "id": "20220811-123004_2053122174",
-      "dateCreated": "2022-11-23 11:54:53.465",
-      "dateStarted": "2022-12-05 07:59:08.842",
-      "dateFinished": "2022-12-05 07:59:08.846",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:53.051",
+      "dateFinished": "2023-01-24 10:49:53.054",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\ndef isDemandFinanceChanged(value):\n  return array_contains(value, \u0027PlanPromoLSV\u0027) | array_contains(value, \u0027PlanPromoIncrementalLSV\u0027) | array_contains(value, \u0027PlanPromoUpliftPercent\u0027) | \\\n        array_contains(value, \u0027ActualPromoLSV\u0027) | array_contains(value, \u0027ActualPromoIncrementalLSV\u0027) | array_contains(value, \u0027ActualPromoUpliftPercent\u0027) | \\\n        array_contains(value, \u0027ActualPromoLSVByCompensation\u0027)\n\ninputPromoDF \u003d inputPromoDF.drop(\u0027#QCCount\u0027)\n\ncompareConditions \u003d [when(inputPromoDF[c] !\u003d resultPromoDF[c], lit(c)).otherwise(\"\") for c in inputPromoDF.columns if c not in  (\u0027Id\u0027,\"StartDate\",\"EndDate\",\"DispatchesStart\",\"DispatchesEnd\")]\n\ntimestamp \u003d datetime.datetime.fromtimestamp(time.time()).strftime(\u0027%Y-%m-%d %H:%M:%S\u0027)\nselect_expr \u003d [col(\"Id\"), *[resultPromoDF[c] for c in resultPromoDF.columns if c !\u003d \u0027Id\u0027], array_remove(array(*compareConditions), \"\").alias(\"changedColumns\")]\nresultPromoDF \u003d inputPromoDF\\\n  .join(resultPromoDF, \"Id\")\\\n  .select(*select_expr)\\\n  .withColumn(\u0027isChanged\u0027, size(col(\u0027changedColumns\u0027)) \u003e 0)\\\n  .withColumn(\u0027isDemandFinanceChanged\u0027, isDemandFinanceChanged(col(\u0027changedColumns\u0027)))\\\n  .withColumn(\u0027LastChangedDate\u0027, when(col(\u0027isChanged\u0027) \u003d\u003d True, unix_timestamp(lit(timestamp),\u0027yyyy-MM-dd HH:mm:ss\u0027).cast(\"timestamp\")).otherwise(col(\u0027LastChangedDate\u0027)))\\\n  .withColumn(\u0027LastChangedDateDemand\u0027, when(col(\u0027isDemandFinanceChanged\u0027) \u003d\u003d True, unix_timestamp(lit(timestamp),\u0027yyyy-MM-dd HH:mm:ss\u0027).cast(\"timestamp\"))\\\n              .otherwise(col(\u0027LastChangedDateDemand\u0027)))\\\n  .withColumn(\u0027LastChangedDateFinance\u0027, when(col(\u0027isDemandFinanceChanged\u0027) \u003d\u003d True, unix_timestamp(lit(timestamp),\u0027yyyy-MM-dd HH:mm:ss\u0027).cast(\"timestamp\"))\\\n              .otherwise(col(\u0027LastChangedDateFinance\u0027)))\\\n  .drop(\u0027isChanged\u0027, \u0027isDemandFinanceChanged\u0027, \u0027changedColumns\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:08.942",
+      "dateUpdated": "2023-01-24 10:49:53.150",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1185,17 +1216,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_1625628164",
+      "jobName": "paragraph_1674201871372_538810000",
       "id": "20220811-123004_978543311",
-      "dateCreated": "2022-11-23 11:54:53.466",
-      "dateStarted": "2022-12-05 07:59:08.944",
-      "dateFinished": "2022-12-05 07:59:11.892",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:53.158",
+      "dateFinished": "2023-01-24 10:49:56.567",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\n# print(resultPromoProductDF.count())\n# print(resultPromoDF.count())\n# print(resultPromoSupportPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:11.947",
+      "dateUpdated": "2023-01-24 10:49:56.661",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1222,17 +1253,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_910406909",
+      "jobName": "paragraph_1674201871372_392045846",
       "id": "20220811-123004_409315121",
-      "dateCreated": "2022-11-23 11:54:53.466",
-      "dateStarted": "2022-12-05 07:59:11.949",
-      "dateFinished": "2022-12-05 07:59:12.168",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:56.669",
+      "dateFinished": "2023-01-24 10:49:56.888",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\ntry:\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMO_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH])\nexcept Exception as e:\n   print(e)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 07:59:12.249",
+      "dateUpdated": "2023-01-24 10:49:56.969",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1259,18 +1290,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_1218528035",
+      "jobName": "paragraph_1674201871372_338583494",
       "id": "20220811-123004_1114907465",
-      "dateCreated": "2022-11-23 11:54:53.466",
-      "dateStarted": "2022-12-05 07:59:12.251",
-      "dateFinished": "2022-12-05 07:59:17.011",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-24 10:49:56.977",
+      "dateFinished": "2023-01-24 10:50:01.939",
       "status": "FINISHED"
     },
     {
       "title": "Save results",
-      "text": "%pyspark\n# resultPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoDF.write.mode(\"overwrite\").parquet(PROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n\nresultPromoProductDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u0027AverageMarker\u0027])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(IntegerType()))\\\n.repartition(1)\\\n.write.csv(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultPromoDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u0027LoadFromTLC\u0027,\n\u0027InOutExcludeAssortmentMatrixProductsButtonPressed\u0027,\n\u0027IsGrowthAcceleration\u0027,\n\u0027IsOnInvoice\u0027,\n\u0027IsApolloExport\u0027,\n\u0027DeviationCoefficient\u0027,\n\u0027UseActualTI\u0027,\n\u0027UseActualCOGS\u0027,\n\u0027IsSplittable\u0027,\n\u0027IsLSVBased\u0027,\n\u0027IsInExchange\u0027,\n\u0027NeedRecountUplift\u0027,\n\u0027IsAutomaticallyApproved\u0027,\n\u0027IsCMManagerApproved\u0027,\n\u0027IsDemandPlanningApproved\u0027,\n\u0027IsDemandFinanceApproved\u0027,\n\u0027Calculating\u0027,\n\u0027InOut\u0027,\n\u0027ManualInputSumInvoice\u0027,\n\u0027IsGAManagerApproved\u0027\n]).withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(IntegerType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(IntegerType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(IntegerType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(IntegerType()))\\\n.withColumn(\"DeviationCoefficient\",col(\"DeviationCoefficient\").cast(IntegerType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(IntegerType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(IntegerType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(IntegerType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(IntegerType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(IntegerType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(IntegerType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(IntegerType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(IntegerType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(IntegerType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(IntegerType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(IntegerType()))\\\n.repartition(1)\\\n.write.csv(PROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\",\nescape\u003d\"\",\nquote\u003d\"\",\n)\n\nresultPromoSupportPromoDF\\\n.repartition(1)\\\n.write.csv(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "text": "%pyspark\n# resultPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoDF.write.mode(\"overwrite\").parquet(PROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n\nresultPromoProductDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u0027AverageMarker\u0027])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(IntegerType()))\\\n.repartition(1)\\\n.write.csv(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultPromoDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u0027LoadFromTLC\u0027,\n\u0027InOutExcludeAssortmentMatrixProductsButtonPressed\u0027,\n\u0027IsGrowthAcceleration\u0027,\n\u0027IsOnInvoice\u0027,\n\u0027IsApolloExport\u0027,\n\u0027DeviationCoefficient\u0027,\n\u0027UseActualTI\u0027,\n\u0027UseActualCOGS\u0027,\n\u0027IsSplittable\u0027,\n\u0027IsLSVBased\u0027,\n\u0027IsInExchange\u0027,\n\u0027NeedRecountUplift\u0027,\n\u0027IsAutomaticallyApproved\u0027,\n\u0027IsCMManagerApproved\u0027,\n\u0027IsDemandPlanningApproved\u0027,\n\u0027IsDemandFinanceApproved\u0027,\n\u0027Calculating\u0027,\n\u0027InOut\u0027,\n\u0027ManualInputSumInvoice\u0027,\n\u0027IsGAManagerApproved\u0027\n]).withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(IntegerType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(IntegerType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(IntegerType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(IntegerType()))\\\n.withColumn(\"DeviationCoefficient\",col(\"DeviationCoefficient\").cast(IntegerType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(IntegerType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(IntegerType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(IntegerType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(IntegerType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(IntegerType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(IntegerType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(IntegerType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(IntegerType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(IntegerType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(IntegerType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"MechanicComment\", when(col(\"MechanicComment\").contains(\"\\\"\"),concat(lit(\"\u0027\"),col(\"MechanicComment\"),lit(\"\u0027\"))).otherwise(col(\"MechanicComment\")))\\\n.repartition(1)\\\n.write.csv(PROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\",\nescape\u003d\"\",\nquote\u003d\"\",\n)\n\nresultPromoSupportPromoDF\\\n.repartition(1)\\\n.write.csv(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-05 08:10:24.927",
+      "dateUpdated": "2023-01-24 11:18:11.864",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1296,24 +1327,24 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m\u003cipython-input-384-e708c7e0f8b0\u003e\u001b[0m in \u001b[0;36m\u003cmodule\u003e\u001b[0;34m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;31m# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----\u003e 5\u001b[0;31m resultPromoProductDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u001b[0m\u001b[1;32m      6\u001b[0m \u0027AverageMarker\u0027])\\\n\u001b[1;32m      7\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mwithColumn\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mcol\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcast\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mIntegerType\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m\u003d\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding\u003dencoding, emptyValue\u003demptyValue, lineSep\u003dlineSep)\n\u001b[0;32m-\u003e 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-\u003e 1304\u001b[0;31m         return_value \u003d get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m\u003d\u003d\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o29071.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2432)\n\tat org.apache.hadoop.hdfs.DFSClient.mkdirs(DFSClient.java:2406)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1338)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1335)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirsInternal(DistributedFileSystem.java:1352)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirs(DistributedFileSystem.java:1327)\n\tat org.apache.hadoop.fs.FileSystem.mkdirs(FileSystem.java:2304)\n\tat org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.setupJob(FileOutputCommitter.java:355)\n\tat org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.setupJob(HadoopMapReduceCommitProtocol.scala:163)\n\tat org.apache.spark.sql.execution.datasources.FileFormatWriter$.write(FileFormatWriter.scala:173)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:178)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:767)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:750)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.mkdirs(ClientNamenodeProtocolTranslatorPB.java:663)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2430)\n\t... 43 more\n"
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m\u003cipython-input-260-1af0af240cbc\u003e\u001b[0m in \u001b[0;36m\u003cmodule\u003e\u001b[0;34m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;31m# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----\u003e 5\u001b[0;31m resultPromoProductDF.fillna(False,subset\u003d[\u0027Disabled\u0027,\n\u001b[0m\u001b[1;32m      6\u001b[0m \u0027AverageMarker\u0027])\\\n\u001b[1;32m      7\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mwithColumn\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mcol\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcast\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mIntegerType\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m\u003d\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding\u003dencoding, emptyValue\u003demptyValue, lineSep\u003dlineSep)\n\u001b[0;32m-\u003e 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-\u003e 1304\u001b[0;31m         return_value \u003d get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m\u003d\u003d\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o9219.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2432)\n\tat org.apache.hadoop.hdfs.DFSClient.mkdirs(DFSClient.java:2406)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1338)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1335)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirsInternal(DistributedFileSystem.java:1352)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirs(DistributedFileSystem.java:1327)\n\tat org.apache.hadoop.fs.FileSystem.mkdirs(FileSystem.java:2304)\n\tat org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.setupJob(FileOutputCommitter.java:355)\n\tat org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.setupJob(HadoopMapReduceCommitProtocol.scala:163)\n\tat org.apache.spark.sql.execution.datasources.FileFormatWriter$.write(FileFormatWriter.scala:173)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:178)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:767)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:750)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user\u003dzeppelin, access\u003dWRITE, inode\u003d\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.mkdirs(ClientNamenodeProtocolTranslatorPB.java:663)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2430)\n\t... 43 more\n"
           }
         ]
       },
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_1185688974",
+      "jobName": "paragraph_1674201871372_1047353028",
       "id": "20220811-123004_959238305",
-      "dateCreated": "2022-11-23 11:54:53.466",
-      "dateStarted": "2022-12-05 07:59:17.058",
-      "dateFinished": "2022-12-05 07:59:18.143",
+      "dateCreated": "2023-01-20 08:04:31.372",
+      "dateStarted": "2023-01-23 11:50:31.073",
+      "dateFinished": "2023-01-23 11:50:32.352",
       "status": "ERROR"
     },
     {
       "text": "%md\n####*Logging*",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.372",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1343,15 +1374,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_771643209",
+      "jobName": "paragraph_1674201871372_889143789",
       "id": "20220811-123004_407406673",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.372",
       "status": "READY"
     },
     {
       "text": "%pyspark\nlogPromoProductDF \u003d logPricePromoDF\\\n  .join(logCOGS, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logCOGSTn, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logTI, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logActualCOGS, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logActualCOGSTn, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logActualTI, \u0027promoNumber\u0027, \u0027full\u0027)\n\ntitleMessage \u003d \u0027[INFO]: ACTUAL PARAMETERS CALCULATION\u0027\ntitleLogMessageDF \u003d spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\nlogMessageDF \u003d logPromoProductDF\\\n  .select(concat(lit(\u0027[WARNING]: Promo №:\u0027), col(\u0027promoNumber\u0027),\\\n                 when(col(\u0027nullPriceMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027 There\\\u0027re no price for ZREP: \u0027), col(\u0027nullPriceMessage\u0027))),\\\n                 when(col(\u0027zeroPriceMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n There\\\u0027re zero price for ZREP: \u0027), col(\u0027zeroPriceMessage\u0027))),\\\n                 when(col(\u0027COGSMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027COGSMessage\u0027))),\\\n                 when(col(\u0027COGSTnMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027COGSTnMessage\u0027))),\\\n                 when(col(\u0027TIMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027TIMessage\u0027))),\\\n                 when(col(\u0027ActualCOGSMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027ActualCOGSMessage\u0027))),\\\n                 when(col(\u0027ActualCOGSTnMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027ActualCOGSTnMessage\u0027))),\\\n                 when(col(\u0027ActualTIMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027ActualTIMessage\u0027))),\\\n                 (lit(\u0027.\\r\\n\u0027))\n                ).alias(\u0027logMessage\u0027))\\\n  .where((col(\u0027logMessage\u0027) !\u003d \"\") \u0026 ~(col(\u0027logMessage\u0027).isNull()))\n\noutputLogMessageDF \u003d inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.372",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1378,15 +1409,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_254698056",
+      "jobName": "paragraph_1674201871372_304371188",
       "id": "20220811-123004_765589574",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.372",
       "status": "READY"
     },
     {
       "text": "%pyspark\nsc.setCheckpointDir(\"tmp\")\n\noutputLogMessageDF\\\n.checkpoint(eager\u003dTrue)\\\n.repartition(1)\\\n.write.csv(INPUT_FILE_LOG_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\n)\n\n# subprocess.call([\"hadoop\", \"fs\", \"-mv\", OUTPUT_TEMP_FILE_LOG_PATH, OUTPUT_LOG_PATH])\n# subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\", OUTPUT_TEMP_FILE_LOG_PATH])\n\n  ",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.372",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1418,15 +1449,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_242578377",
+      "jobName": "paragraph_1674201871372_1518734281",
       "id": "20220811-123004_1311566032",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.372",
       "status": "READY"
     },
     {
       "text": "%pyspark\nprint(\u0027ACTUAL_PARAMETERS_CALCULATION_DONE\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.372",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1457,15 +1488,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_818716015",
+      "jobName": "paragraph_1674201871372_159993691",
       "id": "paragraph_1660894172186_932724280",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.372",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoProductDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMOPRODUCT_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoProductDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMOPRODUCT_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.372",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1492,15 +1523,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_559112103",
+      "jobName": "paragraph_1674201871372_562593340",
       "id": "20220811-123004_299536492",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.372",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.373",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1527,15 +1558,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_1448221070",
+      "jobName": "paragraph_1674201871372_253101548",
       "id": "20220811-123004_1301059590",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.373",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoSupportPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoSupportPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMOSUPPORTPROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:54:53.466",
+      "dateUpdated": "2023-01-20 08:04:31.373",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1562,14 +1593,14 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204493466_1544113876",
+      "jobName": "paragraph_1674201871373_867738031",
       "id": "20220811-123004_1867332153",
-      "dateCreated": "2022-11-23 11:54:53.466",
+      "dateCreated": "2023-01-20 08:04:31.373",
       "status": "READY"
     }
   ],
   "name": "ACTUAL_PARAMETERS_CALCULATION",
-  "id": "2HJMVN2DZ",
+  "id": "2HQNQMNV7",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},

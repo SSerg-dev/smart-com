@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-10-20_manual__2022-10-20T11%3A44%3A47.061208%2B00%3A00_", '
- '"ProcessDate": "2022-10-20", "Schema": "Jupiter", "HandlerId": '
- '"7ac7ab63-c489-4a51-a90a-6ae1beabf723"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_", '
+ '"ProcessDate": "2023-01-23", "Schema": "Jupiter", "HandlerId": '
+ '"6c143ff4-3d0f-4181-a4ce-ce20b9265a31"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -184,7 +184,7 @@ productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=
 promoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductTree"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
+clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"]).withColumn("DemandCode", when(col("DemandCode")=="\0",lit(None)).otherwise(col("DemandCode")))
 clientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeHierarchyView"])
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
@@ -311,6 +311,10 @@ disabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoId
 # print('promoSupportPromoDF count:', promoSupportPromoDF.count())
 # print('activePromoSupportPromoDF count:', activePromoSupportPromoDF.count())
 # print('disabledPromoSupportPromoDF count:', disabledPromoSupportPromoDF.count())
+
+# btl
+btlDF = btlDF.where(col('Disabled') == 'False')
+btlPromoDF = btlPromoDF.where(col('Disabled') == 'False')
 
 # AM
 assortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'False')
@@ -632,6 +636,7 @@ resultPromoDF.fillna(False,subset=['Disabled',
 .withColumn("InOut",col("InOut").cast(IntegerType()))\
 .withColumn("ManualInputSumInvoice",col("ManualInputSumInvoice").cast(IntegerType()))\
 .withColumn("IsGAManagerApproved",col("IsGAManagerApproved").cast(IntegerType()))\
+.withColumn("MechanicComment", when(col("MechanicComment").contains("\""),concat(lit("'"),col("MechanicComment"),lit("'"))).otherwise(col("MechanicComment")))\
 .repartition(1)\
 .write.csv(PROMO_PARAMETERS_CALCULATION_RESULT_PATH,
 sep="\u0001",

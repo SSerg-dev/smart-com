@@ -695,6 +695,8 @@ print(filteredProductDF.count())
 
 activeAssortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'false')
 
+filteredProductDF = filteredProductDF.withColumn('Id', upper(filteredProductDF.Id))
+
 cols = filteredProductDF.columns
 
 resultFilteredProductDF = filteredProductDF\

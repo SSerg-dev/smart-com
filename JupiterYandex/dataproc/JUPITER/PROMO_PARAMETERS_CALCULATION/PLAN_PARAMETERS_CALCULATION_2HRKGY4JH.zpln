@@ -3,7 +3,7 @@
     {
       "text": "%md\n####Notebook \"PLAN_PARAMETERS_CALCULATION\". \n####*Main night plan parameters recalculation notebook. Get plan parameters for promo, promoproduct*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:19.009",
+      "dateUpdated": "2023-01-20 09:17:52.086",
       "progress": 0,
       "config": {
         "tableHide": false,
@@ -34,18 +34,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591700_1213178376",
+      "jobName": "paragraph_1674201884754_282413625",
       "id": "20220811-123048_1646230989",
-      "dateCreated": "2022-11-23 11:56:31.700",
-      "dateStarted": "2022-12-06 09:45:19.013",
-      "dateFinished": "2022-12-06 09:45:19.017",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:52.089",
+      "dateFinished": "2023-01-20 09:17:52.094",
       "status": "FINISHED"
     },
     {
       "title": "Function checks whether we in notebook or python",
       "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:19.113",
+      "dateUpdated": "2023-01-20 09:17:52.189",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -72,17 +72,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591700_1070050459",
+      "jobName": "paragraph_1674201884754_1807532991",
       "id": "paragraph_1660226350272_497098411",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:19.117",
-      "dateFinished": "2022-12-06 09:45:43.521",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:52.193",
+      "dateFinished": "2023-01-20 09:17:52.411",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json\nimport subprocess",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:43.538",
+      "dateUpdated": "2023-01-20 09:17:52.493",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -109,17 +109,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1193727111",
+      "jobName": "paragraph_1674201884754_2027646627",
       "id": "20220811-123048_1423157702",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:43.542",
-      "dateFinished": "2022-12-06 09:45:43.912",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:52.497",
+      "dateFinished": "2023-01-20 09:17:52.713",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\ndatesDimSchema \u003d StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])\n\ninputLogMessageSchema \u003d StructType([\n  StructField(\"logMessage\", StringType(), False)\n]);\n\noutputProductChangeIncidentsSchema \u003d StructType([\n  StructField(\"RecalculatedPromoId\", StringType(), False),\n  StructField(\"AddedProductIds\", StringType(), True),\n  StructField(\"ExcludedProductIds\", StringType(), True)\n]);",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:43.942",
+      "dateUpdated": "2023-01-20 09:17:52.797",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -146,17 +146,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1721692966",
+      "jobName": "paragraph_1674201884754_1550044402",
       "id": "20220811-123048_546555993",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:43.946",
-      "dateFinished": "2022-12-06 09:45:44.164",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:52.800",
+      "dateFinished": "2023-01-20 09:17:53.019",
       "status": "FINISHED"
     },
     {
-      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \u0027\n \u0027\"/JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_\", \u0027\n \u0027\"ProcessDate\": \"2022-12-05\", \"Schema\": \"Jupiter\", \"HandlerId\": \u0027\n \u0027\"6bc06c65-d2c0-4898-be2e-c33e437a3d9d\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
+      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \u0027\n \u0027\"/JUPITER/RAW/#MAINTENANCE/2023-01-19_scheduled__2023-01-18T22%3A30%3A00%2B00%3A00_\", \u0027\n \u0027\"ProcessDate\": \"2023-01-19\", \"Schema\": \"Jupiter\", \"HandlerId\": \u0027\n \u0027\"218e123f-c88f-4962-88f9-8d1acf0e5951\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:44.246",
+      "dateUpdated": "2023-01-20 09:17:53.101",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -182,17 +182,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_17850230",
+      "jobName": "paragraph_1674201884754_776765557",
       "id": "paragraph_1660226497857_584430005",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:44.250",
-      "dateFinished": "2022-12-06 09:45:44.620",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:53.104",
+      "dateFinished": "2023-01-20 09:17:53.321",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nsc \u003d SparkContext.getOrCreate();\n\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\n\nhandlerId\u003des.input_params.get(\"HandlerId\")\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)\n\nimport SUPPORT_FUNCTIONS as sp",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:44.650",
+      "dateUpdated": "2023-01-20 09:17:53.404",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -217,55 +217,24 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "INPUT_PARAMS\u003d{\"MaintenancePathPrefix\": \"/JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_\", \"ProcessDate\": \"2022-12-05\", \"Schema\": \"Jupiter\", \"HandlerId\": \"6bc06c65-d2c0-4898-be2e-c33e437a3d9d\"}\nSETTINGS_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_PARAMETERS.csv\nhdfs:///JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_PARAMETERS.csv\n\nprocessDate: 2022-12-05\npipelineRunId: manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00\npipelineSubfolderName: None\n\nSETTING_RAW_DIR: hdfs:///JUPITER/RAW\nSETTING_PROCESS_DIR: hdfs:///JUPITER/PROCESS\nSETTING_OUTPUT_DIR: hdfs:///JUPITER/OUTPUT\nMAINTENANCE_PATH_PREFIX: /JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_\nSYSTEM_NAME: JUPITER\nSETTING_BRANCH_NAME: \nOther settings - list \"systemParametersDF\" data frame\nEXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2022-12-05_manual__2022-12-05T08%3A30%3A13.973547%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\nDefined functions:\ngetFilesList(path) - list files recursively\n    path - root path\ngetShowString(df, n\u003d20, truncate\u003dTrue, vertical\u003dFalse) - prints Spark DataFrame\ngetSchemasMap(schemas_dir) - creates dictionanry with Spark Schemas, schemas_dir - directory with json files with schemas\n"
+            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/RAW/#MAINTENANCE/2023-01-19_scheduled__2023-01-18T22%3A30%3A00%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
           }
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d0"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d1"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d2"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d3"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d4"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d5"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d6"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1835229063",
+      "jobName": "paragraph_1674201884754_977235313",
       "id": "20220811-123048_1400871145",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:44.654",
-      "dateFinished": "2022-12-06 09:45:52.996",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:53.408",
+      "dateFinished": "2023-01-20 09:17:53.627",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nschema \u003d es.input_params.get(\"Schema\")",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:53.062",
+      "dateUpdated": "2023-01-20 09:17:53.708",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -292,17 +261,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1327355689",
+      "jobName": "paragraph_1674201884754_1961578390",
       "id": "20220811-123048_1974201803",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:53.071",
-      "dateFinished": "2022-12-06 09:45:53.288",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:53.712",
+      "dateFinished": "2023-01-20 09:17:53.929",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nDIRECTORY \u003d SETTING_RAW_DIR + \u0027/SOURCES/\u0027\n\nPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/Promo\u0027\nPROMOSTATUS_PATH \u003d DIRECTORY + \u0027JUPITER/PromoStatus\u0027\nPROMOPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProduct\u0027\nPRODUCT_PATH \u003d DIRECTORY + \u0027JUPITER/Product\u0027\nPRODUCTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/ProductTree\u0027\nPROMOPRODUCTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProductTree\u0027\nPRICELIST_PATH \u003d DIRECTORY + \u0027JUPITER/PriceList\u0027\nBASELINE_PATH \u003d DIRECTORY + \u0027JUPITER/BaseLine\u0027\nSHARES_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTreeBrandTech\u0027\nCLIENTTREE_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTree\u0027\nCLIENTHIERARCHY_PATH \u003d DIRECTORY + \u0027JUPITER/ClientTreeHierarchyView\u0027\nDATESDIM_PATH \u003d DIRECTORY + \u0027UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv\u0027\nCORRECTION_PATH \u003d DIRECTORY + \u0027JUPITER/PromoProductsCorrection\u0027\nINCREMENTAL_PATH \u003d DIRECTORY + \u0027JUPITER/IncrementalPromo\u0027\nPROMOSTATUS_PATH \u003d DIRECTORY + \u0027JUPITER/PromoStatus\u0027\nCOGS_PATH \u003d DIRECTORY + \u0027JUPITER/COGS\u0027\nCOGSTn_PATH \u003d DIRECTORY + \u0027JUPITER/PlanCOGSTn\u0027\nTI_PATH \u003d DIRECTORY + \u0027JUPITER/TradeInvestment\u0027\nBTL_PATH \u003d DIRECTORY + \u0027JUPITER/BTL\u0027\nBTLPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/BTLPromo\u0027\nPROMOSUPPORT_PATH \u003d DIRECTORY + \u0027JUPITER/PromoSupport\u0027\nPROMOSUPPORTPROMO_PATH \u003d DIRECTORY + \u0027JUPITER/PromoSupportPromo\u0027\nBUDGETITEM_PATH \u003d DIRECTORY + \u0027JUPITER/BudgetItem\u0027\nBUDGETSUBITEM_PATH \u003d DIRECTORY + \u0027JUPITER/BudgetSubItem\u0027\nASSORTMENTMARTIX_PATH \u003d DIRECTORY + \u0027JUPITER/AssortmentMatrix\u0027\nBRANDTECH_PATH \u003d DIRECTORY + \u0027JUPITER/BrandTech\u0027\nSERVICEINFO_PATH \u003d DIRECTORY + \u0027JUPITER/ServiceInfo\u0027\nRATISHOPPER_PATH \u003d DIRECTORY + \u0027JUPITER/RATIShopper\u0027\n\nFILTERED_PROMO_PATH \u003d SETTING_PROCESS_DIR + \u0027/BlockedPromo/BlockedPromo.parquet\u0027\n\nPLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_PROCESS_DIR + \u0027/Promo/Promo.parquet\u0027\nPLAN_PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_PROCESS_DIR + \u0027/PromoProduct/PromoProduct.parquet\u0027\nPLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH \u003d SETTING_PROCESS_DIR + \u0027/PromoSupportPromo/PromoSupportPromo.parquet\u0027\nNEW_PROMOPRODUCT_PATH \u003d SETTING_PROCESS_DIR + \u0027/PromoProduct/NewPromoProduct.CSV\u0027\nSERVICEINFO_RESULT_PATH \u003d SETTING_OUTPUT_DIR + \u0027/ServiceInfo/ServiceInfo.CSV\u0027\nNEW_PRODUCTCHANGEINCIDENTS_PATH \u003d SETTING_OUTPUT_DIR + \u0027/ProductChangeIncident/NewProductChangeIncident.CSV\u0027\n\nINPUT_FILE_LOG_PATH \u003d SETTING_PROCESS_DIR + \u0027/Logs/\u0027 +  handlerId + \u0027.csv\u0027\nOUTPUT_LOG_PATH \u003d  SETTING_PROCESS_DIR + \u0027/Logs/\u0027\nOUTPUT_FILE_LOG_PATH \u003d OUTPUT_LOG_PATH + handlerId + \u0027.csv\u0027\n\nINPUT_FILE_LOG_PATH \u003d es.SETTING_PROCESS_DIR + \u0027/Logs/\u0027 + handlerId + \u0027.csv\u0027\n# OUTPUT_LOG_PATH \u003d  es.SETTING_PROCESS_DIR + \u0027/Logs/\u0027\n# OUTPUT_FILE_LOG_PATH \u003d OUTPUT_LOG_PATH + handlerId + \u0027.csv\u0027\n# OUTPUT_TEMP_FILE_LOG_PATH \u003d OUTPUT_LOG_PATH + handlerId + \u0027temp.csv\u0027\n\n# DEBUG OUTPUT\n# OUTPUT_SOURCE_PROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/SourcePromo/SourcePromo.csv\u0027\n# OUTPUT_PROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/Promo/Promo.csv\u0027\n# OUTPUT_SOURCE_PROMOPRODUCT_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/SourcePromoProduct/SourcePromoProduct.csv\u0027\n# OUTPUT_PROMOPRODUCT_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/PromoProduct/PromoProduct.csv\u0027\n# OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/SourcePromoSupportPromo/SourcePromoSupportPromo.csv\u0027\n# OUTPUT_PROMOSUPPORTPROMO_PATH \u003d \u0027/dbfs/\u0027 + SETTING_PROCESS_DIR + \u0027/PromoSupportPromo/PromoSupportPromo.csv\u0027\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:53.371",
+      "dateUpdated": "2023-01-20 09:17:54.012",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -329,18 +298,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_399690721",
+      "jobName": "paragraph_1674201884754_766912691",
       "id": "20220811-123048_1023403809",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:53.375",
-      "dateFinished": "2022-12-06 09:45:53.592",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:54.015",
+      "dateFinished": "2023-01-20 09:17:54.232",
       "status": "FINISHED"
     },
     {
       "title": "Load raw entities schemas from json files to map",
       "text": "%pyspark\nSCHEMAS_DIR\u003dSETTING_RAW_DIR + \u0027/SCHEMAS/\u0027\nschemas_map \u003d sp.getSchemasMap(SCHEMAS_DIR)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:53.675",
+      "dateUpdated": "2023-01-20 09:17:54.315",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -367,17 +336,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1444226739",
+      "jobName": "paragraph_1674201884754_441064762",
       "id": "paragraph_1660226791674_1877329031",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:53.679",
-      "dateFinished": "2022-12-06 09:45:54.449",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:54.319",
+      "dateFinished": "2023-01-20 09:17:54.686",
       "status": "FINISHED"
     },
     {
-      "text": "%pyspark\npriceListDF \u003d spark.read.csv(PRICELIST_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoDF \u003d spark.read.csv(PROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\npromoStatusDF \u003d spark.read.csv(PROMOSTATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoProductDF \u003d spark.read.csv(PROMOPRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProduct\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(BooleanType()))\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nallProductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nallProduct01DF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF \u003d spark.read.csv(PRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ProductTree\"])\npromoProductTreeDF \u003d spark.read.csv(PROMOPRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF \u003d spark.read.csv(SHARES_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF \u003d spark.read.csv(CLIENTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTree\"])\nclientHierarchyDF \u003d spark.read.csv(CLIENTHIERARCHY_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeHierarchyView\"])\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF \u003d spark.read.csv(CORRECTION_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF \u003d spark.read.csv(BTL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF \u003d spark.read.csv(BTLPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF \u003d spark.read.csv(INCREMENTAL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF \u003d spark.read.csv(COGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF \u003d spark.read.csv(COGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF \u003d spark.read.csv(TI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF \u003d spark.read.csv(PROMOSUPPORT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportPromoDF \u003d spark.read.csv(PROMOSUPPORTPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupportPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF \u003d spark.read.csv(BUDGETITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF \u003d spark.read.csv(BUDGETSUBITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF \u003d spark.read.csv(ASSORTMENTMARTIX_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF \u003d spark.read.csv(BRANDTECH_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nserviceInfoDF \u003d spark.read.csv(SERVICEINFO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ServiceInfo\"])\nratiShopperDF \u003d spark.read.csv(RATISHOPPER_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF \u003d spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
+      "text": "%pyspark\npriceListDF \u003d spark.read.csv(PRICELIST_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoDF \u003d spark.read.csv(PROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\npromoStatusDF \u003d spark.read.csv(PROMOSTATUS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoProductDF \u003d spark.read.csv(PROMOPRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProduct\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(BooleanType()))\nproductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nallProductDF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nallProduct01DF \u003d spark.read.csv(PRODUCT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF \u003d spark.read.csv(PRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ProductTree\"])\npromoProductTreeDF \u003d spark.read.csv(PROMOPRODUCTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF \u003d spark.read.csv(BASELINE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF \u003d spark.read.csv(SHARES_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF \u003d spark.read.csv(CLIENTTREE_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTree\"]).withColumn(\"DemandCode\", when(col(\"DemandCode\")\u003d\u003d\"\\0\",lit(None)).otherwise(col(\"DemandCode\")))\nclientHierarchyDF \u003d spark.read.csv(CLIENTHIERARCHY_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ClientTreeHierarchyView\"])\ndatesDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF \u003d spark.read.csv(CORRECTION_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF \u003d spark.read.csv(BTL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF \u003d spark.read.csv(BTLPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF \u003d spark.read.csv(INCREMENTAL_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF \u003d spark.read.csv(COGS_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF \u003d spark.read.csv(COGSTn_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF \u003d spark.read.csv(TI_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF \u003d spark.read.csv(PROMOSUPPORT_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportPromoDF \u003d spark.read.csv(PROMOSUPPORTPROMO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"PromoSupportPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF \u003d spark.read.csv(BUDGETITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF \u003d spark.read.csv(BUDGETSUBITEM_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF \u003d spark.read.csv(ASSORTMENTMARTIX_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF \u003d spark.read.csv(BRANDTECH_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nserviceInfoDF \u003d spark.read.csv(SERVICEINFO_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"ServiceInfo\"])\nratiShopperDF \u003d spark.read.csv(RATISHOPPER_PATH,sep\u003d\"\\u0001\",header\u003dTrue,schema\u003dschemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF \u003d spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:54.479",
+      "dateUpdated": "2023-01-20 09:17:54.719",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -410,25 +379,25 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d7"
+              "jobUrl": "http://rc1a-dataproc-d-7iwhlzolmxzce6fz.mdb.yandexcloud.net:43409/jobs/job?id\u003d13"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_594131364",
+      "jobName": "paragraph_1674201884754_30147849",
       "id": "20220811-123048_43000295",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:54.483",
-      "dateFinished": "2022-12-06 09:45:56.665",
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "dateStarted": "2023-01-20 09:17:54.722",
+      "dateFinished": "2023-01-20 09:17:56.352",
       "status": "FINISHED"
     },
     {
       "text": "%pyspark\nprint(filteredPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:56.685",
-      "progress": 88,
+      "dateUpdated": "2023-01-20 08:04:44.754",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -457,32 +426,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d8"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1175857666",
+      "jobName": "paragraph_1674201884754_671057915",
       "id": "20220811-123048_763840908",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:56.688",
-      "dateFinished": "2022-12-06 09:45:58.319",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ntry:\n inputLogMessageDF \u003d spark.read.format(\"csv\").option(\"delimiter\",\"\\u0001\").option(\"header\",\"true\").load(INPUT_FILE_LOG_PATH)\n print(\u0027Log has been already made\u0027)\nexcept:\n inputLogMessageDF \u003d spark.createDataFrame(sc.emptyRDD(), inputLogMessageSchema)\n print(\u0027Init log\u0027)\n  \n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:58.390",
+      "dateUpdated": "2023-01-20 08:04:44.754",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -512,32 +466,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d9"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1382084968",
+      "jobName": "paragraph_1674201884754_286084945",
       "id": "20220811-123048_124267586",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:58.393",
-      "dateFinished": "2022-12-06 09:45:58.813",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Date transformation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:58.894",
+      "dateUpdated": "2023-01-20 08:04:44.754",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -567,17 +506,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_2122406533",
+      "jobName": "paragraph_1674201884754_1037779933",
       "id": "20220811-123048_1156388193",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:58.897",
-      "dateFinished": "2022-12-06 09:45:58.901",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%pyspark\npromoDF \u003d promoDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(promoDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(promoDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027DispatchesStart\u0027, date_add(to_date(promoDF.DispatchesStart, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027DispatchesEnd\u0027, date_add(to_date(promoDF.DispatchesEnd, \u0027yyyy-MM-dd\u0027), 1))\n\npriceListDF \u003d priceListDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(priceListDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(priceListDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\nbaselineDF \u003d baselineDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(baselineDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\n\nassortmentMatrixDF \u003d assortmentMatrixDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(assortmentMatrixDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(assortmentMatrixDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027CreateDate\u0027, date_add(to_date(assortmentMatrixDF.CreateDate, \u0027yyyy-MM-dd\u0027), 1))\n\ntiDF \u003d tiDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(tiDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(tiDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\ncogsDF \u003d cogsDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(cogsDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(cogsDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))\n\ncogsTnDF \u003d cogsTnDF\\\n  .withColumn(\u0027StartDate\u0027, date_add(to_date(cogsTnDF.StartDate, \u0027yyyy-MM-dd\u0027), 1))\\\n  .withColumn(\u0027EndDate\u0027, date_add(to_date(cogsTnDF.EndDate, \u0027yyyy-MM-dd\u0027), 1))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:58.997",
+      "dateUpdated": "2023-01-20 08:04:44.754",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -604,17 +541,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_508041555",
+      "jobName": "paragraph_1674201884754_47463845",
       "id": "20220811-123048_1207012098",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:59.001",
-      "dateFinished": "2022-12-06 09:45:59.471",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Prepare dataframes for calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:59.501",
+      "dateUpdated": "2023-01-20 08:04:44.754",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -644,17 +579,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1725240458",
+      "jobName": "paragraph_1674201884754_1206151691",
       "id": "20220811-123048_1353539929",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:59.505",
-      "dateFinished": "2022-12-06 09:45:59.508",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nfilteredPromoDF \u003d filteredPromoDF.dropDuplicates()\n# print(\u0027filtered promo count:\u0027, filteredPromoDF.count())\n\n# promoProduct\npromoProductCols \u003d promoProductDF.columns\nallCalcPlanPromoProductDF \u003d promoProductDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\nallCalcPlanPromoProductIdsDF \u003d allCalcPlanPromoProductDF.select(col(\u0027Id\u0027))\ndisabledPromoProductDF \u003d promoProductDF.join(allCalcPlanPromoProductIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoProductDF[\u0027*\u0027])\n\n# print(\u0027promoProducts count:\u0027, promoProductDF.count())\n# print(\u0027notDisabledPromoProducts count:\u0027, allCalcPlanPromoProductDF.count())\n# print(\u0027disabledPromoProducts count:\u0027, disabledPromoProductDF.count())\n\n# promo\ncalcPlanPromoDF \u003d promoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# all promo\npromoCols \u003d promoDF.columns\nallCalcPlanPromoDF \u003d promoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\nallCalcPlanPromoIdsDF \u003d allCalcPlanPromoDF.select(col(\u0027Id\u0027))\ndisabledPromoDF \u003d promoDF.join(allCalcPlanPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoDF[\u0027*\u0027])\n\n# print(\u0027promoDF count:\u0027, promoDF.count())\n# print(\u0027calcPlanPromoDF count:\u0027, allCalcPlanPromoDF.count())\n# print(\u0027disabledPromoDF count:\u0027, disabledPromoDF.count())\n\n# priceList\nplanParamsPriceListDF \u003d priceListDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .select(\\\n           col(\u0027StartDate\u0027).alias(\u0027priceStartDate\u0027)\n          ,col(\u0027EndDate\u0027).alias(\u0027priceEndDate\u0027)\n          ,col(\u0027ProductId\u0027).alias(\u0027priceProductId\u0027)\n          ,col(\u0027Price\u0027).cast(DecimalType(30,6))\n          ,col(\u0027ClientTreeId\u0027).alias(\u0027priceClientTreeId\u0027)\n         )\n\n# baseline\nplanParamsBaselineDF \u003d baselineDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .select(\\\n           col(\u0027ProductId\u0027).alias(\u0027baselineProductId\u0027)\n          ,col(\u0027DemandCode\u0027).alias(\u0027baselineDemandCode\u0027)\n          ,col(\u0027StartDate\u0027).alias(\u0027baselineStartDate\u0027)\\\n          ,col(\u0027SellInBaselineQTY\u0027).cast(DecimalType(30,6))\\\n          ,col(\u0027SellOutBaselineQTY\u0027).cast(DecimalType(30,6))\\\n  )\n\n# shares\nplanParamsSharesDF \u003d sharesDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027).drop(\u0027Disabled\u0027)\n\n# product correction\nplanParamsCorrectionDF \u003d correctionDF\\\n  .where((col(\u0027Disabled\u0027) \u003d\u003d \u00270\u0027))\\\n  .select(\\\n           upper(col(\u0027PromoProductId\u0027)).alias(\u0027correctionPromoProductId\u0027)\n          ,col(\u0027PlanProductUpliftPercentCorrected\u0027).alias(\u0027correctionPlanProductUpliftPercentCorrected\u0027)\n         )\n\n# incremental\nplanParamsIncrementalDF \u003d incrementalDF\\\n  .where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\\\n  .select(\\\n           col(\u0027PromoId\u0027).alias(\u0027incrementalPromoId\u0027)\n          ,col(\u0027ProductId\u0027).alias(\u0027incrementalProductId\u0027)\n          ,col(\u0027PlanPromoIncrementalCases\u0027)\n         )\n\n# support\npromoSupportDF \u003d promoSupportDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\npromoSupportPromoCols \u003d promoSupportPromoDF.columns\npromoSupportPromoCols.remove(\u0027#QCCount\u0027)\nactivePromoSupportPromoDF \u003d promoSupportPromoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027).select(promoSupportPromoCols)\nactivePromoSupportPromoIdsDF \u003d activePromoSupportPromoDF.select(col(\u0027Id\u0027))\ndisabledPromoSupportPromoDF \u003d promoSupportPromoDF.join(activePromoSupportPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(promoSupportPromoCols)\n\n# btl\nbtlDF \u003d btlDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\nbtlPromoDF \u003d btlPromoDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# print(\u0027promoSupportPromoDF count:\u0027, promoSupportPromoDF.count())\n# print(\u0027activePromoSupportPromoDF count:\u0027, activePromoSupportPromoDF.count())\n# print(\u0027disabledPromoSupportPromoDF count:\u0027, disabledPromoSupportPromoDF.count())\n\n# AM\nassortmentMatrixDF \u003d assortmentMatrixDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# Product\nproductDF \u003d productDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027)\n\n# COGS, TI, BrandTech\nbrandTechDF \u003d brandTechDF.where(col(\u0027Disabled\u0027) \u003d\u003d \u0027false\u0027)\n\ntiDF \u003d tiDF.where(col(\u0027Disabled\u0027) \u003d\u003d False)\ncogsDF \u003d cogsDF.where(col(\u0027Disabled\u0027) \u003d\u003d False)\ncogsTnDF \u003d cogsTnDF.where(col(\u0027Disabled\u0027) \u003d\u003d False)\n\n# RA TI Shopper\nratiShopperDF \u003d ratiShopperDF.where(col(\u0027Disabled\u0027) \u003d\u003d False)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:45:59.605",
+      "dateUpdated": "2023-01-20 08:04:44.754",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -681,17 +614,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1814968255",
+      "jobName": "paragraph_1674201884754_722479712",
       "id": "20220811-123048_375475506",
-      "dateCreated": "2022-11-23 11:56:31.701",
-      "dateStarted": "2022-12-06 09:45:59.609",
-      "dateFinished": "2022-12-06 09:46:00.482",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.754",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n#status list for plan parameters recalculation\nplanParametersStatuses \u003d [\u0027DraftPublished\u0027,\u0027OnApproval\u0027,\u0027Approved\u0027,\u0027Planned\u0027]\n\n#notCheckPromoStatusList \u003d [\u0027Draft\u0027,\u0027Cancelled\u0027,\u0027Deleted\u0027,\u0027Closed\u0027]\nnotCheckPromoStatusList \u003d [\u0027Cancelled\u0027,\u0027Deleted\u0027]",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:00.509",
+      "dateUpdated": "2023-01-20 08:04:44.755",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -718,17 +649,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591701_1181653764",
+      "jobName": "paragraph_1674201884755_1826358406",
       "id": "20220811-123048_982193282",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:00.513",
-      "dateFinished": "2022-12-06 09:46:00.736",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nactiveClientTreeDF \u003d clientTreeDF.where(col(\u0027EndDate\u0027).isNull())\nactiveClientTreeList \u003d activeClientTreeDF.collect()\n\n@udf\ndef getDemandCode(objectId):\n  c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d objectId]\n  if len(c) \u003d\u003d 0:\n    return \u0027\u0027\n  while (len(c) !\u003d 0) \u0026 (c[0].Type !\u003d \u0027root\u0027) \u0026 ((c[0].DemandCode \u003d\u003d \u0027\u0027) | (c[0].DemandCode is None)):\n    c \u003d [x for x in activeClientTreeList if x.ObjectId \u003d\u003d c[0].parentId]\n    if len(c) \u003d\u003d 0: \n      break\n  if len(c) \u003d\u003d 0:\n    return \u0027\u0027\n  else:\n    return c[0].DemandCode",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:00.813",
+      "dateUpdated": "2023-01-20 08:04:44.755",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -753,32 +682,17 @@
         "msg": []
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d10"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591702_1621692295",
+      "jobName": "paragraph_1674201884755_1041212366",
       "id": "20220811-123048_1911107914",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:00.817",
-      "dateFinished": "2022-12-06 09:46:01.488",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nactiveClientTreeList",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:01.517",
+      "dateUpdated": "2023-01-20 08:04:44.755",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -809,17 +723,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591702_1183366654",
+      "jobName": "paragraph_1674201884755_1546536115",
       "id": "paragraph_1663914491293_2139396961",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:01.521",
-      "dateFinished": "2022-12-06 09:46:01.771",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nlightPromoDF \u003d promoDF\\\n  .where((col(\u0027Disabled\u0027) \u003d\u003d \u0027False\u0027))\\\n  .select(\\\n           col(\u0027Id\u0027).alias(\u0027promoIdCol\u0027)\n          ,col(\u0027Number\u0027).alias(\u0027promoNumber\u0027)\n          ,col(\u0027BrandTechId\u0027).alias(\u0027promoBrandTechId\u0027)\n          ,col(\u0027PromoStatusId\u0027).alias(\u0027promoStatusId\u0027)\n          ,col(\u0027StartDate\u0027).alias(\u0027promoStartDate\u0027)\n          ,col(\u0027EndDate\u0027).alias(\u0027promoEndDate\u0027)\n          ,col(\u0027DispatchesStart\u0027).alias(\u0027promoDispatchesStart\u0027)\n          ,col(\u0027ClientTreeKeyId\u0027).alias(\u0027promoClientTreeKeyId\u0027)\n          ,col(\u0027ClientTreeId\u0027).alias(\u0027promoClientTreeId\u0027)\n          ,col(\u0027IsOnInvoice\u0027).alias(\u0027promoIsOnInvoice\u0027)\n          ,col(\u0027InOut\u0027).alias(\u0027promoInOut\u0027)\n         )\n\nlightPromoDF \u003d lightPromoDF\\\n  .join(activeClientTreeDF, lightPromoDF.promoClientTreeKeyId \u003d\u003d activeClientTreeDF.Id, \u0027inner\u0027)\\\n  .select(\\\n           lightPromoDF[\u0027*\u0027]\n          ,col(\u0027PostPromoEffectW1\u0027).alias(\u0027promoClientPostPromoEffectW1\u0027)\n          ,col(\u0027PostPromoEffectW2\u0027).alias(\u0027promoClientPostPromoEffectW2\u0027)\n          )\n\nlightPromoDF \u003d lightPromoDF\\\n  .withColumn(\u0027promoDemandCode\u0027, lit(getDemandCode(col(\u0027promoClientTreeId\u0027))))\n\nallCalcPlanPromoProductDF \u003d allCalcPlanPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol \u003d\u003d allCalcPlanPromoProductDF.PromoId, \u0027left\u0027)\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d lightPromoDF.promoStatusId, \u0027left\u0027)\\\n  .select(\\\n           allCalcPlanPromoProductDF[\u0027*\u0027]\n          ,lightPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\n\ncalcPlanPromoProductDF \u003d allCalcPlanPromoProductDF\\\n  .join(filteredPromoDF, filteredPromoDF.PromoId \u003d\u003d allCalcPlanPromoProductDF.PromoId, \u0027inner\u0027)\\\n  .select(allCalcPlanPromoProductDF[\u0027*\u0027])\\\n  .where(col(\u0027promoStatusSystemName\u0027).isin(*planParametersStatuses))\n\ncalcPlanPromoProductIdsDF \u003d calcPlanPromoProductDF.select(col(\u0027Id\u0027))\nnotCalcPlanPromoProductDF \u003d allCalcPlanPromoProductDF.join(calcPlanPromoProductIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(allCalcPlanPromoProductDF[\u0027*\u0027])\n\ncalcPlanPromoProductDF \u003d calcPlanPromoProductDF\\\n  .join(productDF, productDF.Id \u003d\u003d calcPlanPromoProductDF.ProductId, \u0027left\u0027)\\\n  .select(\\\n           calcPlanPromoProductDF[\u0027*\u0027]\n          ,productDF.UOM_PC2Case\n          ,productDF.CaseVolume\n         )\n\ncalcPlanPromoDF \u003d calcPlanPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d calcPlanPromoDF.PromoStatusId, \u0027left\u0027)\\\n  .select(\\\n           calcPlanPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )\n\ncalcPlanPromoDF \u003d calcPlanPromoDF\\\n  .join(filteredPromoDF, filteredPromoDF.PromoId \u003d\u003d calcPlanPromoDF.Id, \u0027inner\u0027)\\\n  .select(calcPlanPromoDF[\u0027*\u0027])\\\n  .where(col(\u0027promoStatusSystemName\u0027).isin(*planParametersStatuses))\n\ncalcPlanPromoDF \u003d calcPlanPromoDF\\\n  .join(lightPromoDF, lightPromoDF.promoNumber \u003d\u003d calcPlanPromoDF.Number, \u0027inner\u0027)\\\n  .select(\\\n           calcPlanPromoDF[\u0027*\u0027]\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\n# print(calcPlanPromoProductDF.count())\n# print(calcPlanPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:01.822",
+      "dateUpdated": "2023-01-20 08:04:44.755",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -846,17 +758,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591702_412800328",
+      "jobName": "paragraph_1674201884755_273047134",
       "id": "20220811-123048_1257582983",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:01.826",
-      "dateFinished": "2022-12-06 09:46:02.798",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nnotInOutCalcPlanPromoProductDF \u003d calcPlanPromoProductDF.where(col(\u0027promoInOut\u0027) \u003d\u003d False)\ninOutCalcPlanPromoProductDF \u003d calcPlanPromoProductDF.where(col(\u0027promoInOut\u0027) \u003d\u003d True)\n\nnotInOutCalcPlanPromoDF \u003d calcPlanPromoDF.where(col(\u0027InOut\u0027) \u003d\u003d False)\ninOutCalcPlanPromoDF \u003d calcPlanPromoDF.where(col(\u0027InOut\u0027) \u003d\u003d True)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:02.826",
+      "dateUpdated": "2023-01-20 08:04:44.755",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -883,18 +793,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591702_2008922269",
+      "jobName": "paragraph_1674201884755_124122416",
       "id": "20220811-123048_1457650998",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:02.830",
-      "dateFinished": "2022-12-06 09:46:03.096",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nimport SET_PROMO_PRODUCT as set_promo_product\nnotInOutCalcPlanPromoProductDF \u003d set_promo_product.run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeDF,productDF,productTreeDF,assortmentMatrixDF,allProductDF,allProduct01DF,schema)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:03.130",
-      "progress": 98,
+      "dateUpdated": "2023-01-20 08:04:44.755",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -931,453 +839,18 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d16"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d17"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d18"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d19"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d20"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d21"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d22"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d23"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d24"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d25"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d26"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d27"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d28"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d29"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d30"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d31"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d32"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d33"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d34"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d35"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d36"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d37"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d38"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d39"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d40"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d41"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d42"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d43"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d44"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d45"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d46"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d47"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d48"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d49"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d50"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d51"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d52"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d53"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d54"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d55"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d56"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d57"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d58"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d59"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d60"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d61"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d62"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d63"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d64"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d65"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d66"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d67"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d68"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d69"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d70"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d71"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d72"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d73"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d74"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d75"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d76"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d77"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d78"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d79"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d80"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d81"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d82"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d83"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d84"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d85"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d86"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d87"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d88"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d89"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d90"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d91"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d92"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d93"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d94"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d95"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d96"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d97"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d98"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d99"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d100"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d101"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d102"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d103"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d104"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d105"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d106"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d107"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d108"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d109"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d110"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d111"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d112"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d113"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d114"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d115"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d116"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d117"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d118"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d119"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d120"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d121"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d122"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d123"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d124"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d125"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d126"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d127"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d128"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d129"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d130"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d131"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d132"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d133"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d134"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d135"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d136"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d137"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d138"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d139"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d140"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d141"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d142"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d143"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d144"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d145"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d146"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d147"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d148"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d149"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d150"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d151"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d152"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d153"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d154"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d155"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d167"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591702_327107948",
+      "jobName": "paragraph_1674201884755_456762864",
       "id": "20220811-123048_875351148",
-      "dateCreated": "2022-11-23 11:56:31.702",
-      "dateStarted": "2022-12-06 09:46:03.134",
-      "dateFinished": "2022-12-06 09:46:41.726",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.755",
+      "status": "READY"
     },
     {
       "text": "%pyspark\npromoWithChangedProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .where(notInOutCalcPlanPromoProductDF.Action.isin(\u0027Added\u0027, \u0027Deleted\u0027)).select(notInOutCalcPlanPromoProductDF.promoNumber)\n\naddedPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .where(col(\u0027Action\u0027) \u003d\u003d \u0027Added\u0027)\\\n  .groupBy(\u0027PromoId\u0027)\\\n  .agg(concat_ws(\u0027;\u0027, collect_list(col(\u0027ZREP\u0027))).alias(\u0027AddedProductIds\u0027))\n\ndeletedPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .where(col(\u0027Action\u0027) \u003d\u003d \u0027Deleted\u0027)\\\n  .groupBy(\u0027PromoId\u0027)\\\n  .agg(concat_ws(\u0027;\u0027, collect_list(col(\u0027ZREP\u0027))).alias(\u0027ExcludedProductIds\u0027))\n\nnewProductChangeIncidentDF \u003d addedPromoProductDF\\\n  .join(deletedPromoProductDF, \u0027PromoId\u0027, \u0027outer\u0027)\n\nprint(promoWithChangedProductDF.collect())\n\nunlinkedPromoProductDF \u003d notInOutCalcPlanPromoProductDF.where(notInOutCalcPlanPromoProductDF.Disabled \u003d\u003d True)\n\nnotInOutCalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .where(notInOutCalcPlanPromoProductDF.Disabled \u003d\u003d False)\\\n  .drop(\u0027Number\u0027, \u0027ResultFilteredProductId\u0027, \u0027ResultFilteredZREP\u0027, \u0027pId\u0027)\n\ninOutCalcPlanPromoProductDF \u003d inOutCalcPlanPromoProductDF.withColumn(\u0027Action\u0027, lit(None))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:46:41.768",
-      "progress": 97,
+      "dateUpdated": "2023-01-20 08:04:44.756",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1406,33 +879,18 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d179"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_698161299",
+      "jobName": "paragraph_1674201884756_1557348822",
       "id": "20220811-123048_209176770",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:46:41.772",
-      "dateFinished": "2022-12-06 09:47:06.133",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nserviceInfoDF \u003d serviceInfoDF\\\n  .withColumn(\u0027Value\u0027, when(col(\u0027Name\u0027) \u003d\u003d \u0027PROMO_NUMBERS_FOR_REAPPROVAL\u0027, \u0027;\u0027.join([str(elem.promoNumber) for elem in promoWithChangedProductDF.collect()]))\\\n              .otherwise(col(\u0027Value\u0027)))",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:47:06.196",
-      "progress": 18,
+      "dateUpdated": "2023-01-20 08:04:44.756",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1456,32 +914,17 @@
         "msg": []
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d180"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_560606463",
+      "jobName": "paragraph_1674201884756_371035988",
       "id": "20220811-123048_1869461954",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:47:06.199",
-      "dateFinished": "2022-12-06 09:47:09.491",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ntempDF \u003d calcPlanPromoProductDF\\\n  .select(\\\n           calcPlanPromoProductDF.promoIdCol.alias(\u0027_promoIdCol\u0027)\n          ,calcPlanPromoProductDF.promoNumber.alias(\u0027_promoNumber\u0027)\n          ,calcPlanPromoProductDF.promoBrandTechId.alias(\u0027_promoBrandTechId\u0027)\n          ,calcPlanPromoProductDF.promoStatusId.alias(\u0027_promoStatusId\u0027)\n          ,calcPlanPromoProductDF.promoStartDate.alias(\u0027_promoStartDate\u0027)\n          ,calcPlanPromoProductDF.promoEndDate.alias(\u0027_promoEndDate\u0027)\n          ,calcPlanPromoProductDF.promoDispatchesStart.alias(\u0027_promoDispatchesStart\u0027)\n          ,calcPlanPromoProductDF.promoClientTreeKeyId.alias(\u0027_promoClientTreeKeyId\u0027)\n          ,calcPlanPromoProductDF.promoClientTreeId.alias(\u0027_promoClientTreeId\u0027)\n          ,calcPlanPromoProductDF.promoIsOnInvoice.alias(\u0027_promoIsOnInvoice\u0027)\n          ,calcPlanPromoProductDF.promoInOut.alias(\u0027_promoInOut\u0027)\n          ,calcPlanPromoProductDF.promoClientPostPromoEffectW1.alias(\u0027_promoClientPostPromoEffectW1\u0027)\n          ,calcPlanPromoProductDF.promoClientPostPromoEffectW2.alias(\u0027_promoClientPostPromoEffectW2\u0027)\n          ,calcPlanPromoProductDF.promoDemandCode.alias(\u0027_promoDemandCode\u0027)\n          ,calcPlanPromoProductDF.promoStatusSystemName.alias(\u0027_promoStatusSystemName\u0027)\n         )\\\n  .dropDuplicates()\n\ncols \u003d notInOutCalcPlanPromoProductDF.columns\n\nnotInOutCalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .join(tempDF, tempDF._promoNumber \u003d\u003d notInOutCalcPlanPromoProductDF.promoNumber, \u0027left\u0027)\\\n  .withColumn(\u0027promoIdCol\u0027, when(notInOutCalcPlanPromoProductDF.promoIdCol.isNull(),tempDF._promoIdCol)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoIdCol))\\\n  .withColumn(\u0027promoBrandTechId\u0027, when(notInOutCalcPlanPromoProductDF.promoBrandTechId.isNull(),tempDF._promoBrandTechId)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoBrandTechId))\\\n  .withColumn(\u0027promoStatusId\u0027, when(notInOutCalcPlanPromoProductDF.promoStatusId.isNull(),tempDF._promoStatusId)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoStatusId))\\\n  .withColumn(\u0027promoStartDate\u0027, when(notInOutCalcPlanPromoProductDF.promoStartDate.isNull(),tempDF._promoStartDate)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoStartDate))\\\n  .withColumn(\u0027promoEndDate\u0027, when(notInOutCalcPlanPromoProductDF.promoEndDate.isNull(),tempDF._promoEndDate)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoEndDate))\\\n  .withColumn(\u0027promoDispatchesStart\u0027, when(notInOutCalcPlanPromoProductDF.promoDispatchesStart.isNull(),tempDF._promoDispatchesStart)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoDispatchesStart))\\\n  .withColumn(\u0027promoClientTreeKeyId\u0027, when(notInOutCalcPlanPromoProductDF.promoClientTreeKeyId.isNull(),tempDF._promoClientTreeKeyId)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoClientTreeKeyId))\\\n  .withColumn(\u0027promoClientTreeId\u0027, when(notInOutCalcPlanPromoProductDF.promoClientTreeId.isNull(),tempDF._promoClientTreeId)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoClientTreeId))\\\n  .withColumn(\u0027promoIsOnInvoice\u0027, when(notInOutCalcPlanPromoProductDF.promoIsOnInvoice.isNull(),tempDF._promoIsOnInvoice)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoIsOnInvoice))\\\n  .withColumn(\u0027promoInOut\u0027, when(notInOutCalcPlanPromoProductDF.promoInOut.isNull(),tempDF._promoInOut)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoInOut))\\\n  .withColumn(\u0027promoClientPostPromoEffectW1\u0027, when(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW1.isNull(),tempDF._promoClientPostPromoEffectW1)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW1))\\\n  .withColumn(\u0027promoClientPostPromoEffectW2\u0027, when(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW2.isNull(),tempDF._promoClientPostPromoEffectW2)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW2))\\\n  .withColumn(\u0027promoDemandCode\u0027, when(notInOutCalcPlanPromoProductDF.promoDemandCode.isNull(),tempDF._promoDemandCode)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoDemandCode))\\\n  .withColumn(\u0027promoStatusSystemName\u0027, when(notInOutCalcPlanPromoProductDF.promoStatusSystemName.isNull(),tempDF._promoStatusSystemName)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.promoStatusSystemName))\\\n  .select(cols)\n\ntempProductDF \u003d productDF\\\n  .select(\\\n           productDF.Id.alias(\u0027_Id\u0027)\n          ,productDF.ZREP.alias(\u0027_ZREP\u0027)\n          ,productDF.EAN_Case.alias(\u0027_EAN_Case\u0027)\n          ,productDF.ProductEN.alias(\u0027_ProductEN\u0027)\n          ,productDF.EAN_PC.alias(\u0027_EAN_PC\u0027)\n          ,productDF.UOM_PC2Case.alias(\u0027_UOM_PC2Case\u0027)\n         )\n\nnotInOutCalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF\\\n  .join(tempProductDF, tempProductDF._Id \u003d\u003d notInOutCalcPlanPromoProductDF.ProductId, \u0027left\u0027)\\\n  .withColumn(\u0027ZREP\u0027, when(notInOutCalcPlanPromoProductDF.ZREP.isNull(),tempProductDF._ZREP)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.ZREP))\\\n  .withColumn(\u0027EAN_Case\u0027, when(notInOutCalcPlanPromoProductDF.EAN_Case.isNull(),tempProductDF._EAN_Case)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.EAN_Case))\\\n  .withColumn(\u0027ProductEN\u0027, when(notInOutCalcPlanPromoProductDF.ProductEN.isNull(),tempProductDF._ProductEN)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.ProductEN))\\\n  .withColumn(\u0027EAN_PC\u0027, when(notInOutCalcPlanPromoProductDF.EAN_PC.isNull(),tempProductDF._EAN_PC)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.EAN_PC))\\\n  .withColumn(\u0027UOM_PC2Case\u0027, when(notInOutCalcPlanPromoProductDF.UOM_PC2Case.isNull(),tempProductDF._UOM_PC2Case)\\\n          .otherwise(notInOutCalcPlanPromoProductDF.UOM_PC2Case))\\\n  .select(cols)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:47:09.502",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1508,17 +951,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_275841777",
+      "jobName": "paragraph_1674201884756_417132795",
       "id": "20220811-123048_918352212",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:47:09.506",
-      "dateFinished": "2022-12-06 09:47:10.880",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ncalcPlanPromoProductDF \u003d notInOutCalcPlanPromoProductDF.union(inOutCalcPlanPromoProductDF)\ncalcPlanPromoDF \u003d notInOutCalcPlanPromoDF.union(inOutCalcPlanPromoDF)\n\nallCalcPlanPromoDF \u003d allCalcPlanPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id \u003d\u003d allCalcPlanPromoDF.PromoStatusId, \u0027left\u0027)\\\n  .select(\\\n           allCalcPlanPromoDF[\u0027*\u0027]\n          ,promoStatusDF.SystemName.alias(\u0027promoStatusSystemName\u0027)\n         )",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:47:10.907",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1545,18 +986,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_341085159",
+      "jobName": "paragraph_1674201884756_986300921",
       "id": "20220811-123048_1688273987",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:47:10.911",
-      "dateFinished": "2022-12-06 09:47:11.329",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n\nimport PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process\ncalcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF \u003d plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:47:11.412",
-      "progress": 100,
+      "dateUpdated": "2023-01-20 08:04:44.756",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1585,32 +1024,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d200"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_1021798231",
+      "jobName": "paragraph_1674201884756_1518516852",
       "id": "20220811-123048_1445130701",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:47:11.415",
-      "dateFinished": "2022-12-06 09:47:52.909",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Promo support calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:52:52.344",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1640,17 +1064,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_630832880",
+      "jobName": "paragraph_1674201884756_679586751",
       "id": "20220811-123048_1417933154",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:52:52.348",
-      "dateFinished": "2022-12-06 09:52:52.352",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n@udf\ndef isStatusInList(list):\n  c \u003d [x for x in list if x in [\u0027DraftPublished\u0027,\u0027OnApproval\u0027,\u0027Approved\u0027,\u0027Planned\u0027,\u0027Started\u0027,\u0027Finished\u0027]]\n  return len(c) \u003e 0\n\n@udf\ndef isStatusInFinishedClosedList(list):\n  if any(x in list for x in [\u0027DraftPublished\u0027,\u0027OnApproval\u0027,\u0027Approved\u0027,\u0027Planned\u0027,\u0027Started\u0027]):\n    return False\n  else:\n    return True",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:52:52.448",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1677,17 +1099,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_1121292408",
+      "jobName": "paragraph_1674201884756_534358500",
       "id": "20220811-123048_98868471",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:52:52.452",
-      "dateFinished": "2022-12-06 09:52:52.668",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ncalcPlanSupportPromoDF \u003d allCalcPlanPromoDF\\\n  .where(~col(\u0027promoStatusSystemName\u0027).isin(*notCheckPromoStatusList))\n\ncalcPlanSupportPromoIdsDF \u003d calcPlanSupportPromoDF.select(col(\u0027Id\u0027))\nnotCalcPlanSupportPromoDF \u003d allCalcPlanPromoDF.join(calcPlanSupportPromoIdsDF, \u0027Id\u0027, \u0027left_anti\u0027).select(allCalcPlanPromoDF[\u0027*\u0027])\n\nallPromoSupportDF \u003d allCalcPlanPromoDF\\\n  .join(activePromoSupportPromoDF, activePromoSupportPromoDF.PromoId \u003d\u003d allCalcPlanPromoDF.Id, \u0027inner\u0027)\\\n  .join(promoSupportDF, promoSupportDF.Id \u003d\u003d activePromoSupportPromoDF.PromoSupportId, \u0027inner\u0027)\\\n  .select(\\\n           promoSupportDF.Id.alias(\u0027psId\u0027)\n          ,promoSupportDF.BudgetSubItemId\n          ,promoSupportDF.Number.alias(\u0027promoSupportNumber\u0027)\n          ,promoSupportDF.PlanCostTE.cast(DecimalType(30,6))\n          ,promoSupportDF.PlanProdCost.cast(DecimalType(30,6))\n          ,allCalcPlanPromoDF.promoStatusSystemName\n        )\\\n  .groupBy(\u0027psId\u0027,\u0027BudgetSubItemId\u0027,\u0027promoSupportNumber\u0027,\u0027PlanCostTE\u0027,\u0027PlanProdCost\u0027)\\\n  .agg(collect_list(col(\u0027promoStatusSystemName\u0027)).alias(\u0027promoStatuses\u0027))\\\n  .withColumn(\u0027isInList\u0027, isStatusInList(col(\u0027promoStatuses\u0027)).cast(BooleanType()))\\\n  .withColumn(\u0027onlyFinishedClosed\u0027, isStatusInFinishedClosedList(col(\u0027promoStatuses\u0027)).cast(BooleanType()))\\\n  .where(col(\u0027isInList\u0027) \u003d\u003d True)\\\n  .drop(\u0027promoStatuses\u0027,\u0027isInList\u0027)\n\nallBtlDF \u003d allCalcPlanPromoDF\\\n  .join(btlPromoDF, btlPromoDF.PromoId \u003d\u003d allCalcPlanPromoDF.Id, \u0027inner\u0027)\\\n  .join(btlDF, btlDF.Id \u003d\u003d btlPromoDF.BTLId, \u0027inner\u0027)\\\n  .select(\\\n           btlDF.Id.alias(\u0027bId\u0027)\n          ,btlDF.Number.alias(\u0027btlNumber\u0027)\n          ,btlDF.PlanBTLTotal.cast(DecimalType(30,6))\\\n          ,allCalcPlanPromoDF.promoStatusSystemName\n         )\\\n  .groupBy(\u0027bId\u0027,\u0027btlNumber\u0027,\u0027PlanBTLTotal\u0027)\\\n  .agg(collect_list(col(\u0027promoStatusSystemName\u0027)).alias(\u0027promoStatuses\u0027))\\\n  .withColumn(\u0027isInList\u0027, isStatusInList(col(\u0027promoStatuses\u0027)).cast(BooleanType()))\\\n  .withColumn(\u0027onlyFinishedClosed\u0027, isStatusInFinishedClosedList(col(\u0027promoStatuses\u0027)).cast(BooleanType()))\\\n  .where(col(\u0027isInList\u0027) \u003d\u003d True)\\\n  .drop(\u0027promoStatuses\u0027,\u0027isInList\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:52:52.752",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1714,18 +1134,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_1245410844",
+      "jobName": "paragraph_1674201884756_963581996",
       "id": "20220811-123048_1770717972",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:52:52.756",
-      "dateFinished": "2022-12-06 09:52:54.281",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n\nimport PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS as plan_support_params_calculation_process\ncalcPlanSupportPromoDF,allPromoSupportPromoDF\u003d plan_support_params_calculation_process.run(allPromoSupportDF,activePromoSupportPromoDF,calcPlanSupportPromoDF,allBtlDF,budgetItemDF,budgetSubItemDF,promoSupportPromoCols,btlPromoDF)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:52:54.357",
-      "progress": 100,
+      "dateUpdated": "2023-01-20 08:04:44.756",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1754,56 +1172,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d254"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d266"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d278"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d290"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d302"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d314"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d326"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d338"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d347"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_612628491",
+      "jobName": "paragraph_1674201884756_1386328147",
       "id": "20220811-123048_677784433",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:52:54.361",
-      "dateFinished": "2022-12-06 09:56:50.746",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Plan promo parameters calculation*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:56:50.778",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1833,17 +1212,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_555002981",
+      "jobName": "paragraph_1674201884756_5715797",
       "id": "20220811-123048_1663424510",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:56:50.782",
-      "dateFinished": "2022-12-06 09:56:50.785",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nallCalcPlanPromoDF \u003d calcPlanSupportPromoDF.union(notCalcPlanSupportPromoDF)\n\ncalcPlanPromoDF \u003d allCalcPlanPromoDF\\\n  .join(brandTechDF, brandTechDF.Id \u003d\u003d allCalcPlanPromoDF.BrandTechId, \u0027left\u0027)\\\n  .select(\\\n           allCalcPlanPromoDF[\u0027*\u0027]\n          ,brandTechDF.BrandsegTechsub.alias(\u0027promoBrandTechName\u0027)\n         )\\\n  .where(col(\u0027promoStatusSystemName\u0027).isin(*planParametersStatuses))\n\nnotCalcPlanPromoDF \u003d allCalcPlanPromoDF\\\n  .where(~col(\u0027promoStatusSystemName\u0027).isin(*planParametersStatuses))\n\ncalcPlanPromoDF \u003d calcPlanPromoDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol \u003d\u003d calcPlanPromoDF.Id, \u0027left\u0027)\\\n  .select(\\\n           calcPlanPromoDF[\u0027*\u0027]\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:56:50.881",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1870,18 +1247,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_313464399",
+      "jobName": "paragraph_1674201884756_1598590884",
       "id": "20220811-123048_1107815497",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:56:50.885",
-      "dateFinished": "2022-12-06 09:56:52.109",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n\nimport PLAN_PROMO_PARAMS_CALCULATION_PROCESS as plan_promo_params_calculation_process\ncalcPlanPromoDF,logCOGS,logTI\u003d plan_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanPromoDF,promoDF)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:56:52.186",
-      "progress": 100,
+      "dateUpdated": "2023-01-20 08:04:44.756",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1910,47 +1285,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d348"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d351"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d354"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d357"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d360"
-            },
-            {
-              "jobUrl": "http://rc1a-dataproc-d-bam57uve6lsefmrc.mdb.yandexcloud.net:43577/jobs/job?id\u003d361"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591705_1250208482",
+      "jobName": "paragraph_1674201884756_2016724727",
       "id": "20220811-123048_1931855038",
-      "dateCreated": "2022-11-23 11:56:31.705",
-      "dateStarted": "2022-12-06 09:56:52.190",
-      "dateFinished": "2022-12-06 09:57:04.010",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Result*",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:04.101",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1980,17 +1325,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_2070258526",
+      "jobName": "paragraph_1674201884756_1147343899",
       "id": "20220811-123048_1786860552",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:04.105",
-      "dateFinished": "2022-12-06 09:57:04.108",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n# promoproduct\nunlinkedPromoProductDF \u003d unlinkedPromoProductDF.select(promoProductCols)\nnotCalcPlanPromoProductDF \u003d notCalcPlanPromoProductDF.select(promoProductCols)\n\nnewPromoProductDF \u003d calcPlanPromoProductDF.where(col(\u0027Id\u0027).isNull()).drop(\u0027#QCCount\u0027)\ncalcPlanPromoProductDF \u003d calcPlanPromoProductDF.where(~col(\u0027Id\u0027).isNull())\n\ncalcPlanPromoProductDF \u003d calcPlanPromoProductDF.union(unlinkedPromoProductDF)\nallCalcPlanPromoProductDF \u003d calcPlanPromoProductDF.union(notCalcPlanPromoProductDF)\n\nresultPromoProductDF \u003d allCalcPlanPromoProductDF.union(disabledPromoProductDF)\nresultPromoProductDF \u003d resultPromoProductDF.drop(\u0027#QCCount\u0027)\n# ---\n\n# promo\ncalcPlanPromoDF \u003d calcPlanPromoDF.select(promoCols)\nnotCalcPlanPromoDF \u003d notCalcPlanPromoDF.select(promoCols)\nallCalcPlanPromoDF \u003d calcPlanPromoDF.union(notCalcPlanPromoDF)\n\nresultPromoDF \u003d allCalcPlanPromoDF.union(disabledPromoDF)\nresultPromoDF \u003d resultPromoDF.drop(\u0027#QCCount\u0027)\n# ---\n\n# promosuportpromo\nresultPromoSupportPromoDF \u003d allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)\n# ---\n\n# serviceInfo\nserviceInfoDF \u003d serviceInfoDF.drop(\u0027#QCCount\u0027)\n# ---",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:04.205",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2017,17 +1360,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_888456111",
+      "jobName": "paragraph_1674201884756_1128976391",
       "id": "20220811-123048_668398721",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:04.208",
-      "dateFinished": "2022-12-06 09:57:08.609",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n# print(newPromoProductDF.count())\n# print(resultPromoProductDF.count())\n# print(resultPromoDF.count())\n# print(resultPromoSupportPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:08.612",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2054,17 +1395,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_2112728506",
+      "jobName": "paragraph_1674201884756_2116189724",
       "id": "20220811-123048_1515073942",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:08.616",
-      "dateFinished": "2022-12-06 09:57:08.832",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ntry:\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",NEW_PROMOPRODUCT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PLAN_PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",SERVICEINFO_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",NEW_PRODUCTCHANGEINCIDENTS_PATH])\nexcept Exception as e:\n   print(e)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:08.916",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2091,17 +1430,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1050083056",
+      "jobName": "paragraph_1674201884756_765367373",
       "id": "20220811-123048_118693461",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:08.920",
-      "dateFinished": "2022-12-06 09:57:17.907",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nprint(\u0027PLAN_PARAMETERS_CALCULATION_DONE\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:17.927",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2132,17 +1469,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1340923088",
+      "jobName": "paragraph_1674201884756_235413883",
       "id": "paragraph_1660543326081_2118874479",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:17.931",
-      "dateFinished": "2022-12-06 09:57:18.149",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n# newPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(NEW_PROMOPRODUCT_PATH)\nnewPromoProductDF\\\n.repartition(1)\\\n.write.csv(NEW_PROMOPRODUCT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultPromoDF \u003d resultPromoDF.persist()\n\nresultPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(PLAN_PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH)\nresultPromoDF.write.mode(\"overwrite\").parquet(PLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH)\nresultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n\n# serviceInfoDF.write.mode(\"overwrite\").parquet(SERVICEINFO_RESULT_PATH)\n\n# newProductChangeIncidentDF.write.mode(\"overwrite\").parquet(NEW_PRODUCTCHANGEINCIDENTS_PATH)\n\nserviceInfoDF\\\n.repartition(1)\\\n.write.csv(SERVICEINFO_RESULT_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n\nnewProductChangeIncidentDF\\\n.repartition(1)\\\n.write.csv(NEW_PRODUCTCHANGEINCIDENTS_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-12-06 09:57:30.245",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2174,17 +1509,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1025908251",
+      "jobName": "paragraph_1674201884756_1578335077",
       "id": "20220811-123048_1741831083",
-      "dateCreated": "2022-11-23 11:56:31.706",
-      "dateStarted": "2022-12-06 09:57:30.249",
-      "dateFinished": "2022-12-06 09:57:32.263",
-      "status": "ERROR"
+      "dateCreated": "2023-01-20 08:04:44.756",
+      "status": "READY"
     },
     {
       "text": "%md\n####*Logging*",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2214,15 +1547,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1746723711",
+      "jobName": "paragraph_1674201884756_554146271",
       "id": "20220811-123048_1999681836",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.756",
       "status": "READY"
     },
     {
       "text": "%pyspark\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logCOGS, \u0027promoNumber\u0027, \u0027full\u0027)\n\nlogPromoProductDF \u003d logPromoProductDF\\\n  .join(logTI, \u0027promoNumber\u0027, \u0027full\u0027)\n\ntitleMessage \u003d \u0027[INFO]: PLAN PARAMETERS CALCULATION\u0027\ntitleLogMessageDF \u003d spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\nlogMessageDF \u003d logPromoProductDF\\\n  .select(concat(lit(\u0027[WARNING]: Promo №:\u0027), col(\u0027promoNumber\u0027),\\\n                 when(col(\u0027nullPriceMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027 There\\\u0027re no price for ZREP: \u0027), col(\u0027nullPriceMessage\u0027))),\\\n                 when(col(\u0027zeroPriceMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n There\\\u0027re zero price for ZREP: \u0027), col(\u0027zeroPriceMessage\u0027))),\\\n                 when(col(\u0027nullShareMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n There\\\u0027re no share for ZREP: \u0027), col(\u0027nullShareMessage\u0027))),\\\n                 when(col(\u0027zeroShareMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n There\\\u0027re zero share for ZREP: \u0027), col(\u0027zeroShareMessage\u0027))),\\\n                 when(col(\u0027zeroBaselineQtyMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n There\\\u0027re zero PlanBaselineCaseQty for ZREP: \u0027), col(\u0027zeroBaselineQtyMessage\u0027))),\\\n                 when(col(\u0027COGSMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027COGSMessage\u0027))),\\\n                 when(col(\u0027TIMessage\u0027).isNull(), \u0027\u0027).otherwise(concat(lit(\u0027.\\r\\n \u0027), col(\u0027TIMessage\u0027))),\\\n                 (lit(\u0027.\\r\\n\u0027))\n                ).alias(\u0027logMessage\u0027))\\\n  .where((col(\u0027logMessage\u0027) !\u003d \"\") \u0026 ~(col(\u0027logMessage\u0027).isNull()))\n\noutputLogMessageDF \u003d inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)\n\n  \n  ",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2249,15 +1582,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_760173125",
+      "jobName": "paragraph_1674201884756_1692097937",
       "id": "20220811-123048_1549395165",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.756",
       "status": "READY"
     },
     {
       "text": "%pyspark\nsc.setCheckpointDir(\"tmp\")\n\noutputLogMessageDF\\\n.checkpoint(eager\u003dTrue)\\\n.repartition(1)\\\n.write.csv(INPUT_FILE_LOG_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\n)\n\n# subprocess.call([\"hadoop\", \"fs\", \"-mv\", OUTPUT_TEMP_FILE_LOG_PATH, OUTPUT_LOG_PATH])\n# subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\", OUTPUT_TEMP_FILE_LOG_PATH])",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2289,15 +1622,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_813186998",
+      "jobName": "paragraph_1674201884756_581381577",
       "id": "20220811-123048_1135065269",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.756",
       "status": "READY"
     },
     {
       "text": "%pyspark\nprint(f\u0027PLAN_PARAMETERS_CALCULATION_ALL_WRITES_DONE\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2328,15 +1661,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_547568490",
+      "jobName": "paragraph_1674201884756_1663913351",
       "id": "paragraph_1660545582205_1333866569",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.756",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoProductDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMOPRODUCT_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoProductDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMOPRODUCT_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.756",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2363,15 +1696,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_512324297",
+      "jobName": "paragraph_1674201884756_1255576652",
       "id": "20220811-123048_895409161",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.756",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.757",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2398,15 +1731,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1550495073",
+      "jobName": "paragraph_1674201884757_1366299201",
       "id": "20220811-123048_1205201495",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.757",
       "status": "READY"
     },
     {
       "text": "%pyspark\n# promoSupportPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)\n# resultPromoSupportPromoDF.orderBy(\u0027Id\u0027).toPandas().to_csv(OUTPUT_PROMOSUPPORTPROMO_PATH, encoding\u003d\u0027utf-8\u0027,index\u003dFalse,sep \u003d \u0027\\u0001\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-11-23 11:56:31.706",
+      "dateUpdated": "2023-01-20 08:04:44.757",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2433,14 +1766,14 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1669204591706_1942629098",
+      "jobName": "paragraph_1674201884757_1284954231",
       "id": "20220811-123048_1413054844",
-      "dateCreated": "2022-11-23 11:56:31.706",
+      "dateCreated": "2023-01-20 08:04:44.757",
       "status": "READY"
     }
   ],
   "name": "PLAN_PARAMETERS_CALCULATION",
-  "id": "2HK3QKV2X",
+  "id": "2HRKGY4JH",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},
