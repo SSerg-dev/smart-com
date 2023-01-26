@@ -1,0 +1,54 @@
+<configuration>
+    <property>
+        <name>hadoop.http.cross-origin.enabled</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>fs.s3a.multiobjectdelete.enable</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/hadoop/tmp</value>
+    </property>
+    <property>
+        <name>hadoop.http.filter.initializers</name>
+        <value>org.apache.hadoop.http.lib.StaticUserWebFilter,org.apache.hadoop.security.HttpCrossOriginFilterInitializer</value>
+    </property>
+    <property>
+        <name>fs.s3a.signing-algorithm</name>
+        <value>YandexObjectStorageSigner</value>
+    </property>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://rc1a-dataproc-m-sexo9fqjeaebsjjh.mdb.yandexcloud.net</value>
+    </property>
+    <property>
+        <name>io.file.buffer.size</name>
+        <value>131072</value>
+    </property>
+    <property>
+        <name>fs.s3a.aws.credentials.provider</name>
+        <value>ru.yandex.cloud.dataproc.s3.YandexMetadataCredentialsProvider</value>
+    </property>
+    <property>
+        <name>fs.s3a.endpoint</name>
+        <value>storage.yandexcloud.net</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.hive.hosts</name>
+        <value>*</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.hive.groups</name>
+        <value>*</value>
+    </property>
+<property>
+ <name>hadoop.proxyuser.nfsserver.groups</name>
+ <value>*</value>
+</property>
+<property>
+ <name>hadoop.proxyuser.nfsserver.hosts</name>
+ <value>*</value>
+</property>
+</configuration>
