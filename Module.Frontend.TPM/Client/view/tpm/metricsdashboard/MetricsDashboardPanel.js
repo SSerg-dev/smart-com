@@ -26,12 +26,32 @@
             //cls: 'title-glyph',
             items: [
                 {
-                    xtype: 'image',
-                    //shrinkWrap: true,
-                    itemId: 'glyphRight',
-                    style: 'background-color: red',
-                    flex: 1,
-                    cls: 'glyph-image'
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    //flex: 1,
+                    height: '100%',
+                    xtype: 'container',
+                    cls: 'glyph-container',
+                    items: [
+                        {
+                            xtype: 'image',
+                            shrinkWrap: 3,
+                            itemId: 'glyphRight',
+                            style: 'background-color: red',
+                            //flex: 1,
+                            cls: 'glyph-image'
+                        },
+                    ],
+                    listeners: {
+                        resize: function (panel) {
+                            
+                            panel.setWidth(panel.getHeight());                            
+                            panel.down('#glyphRight').setHeight(panel.down('#glyphRight').getWidth());
+                            //panel.down('#glyphRight').setWidth(panel.getHeight());
+                        }
+                    },
                 },
                 {
                     layout: {
@@ -63,7 +83,6 @@
                         },
                     ]
                 },
-
             ],
         },
         {
@@ -109,7 +128,7 @@
                                             }
                                             else {
                                                 tip.update(view.rawText);
-                                            }                                            
+                                            }
                                         }
                                     }
                                 });

@@ -3531,7 +3531,7 @@ x-slider-inner:before {
         color: black;
         text-align: center;
         font-weight: 600;
-        font-size: 4em;
+        font-size: 3.2vw;
         display: flex;
         align-items: center;
     }
@@ -3540,7 +3540,7 @@ x-slider-inner:before {
         color: black;
         text-align: center;
         font-weight: 600;
-        font-size: 4em;
+        font-size: 3.2vw;
         display: flex;
         align-items: center;
     }
@@ -3551,12 +3551,15 @@ x-slider-inner:before {
         align-items: center;
         justify-content: center;
         font-weight: 400;
-        font-size: 4em;
+        font-size: 2.8vw;
+    }
+
+    .metrics-dashboard-panel .glyph-container {
+        padding: 1.55ex;
     }
 
     .metrics-dashboard-panel .glyph-image {
         border-radius: 100%;
-        margin: 1.55ex !important;
     }
 
     .metrics-dashboard-panel .panel-time-critical-standart {
