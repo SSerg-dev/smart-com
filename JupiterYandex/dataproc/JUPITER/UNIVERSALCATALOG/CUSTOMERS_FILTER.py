@@ -61,6 +61,9 @@ customersDF = customersDF\
   .withColumn('SP_Description', col('SP Description'))\
   .drop('SP Description', 'Division')
 
+customersDF=customersDF.withColumn("0CUST_SALES___T", when(col("0CUST_SALES___T").contains("\""),concat(lit("'"),col("0CUST_SALES___T"),lit("'"))).otherwise(col("0CUST_SALES___T")))
+customersDF=customersDF.withColumn("SP_Description", when(col("SP_Description").contains("\""),concat(lit("'"),col("SP_Description"),lit("'"))).otherwise(col("SP_Description")))
+
 customersDF.count()
 
 # customersDF.write.mode("overwrite").parquet(OUTPUT_CUSTOMERS_PARQUET_PATH)

@@ -66,7 +66,7 @@ def get_parameters(**kwargs):
     parent_run_id = dag_run.conf.get('parent_run_id')
     run_id = urllib.parse.quote_plus(parent_run_id) if parent_run_id else urllib.parse.quote_plus(kwargs['run_id'])
     
-    schema = dag_run.conf.get('schema')
+    schema = dag_run.conf.get('schema') if dag_run.conf.get('schema') else 'Jupiter'
     upload_date = kwargs['logical_date'].strftime("%Y-%m-%d %H:%M:%S")
     file_name = dag_run.conf.get('FileName')
     create_date = dag_run.conf.get('CreateDate')
@@ -180,8 +180,8 @@ def truncate_table(parameters:dict):
 
 with DAG(
     dag_id='jupiter_year_end_estimate_fdm',
-    schedule_interval=None,
-    start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
+    schedule_interval='0 22 * * *',
+    start_date=pendulum.datetime(2023, 1, 29, tz="UTC"),
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,

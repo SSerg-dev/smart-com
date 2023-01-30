@@ -3,9 +3,10 @@
     {
       "text": "%md\n# Get CUSTOMERS data from RDF",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:21:18.552",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
+        "tableHide": false,
         "editorSetting": {
           "language": "markdown",
           "editOnDblClick": true,
@@ -16,8 +17,7 @@
         "editorHide": true,
         "fontSize": 9.0,
         "results": {},
-        "enabled": true,
-        "tableHide": false
+        "enabled": true
       },
       "settings": {
         "params": {},
@@ -35,18 +35,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_638035529",
+      "jobName": "paragraph_1675061165085_699157123",
       "id": "20220826-113224_1913728760",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:21:18.554",
-      "dateFinished": "2022-09-12 07:21:18.560",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "title": "Function to determine runtime(Notebook or pure python)",
       "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:21:18.657",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -74,17 +72,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_1096070725",
+      "jobName": "paragraph_1675061165085_2060645881",
       "id": "20220826-113224_1748655490",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:21:18.660",
-      "dateFinished": "2022-09-12 07:21:57.841",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nimport datetime as datetime\nfrom datetime import timedelta\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as sf\nfrom pyspark.sql.types import LongType, StringType, StructField, StructType, BooleanType, ArrayType, IntegerType\nfrom pyspark.sql import Row\nimport os",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:21:57.908",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -111,30 +107,28 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_704852864",
+      "jobName": "paragraph_1675061165085_1883365185",
       "id": "20220826-113224_1950437752",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:21:57.910",
-      "dateFinished": "2022-09-12 07:21:58.130",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-09-09_manual__2022-09-09T11%3A15%3A40%2B00%3A00_\", \"ProcessDate\": \"2022-08-23\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_orders_delivery_fdm\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:21:58.211",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
-        "colWidth": 12.0,
-        "fontSize": 9.0,
-        "results": {},
-        "enabled": true,
         "editorSetting": {
           "language": "python",
           "editOnDblClick": false,
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "editorMode": "ace/mode/python"
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
       },
       "settings": {
         "params": {},
@@ -147,17 +141,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513924229_1657538623",
+      "jobName": "paragraph_1675061165085_1915413727",
       "id": "paragraph_1661513924229_1657538623",
-      "dateCreated": "2022-08-26 11:38:44.230",
-      "dateStarted": "2022-09-12 07:21:58.213",
-      "dateFinished": "2022-09-12 07:21:58.483",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:21:58.513",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -187,50 +179,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d0"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d1"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d2"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d3"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d4"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d5"
-            },
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d6"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_292972469",
+      "jobName": "paragraph_1675061165085_632158614",
       "id": "20220826-113224_789399927",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:21:58.514",
-      "dateFinished": "2022-09-12 07:22:11.105",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n#Getting date string\ndatestring \u003d datetime.datetime.now()\ndatestring \u003d datestring.strftime(\u0027%Y/%m/%d\u0027)\nprint(datestring)\n\ntoday \u003d datetime.datetime.today()\nprint(today)",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:22:11.130",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -262,67 +221,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_1481497745",
+      "jobName": "paragraph_1675061165085_1376015582",
       "id": "20220826-113224_1162747932",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:22:11.132",
-      "dateFinished": "2022-09-12 07:22:11.355",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\nINPUT_CUSTOMERS_PATH \u003d SETTING_RAW_DIR + \u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.csv\u0027\nOUTPUT_CUSTOMERS_PARQUET_PATH \u003d SETTING_OUTPUT_DIR + \u0027/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.CSV\u0027\n\ncustomersDF \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(INPUT_CUSTOMERS_PATH)",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:22:11.432",
-      "progress": 0,
-      "config": {
-        "editorSetting": {
-          "language": "python",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
-        "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
-        "editorHide": false,
-        "fontSize": 9.0,
-        "results": {},
-        "enabled": true
-      },
-      "settings": {
-        "params": {},
-        "forms": {}
-      },
-      "results": {
-        "code": "SUCCESS",
-        "msg": []
-      },
-      "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d7"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
-      "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_2090286869",
-      "id": "20220826-113224_1006269276",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:22:11.434",
-      "dateFinished": "2022-09-12 07:22:12.712",
-      "status": "FINISHED"
-    },
-    {
-      "text": "%pyspark\ncustomersDF \u003d customersDF\\\n  .withColumn(\u0027SP_Description\u0027, col(\u0027SP Description\u0027))\\\n  .drop(\u0027SP Description\u0027, \u0027Division\u0027)",
-      "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:22:12.735",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -349,18 +256,81 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_1743003801",
+      "jobName": "paragraph_1675061165085_13412064",
+      "id": "20220826-113224_1006269276",
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ncustomersDF \u003d customersDF\\\n  .withColumn(\u0027SP_Description\u0027, col(\u0027SP Description\u0027))\\\n  .drop(\u0027SP Description\u0027, \u0027Division\u0027)",
+      "user": "anonymous",
+      "dateUpdated": "2023-01-30 06:46:05.085",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675061165085_1359562663",
       "id": "20220826-113224_2121909157",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:22:12.737",
-      "dateFinished": "2022-09-12 07:22:12.957",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
+    },
+    {
+      "text": "%pyspark\ncustomersDF\u003dcustomersDF.withColumn(\"0CUST_SALES___T\", when(col(\"0CUST_SALES___T\").contains(\"\\\"\"),concat(lit(\"\u0027\"),col(\"0CUST_SALES___T\"),lit(\"\u0027\"))).otherwise(col(\"0CUST_SALES___T\")))\ncustomersDF\u003dcustomersDF.withColumn(\"SP_Description\", when(col(\"SP_Description\").contains(\"\\\"\"),concat(lit(\"\u0027\"),col(\"SP_Description\"),lit(\"\u0027\"))).otherwise(col(\"SP_Description\")))",
+      "user": "anonymous",
+      "dateUpdated": "2023-01-30 06:47:21.071",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675061230251_863730207",
+      "id": "paragraph_1675061230251_863730207",
+      "dateCreated": "2023-01-30 06:47:10.251",
+      "status": "READY"
     },
     {
       "text": "%pyspark\ncustomersDF.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:22:13.037",
-      "progress": 66,
+      "dateUpdated": "2023-01-30 06:46:05.085",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -389,32 +359,17 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1b-dataproc-d-4tc0ydjpifu5qhtw.mdb.yandexcloud.net:34333/jobs/job?id\u003d8"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_27534988",
+      "jobName": "paragraph_1675061165085_861615745",
       "id": "20220826-113224_336614337",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:22:13.039",
-      "dateFinished": "2022-09-12 07:22:14.118",
-      "status": "FINISHED"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     },
     {
       "text": "%pyspark\n# customersDF.write.mode(\"overwrite\").parquet(OUTPUT_CUSTOMERS_PARQUET_PATH)\n\ncustomersDF\\\n.withColumn(\"Active_From\",to_date(col(\"Active_From\"),\"yyyy/MM/dd\"))\\\n.withColumn(\"Active_Till\",to_date(col(\"Active_Till\"),\"yyyy/MM/dd\"))\\\n.repartition(1)\\\n.write.csv(OUTPUT_CUSTOMERS_PARQUET_PATH,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\",\nescape\u003d\"\",\nquote\u003d\"\",\n)",
       "user": "anonymous",
-      "dateUpdated": "2022-09-12 07:22:14.140",
+      "dateUpdated": "2023-01-30 06:46:05.085",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -446,16 +401,14 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513544618_1415773127",
+      "jobName": "paragraph_1675061165085_970826458",
       "id": "20220826-113224_543870879",
-      "dateCreated": "2022-08-26 11:32:24.618",
-      "dateStarted": "2022-09-12 07:22:14.142",
-      "dateFinished": "2022-09-12 07:22:14.870",
-      "status": "ERROR"
+      "dateCreated": "2023-01-30 06:46:05.085",
+      "status": "READY"
     }
   ],
   "name": "CUSTOMERS_FILTER",
-  "id": "2HBGMUUXT",
+  "id": "2HT3H8WEX",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},
@@ -464,7 +417,5 @@
   "config": {
     "isZeppelinNotebookCronEnable": false
   },
-  "info": {
-    "isRunning": true
-  }
+  "info": {}
 }
