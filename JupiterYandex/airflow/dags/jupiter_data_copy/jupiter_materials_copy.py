@@ -180,7 +180,7 @@ def truncate_table(parameters:dict):
 with DAG(
     dag_id='jupiter_materials_copy',
     schedule_interval='10 20 * * *',
-    start_date=pendulum.datetime(2023, 1, 29, tz="UTC"),
+    start_date=pendulum.datetime(2023, 1, 30, tz="UTC"),
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,

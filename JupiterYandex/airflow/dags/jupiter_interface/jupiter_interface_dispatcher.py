@@ -6,6 +6,7 @@ from airflow.operators.bash import BashOperator
 from airflow.utils.trigger_rule import TriggerRule
 from airflow.decorators import dag, task
 import uuid
+from datetime import datetime
 
 TAGS = ["jupiter", "dev","interface"]
 
@@ -15,10 +16,9 @@ def generate_handler_id():
 
 with DAG(
     dag_id="jupiter_interface_dispatcher",
-    start_date=pendulum.datetime(2022, 7, 28, 7, 20, tz="UTC"),
+    start_date=datetime(2023, 1, 30),
     catchup=False,
-    schedule_interval=None,
-#     schedule_interval='20 7 * * *',
+    schedule_interval='0 8 * * *',
     tags=TAGS,
 ) as dag:
     handler_id=generate_handler_id()

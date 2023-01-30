@@ -19,10 +19,10 @@ with DAG(
     start_date=datetime(2022, 12, 21),
     catchup=False,
     # schedule_interval=None,
-    schedule_interval='30 22 * * *',
+    schedule_interval='20 21 * * *',
     tags=["jupiter", "dev","main"],
     default_args={'retries': 2,
-	'email': ['aleksey.loktev@smartcom.software','ilya.chernoskutov@smartcom.software'],
+	'email': ['aleksey.loktev@smartcom.software','ilya.chernoskutov@smartcom.software','support@smartcom.software'],
 	'email_on_failure': True},
 ) as dag:
     handler_id=generate_handler_id()

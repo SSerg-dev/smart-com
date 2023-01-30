@@ -33,19 +33,19 @@ with DAG(
         wait_for_completion = True,
     )
     
-    # trigger_jupiter_baseline_dispatcher = TriggerDagRunOperator(
-        # task_id="trigger_jupiter_baseline_dispatcher",
-        # trigger_dag_id="jupiter_baseline_dispatcher",  
-        # conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}"},
-        # wait_for_completion = True,
-    # )
+    trigger_jupiter_baseline_dispatcher = TriggerDagRunOperator(
+        task_id="trigger_jupiter_baseline_dispatcher",
+        trigger_dag_id="jupiter_baseline_dispatcher",  
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}"},
+        wait_for_completion = True,
+    )
     
-    # trigger_jupiter_copy_after_baseline_update = TriggerDagRunOperator(
-        # task_id="trigger_jupiter_copy_after_baseline_update",
-        # trigger_dag_id="jupiter_calc_copy",  
-        # conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}"},
-        # wait_for_completion = True,
-    # )
+    trigger_jupiter_copy_after_baseline_update = TriggerDagRunOperator(
+        task_id="trigger_jupiter_copy_after_baseline_update",
+        trigger_dag_id="jupiter_calc_copy",  
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}"},
+        wait_for_completion = True,
+    )
     
     trigger_jupiter_promo_filtering = TriggerDagRunOperator(
         task_id="trigger_jupiter_promo_filtering",
@@ -61,30 +61,30 @@ with DAG(
         wait_for_completion = True,
     )
 
-    # trigger_jupiter_update_promo = TriggerDagRunOperator(
-        # task_id="trigger_jupiter_update_promo",
-        # trigger_dag_id="jupiter_update_promo",  
-        # conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
-        # wait_for_completion = True,
-    # )
+    trigger_jupiter_update_promo = TriggerDagRunOperator(
+        task_id="trigger_jupiter_update_promo",
+        trigger_dag_id="jupiter_update_promo",  
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
+        wait_for_completion = True,
+    )
     
-    # trigger_jupiter_unblock_promo = TriggerDagRunOperator(
-        # task_id="trigger_jupiter_unblock_promo",
-        # trigger_dag_id="jupiter_unblock_promo",  
-        # conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
-        # wait_for_completion = True,
-    # )        
+    trigger_jupiter_unblock_promo = TriggerDagRunOperator(
+        task_id="trigger_jupiter_unblock_promo",
+        trigger_dag_id="jupiter_unblock_promo",  
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
+        wait_for_completion = True,
+    )        
 
-    # trigger_jupiter_incremental_processing = TriggerDagRunOperator(
-        # task_id="trigger_jupiter_incremental_processing",
-        # trigger_dag_id="jupiter_incremental_processing",  
-        # conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
-        # wait_for_completion = True,
-    # )  
+    trigger_jupiter_incremental_processing = TriggerDagRunOperator(
+        task_id="trigger_jupiter_incremental_processing",
+        trigger_dag_id="jupiter_incremental_processing",  
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}","parent_handler_id":"{{ti.xcom_pull(task_ids='generate_handler_id')}}"},
+        wait_for_completion = True,
+    )  
     
-    # handler_id >> trigger_jupiter_calc_copy >> trigger_jupiter_baseline_dispatcher >> trigger_jupiter_copy_after_baseline_update >> trigger_jupiter_promo_filtering >> trigger_jupiter_all_parameters_calc >> trigger_jupiter_update_promo >> trigger_jupiter_unblock_promo >> trigger_jupiter_incremental_processing
+    handler_id >> trigger_jupiter_calc_copy >> trigger_jupiter_baseline_dispatcher >> trigger_jupiter_copy_after_baseline_update >> trigger_jupiter_promo_filtering >> trigger_jupiter_all_parameters_calc >> trigger_jupiter_update_promo >> trigger_jupiter_unblock_promo >> trigger_jupiter_incremental_processing
 	
-    handler_id >> trigger_jupiter_calc_copy >> trigger_jupiter_promo_filtering >> trigger_jupiter_all_parameters_calc
+
 
 	
     
