@@ -29,8 +29,8 @@ namespace Module.Frontend.TPM.Util
             DateTimeOffset PW4D1Date = PW4D1.StartDate();
             MarsDate dateToday = new MarsDate(DateTimeOffset.Now);
             int days = 0;
-            DateTimeOffset todayEnddate = dateToday.DayEndDate();
-            todayEnddate = new DateTimeOffset(todayEnddate.Year, todayEnddate.Month, todayEnddate.Day -1, 23, 59, 59, 999, new TimeSpan(0, 0, 0));
+            
+            DateTimeOffset todayEnddate = TimeHelper.TodayEndDay();
 
             if (dateToday.Period == marsDate.Period && dateToday.Year == marsDate.Year)
             {
