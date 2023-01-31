@@ -11,6 +11,7 @@ import datetime as datetime
 import os
 import subprocess
 import math
+# Quality check helper 
 
 conf = SparkConf().setAppName("Jupiter - PySpark")
 sc = SparkContext(conf=conf)

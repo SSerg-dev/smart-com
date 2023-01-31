@@ -18,7 +18,7 @@ with DAG(
     dag_id="jupiter_interface_dispatcher",
     start_date=datetime(2023, 1, 30),
     catchup=False,
-    schedule_interval='0 8 * * *',
+    schedule_interval='0 20 * * *',
     tags=TAGS,
 ) as dag:
     handler_id=generate_handler_id()
