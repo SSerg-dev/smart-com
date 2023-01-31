@@ -164,6 +164,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<RollingScenario>();
             modelBuilder.Entity<PromoProductCorrectionView>();
+            modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
         }
 
 
@@ -508,6 +509,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("FullImportXLSX");
             builder.Entity<Promo>().Collection.Action("DeclinePromo");
             builder.Entity<Promo>().Collection.Action("GetUserDashboardsCount");
+            builder.Entity<Promo>().Collection.Action("GetLiveMetricsDashboard");
             builder.Entity<Promo>().Collection.Action("GetApprovalHistory");
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
@@ -523,6 +525,7 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("GetHandlerIdForBlockedPromo");
             builder.Entity<Promo>().Collection.Action("GetRSPeriod");
             builder.Entity<Promo>().Collection.Action("PromoRSDelete");
+            builder.Entity<Promo>().Collection.Action("InvoiceFilter");
             builder.Entity<Promo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<Promo>("Promoes");
             builder.Entity<HistoricalPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromo>("HistoricalPromoes");
 
@@ -1225,6 +1228,9 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("PromoProductCorrectionDelete");
+
+            builder.EntitySet<MetricsLiveHistory>("MetricsLiveHistories");
+            builder.Entity<MetricsLiveHistory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MetricsLiveHistory>("MetricsLiveHistories");
         }
 
 

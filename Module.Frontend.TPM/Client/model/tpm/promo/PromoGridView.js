@@ -92,13 +92,16 @@
         { name: 'ActualPromoLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoBaselineLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSVdiffPercent', useNull: true, type: 'float', hidden: true, isDefault: false },
 
         //Apollo Export
         { name: 'IsApolloExport', type: 'boolean', hidden: false, isDefault: false },
 
         { name: 'DeviationCoefficient', type: 'float', hidden: false, isDefault: true },
 
-        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true},
+        { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
+        { name: 'WorkflowStep', type: 'string', hidden: false, isDefault: true },
+        { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

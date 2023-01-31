@@ -51,6 +51,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string PlanInstoreMechanicTypeName { get; set; }
         public string ProductHierarchy { get; set; }
         public bool IsOnInvoice { get; set; }
+        public bool IsOnHold { get; set; }
         public bool IsApolloExport { get; set; }
 
         //private double deviationCoefficient;
@@ -86,6 +87,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? PlanPromoIncrementalNSV { get; set; }
         public bool? InOut { get; set; }
         public double? PlanPromoIncrementalLSV { get; set; }
+        public double? PlanPromoIncrementalLSVRaw { get; set; } //точное значение без округления
         public double? PlanPromoBaselineLSV { get; set; }
         public bool IsGrowthAcceleration { get; set; }
         public bool IsInExchange { get; set; }
@@ -95,5 +97,8 @@ namespace Module.Persist.TPM.Model.DTO {
         public double? ActualPromoLSV { get; set; }
         public double? ActualPromoBaselineLSV { get; set; }
         public double? ActualPromoIncrementalLSV { get; set; }
+        public double? ActualPromoLSVdiffPercent { get; set; }
+        public string WorkflowStep { get; set; }
+        public string InvoiceNumber { get; set; }
     }
 }

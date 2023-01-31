@@ -308,6 +308,7 @@
     'tpm.inoutselectionproductwindow.InOutSelectionProductWindow',
 
     'tpm.userdashboard.UserDashboard',
+    'tpm.metricsdashboard.MetricsDashboard',
     'tpm.clientdashboard.ClientDashboard',
 
     'tpm.clientkpidata.ClientKPIData',
@@ -324,4 +325,6 @@
 
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
+
+    'tpm.metricslivehistory.MetricsLiveHistory',
 ]);

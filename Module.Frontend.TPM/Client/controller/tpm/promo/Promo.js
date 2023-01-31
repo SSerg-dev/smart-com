@@ -330,11 +330,14 @@
             }
             var promoController = App.app.getController('tpm.promo.Promo');
             promoController.massApprovalButtonDisable(grid, store);
+            promoController.invoiceFilterButtonDisable(grid, store);
         });
 
         store.on('beforeload', function (store) {
             var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+            var ifButton = grid.up().down('custombigtoolbar').down('#invoicefilterbutton');
             maButton.setDisabled(true);
+            ifButton.setDisabled(true);
         });
         // RSmode
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
@@ -362,7 +365,7 @@
         if (mode) {
             if (mode.data.value != 1) {
                 var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();                
+                grid.columnManager.getColumns()[indexh].hide();
             }
             else {
                 var promoGridStore = grid.getStore();
@@ -466,6 +469,26 @@
         });
 
         return filterProperties;
+    },
+
+    invoiceFilterButtonDisable: function (grid, store) {
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+        var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
+        var ifButton = grid.up().down('custombigtoolbar').down('#invoicefilterbutton');
+        if (filter != null) {
+            var noClientfilter = JSON.parse(JSON.stringify(filter));
+            noClientfilter.rules = noClientfilter.rules.filter(item => item.property != 'ClientHierarchy');
+
+            var onInvoiceFilter = promoHelperController.getInvoiceFilter();
+            var isDisabled = !this.compareFilters(noClientfilter, onInvoiceFilter);
+
+            ifButton.setDisabled(isDisabled);
+            ifButton.setVisible(!isDisabled);
+        }
+        else {
+            ifButton.setDisabled(true);
+            ifButton.setVisible(false);
+        }
     },
 
     onBasicPanelAfterrender: function (component, eOpts) {
@@ -3921,11 +3944,11 @@
                 if (mode.data.value == 0) {
                     this.saveModel(model, window, close, reloadForm);
                 }
-                if (mode.data.value == 1){
+                if (mode.data.value == 1) {
                     this.savePublishClosePromo(model, window, close, reloadForm);
                 }
             }
-            
+
         } else {
             App.Notify.pushInfo(isModelComplete);
         }
@@ -3935,7 +3958,7 @@
         var checkValid = this.validatePromoModel(window);
         if (checkValid === '') {
             var record = this.getRecord(window);
-            
+
             var btn_publish = window.down('button[itemId=btn_publish]');
             window.previousStatusId = window.statusId;
             window.statusId = btn_publish.statusId;
@@ -6516,14 +6539,14 @@
     },
 
 
-    setEventBTL: function () {        
+    setEventBTL: function () {
         var promoeditorcustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
         var period = promoeditorcustom.down('container[name=promo_step4]');
         var durationDateStart = period.down('datefield[name=DurationStartDate]');
         var durationDateEnd = period.down('datefield[name=DurationEndDate]');
 
         if (durationDateStart.value && durationDateEnd.value && promoeditorcustom.InOutProductIds) {
-            var eventBTLModel = new Object();            
+            var eventBTLModel = new Object();
             eventBTLModel.DurationDateStart = durationDateStart.value;
             eventBTLModel.DurationDateEnd = durationDateEnd.value;
             eventBTLModel.InOutProductIds = promoeditorcustom.InOutProductIds;

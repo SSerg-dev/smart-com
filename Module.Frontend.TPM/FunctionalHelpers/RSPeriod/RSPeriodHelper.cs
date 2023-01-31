@@ -19,8 +19,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         public static StartEndModel GetRSPeriod(DatabaseContext Context)
         {
             string weeks = Context.Set<Setting>().Where(g => g.Name == "RS_START_WEEKS").FirstOrDefault().Value;
-            DateTimeOffset today = DateTimeOffset.Now;
-            DateTimeOffset endDate = new DateTimeOffset(today.Year, 12, 31, 23, 0, 0, new TimeSpan(0, 0, 0));
+            DateTimeOffset today = TimeHelper.TodayStartDay();
+            DateTimeOffset endDate = TimeHelper.ThisEndYear();
             StartEndModel startEndModel = new StartEndModel
             {
                 EndDate = endDate

@@ -44,6 +44,35 @@
         widget: 'userdashboard'
     },
     {
+        text: l10n.ns('tpm', 'mainmenu').value('BusinessMetrics'),
+        tooltip: l10n.ns('tpm', 'mainmenu').value('BusinessMetrics'),
+        scale: 'medium',
+        glyph: 0xF873,
+        rsMode: false,
+        currentMode: true,
+        children: [
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('MetricsDashboard'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsDashboard'),
+                scale: 'medium',
+                glyph: 0xF873,
+                rsMode: false,
+                currentMode: true,
+                widget: 'metricsdashboard'
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('MetricsLiveHistory'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('MetricsLiveHistory'),
+                scale: 'medium',
+                glyph: 0xF2DA,
+                rsMode: false,
+                currentMode: true,
+                roles: ['Administrator', 'FunctionalExpert', 'SupportAdministrator'],
+                widget: 'metricslivehistory'
+            }
+        ]
+    },
+    {
         text: l10n.ns('tpm', 'mainmenu').value('SchedulerItem'),
         tooltip: l10n.ns('tpm', 'mainmenu').value('SchedulerItem'),
         glyph: 0xf0f1,

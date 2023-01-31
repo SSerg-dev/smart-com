@@ -2,6 +2,9 @@
     'mainmenu': {
         'ProductItem': 'Product',
         'UserDashboard': 'User Dashboard',
+        'BusinessMetrics': 'Business Metrics',
+        'MetricsDashboard': 'Metrics Dashboard',
+        'MetricsLiveHistory': 'Metrics Live History',
         'SubrangeItem': 'Subrange',
         'CategoryItem': 'Category',
         'BrandItem': 'Brand',
@@ -191,7 +194,8 @@
         'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
-        'RSmode': 'RS'
+        'RSmode': 'RS',
+        'MetricsLiveHistory':'Metrics Live History'
     },
 
     'text': {
@@ -204,6 +208,7 @@
         'notSelected': 'You must select a record.',
         'rejectReason': 'Reject reason',
         'Confirmation': 'Confirmation',
+        'Information': 'Information',
         'DeleteNode': 'Delete node?',
         'formLoadError': 'Error loading form.',
         'failedLoadData': 'Failed to load data.',
@@ -299,6 +304,7 @@
     'button': {
         'confirm': 'Yes',
         'cancel': 'No',
+        'ok': 'Ok',
         'ProductList': 'Product List',
         'FilteredProductList': 'Filtered Products',
         'Close': 'Close',
@@ -889,6 +895,7 @@
         'ActualInStoreMechanicDiscountTip': 'Actual discount instore with co investment from client',
         'ChangeStateOnlyButtonText': 'Dependent on me',
         'MassApprovalButtonText': 'Mass Approve',
+        'InvoiceFilterOnButtonText': 'Invoice waiting filter',
         'ChangeResponsible': 'Change Responsible',
         'CreateCollapsed': 'Create<br>Promo',
         'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
@@ -929,6 +936,8 @@
         'IsApolloExport': 'Apollo export',
         'GAInExcnange': 'GA InExchange',
         'IsInExchange': 'InExchange',
+        'WorkflowStep': 'Workflow Step',
+        'PlanPromoLSV': 'Plan Promo LSV',
 
         //Для исторической модели
         'PlanPromoNetROIPercent': 'Plan Promo Net ROI Percent',
@@ -2901,7 +2910,8 @@
     'ClientDashboard': {
         'SelectClient': 'Select client',
         'SelectYear': 'Select year',
-        'Details': 'Details'
+        'Details': 'Details',
+        'SelectPeriod': 'Select period',
     },
 
     'ClientDashboardPromoWeeksPanel': {
@@ -2962,5 +2972,13 @@
         'EndDate': 'End Date',
         'PromoStatusName': 'Status',
     },
-    'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity']
+    'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity'],
+    'MetricsLiveHistory': {
+        'Type': 'Type',
+        'Date': 'Date',
+        'ClientTreeId': 'Client',
+        'ClientHierarchy': 'Client',
+        'Value': 'Percent',
+        'ValueLSV': 'LSV',
+    }
 });

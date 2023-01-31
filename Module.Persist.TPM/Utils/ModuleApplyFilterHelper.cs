@@ -173,6 +173,44 @@ namespace Module.Persist.TPM.Utils
         }
 
         /// <summary>
+        /// Применение фильтра по ограничениям к Промо
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="hierarchy"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterMode"></param>
+        /// <returns></returns>
+        public static IQueryable<PromoGridView> ApplyFilter(IQueryable<PromoGridView> query, TPMmode mode, List<string> clients, IQueryable<ClientTreeHierarchyView> hierarchy, FilterQueryModes filterMode = FilterQueryModes.Active)
+        {
+            if (clients.Count > 0)
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clients);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
+                var ddd = query.ToList();
+            }
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.Where(x => !x.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.Where(x => x.Disabled);
+                    }
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    //query = query.Where(x => x.TPMmode == TPMmode.RS);
+                    break;
+            }
+            return query;
+        }
+
+        /// <summary>
         /// Применение фильтра по ограничениям к Промо для Календаря
         /// </summary>
         /// <param name="query"></param>
@@ -492,7 +530,7 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS: 
+                case TPMmode.RS:
                     query = query.Where(x => x.row_number == 1 && !x.Disabled);
                     break;
             }

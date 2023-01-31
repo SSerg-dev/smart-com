@@ -3263,6 +3263,46 @@
     <Compile Include="Migrations\202301230818222_ChangeCorrectionUniqueIndex.Designer.cs">
       <DependentUpon>202301230818222_ChangeCorrectionUniqueIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212051759063_Add_IsOnHold_PromoGridView.cs" />
+    <Compile Include="Migrations\202212051759063_Add_IsOnHold_PromoGridView.Designer.cs">
+      <DependentUpon>202212051759063_Add_IsOnHold_PromoGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212070941222_Add_MetricsDashboard_AP.cs" />
+    <Compile Include="Migrations\202212070941222_Add_MetricsDashboard_AP.Designer.cs">
+      <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212131549427_ForView.cs" />
+    <Compile Include="Migrations\202212131549427_ForView.Designer.cs">
+      <DependentUpon>202212131549427_ForView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212201313304_WorkflowStep_PromoGridView.cs" />
+    <Compile Include="Migrations\202212201313304_WorkflowStep_PromoGridView.Designer.cs">
+      <DependentUpon>202212201313304_WorkflowStep_PromoGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212220559501_Empty22122022.cs" />
+    <Compile Include="Migrations\202212220559501_Empty22122022.Designer.cs">
+      <DependentUpon>202212220559501_Empty22122022.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212221128121_Add_InvoiceFilter_AP.cs" />
+    <Compile Include="Migrations\202212221128121_Add_InvoiceFilter_AP.Designer.cs">
+      <DependentUpon>202212221128121_Add_InvoiceFilter_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212271114363_Add_Settings_Metrics.cs" />
+    <Compile Include="Migrations\202212271114363_Add_Settings_Metrics.Designer.cs">
+      <DependentUpon>202212271114363_Add_Settings_Metrics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs" />
+    <Compile Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.Designer.cs">
+      <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202301111334445_Add_MetricsLiveHistory.cs" />
+    <Compile Include="Migrations\202301111334445_Add_MetricsLiveHistory.Designer.cs">
+      <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.cs" />
+    <Compile Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.Designer.cs">
+      <DependentUpon>202301160650238_Add_MetricsLiveHistoryHandler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -3404,6 +3444,7 @@
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
+    <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
@@ -3527,6 +3568,7 @@
     <Compile Include="PromoStateControl\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanProductParametersCalculation.cs" />
+    <Compile Include="Utils\TimeHelper.cs" />
     <Content Include="SQLInitialize\20200220_1730_AlterPromoGridView_Add_OnOffInvoice.sql" />
     <Content Include="SQLInitialize\20200225_2150_AlterPromoView_AddONOFFInvoice.sql" />
     <Content Include="SQLInitialize\20200616_1330_Alter_СlientDashboarView.sql" />
@@ -6151,6 +6193,36 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301230818222_ChangeCorrectionUniqueIndex.resx">
       <DependentUpon>202301230818222_ChangeCorrectionUniqueIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212051759063_Add_IsOnHold_PromoGridView.resx">
+      <DependentUpon>202212051759063_Add_IsOnHold_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212070941222_Add_MetricsDashboard_AP.resx">
+      <DependentUpon>202212070941222_Add_MetricsDashboard_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212131549427_ForView.resx">
+      <DependentUpon>202212131549427_ForView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212201313304_WorkflowStep_PromoGridView.resx">
+      <DependentUpon>202212201313304_WorkflowStep_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212220559501_Empty22122022.resx">
+      <DependentUpon>202212220559501_Empty22122022.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212221128121_Add_InvoiceFilter_AP.resx">
+      <DependentUpon>202212221128121_Add_InvoiceFilter_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212271114363_Add_Settings_Metrics.resx">
+      <DependentUpon>202212271114363_Add_Settings_Metrics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.resx">
+      <DependentUpon>202212281349007_Add_PlanPromoIncrentalLSVRaw_To_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301111334445_Add_MetricsLiveHistory.resx">
+      <DependentUpon>202301111334445_Add_MetricsLiveHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301160650238_Add_MetricsLiveHistoryHandler.resx">
+      <DependentUpon>202301160650238_Add_MetricsLiveHistoryHandler.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

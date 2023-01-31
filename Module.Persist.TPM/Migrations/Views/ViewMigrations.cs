@@ -21,7 +21,39 @@
                               pr.ProductHierarchy, pr.PlanPromoNetIncrementalNSV, pr.PlanPromoIncrementalNSV, pr.InOut, CAST(ROUND(CAST(pr.PlanPromoIncrementalLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoIncrementalLSV, 
                               CAST(ROUND(CAST(pr.PlanPromoBaselineLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoBaselineLSV, pr.LastChangedDate, pr.LastChangedDateFinance, pr.LastChangedDateDemand, pts.Name AS PromoTypesName, 
                               pr.IsGrowthAcceleration, pr.IsApolloExport, CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient, pr.ActualPromoLSVByCompensation, pr.PlanPromoLSV, pr.ActualPromoLSV, 
-                              pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode
+                              pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode, CAST(CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END AS BIT) as IsOnHold, (CASE WHEN ActualPromoLSVByCompensation > 0 THEN ABS(ActualPromoLSV - ActualPromoLSVByCompensation) / ActualPromoLSVByCompensation ELSE 0 END) as ActualPromoLSVdiffPercent,
+							  pr.PlanPromoIncrementalLSV AS PlanPromoIncrementalLSVRaw,
+							  IIF(ps.SystemName = 'OnApproval', 
+							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
+							  CASE   
+								 WHEN ((pr.IsCMManagerApproved = 0 OR pr.IsCMManagerApproved is NULL)
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
+									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Customer Marketing Manager'  
+								 WHEN (pr.IsCMManagerApproved = 1
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
+									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Planning'  
+								 WHEN (pr.IsCMManagerApproved = 1
+									AND pr.IsDemandPlanningApproved = 1
+									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Finance'  
+								 WHEN (pr.IsCMManagerApproved = 1
+									AND pr.IsDemandPlanningApproved = 1
+									AND pr.IsDemandFinanceApproved = 1) THEN 'Growth Acceleration Manager'  
+								 ELSE ''  
+							  END,
+							  CASE   
+								 WHEN (pr.IsCMManagerApproved = 1
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
+									AND pr.IsDemandFinanceApproved = 1) THEN 'Demand Planning'  
+								 WHEN ((pr.IsCMManagerApproved = 0 OR pr.IsCMManagerApproved is NULL)
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
+									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Customer Marketing Manager'  
+								 WHEN (pr.IsCMManagerApproved = 1
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
+									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Planning' 
+								 ELSE ''  
+							  END), 
+							  '') as WorkflowStep,
+							  pr.InvoiceNumber
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
