@@ -6894,7 +6894,7 @@
       "status": "READY"
     }
   ],
-  "name": "PROMO_FILTERING_FOR_RECALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PROMO_FILTERING_FOR_RECALCULATION",
   "id": "2HPW4FZ8M",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

@@ -1693,7 +1693,7 @@
       "status": "FINISHED"
     }
   ],
-  "name": "JUPITER_PRICELIST_FDM",
+  "name": "JUPITER/PRICELIST/JUPITER_PRICELIST_FDM",
   "id": "2HDAR9ETH",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

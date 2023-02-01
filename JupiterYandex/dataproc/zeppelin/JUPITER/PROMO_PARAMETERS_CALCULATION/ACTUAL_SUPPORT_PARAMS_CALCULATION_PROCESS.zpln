@@ -95,7 +95,7 @@
       "status": "READY"
     }
   ],
-  "name": "ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS",
   "id": "2HA6SWXTW",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

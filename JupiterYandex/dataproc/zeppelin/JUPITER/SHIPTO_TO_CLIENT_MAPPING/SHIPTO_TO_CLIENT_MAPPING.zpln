@@ -577,7 +577,7 @@
       "$$hashKey": "object:6110"
     }
   ],
-  "name": "SHIPTO_TO_CLIENT_MAPPING",
+  "name": "JUPITER/SHIPTO_TO_CLIENT_MAPPING/SHIPTO_TO_CLIENT_MAPPING",
   "id": "2HCACGM7U",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

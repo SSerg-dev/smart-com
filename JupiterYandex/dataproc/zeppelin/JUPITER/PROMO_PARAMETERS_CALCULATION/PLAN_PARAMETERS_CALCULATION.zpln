@@ -1772,7 +1772,7 @@
       "status": "READY"
     }
   ],
-  "name": "PLAN_PARAMETERS_CALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION",
   "id": "2HRKGY4JH",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

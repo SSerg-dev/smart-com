@@ -310,7 +310,7 @@
       "status": "READY"
     }
   ],
-  "name": "COGS_TI_CALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION",
   "id": "2HCUK8NDY",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

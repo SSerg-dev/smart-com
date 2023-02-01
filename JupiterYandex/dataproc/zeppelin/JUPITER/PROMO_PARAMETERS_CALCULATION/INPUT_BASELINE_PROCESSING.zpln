@@ -984,7 +984,7 @@
       "status": "ERROR"
     }
   ],
-  "name": "INPUT_BASELINE_PROCESSING",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/INPUT_BASELINE_PROCESSING",
   "id": "2HAWCXQDX",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

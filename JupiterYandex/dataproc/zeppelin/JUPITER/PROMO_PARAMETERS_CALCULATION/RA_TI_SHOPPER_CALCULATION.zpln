@@ -133,7 +133,7 @@
       "status": "READY"
     }
   ],
-  "name": "RA_TI_SHOPPER_CALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION",
   "id": "2HCYHFNM6",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
