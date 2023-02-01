@@ -76,7 +76,7 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters, FilterQueryModes.Active, canChangeStateOnly ? role : String.Empty);
-            }            
+            }
 
             // Не администраторы не смотрят чужие черновики
             if (role != "Administrator" && role != "SupportAdministrator")
@@ -183,7 +183,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -322,13 +322,12 @@ namespace Module.Frontend.TPM.Controllers
                 List<Product> filteredProducts; // продукты, подобранные по фильтрам
                 CheckSupportInfo(result, promoProductTrees, out filteredProducts);
                 //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                CalculatePromo(result, false, false, true);
+                CalculatePromo(result, false, false, false, true);
             }
             else
             {
                 // Добавить запись в таблицу PromoProduct при сохранении.
-                string error;
-                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out error, true, promoProductTrees);
+                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out string error, true, promoProductTrees);
                 // Создаём инцидент для draft сразу
                 PromoHelper.WritePromoDemandChangeIncident(Context, result);
             }
@@ -366,6 +365,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(y => y.ProductCorrectionPriceIncreases))
                     .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
@@ -405,7 +405,7 @@ namespace Module.Frontend.TPM.Controllers
                             Context.SaveChanges();
                             patch.Patch(model);
                             RSmodeHelper.EditToPromoRS(Context, model);
-                        }                        
+                        }
                     }
                 }
                 patch.Patch(model);
@@ -560,9 +560,23 @@ namespace Module.Frontend.TPM.Controllers
                     var productQuery = Context.Set<Product>().Where(x => !x.Disabled);
                     bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy, productQuery);
                     bool needResetUpliftCorrections = false;
+                    bool needResetUpliftCorrectionsPI = false;
                     if (model.NeedRecountUplift != null && promoCopy.NeedRecountUplift != null && model.NeedRecountUplift != promoCopy.NeedRecountUplift)
                     {
                         needResetUpliftCorrections = true;
+                    }
+
+                    if (model.NeedRecountUpliftPI != promoCopy.NeedRecountUpliftPI ||
+                        (promoCopy.PlanPromoUpliftPercentPI == null && model.PlanPromoUpliftPercentPI != null &&
+                        Math.Round((double)model.PromoPriceIncrease.PlanPromoUpliftPercent, 2, MidpointRounding.AwayFromZero) != model.PlanPromoUpliftPercentPI))
+                    {
+                        needResetUpliftCorrectionsPI = true;
+
+                    }
+                    // PriceIncrease
+                    if (model.PromoPriceIncrease != null && model.PlanPromoUpliftPercentPI != null)
+                    {
+                        model.PromoPriceIncrease.PlanPromoUpliftPercent = model.PlanPromoUpliftPercentPI;
                     }
                     model.AdditionalUserTimestamp = null;
 
@@ -655,7 +669,7 @@ namespace Module.Frontend.TPM.Controllers
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
 
-                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
                         }
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
@@ -855,7 +869,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return InternalServerError(GetExceptionMessage.GetInnerException(ex));
             }
         }
 
@@ -871,13 +885,13 @@ namespace Module.Frontend.TPM.Controllers
             {
                 try
                 {
-                    CalculatePromo(promo, true, false);
+                    CalculatePromo(promo, true, false, false);
                     transaction.Commit();
                 }
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
 
@@ -907,6 +921,44 @@ namespace Module.Frontend.TPM.Controllers
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
                     Description = $"Mass promo approving",
+                    Name = "Module.Host.TPM.Handlers." + handlerName,
+                    ExecutionPeriod = null,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+        }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult SendForApproval()
+        {
+            var promoNumbers = Request.Content.ReadAsStringAsync().Result;
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                HandlerData data = new HandlerData();
+                string handlerName = "MassSendForApprovalHandler";
+
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = $"Mass promo send for approval",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -1092,7 +1144,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
         [ClaimsAuthorize]
@@ -1107,7 +1159,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.PromoProductTrees)
                     .Include(g => g.IncrementalPromoes)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
-                    .FirstOrDefault(g=>g.Id == key);
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -1249,7 +1301,7 @@ namespace Module.Frontend.TPM.Controllers
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
         }
@@ -1338,7 +1390,7 @@ namespace Module.Frontend.TPM.Controllers
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    return InternalServerError(e);
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
                 }
             }
         }
@@ -1581,7 +1633,7 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
         /// </summary>
         /// <param name="promo"></param>
-        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
+        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -1594,6 +1646,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrectionsPI", needResetUpliftCorrectionsPI, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("createDemandIncidentCreate", createDemandIncidentCreate, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("createDemandIncidentUpdate", createDemandIncidentUpdate, data, visible: false, throwIfNotExists: false);
 
@@ -2478,7 +2531,10 @@ namespace Module.Frontend.TPM.Controllers
                         && Math.Round(oldPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoBranding.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.PlanPromoUpliftPercent != null && newPromo.PlanPromoUpliftPercent != null
                         && Math.Round(oldPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero))
+                    || (newPromo.PromoPriceIncrease != null && newPromo.PlanPromoUpliftPercentPI != null && Math.Round(newPromo.PromoPriceIncrease.PlanPromoUpliftPercent.Value, 2, MidpointRounding.AwayFromZero) != Math.Round(newPromo.PlanPromoUpliftPercentPI.Value, 2, MidpointRounding.AwayFromZero))
                     || (oldPromo.NeedRecountUplift != null && newPromo.NeedRecountUplift != null && oldPromo.NeedRecountUplift != newPromo.NeedRecountUplift)
+                    || (oldPromo.PlanPromoUpliftPercentPI == null && newPromo.PlanPromoUpliftPercentPI != null)
+                    || (oldPromo.NeedRecountUpliftPI != newPromo.NeedRecountUpliftPI)
                     || oldPromo.IsOnInvoice != newPromo.IsOnInvoice
                     || oldPromo.PlanAddTIMarketingApproved != newPromo.PlanAddTIMarketingApproved
                     || oldPromo.PromoStatus.Name.ToLower() == "draft"
@@ -2557,6 +2613,7 @@ namespace Module.Frontend.TPM.Controllers
                     cfg.CreateMap<Product, Product>()
                         .ForMember(pTo => pTo.AssortmentMatrices, opt => opt.Ignore())
                         .ForMember(pTo => pTo.BaseLines, opt => opt.Ignore())
+                        .ForMember(pTo => pTo.IncreaseBaseLines, opt => opt.Ignore())
                         .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Ignore())
                         .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
                         .ForMember(pTo => pTo.PriceLists, opt => opt.Ignore())
@@ -2633,7 +2690,6 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 tempCorrection.Disabled = true;
             }
-
         }
         private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
         {

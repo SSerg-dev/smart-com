@@ -354,6 +354,8 @@
     <Compile Include="Actions\FullXLSXUpdateImportClientDashboardAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportIncrementalPromoAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseAction.cs" />
+    <Compile Include="Actions\FullXLSXUpdateImportPromoProductPriceIncreasesUpliftAction.cs" />
     <Compile Include="Actions\FullXLSXUpdateImportRollingVolumesAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorUpdateImportAction.cs" />
     <Compile Include="Actions\FullXLSXCompetitorPromoUpdateImportAction.cs" />
@@ -361,6 +363,7 @@
     <Compile Include="Actions\FullXLSXUpdateImportTechnologyAction.cs" />
     <Compile Include="Actions\Interface\Incoming\InputBaseLineCSVProcessorAction.cs" />
     <Compile Include="Actions\Interface\Outcoming\OutputIncrementalProcessAction.cs" />
+    <Compile Include="Actions\MassSendForApprovalAction.cs" />
     <Compile Include="Actions\NightProcessingWaitAction.cs" />
     <Compile Include="Actions\Notifications\ProductSyncFailNotificationAction.cs" />
     <Compile Include="Actions\Notifications\ClientTreeNeedUpdateNotificationAction.cs" />
@@ -409,6 +412,7 @@
     <Compile Include="Handlers\MainNightProcessing\MainNightProcessingHelper.cs" />
     <Compile Include="Handlers\MainNightProcessing\RestartMainNightProcessingHandler.cs" />
     <Compile Include="Handlers\MetricsLiveHistoryHandler.cs" />
+    <Compile Include="Handlers\MassSendForApprovalHandler.cs" />
     <Compile Include="Handlers\NightProcessingWaitHandler.cs" />
     <Compile Include="Handlers\Notifications\ProductSyncFailNotificationHandler.cs" />
     <Compile Include="Handlers\ExportHandler.cs" />

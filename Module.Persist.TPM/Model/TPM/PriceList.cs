@@ -34,6 +34,9 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PriceList", 5, IsUnique = true)]
         public Guid ProductId { get; set; }
 
+        [Index("Unique_PriceList", 6, IsUnique = true)]
+        public bool FuturePriceMarker { get; set; }
+
         public virtual ClientTree ClientTree { get; set; }
         public virtual Product Product { get; set; }
 
@@ -61,7 +64,8 @@ namespace Module.Persist.TPM.Model.TPM
                 x.EndDate == y.EndDate &&
                 x.Price == y.Price &&
                 x.ClientTreeId == y.ClientTreeId &&
-                x.ProductId == y.ProductId;
+                x.ProductId == y.ProductId &&
+                x.FuturePriceMarker == y.FuturePriceMarker;
         }
 
         public int GetHashCode(PriceList obj)

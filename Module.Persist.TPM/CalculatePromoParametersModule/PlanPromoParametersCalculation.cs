@@ -4,6 +4,7 @@ using Module.Persist.TPM.Model.TPM;
 using Persist;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Model.SimpleModel;
+using System.Data.Entity;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -18,7 +19,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             try
             {
-                Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
+                Promo promo = context.Set<Promo>()
+                    .Include(g => g.PromoPriceIncrease)
+                    .Where(x => x.Id == promoId && !x.Disabled)
+                    .FirstOrDefault();
 
                 ResetValues(promo, context);
                 double? sumPlanProductBaseLineLSV = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineLSV);
@@ -72,6 +76,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promo.PlanPromoPostPromoEffectVolumeW1 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW1 / 100;
                                 promo.PlanPromoPostPromoEffectVolumeW2 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW2 / 100;
                                 promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
+                                // PriceIncrease
+                                var PlanPromoPostPromoEffectLSVW1PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
+                                var PlanPromoPostPromoEffectLSVW2PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
+                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = PlanPromoPostPromoEffectLSVW1PI + PlanPromoPostPromoEffectLSVW2PI;
                             }
 
                             promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
@@ -89,6 +97,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoPostPromoEffectVolumeW1 = 0;
                             promo.PlanPromoPostPromoEffectVolumeW2 = 0;
                             promo.PlanPromoPostPromoEffectVolume = 0;
+                            // PriceIncrease
+                            promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = 0;
                         }
 
                         promo.PlanPromoNetLSV = (promo.PlanPromoBaselineLSV ?? 0) + (promo.PlanPromoNetIncrementalLSV ?? 0);
@@ -103,7 +113,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoIncrementalNSV = (promo.PlanPromoIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoIncrementalBaseTI ?? 0);
                             promo.PlanPromoNetIncrementalNSV = (promo.PlanPromoNetIncrementalLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetIncrementalBaseTI ?? 0);
                             promo.PlanPromoNetIncrementalMAC = (promo.PlanPromoNetIncrementalNSV ?? 0) - (promo.PlanPromoNetIncrementalCOGS ?? 0);
-                            
+
                             double? sumPlanProductBaseLineVolume = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineVolume);
                             promo.PlanPromoBaselineVolume = sumPlanProductBaseLineVolume;
                             promo.PlanPromoIncrementalVolume = sumPlanProductBaseLineVolume * promo.PlanPromoUpliftPercent / 100;
@@ -162,13 +172,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             if (promo.IsInExchange)
                             {
-                                promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.Promoes.Sum(g=>g.PlanPromoTIShopper) - (promo.PlanPromoNetIncrementalLSV - promo.Promoes.Sum(g=>g.PlanPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
+                                promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.Promoes.Sum(g => g.PlanPromoTIShopper) - (promo.PlanPromoNetIncrementalLSV - promo.Promoes.Sum(g => g.PlanPromoNetIncrementalLSV)) * (RATIShopperPercent ?? 0) / 100;
                             }
                             else
                             {
                                 promo.PlanAddTIShopperCalculated = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
                             }
-                            var isApproved = promo.LastApprovedDate != null;
+                            bool isApproved = promo.LastApprovedDate != null;
                             if (!isApproved)
                             {
                                 promo.PlanAddTIShopperApproved = promo.PlanPromoTIShopper - promo.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;

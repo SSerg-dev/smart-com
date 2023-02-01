@@ -87,6 +87,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "StartDate", Header = "StartDate", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = order++, Field = "EndDate", Header = "EndDate", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = order++, Field = "Price", Header = "Price", Quoting = false },
+                new Column() { Order = order++, Field = "FuturePriceMarker", Header = "FuturePriceMarker", Quoting = false },
             };
             return columns;
         }

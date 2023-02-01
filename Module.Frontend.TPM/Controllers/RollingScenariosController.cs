@@ -20,6 +20,7 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using System.Data.Entity.Infrastructure;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -103,7 +104,7 @@ namespace Module.Frontend.TPM.Controllers
                     catch (Exception e)
                     {
                         transaction.Rollback();
-                        return InternalServerError(e);
+                        return InternalServerError(GetExceptionMessage.GetInnerException(e));
                     }
 
                 }
@@ -172,7 +173,7 @@ namespace Module.Frontend.TPM.Controllers
                     catch (DbUpdateException e)
                     {
                         transaction.Rollback();
-                        return InternalServerError(e);
+                        return InternalServerError(GetExceptionMessage.GetInnerException(e));
                     }
 
                 }

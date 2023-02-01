@@ -128,6 +128,11 @@ namespace Module.Host.TPM.Actions.Notifications
                             var options = getODataQueryOptions<TModel>();
                             records = options.ApplyTo(new PromoProductCorrectionViewsController(User, Role, RoleId).GetConstraintedQuery(TPMmode: TPMmode, localContext: context)).Cast<PromoProductCorrectionView>().ToList();
                         }
+                        else if (typeof(TModel).Name.Equals(typeof(PromoProductCorrectionPriceIncreaseView).Name))
+                        {
+                            var options = getODataQueryOptions<TModel>();
+                            records = options.ApplyTo(new PromoProductCorrectionPriceIncreaseViewsController(User, Role, RoleId).GetConstraintedQuery(localContext: context)).Cast<PromoProductCorrectionPriceIncreaseView>().ToList();
+                        }
                         else
                         {
                             records = context.Database.SqlQuery<TModel>(SqlString).ToList();

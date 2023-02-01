@@ -16,6 +16,8 @@ namespace Module.Persist.TPM.Model.DTO
         public string UNIT_OF_MEASURE { get; set; }
         public string CURRENCY { get; set; }
 
+        public string RELEASE_STATUS { get; set; }
+
         public override string ToString()
         {
             var stringData =
@@ -25,7 +27,8 @@ namespace Module.Persist.TPM.Model.DTO
                $"{nameof(START_DATE)} = {START_DATE}, " +
                $"{nameof(FINISH_DATE)} = {FINISH_DATE}, " +
                $"{nameof(UNIT_OF_MEASURE)} = {UNIT_OF_MEASURE}, " +
-               $"{nameof(CURRENCY)} = {CURRENCY}";
+               $"{nameof(CURRENCY)} = {CURRENCY}, " +
+               $"{nameof(RELEASE_STATUS)} = {RELEASE_STATUS}, ";
 
             return stringData;
         }

@@ -79,11 +79,12 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProduct2Plu>();
             modelBuilder.Entity<PLUDictionary>();
 
-            modelBuilder.Entity<PromoProduct>().HasMany(p =>p.PromoProductsCorrections).WithRequired(p=>p.PromoProduct).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProduct>().HasMany(p => p.PromoProductsCorrections).WithRequired(p => p.PromoProduct).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProduct>().HasOptional(x => x.Plu).WithRequired();
 
 
             modelBuilder.Entity<BaseLine>().HasRequired(g => g.Product).WithMany(f => f.BaseLines);
+            modelBuilder.Entity<IncreaseBaseLine>().HasRequired(g => g.Product).WithMany(f => f.IncreaseBaseLines);
             modelBuilder.Entity<ClientTreeSharesView>().ToTable("ClientTreeSharesView");
             modelBuilder.Entity<ProductChangeIncident>();
             modelBuilder.Entity<ClientTreeHierarchyView>();
@@ -125,7 +126,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductsCorrection>();
             modelBuilder.Entity<PreviousDayIncremental>();
             modelBuilder.Entity<CurrentDayIncremental>();
-            modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView"); ;
+            modelBuilder.Entity<PromoProductsView>().ToTable("PromoProductsView");
             modelBuilder.Entity<PromoTypes>();
             modelBuilder.Entity<ActualCOGS>();
             modelBuilder.Entity<ActualCOGSTn>();
@@ -144,6 +145,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<RollingVolume>();
             modelBuilder.Entity<PlanPostPromoEffectReportWeekView>().ToTable("PlanPostPromoEffectReportWeekView");
             modelBuilder.Entity<PromoROIReport>().ToTable("PromoROIReportView");
+            modelBuilder.Entity<PromoPriceIncreaseROIReport>().ToTable("PromoPriceIncreaseROIReportView");
             modelBuilder.Entity<NonPromoSupportDMP>();
             modelBuilder.Entity<PromoSupportDMP>();
 
@@ -164,6 +166,14 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<RollingScenario>();
             modelBuilder.Entity<PromoProductCorrectionView>();
+
+            modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithMany(g => g.ProductCorrectionPriceIncreases).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoProductPriceIncreasesView>().ToTable("PromoProductPriceIncreasesView");
+            modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>().ToTable("PromoProductCorrectionPriceIncreaseView");
+
             modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
         }
 
@@ -207,7 +217,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Event>("Events").HasRequiredBinding(e => e.EventType, "EventTypes");
             builder.EntitySet<Event>("Events").HasManyBinding(e => e.BTLs, "BTLs");
-            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");            
+            builder.EntitySet<Event>("Events").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");
             builder.EntitySet<Event>("DeletedEvents");
             builder.EntitySet<Event>("DeletedEvents").HasManyBinding(g => g.EventClientTrees, "EventClientTrees");
             builder.EntitySet<Event>("DeletedEvents").HasRequiredBinding(e => e.EventType, "EventTypes");
@@ -349,6 +359,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.AssortmentMatrices, "AssortmentMatrices");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.BaseLines, "BaseLines");
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.BaseLines, "BaseLines");
+            builder.EntitySet<Product>("Products").HasManyBinding(e => e.IncreaseBaseLines, "IncreaseBaseLines");
+            builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.IncreaseBaseLines, "IncreaseBaseLines");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.IncrementalPromoes, "IncrementalPromoes");
             builder.EntitySet<Product>("DeletedProducts").HasManyBinding(e => e.IncrementalPromoes, "IncrementalPromoes");
             builder.EntitySet<Product>("Products").HasManyBinding(e => e.PreviousDayIncrementals, "PreviousDayIncrementals");
@@ -514,10 +526,12 @@ namespace Module.Persist.TPM
             builder.Entity<Promo>().Collection.Action("CalculateMarketingTI");
             builder.Entity<Promo>().Collection.Action("ChangeStatus");
             builder.Entity<Promo>().Collection.Action("ExportPromoROIReportXLSX");
+            builder.Entity<Promo>().Collection.Action("ExportPromoPriceIncreaseROIReportXLSX");
             builder.Entity<Promo>().Collection.Action("RecalculatePromo");
             builder.Entity<Promo>().Collection.Action("ResetPromo");
             builder.Entity<Promo>().Collection.Action("ChangeResponsible");
             builder.Entity<Promo>().Collection.Action("MassApprove");
+            builder.Entity<Promo>().Collection.Action("SendForApproval");
             builder.Entity<Promo>().Collection.Action("CheckIfLogHasErrors");
             builder.Entity<Promo>().Collection.Action("CheckPromoCreator");
             builder.Entity<Promo>().Collection.Action("GetProducts").CollectionParameter<string>("InOutProductIds");
@@ -777,6 +791,16 @@ namespace Module.Persist.TPM
             builder.Entity<BaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<BaseLine>("BaseLines");
             builder.Entity<HistoricalBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalBaseLine>("HistoricalBaseLines");
 
+            builder.EntitySet<IncreaseBaseLine>("IncreaseBaseLines");
+            builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines");
+            builder.EntitySet<IncreaseBaseLine>("IncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<IncreaseBaseLine>("DeletedIncreaseBaseLines").HasRequiredBinding(e => e.Product, "Products");
+            builder.EntitySet<HistoricalIncreaseBaseLine>("HistoricalIncreaseBaseLines");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("ExportXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("FullImportXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<IncreaseBaseLine>("IncreaseBaseLines");
+            builder.Entity<HistoricalIncreaseBaseLine>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalIncreaseBaseLine>("HistoricalIncreaseBaseLines");
+
             builder.EntitySet<RetailType>("RetailTypes");
             builder.EntitySet<RetailType>("DeletedRetailTypes");
             builder.EntitySet<HistoricalRetailType>("HistoricalRetailTypes");
@@ -816,7 +840,7 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductsCorrection>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("ExportCorrectionXLSX");
             builder.Entity<PromoProductsCorrection>().Collection.Action("DownloadTemplateXLSX");
-            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");            
+            builder.Entity<PromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductsCorrection>("PromoProductsCorrections");
             builder.EntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
             builder.Entity<HistoricalPromoProductsCorrection>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPromoProductsCorrection>("HistoricalPromoProductsCorrections");
 
@@ -1056,6 +1080,7 @@ namespace Module.Persist.TPM
 
             //Загрузка шаблонов
             builder.Entity<BaseLine>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<IncreaseBaseLine>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Product>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<Brand>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<NonPromoEquipment>().Collection.Action("DownloadTemplateXLSX");
@@ -1095,6 +1120,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<PromoROIReport>("PromoROIReports");
             builder.Entity<PromoROIReport>().Collection.Action("ExportXLSX");
             builder.Entity<PromoROIReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoROIReport>("PromoROIReports");
+
+            builder.EntitySet<PromoPriceIncreaseROIReport>("PromoPriceIncreaseROIReports");
+            builder.Entity<PromoPriceIncreaseROIReport>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoPriceIncreaseROIReport>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoPriceIncreaseROIReport>("PromoPriceIncreaseROIReports");
 
             builder.EntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
             builder.Entity<SchedulerClientTreeDTO>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<SchedulerClientTreeDTO>("SchedulerClientTreeDTOs");
@@ -1228,6 +1257,29 @@ namespace Module.Persist.TPM
             builder.Entity<PromoProductCorrectionView>().Collection.Action("FullImportXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<PromoProductCorrectionView>().Collection.Action("PromoProductCorrectionDelete");
+
+            builder.EntitySet<PromoProductCorrectionPriceIncreaseView>("PromoProductCorrectionPriceIncreaseViews");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductCorrectionPriceIncreaseView>("PromoProductCorrectionPriceIncreaseViews");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("ExportCorrectionXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductCorrectionPriceIncreaseView>().Collection.Action("PromoProductCorrectionDelete");
+
+            builder.EntitySet<PromoPriceIncrease>("PromoPriceIncreases").HasRequiredBinding(g => g.Promo, "Promoes");
+
+            builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasRequiredBinding(g => g.PromoProduct, "PromoProducts");
+            builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasRequiredBinding(g => g.PromoPriceIncrease, "PromoPriceIncreases");
+            builder.EntitySet<PromoProductPriceIncrease>("PromoProductPriceIncreases").HasManyBinding(g => g.ProductCorrectionPriceIncreases, "PromoProductCorrectionPriceIncreases");
+            builder.Entity<PromoProductPriceIncrease>().Collection.Action("ExportXLSX");
+
+            builder.EntitySet<PromoProductCorrectionPriceIncrease>("PromoProductCorrectionPriceIncreases");
+
+            builder.EntitySet<PromoProductPriceIncreasesView>("PromoProductPriceIncreaseViews");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("ExportXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("FullImportXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<PromoProductPriceIncreasesView>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PromoProductPriceIncreasesView>("PromoProductPriceIncreaseViews");
 
             builder.EntitySet<MetricsLiveHistory>("MetricsLiveHistories");
             builder.Entity<MetricsLiveHistory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MetricsLiveHistory>("MetricsLiveHistories");

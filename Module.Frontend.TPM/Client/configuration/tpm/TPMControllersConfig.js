@@ -217,6 +217,11 @@
     'tpm.baseline.DeletedBaseLine',
     'tpm.baseline.HistoricalBaseLine',
 
+    //IncreaseBaseLine
+    'tpm.increasebaseline.IncreaseBaseLine',
+    'tpm.increasebaseline.DeletedIncreaseBaseLine',
+    'tpm.increasebaseline.HistoricalIncreaseBaseLine',
+    
     //ClientTreeBrandTech
     'tpm.clienttreebrandtech.ClientTreeBrandTech',
     'tpm.clienttreebrandtech.HistoricalClientTreeBrandTech',
@@ -274,9 +279,11 @@
 
     'tpm.planpostpromoeffectreport.PlanPostPromoEffectReport',
     'tpm.promoroireport.PromoROIReport',
+    'tpm.promopriceincreaseroireport.PromoPriceIncreaseROIReport',
 
     // Promo Activity Details Info
     'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfo',
+    'tpm.promoactivitydetailsinfo.PromoActivityDetailsInfoPI',
 
     'tpm.assortmentmatrix.AssortmentMatrix',
     'tpm.assortmentmatrix.DeletedAssortmentMatrix',
@@ -325,6 +332,12 @@
 
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
+
+    //PromoProductCorrectionPriceIncrease
+    'tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',    
+    'tpm.promoproductcorrectionpriceincrease.DeletedPromoProductCorrectionPriceIncrease',
+    'tpm.promoproductcorrectionpriceincrease.HistoricalPromoProductCorrectionPriceIncrease',
+    'tpm.promoproductpriceincreasesview.PromoProductPriceIncreasesView',
 
     'tpm.metricslivehistory.MetricsLiveHistory',
 ]);

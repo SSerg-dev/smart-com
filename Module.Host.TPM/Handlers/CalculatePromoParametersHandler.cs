@@ -22,34 +22,36 @@ using Core.Dependency;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.SimpleModel;
 
 namespace Module.Host.TPM.Handlers
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class CalculatePromoParametersHandler : BaseHandler
-	{
-		public string logLine = "";
-		public override void Action(HandlerInfo info, ExecuteData data)
-		{
-			using (DatabaseContext context = new DatabaseContext())
-			{
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CalculatePromoParametersHandler : BaseHandler
+    {
+        public string logLine = "";
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            using (DatabaseContext context = new DatabaseContext())
+            {
                 LogWriter handlerLogger = null;
-				Stopwatch sw = new Stopwatch();
-				sw.Start();
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
-				handlerLogger = new LogWriter(info.HandlerId.ToString());
-				logLine = String.Format("The calculation of the parameters started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
-				handlerLogger.Write(true, logLine, "Message");
-				handlerLogger.Write(true, "");
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+                logLine = string.Format("The calculation of the parameters started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                handlerLogger.Write(true, logLine, "Message");
+                handlerLogger.Write(true, "");
 
-				Guid nullGuid = new Guid();
+                Guid nullGuid = new Guid();
                 Guid promoId = HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
                 Guid UserId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
                 Guid RoleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data, false);
                 bool needCalculatePlanMarketingTI = HandlerDataHelper.GetIncomingArgument<bool>("NeedCalculatePlanMarketingTI", info.Data, false);
                 bool needResetUpliftCorrections = HandlerDataHelper.GetIncomingArgument<bool>("needResetUpliftCorrections", info.Data, false);
+                bool needResetUpliftCorrectionsPI = HandlerDataHelper.GetIncomingArgument<bool>("needResetUpliftCorrectionsPI", info.Data, false);
                 bool createDemandIncidentCreate = HandlerDataHelper.GetIncomingArgument<bool>("createDemandIncidentCreate", info.Data, false);
                 bool createDemandIncidentUpdate = HandlerDataHelper.GetIncomingArgument<bool>("createDemandIncidentUpdate", info.Data, false);
 
@@ -61,17 +63,17 @@ namespace Module.Host.TPM.Handlers
                 Promo promoCopy = null;
 
                 try
-				{
-					if (promoId != nullGuid)
-					{
+                {
+                    if (promoId != nullGuid)
+                    {
                         var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
                         bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator");
                         Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
                         promoCopy = AutomapperProfiles.PromoCopy(promo);
 
                         //добавление номера рассчитываемого промо в лог
-                        handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
-						handlerLogger.Write(true, "");
+                        handlerLogger.Write(true, string.Format("Calculating promo: №{0}", promo.Number), "Message");
+                        handlerLogger.Write(true, "");
 
                         //статусы, в которых не должен производиться пересчет плановых параметров промо
                         ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
@@ -89,59 +91,147 @@ namespace Module.Host.TPM.Handlers
                         {
                             if (!promo.LoadFromTLC)
                             {
-                                string setPromoProductError;
 
-                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out setPromoProductError);
+                                needReturnToOnApprovalStatus = PlanProductParametersCalculation.SetPromoProduct(promoId, context, out string setPromoProductError);
                                 if (setPromoProductError != null)
                                 {
-                                    logLine = String.Format("Error filling Product: {0}", setPromoProductError);
+                                    logLine = string.Format("Error filling Product: {0}", setPromoProductError);
                                     handlerLogger.Write(true, logLine, "Error");
                                 }
-
                                 calculateBaselineError = PlanProductParametersCalculation.CalculateBaseline(context, promoId);
+                                promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
                             }
                         }
                         //Подбор исторических промо и расчет PlanPromoUpliftPercent
                         if (NeedUpliftFinding(promo))
-						{
-							// Uplift не расчитывается для промо в статусе Starte, Finished, Closed
-							if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
-							{
-								Stopwatch swUplift = new Stopwatch();
-								swUplift.Start();
-								logLine = String.Format("Pick plan promo uplift started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
-								handlerLogger.Write(true, logLine, "Message");
+                        {
+                            // Uplift не расчитывается для промо в статусе Starte, Finished, Closed
+                            if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
+                            {
+                                Stopwatch swUplift = new Stopwatch();
+                                swUplift.Start();
+                                logLine = string.Format("Pick plan promo uplift started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                                handlerLogger.Write(true, logLine, "Message");
 
-								string upliftMessage;
+                                string upliftMessage;
 
-								double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
+                                PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
 
-								if (planPromoUpliftPercent != -1)
-								{
-									logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent);
-									handlerLogger.Write(true, logLine, "Message");
-								}
-								else
-								{
-									logLine = String.Format("{0}", upliftMessage);
-									handlerLogger.Write(true, logLine, "Message");
-								}
+                                if (planPromoUpliftPercent.CountedPlanUplift != -1)
+                                {
+                                    logLine = string.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUplift);
+                                    handlerLogger.Write(true, logLine, "Message");
+                                }
+                                else
+                                {
+                                    logLine = string.Format("{0}", upliftMessage);
+                                    handlerLogger.Write(true, logLine, "Message");
+                                }
 
-								swUplift.Stop();
-								logLine = String.Format("Pick plan promo uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swUplift.Elapsed.TotalSeconds);
-								handlerLogger.Write(true, logLine, "Message");
-								handlerLogger.Write(true, "");
-							}
-							else
-							{
-								logLine = String.Format("{0}", "Plan promo uplift is not picking for started, finished and closed promo.");
-								handlerLogger.Write(true, logLine, "Message");
-							}
-						}
+                                swUplift.Stop();
+                                logLine = string.Format("Pick plan promo uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swUplift.Elapsed.TotalSeconds);
+                                handlerLogger.Write(true, logLine, "Message");
+                                handlerLogger.Write(true, "");
+                            }
+                            else
+                            {
+                                logLine = string.Format("{0}", "Plan promo uplift is not picking for started, finished and closed promo.");
+                                handlerLogger.Write(true, logLine, "Message");
+                            }
+                        }
                         else
                         {
                             PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProducts(promo, context, UserId);
                         }
+                        if (promo.IsPriceIncrease && promo.TPMmode == Persist.TPM.Model.Interfaces.TPMmode.Current)
+                        {
+                            //Подбор исторических промо и расчет PlanPromoUpliftPercent PriceIncrease
+                            if (!promo.NeedRecountUpliftPI && promoCopy.IsPriceIncrease)
+                            {
+                                // Uplift не расчитывается для промо в статусе Starte, Finished, Closed
+                                if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
+                                {
+                                    Stopwatch swUplift = new Stopwatch();
+                                    swUplift.Start();
+                                    logLine = string.Format("Pick plan promoPriceIncrease uplift started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                                    handlerLogger.Write(true, logLine, "Message");
+
+                                    string upliftMessage;
+
+                                    PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUpliftPI(promoId, context, out upliftMessage, needResetUpliftCorrectionsPI, UserId);
+
+                                    if (planPromoUpliftPercent.CountedPlanUpliftPI != -1)
+                                    {
+                                        logLine = string.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUpliftPI);
+                                        handlerLogger.Write(true, logLine, "Message");
+                                    }
+                                    else
+                                    {
+                                        logLine = string.Format("{0}", upliftMessage);
+                                        handlerLogger.Write(true, logLine, "Message");
+                                    }
+
+                                    swUplift.Stop();
+                                    logLine = string.Format("Pick plan promoPriceIncrease  uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swUplift.Elapsed.TotalSeconds);
+                                    handlerLogger.Write(true, logLine, "Message");
+                                    handlerLogger.Write(true, "");
+                                }
+                                else
+                                {
+                                    logLine = string.Format("{0}", "Plan promoPriceIncrease  uplift is not picking for started, finished and closed promo.");
+                                    handlerLogger.Write(true, logLine, "Message");
+                                }
+                            }
+                            else // если выбран общий процент
+                            {
+                                PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProductsPriceIncrease(promo, context, UserId);
+                            }
+                        }
+                        else
+                        {
+                            //Подбор исторических промо и расчет PlanPromoUpliftPercent PriceIncrease
+                            if (NeedUpliftFinding(promo))
+                            {
+                                // Uplift не расчитывается для промо в статусе Starte, Finished, Closed
+                                if ((promo.PromoStatus.SystemName != "Started" && promo.PromoStatus.SystemName != "Finished" && promo.PromoStatus.SystemName != "Closed") || isSupportAdmin)
+                                {
+                                    Stopwatch swUplift = new Stopwatch();
+                                    swUplift.Start();
+                                    logLine = string.Format("Pick plan promoPriceIncrease uplift started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                                    handlerLogger.Write(true, logLine, "Message");
+
+                                    string upliftMessage;
+
+                                    PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUpliftPI(promoId, context, out upliftMessage, needResetUpliftCorrections, UserId);
+
+                                    if (planPromoUpliftPercent.CountedPlanUpliftPI != -1)
+                                    {
+                                        logLine = string.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUpliftPI);
+                                        handlerLogger.Write(true, logLine, "Message");
+                                    }
+                                    else
+                                    {
+                                        logLine = string.Format("{0}", upliftMessage);
+                                        handlerLogger.Write(true, logLine, "Message");
+                                    }
+
+                                    swUplift.Stop();
+                                    logLine = string.Format("Pick plan promoPriceIncrease  uplift completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swUplift.Elapsed.TotalSeconds);
+                                    handlerLogger.Write(true, logLine, "Message");
+                                    handlerLogger.Write(true, "");
+                                }
+                                else
+                                {
+                                    logLine = string.Format("{0}", "Plan promoPriceIncrease  uplift is not picking for started, finished and closed promo.");
+                                    handlerLogger.Write(true, logLine, "Message");
+                                }
+                            }
+                            else // если выбран общий процент
+                            {
+                                PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProductsPriceIncrease(promo, context, UserId);
+                            }
+                        }
+
 
                         // возможно, придется это вернуть, НЕ УДАЛЯТЬ КОММЕНТАРИЙ
                         // если уже произошла отгрузка продукта, то перезаполнение таблицы PromoProduct не осуществляется
@@ -162,7 +252,7 @@ namespace Module.Host.TPM.Handlers
                             //Pасчет плановых параметров Product и Promo
                             Stopwatch swPromoProduct = new Stopwatch();
                             swPromoProduct.Start();
-                            logLine = String.Format("Calculation of plan parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                            logLine = string.Format("Calculation of plan parameters began at {0:yyyy-MM-dd HH:mm:ss}. It may take some time.", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                             handlerLogger.Write(true, logLine, "Message");
 
                             string calculateError = null;
@@ -174,34 +264,35 @@ namespace Module.Host.TPM.Handlers
                                 if (calculateBaselineError != null && calculateError != null)
                                 {
                                     calculateError += calculateBaselineError;
-                                } else if(calculateBaselineError != null && calculateError == null)
+                                }
+                                else if (calculateBaselineError != null && calculateError == null)
                                 {
                                     calculateError = calculateBaselineError;
                                 }
 
                                 string[] canBeReturnedToOnApproval = { "OnApproval", "Approved", "Planned" };
-                                bool needReturnToOnApprovalStatusByZeroUplift = 
-                                    promo.PromoStatus.SystemName.ToLower() == "approved" 
+                                bool needReturnToOnApprovalStatusByZeroUplift =
+                                    promo.PromoStatus.SystemName.ToLower() == "approved"
                                     && (!promo.PlanPromoUpliftPercent.HasValue || promo.PlanPromoUpliftPercent.Value == 0)
                                     && (!promo.InOut.HasValue || !promo.InOut.Value);
 
                                 if (((needReturnToOnApprovalStatus && canBeReturnedToOnApproval.Contains(promo.PromoStatus.SystemName))
                                     || needReturnToOnApprovalStatusByZeroUplift)
                                     && !isSupportAdmin)
-								{
-									PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
-									promo.PromoStatus = draftPublished;
-									promo.PromoStatusId = draftPublished.Id;
-									promo.IsAutomaticallyApproved = false;
-									promo.IsCMManagerApproved = false;
-									promo.IsDemandFinanceApproved = false;
-									promo.IsDemandPlanningApproved = false;
+                                {
+                                    PromoStatus draftPublished = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "draftpublished" && !x.Disabled);
+                                    promo.PromoStatus = draftPublished;
+                                    promo.PromoStatusId = draftPublished.Id;
+                                    promo.IsAutomaticallyApproved = false;
+                                    promo.IsCMManagerApproved = false;
+                                    promo.IsDemandFinanceApproved = false;
+                                    promo.IsDemandPlanningApproved = false;
                                     promo.IsGAManagerApproved = false;
                                     PromoStateContext promoStateContext = new PromoStateContext(context, promo);
 
-									PromoStatus onApproval = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "onapproval" && !x.Disabled);
-									promo.PromoStatus = onApproval;
-									promo.PromoStatusId = onApproval.Id;
+                                    PromoStatus onApproval = context.Set<PromoStatus>().First(x => x.SystemName.ToLower() == "onapproval" && !x.Disabled);
+                                    promo.PromoStatus = onApproval;
+                                    promo.PromoStatusId = onApproval.Id;
 
                                     string statusChangeError;
                                     var status = promoStateContext.ChangeState(promo, "System", out statusChangeError);
@@ -217,16 +308,16 @@ namespace Module.Host.TPM.Handlers
                                     }
 
                                     if (statusChangeError != null && statusChangeError != string.Empty)
-									{
-										logLine = String.Format("Error while changing status of promo: {0}", statusChangeError);
-										handlerLogger.Write(true, logLine, "Error");
-									}
+                                    {
+                                        logLine = string.Format("Error while changing status of promo: {0}", statusChangeError);
+                                        handlerLogger.Write(true, logLine, "Error");
+                                    }
                                 }
                             }
 
                             if (calculateError != null)
                             {
-                                logLine = String.Format("Error when calculating the planned parameters of products: {0}", calculateError);
+                                logLine = string.Format("Error when calculating the planned parameters of products: {0}", calculateError);
                                 handlerLogger.Write(true, logLine, "Error");
                             }
 
@@ -243,18 +334,18 @@ namespace Module.Host.TPM.Handlers
 
                             if (calculateError != null)
                             {
-                                logLine = String.Format("Error when calculating the plan parameters Promo: {0}", calculateError);
+                                logLine = string.Format("Error when calculating the plan parameters Promo: {0}", calculateError);
                                 handlerLogger.Write(true, logLine, "Error");
                             }
 
                             swPromoProduct.Stop();
-                            logLine = String.Format("Calculation of plan parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swPromoProduct.Elapsed.TotalSeconds);
+                            logLine = string.Format("Calculation of plan parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swPromoProduct.Elapsed.TotalSeconds);
                             handlerLogger.Write(true, logLine, "Message");
                             handlerLogger.Write(true, "");
                         }
                         else
                         {
-                            logLine = String.Format("Plan parameters don't recalculate for promo in statuses: {0}", promoStatusesNotPlanRecalculateSetting);
+                            logLine = string.Format("Plan parameters don't recalculate for promo in statuses: {0}", promoStatusesNotPlanRecalculateSetting);
                             handlerLogger.Write(true, logLine, "Warning");
                         }
 
@@ -262,7 +353,7 @@ namespace Module.Host.TPM.Handlers
                         {
                             Stopwatch swActual = new Stopwatch();
                             swActual.Start();
-                            logLine = String.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+                            logLine = string.Format("The calculation of the actual parameters began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
                             handlerLogger.Write(true, logLine, "Message");
                             handlerLogger.Write(true, "");
 
@@ -270,7 +361,7 @@ namespace Module.Host.TPM.Handlers
 
                             swActual.Stop();
                             handlerLogger.Write(true, "");
-                            logLine = String.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swActual.Elapsed.TotalSeconds);
+                            logLine = string.Format("The calculation of the actual parameters was completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), swActual.Elapsed.TotalSeconds);
                             handlerLogger.Write(true, logLine, "Message");
                         }
 
@@ -293,34 +384,35 @@ namespace Module.Host.TPM.Handlers
                             PromoHelper.WritePromoDemandChangeIncident(context, promo, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV);
                         }
                         //promo.Calculating = false;
+                        //promo.NeedRecountUpliftPI = false;
                         context.SaveChanges();
-					}
-				}
-				catch (Exception e)
-				{
-					handlerLogger.Write(true, e.Message, "Error");
-				}
-				finally
-				{
-					sw.Stop();
-					handlerLogger.Write(true, "");
-					logLine = String.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
-					handlerLogger.Write(true, logLine, "Message");
+                    }
+                }
+                catch (Exception e)
+                {
+                    handlerLogger.Write(true, e.Message, "Error");
+                }
+                finally
+                {
+                    sw.Stop();
+                    handlerLogger.Write(true, "");
+                    logLine = string.Format("Calculation of parameters completed at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
+                    handlerLogger.Write(true, logLine, "Message");
                     handlerLogger.UploadToBlob();
-					//разблокировку промо необходимо производить после всего, иначе не успевает прочитаться последнее сообщение и (самое главное) окончательный статус хендлера
-					//для перестраховки добавлена небольшая задержка
-					if (promoId != nullGuid)
-					{
-						Promo promo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
-						//TODO: УБРАТЬ ЗАДЕРЖКУ !!!
-						Thread.Sleep(5000);
+                    //разблокировку промо необходимо производить после всего, иначе не успевает прочитаться последнее сообщение и (самое главное) окончательный статус хендлера
+                    //для перестраховки добавлена небольшая задержка
+                    if (promoId != nullGuid)
+                    {
+                        Promo promo = context.Set<Promo>().Where(x => x.Id == promoId).FirstOrDefault();
+                        //TODO: УБРАТЬ ЗАДЕРЖКУ !!!
+                        Thread.Sleep(5000);
 
-						CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
-						//CalculationTaskManager.UnLockPromo(promo.Id);
-					}
-				}
-			}
-		}
+                        CalculationTaskManager.UnLockPromoForHandler(info.HandlerId);
+                        //CalculationTaskManager.UnLockPromo(promo.Id);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Расчитать фактические показатели для Промо
@@ -362,30 +454,30 @@ namespace Module.Host.TPM.Handlers
                 errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context, useActualCOGS: useActualCOGS, useActualTI: useActualTI);
             }
 
-			// записываем ошибки если они есть
-			if (errorString != null)
-				WriteErrorsInLog(handlerLogger, errorString);
-		}
+            // записываем ошибки если они есть
+            if (errorString != null)
+                WriteErrorsInLog(handlerLogger, errorString);
+        }
 
-		/// <summary>
-		/// Записать ошибки в лог
-		/// </summary>
-		/// <param name="handlerLogger">Лог</param>
-		/// <param name="errorString">Список ошибок, записанных через ';'</param>
-		private static void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
-		{
-			string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-			string message = "";
-			foreach (string e in errors)
-				message += e + "\n";
+        /// <summary>
+        /// Записать ошибки в лог
+        /// </summary>
+        /// <param name="handlerLogger">Лог</param>
+        /// <param name="errorString">Список ошибок, записанных через ';'</param>
+        private static void WriteErrorsInLog(ILogWriter handlerLogger, string errorString)
+        {
+            string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string message = "";
+            foreach (string e in errors)
+                message += e + "\n";
 
-			handlerLogger.Write(true, message);
-		}
+            handlerLogger.Write(true, message);
+        }
 
-		private bool NeedUpliftFinding(Promo promo)
-		{
-			// если стоит флаг inout, то подбирать uplift не требуется
-			return (!promo.NeedRecountUplift.HasValue || promo.NeedRecountUplift.Value) && (!promo.InOut.HasValue || !promo.InOut.Value);
-		}
-	}
+        private bool NeedUpliftFinding(Promo promo)
+        {
+            // если стоит флаг inout, то подбирать uplift не требуется
+            return (!promo.NeedRecountUplift.HasValue || promo.NeedRecountUplift.Value) && (!promo.InOut.HasValue || !promo.InOut.Value);
+        }
+    }
 }

@@ -12,6 +12,7 @@ namespace Module.Persist.TPM.Model.DTO
         public int Number { get; set; }
         public string ClientHierarchy { get; set; }
         public string BrandTechName { get; set; }
+        public string ProductSubrangesList { get; set; }
         public string MarsMechanicName { get; set; }
         public string EventName { get; set; }
         public string PromoStatusSystemName { get; set; }

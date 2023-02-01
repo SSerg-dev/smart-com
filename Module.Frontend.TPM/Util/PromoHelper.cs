@@ -378,7 +378,7 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "IsOnInvoice", Header = "Invoice Type (True - On-invoice)", Quoting = false },
                 new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
                 new Column() { Order = 0, Field = "IsInExchange", Header = "In Exchange", Quoting = false },
-                new Column() { Order = 0, Field = "IsApolloExport", Header = "Apollo export", Quoting = false },
+                new Column() { Order = 0, Field = "IsApolloExport", Header = "Anaplan Export", Quoting = false },
                 new Column() { Order = 0, Field = "DeviationCoefficient", Header = "Adjustment, %", Quoting = false },
                 new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 0, Field = "BrandTech.BrandsegTechsub", Header = "Brandtech", Quoting = false },
@@ -401,7 +401,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatus.Name", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "PromoTypes.Name", Header = "Promo Types Name", Quoting = false }
+                new Column() { Order = 0, Field = "PromoTypes.Name", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
@@ -449,7 +450,7 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "IsOnInvoice", Header = "Invoice Type (True - On-invoice)", Quoting = false },
                 new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
                 new Column() { Order = 0, Field = "IsInExchange", Header = "In Exchange", Quoting = false },
-                new Column() { Order = 0, Field = "IsApolloExport", Header = "Apollo export", Quoting = false },
+                new Column() { Order = 0, Field = "IsApolloExport", Header = "Anaplan Export", Quoting = false },
                 new Column() { Order = 0, Field = "DeviationCoefficient", Header = "Adjustment, %", Quoting = false },
                 new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 0, Field = "BrandTechName", Header = "Brandtech", Quoting = false },
@@ -472,7 +473,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatusName", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false }
+                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
@@ -520,7 +522,7 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "IsOnInvoice", Header = "Invoice Type (True - On-invoice)", Quoting = false },
                 new Column() { Order = 0, Field = "IsGrowthAcceleration", Header = "Growth acceleration", Quoting = false },
                 new Column() { Order = 0, Field = "IsInExchange", Header = "In Exchange", Quoting = false },
-                new Column() { Order = 0, Field = "IsApolloExport", Header = "Apollo export", Quoting = false },
+                new Column() { Order = 0, Field = "IsApolloExport", Header = "Anaplan Export", Quoting = false },
                 new Column() { Order = 0, Field = "DeviationCoefficient", Header = "Adjustment, %", Quoting = false },
                 new Column() { Order = 0, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = 0, Field = "BrandTechName", Header = "Brandtech", Quoting = false },
@@ -543,7 +545,8 @@ namespace Module.Frontend.TPM.Util
                 new Column() { Order = 0, Field = "DispatchesEnd", Header = "Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "MarsDispatchesEnd", Header = "Mars Dispatch end", Quoting = false, Format = "dd.MM.yyyy" },
                 new Column() { Order = 0, Field = "PromoStatusName", Header = "Status", Quoting = false },
-                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false }
+                new Column() { Order = 0, Field = "PromoTypesName", Header = "Promo Types Name", Quoting = false },
+                new Column() { Order = 0, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false },
 
                 //new Column() { Order = 0, Field = "Brand.Name", Header = "Brand", Quoting = false },
                 //new Column() { Order = 0, Field = "Priority", Header = "Priority", Quoting = false },
@@ -614,6 +617,17 @@ namespace Module.Frontend.TPM.Util
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column { Order = orderNumber++, Field = "Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
+                new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
+            };
+            return columns;
+        }
+        public static IEnumerable<Column> GetExportCorrectionPISettings()
+        {
+            int orderNumber = 1;
+            IEnumerable<Column> columns = new List<Column>()
+            {
+                new Column { Order = orderNumber++, Field = "PromoPriceIncrease.Promo.Number", Header = "Promo ID", Quoting = false,  Format = "0" },
                 new Column { Order = orderNumber++, Field = "ZREP", Header = "ZREP", Quoting = false,  Format = "0" },
                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
             };
