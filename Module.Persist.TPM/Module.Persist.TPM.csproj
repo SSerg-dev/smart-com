@@ -3403,6 +3403,14 @@
     <Compile Include="Migrations\202211220857530_SendForApproval_AP.Designer.cs">
       <DependentUpon>202211220857530_SendForApproval_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302010852279_After_Create_developPriceIncrease.cs" />
+    <Compile Include="Migrations\202302010852279_After_Create_developPriceIncrease.Designer.cs">
+      <DependentUpon>202302010852279_After_Create_developPriceIncrease.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302010903383_After_Create_developPriceIncrease2.cs" />
+    <Compile Include="Migrations\202302010903383_After_Create_developPriceIncrease2.Designer.cs">
+      <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6408,6 +6416,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202211220857530_SendForApproval_AP.resx">
       <DependentUpon>202211220857530_SendForApproval_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302010852279_After_Create_developPriceIncrease.resx">
+      <DependentUpon>202302010852279_After_Create_developPriceIncrease.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302010903383_After_Create_developPriceIncrease2.resx">
+      <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

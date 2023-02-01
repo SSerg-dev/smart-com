@@ -36,6 +36,8 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Utility.Azure;
 using Column = Frontend.Core.Extensions.Export.Column;
+using Core.Security.Models;
+using Core.Settings;
 
 namespace Module.Frontend.TPM.Controllers
 {

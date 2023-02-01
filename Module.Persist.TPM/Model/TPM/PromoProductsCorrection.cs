@@ -20,7 +20,7 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? ModifiedDate { get; set; }
         public double? PlanProductUpliftPercentCorrected { get; set; }
         [Index("Unique_PromoProductsCorrection", 4, IsUnique = true)]
-        [StringLength(256)]
+        [StringLength(128)]
         public string TempId { get; set; }
 
         public Guid? UserId { get; set; }
