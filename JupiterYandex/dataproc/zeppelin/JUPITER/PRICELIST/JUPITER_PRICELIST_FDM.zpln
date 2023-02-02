@@ -1,23 +1,23 @@
-{
+﻿{
   "paragraphs": [
     {
-      "text": "%md\n### Calculate pricelist with ghierarchy\u0027s client id mapped to\n### Developer: LLC Smart-Com, alexei.loktev@effem.com\n### Last Updated - 06th Jun 2020 - alexei.loktev@effem.com",
+      "text": "%md\n### Calculate pricelist with ghierarchy's client id mapped to\n### Developer: LLC Smart-Com, alexei.loktev@effem.com\n### Last Updated - 06th Jun 2020 - alexei.loktev@effem.com",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:46:34.514",
+      "dateUpdated": "2023-02-02T11:07:16+0000",
       "progress": 0,
       "config": {
+        "tableHide": false,
         "editorSetting": {
           "language": "markdown",
           "editOnDblClick": true,
           "completionSupport": false
         },
         "editorMode": "ace/mode/markdown",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": true,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
-        "enabled": true,
-        "tableHide": false
+        "enabled": true
       },
       "settings": {
         "params": {},
@@ -28,25 +28,27 @@
         "msg": [
           {
             "type": "HTML",
-            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003eCalculate pricelist with ghierarchy\u0026rsquo;s client id mapped to\u003c/h3\u003e\n\u003ch3\u003eDeveloper: LLC Smart-Com, \u003ca href\u003d\"mailto:alexei.loktev@effem.com\"\u003ealexei.loktev@effem.com\u003c/a\u003e\u003c/h3\u003e\n\u003ch3\u003eLast Updated - 06th Jun 2020 - \u003ca href\u003d\"mailto:alexei.loktev@effem.com\"\u003ealexei.loktev@effem.com\u003c/a\u003e\u003c/h3\u003e\n\n\u003c/div\u003e"
+            "data": "<div class=\"markdown-body\">\n<h3>Calculate pricelist with ghierarchy&rsquo;s client id mapped to</h3>\n<h3>Developer: LLC Smart-Com, <a href=\"mailto:alexei.loktev@effem.com\">alexei.loktev@effem.com</a></h3>\n<h3>Last Updated - 06th Jun 2020 - <a href=\"mailto:alexei.loktev@effem.com\">alexei.loktev@effem.com</a></h3>\n\n</div>"
           }
         ]
       },
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391771_1327859377",
+      "jobName": "paragraph_1675324802047_2012056346",
       "id": "20220826-112951_171069076",
-      "dateCreated": "2022-08-26 11:29:51.771",
-      "dateStarted": "2022-08-29 06:46:34.248",
-      "dateFinished": "2022-08-29 06:46:34.255",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:16+0000",
+      "dateFinished": "2023-02-02T11:07:17+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:8998"
     },
     {
       "title": "Function to determine runtime(Notebook or pure python)",
-      "text": "%pyspark\ndef is_notebook() -\u003e bool:\n    try:\n        shell \u003d get_ipython().__class__.__name__\n        if shell \u003d\u003d \u0027ZMQInteractiveShell\u0027:\n            return True   # Jupyter notebook or qtconsole\n        elif shell \u003d\u003d \u0027TerminalInteractiveShell\u0027:\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
+      "text": "%pyspark\ndef is_notebook() -> bool:\n    try:\n        shell = get_ipython().__class__.__name__\n        if shell == 'ZMQInteractiveShell':\n            return True   # Jupyter notebook or qtconsole\n        elif shell == 'TerminalInteractiveShell':\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:30.035",
+      "dateUpdated": "2023-02-02T11:07:17+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -56,9 +58,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "title": true,
         "results": {},
         "enabled": true
@@ -74,17 +76,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391771_285631087",
+      "jobName": "paragraph_1675324802047_1811116809",
       "id": "20220826-112951_287106001",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:30.038",
-      "dateFinished": "2022-08-29 06:43:30.259",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:17+0000",
+      "dateFinished": "2023-02-02T11:07:43+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:8999"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nfrom pyspark.sql.window import Window\nimport datetime as datetime\nimport pandas as pd\nfrom dateutil.relativedelta import relativedelta\nimport math\nimport subprocess",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:30.338",
+      "dateUpdated": "2023-02-02T11:07:43+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -94,9 +97,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -111,17 +114,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_403422762",
+      "jobName": "paragraph_1675324802047_764131641",
       "id": "20220826-112951_1948591749",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:30.340",
-      "dateFinished": "2022-08-29 06:43:30.555",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:43+0000",
+      "dateFinished": "2023-02-02T11:07:43+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9000"
     },
     {
-      "text": "%pyspark\nif is_notebook():\n sys.argv\u003d[\u0027\u0027,\u0027{\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2022-08-23_manual__2022-08-23T07%3A07%3A22%2B00%3A00_\", \"ProcessDate\": \"2022-08-23\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_pricelist_fdm\"}\u0027]\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] \u003d \"airflow\"",
+      "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": '\n '\"/JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_\", '\n '\"ProcessDate\": \"2023-01-31\", \"Schema\": \"Jupiter\", \"PipelineName\": '\n '\"jupiter_pricelist_fdm\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] = \"airflow\"",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:30.641",
+      "dateUpdated": "2023-02-02T11:07:43+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -130,9 +134,9 @@
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorMode": "ace/mode/python",
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -147,17 +151,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661514533441_511220441",
+      "jobName": "paragraph_1675324802047_1770853846",
       "id": "paragraph_1661514533441_511220441",
-      "dateCreated": "2022-08-26 11:48:53.441",
-      "dateStarted": "2022-08-29 06:43:30.644",
-      "dateFinished": "2022-08-29 06:43:30.858",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:43+0000",
+      "dateFinished": "2023-02-02T11:07:44+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9001"
     },
     {
-      "text": "%pyspark\nspark \u003d SparkSession.builder.appName(\u0027Jupiter - PySpark\u0027).getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR \u003d es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR \u003d es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR \u003d es.SETTING_OUTPUT_DIR\n\nDATE_DIR\u003des.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH \u003d f\u0027{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv\u0027\nprocessDate\u003des.processDate\npipelineRunId\u003des.pipelineRunId\npipelineSubfolderName \u003d es.input_params.get(\"PipelineName\")\n\nprint(f\u0027EXTRACT_ENTITIES_AUTO_PATH\u003d{EXTRACT_ENTITIES_AUTO_PATH}\u0027)",
+      "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR = es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR = es.SETTING_OUTPUT_DIR\n\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\npipelineSubfolderName = es.input_params.get(\"PipelineName\")\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:30.944",
+      "dateUpdated": "2023-02-02T11:07:44+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -167,9 +172,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -182,24 +187,63 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "EXTRACT_ENTITIES_AUTO_PATH\u003dhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2022-08-26_manual__2022-08-26T12%3A42%3A44%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+            "data": "INPUT_PARAMS={\"MaintenancePathPrefix\": \"/JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_\", \"ProcessDate\": \"2023-01-31\", \"Schema\": \"Jupiter\", \"PipelineName\": \"jupiter_pricelist_fdm\"}\nSETTINGS_PATH=hdfs:///JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_PARAMETERS.csv\nhdfs:///JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_PARAMETERS.csv\n\nprocessDate: 2023-01-31\npipelineRunId: scheduled__2023-01-31T17%3A00%3A00%2B00%3A00\npipelineSubfolderName: jupiter_pricelist_fdm\n\nSETTING_RAW_DIR: hdfs:///JUPITER/RAW\nSETTING_PROCESS_DIR: hdfs:///JUPITER/PROCESS\nSETTING_OUTPUT_DIR: hdfs:///JUPITER/OUTPUT\nMAINTENANCE_PATH_PREFIX: /JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_\nSYSTEM_NAME: JUPITER\nSETTING_BRANCH_NAME: \nOther settings - list \"systemParametersDF\" data frame\nEXTRACT_ENTITIES_AUTO_PATH=hdfs:///JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
           }
         ]
       },
       "apps": [],
-      "runtimeInfos": {},
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=0",
+              "$$hashKey": "object:10266"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=1",
+              "$$hashKey": "object:10267"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=2",
+              "$$hashKey": "object:10268"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=3",
+              "$$hashKey": "object:10269"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=4",
+              "$$hashKey": "object:10270"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=5",
+              "$$hashKey": "object:10271"
+            },
+            {
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=6",
+              "$$hashKey": "object:10272"
+            }
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1079028129",
+      "jobName": "paragraph_1675324802047_1648729992",
       "id": "20220826-112951_293495567",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:30.946",
-      "dateFinished": "2022-08-29 06:43:31.164",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:44+0000",
+      "dateFinished": "2023-02-02T11:07:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9002"
     },
     {
-      "text": "%pyspark\n# Get current date\ntoday \u003d datetime.datetime.today()\nprint(today)\n",
+      "text": "%pyspark\n# Get current date\ntoday = datetime.datetime.today()\nprint(today)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:31.246",
+      "dateUpdated": "2023-02-02T11:07:52+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -209,9 +253,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -224,24 +268,25 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "2022-08-29 06:43:31.413914\n"
+            "data": "2023-02-02 11:07:52.744949\n"
           }
         ]
       },
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_559111370",
+      "jobName": "paragraph_1675324802047_1087615130",
       "id": "20220826-112951_1682079307",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:31.248",
-      "dateFinished": "2022-08-29 06:43:31.465",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:52+0000",
+      "dateFinished": "2023-02-02T11:07:52+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9003"
     },
     {
-      "text": "%pyspark\n# Inputs\nCUST_SALES_ATTR_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/HYDRATEATLAS/0CUST_SALES_ATTR.PARQUET\u0027\nCUSTOMER_HIER_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.csv\u0027\nPRICELIST_DIR\u003dSETTING_RAW_DIR+\u0027/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_PRICELIST_GENERAL.csv\u0027\n\n# Outputs\nOUTPUT_DIR\u003dSETTING_OUTPUT_DIR+\"/\"+pipelineSubfolderName\nPRICELIST_FDM_OUTPUT_DIR\u003dOUTPUT_DIR+\"/PRICELIST_FDM.CSV\"\nPRICELIST_FDM_ARCHIVE_OUTPUT_DIR\u003dOUTPUT_DIR+\"/#ARCHIVE/PRICELIST_FDM.CSV\"\n",
+      "text": "%pyspark\n# Inputs\nCUST_SALES_ATTR_DIR=SETTING_RAW_DIR+'/SOURCES/HYDRATEATLAS/0CUST_SALES_ATTR.PARQUET'\nCUSTOMER_HIER_DIR=SETTING_RAW_DIR+'/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.csv'\nPRICELIST_DIR=SETTING_RAW_DIR+'/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_PRICELIST_GENERAL.csv'\n\n# Outputs\nOUTPUT_DIR=SETTING_OUTPUT_DIR+\"/\"+pipelineSubfolderName\nPRICELIST_FDM_OUTPUT_DIR=OUTPUT_DIR+\"/PRICELIST_FDM.CSV\"\nPRICELIST_FDM_ARCHIVE_OUTPUT_DIR=OUTPUT_DIR+\"/#ARCHIVE/PRICELIST_FDM.CSV\"\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:31.549",
+      "dateUpdated": "2023-02-02T11:07:52+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -251,9 +296,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -268,17 +313,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_815731384",
+      "jobName": "paragraph_1675324802047_1298832719",
       "id": "20220826-112951_313920377",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:31.551",
-      "dateFinished": "2022-08-29 06:43:31.768",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:52+0000",
+      "dateFinished": "2023-02-02T11:07:53+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9004"
     },
     {
-      "text": "%pyspark\npricelistSchema\u003dStructType([StructField(\u0027SOLD_TO\u0027 , StringType(), False),\n                              StructField(\u0027MATERIAL\u0027 , StringType(), False),\n                              StructField(\u0027ZREP\u0027 , StringType(), False),\n                              StructField(\u0027PRICE_CS\u0027 , DoubleType(), False),\n                              StructField(\u0027PRICE_ST\u0027 , DoubleType(), False),\n                              StructField(\u0027PRICE_KG\u0027 , DoubleType(), False),\n                              StructField(\u0027START_DATE\u0027 , DateType(), False),\n                              StructField(\u0027END_DATE\u0027 , DateType(), False),\n                              StructField(\u0027CURRENCY\u0027 , StringType(), False), \n                              StructField(\u0027PRICELIST\u0027 , StringType(), False), \n                              StructField(\u0027DELETION_INDICATOR\u0027 , StringType(), False),\n                              StructField(\u0027RELEASE_STATUS\u0027 , StringType(), False), \n                              StructField(\u0027CREATED_ON\u0027 , DateType(), False)])",
+      "text": "%pyspark\npricelistSchema=StructType([StructField('SOLD_TO' , StringType(), False),\n                              StructField('MATERIAL' , StringType(), False),\n                              StructField('ZREP' , StringType(), False),\n                              StructField('PRICE_CS' , DoubleType(), False),\n                              StructField('PRICE_ST' , DoubleType(), False),\n                              StructField('PRICE_KG' , DoubleType(), False),\n                              StructField('START_DATE' , DateType(), False),\n                              StructField('END_DATE' , DateType(), False),\n                              StructField('CURRENCY' , StringType(), False), \n                              StructField('PRICELIST' , StringType(), False), \n                              StructField('DELETION_INDICATOR' , StringType(), False),\n                              StructField('RELEASE_STATUS' , StringType(), False), \n                              StructField('CREATED_ON' , DateType(), False)])",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:31.851",
+      "dateUpdated": "2023-02-02T11:07:53+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -288,9 +334,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -305,17 +351,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_386135963",
+      "jobName": "paragraph_1675324802047_1344957244",
       "id": "20220826-112951_1341789860",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:31.853",
-      "dateFinished": "2022-08-29 06:43:32.069",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:53+0000",
+      "dateFinished": "2023-02-02T11:07:53+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9005"
     },
     {
-      "text": "%pyspark\ncustomerSalesAttributesDf\u003dspark.read.parquet(CUST_SALES_ATTR_DIR)\n\ngHierarchyDf \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(CUSTOMER_HIER_DIR)\n\npricelistDf\u003dspark.read.format(\"csv\").schema(pricelistSchema).option(\"header\", \"true\").load(PRICELIST_DIR)\n",
+      "text": "%pyspark\ncustomerSalesAttributesDf=spark.read.parquet(CUST_SALES_ATTR_DIR)\n\ngHierarchyDf = spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(CUSTOMER_HIER_DIR)\n\npricelistDf=spark.read.format(\"csv\").schema(pricelistSchema).option(\"header\", \"true\").load(PRICELIST_DIR)\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:32.153",
+      "dateUpdated": "2023-02-02T11:07:53+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -325,9 +372,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -348,28 +395,31 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d880"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=7",
+              "$$hashKey": "object:10480"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d881"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=8",
+              "$$hashKey": "object:10481"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_2119845947",
+      "jobName": "paragraph_1675324802047_361671098",
       "id": "20220826-112951_771646031",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:32.155",
-      "dateFinished": "2022-08-29 06:43:33.276",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:53+0000",
+      "dateFinished": "2023-02-02T11:07:54+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9006"
     },
     {
-      "text": "%pyspark\npricelistDf\u003dpricelistDf\\\n            .where((col(\"DELETION_INDICATOR\").isNull()) \u0026 (col(\"PRICE_CS\").isNotNull())\u0026 (col(\"PRICE_ST\").isNotNull())\u0026 (col(\"PRICE_KG\").isNotNull()))\nprint(\"Price list rows:\",pricelistDf.count())\n\nprint(\"GH Full rows:\",gHierarchyDf.count())\n\n# Choose only active data from GHierarchy\ngHierarchyActiveDf\u003dgHierarchyDf\\\n.withColumn(\"Active_From\",to_date(col(\u0027Active_From\u0027), \u0027yyyy/MM/dd\u0027))\\\n.withColumn(\"Active_Till\",to_date(col(\u0027Active_Till\u0027), \u0027yyyy/MM/dd\u0027))\\\n.where(((col(\"Active_From\") \u003c\u003d today )\u0026(col(\"Active_Till\") \u003e\u003dtoday)) | ((col(\"Active_From\") \u003c\u003d today )\u0026(col(\"Active_Till\").isNull())) )\n\nprint(\"GH active rows:\",gHierarchyActiveDf.count())\n\ngHierarchyActiveDf\u003dgHierarchyActiveDf\\\n.withColumn(\u0027SoldToPoint\u0027,regexp_replace(\u0027SoldToPoint\u0027,\u0027^0*\u0027,\u0027\u0027))\\\n.withColumn(\u00270CUST_SALES\u0027,regexp_replace(\u00270CUST_SALES\u0027,\u0027^0*\u0027,\u0027\u0027))\n\ncustomerSalesSubsetDf\u003dcustomerSalesAttributesDf.select(\"KUNNR_PK\",\"VKORG_PK\",\"VTWEG_PK\",\"SPART_PK\",\"PLTYP\",\"KTGRD\",\"ERDAT\",\"LOEVM\",\"ODQ_CHANGEMODE\").withColumn(\u0027KUNNR_PK\u0027,regexp_replace(\u0027KUNNR_PK\u0027,\u0027^0*\u0027,\u0027\u0027))\ncustomerSalesSubsetDf\u003dcustomerSalesSubsetDf.where((col(\"VKORG_PK\")\u003d\u003d261)\u0026(col(\"SPART_PK\")\u003d\u003d51) \u0026 (col(\"VTWEG_PK\").isin(11,22,33))\u0026 (col(\"LOEVM\").isNull()) \u0026 (col(\"PLTYP\").isNotNull())).select(col(\"KUNNR_PK\"),col(\"VTWEG_PK\").alias(\"DISTR_CH\"),col(\"PLTYP\"),col(\"ERDAT\"),col(\"ODQ_CHANGEMODE\"))\nprint(\"0CUST_SALES_ATTR rows:\",customerSalesSubsetDf.count())",
+      "text": "%pyspark\npricelistDf=pricelistDf\\\n            .where((col(\"DELETION_INDICATOR\").isNull()) & (col(\"PRICE_CS\").isNotNull())& (col(\"PRICE_ST\").isNotNull())& (col(\"PRICE_KG\").isNotNull()))\nprint(\"Price list rows:\",pricelistDf.count())\n\nprint(\"GH Full rows:\",gHierarchyDf.count())\n\n# Choose only active data from GHierarchy\ngHierarchyActiveDf=gHierarchyDf\\\n.withColumn(\"Active_From\",to_date(col('Active_From'), 'yyyy/MM/dd'))\\\n.withColumn(\"Active_Till\",to_date(col('Active_Till'), 'yyyy/MM/dd'))\\\n.where(((col(\"Active_From\") <= today )&(col(\"Active_Till\") >=today)) | ((col(\"Active_From\") <= today )&(col(\"Active_Till\").isNull())) )\n\nprint(\"GH active rows:\",gHierarchyActiveDf.count())\n\ngHierarchyActiveDf=gHierarchyActiveDf\\\n.withColumn('SoldToPoint',regexp_replace('SoldToPoint','^0*',''))\\\n.withColumn('0CUST_SALES',regexp_replace('0CUST_SALES','^0*',''))\n\ncustomerSalesSubsetDf=customerSalesAttributesDf.select(\"KUNNR_PK\",\"VKORG_PK\",\"VTWEG_PK\",\"SPART_PK\",\"PLTYP\",\"KTGRD\",\"ERDAT\",\"LOEVM\",\"ODQ_CHANGEMODE\").withColumn('KUNNR_PK',regexp_replace('KUNNR_PK','^0*',''))\ncustomerSalesSubsetDf=customerSalesSubsetDf.where((col(\"VKORG_PK\")==261)&(col(\"SPART_PK\")==51) & (col(\"VTWEG_PK\").isin(11,22,33))& (col(\"LOEVM\").isNull()) & (col(\"PLTYP\").isNotNull())).select(col(\"KUNNR_PK\"),col(\"VTWEG_PK\").alias(\"DISTR_CH\"),col(\"PLTYP\"),col(\"ERDAT\"),col(\"ODQ_CHANGEMODE\"))\nprint(\"0CUST_SALES_ATTR rows:\",customerSalesSubsetDf.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:33.357",
-      "progress": 96,
+      "dateUpdated": "2023-02-02T11:07:54+0000",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -378,9 +428,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -393,7 +443,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "Price list rows: 195980\nGH Full rows: 25679\nGH active rows: 25614\n0CUST_SALES_ATTR rows: 825\n"
+            "data": "Price list rows: 207140\nGH Full rows: 1100\nGH active rows: 1044\n0CUST_SALES_ATTR rows: 847\n"
           }
         ]
       },
@@ -406,33 +456,38 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d882"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=9",
+              "$$hashKey": "object:10543"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d883"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=10",
+              "$$hashKey": "object:10544"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d884"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=11",
+              "$$hashKey": "object:10545"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d885"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=12",
+              "$$hashKey": "object:10546"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_259076794",
+      "jobName": "paragraph_1675324802047_1806924001",
       "id": "20220826-112951_1522135453",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:33.359",
-      "dateFinished": "2022-08-29 06:43:46.016",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:54+0000",
+      "dateFinished": "2023-02-02T11:07:57+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9007"
     },
     {
-      "text": "%pyspark\n# 10104987\n# display(pricelistDf.where(col(\"ZREP\")\u003d\u003d\"10104987\"))",
+      "text": "%pyspark\n# 10104987\n# display(pricelistDf.where(col(\"ZREP\")==\"10104987\"))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:46.072",
+      "dateUpdated": "2023-02-02T11:07:57+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -442,9 +497,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -459,17 +514,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1181723555",
+      "jobName": "paragraph_1675324802047_1441715515",
       "id": "20220826-112951_2029438064",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:46.075",
-      "dateFinished": "2022-08-29 06:43:46.289",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:57+0000",
+      "dateFinished": "2023-02-02T11:07:58+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9008"
     },
     {
       "text": "%pyspark\n# display(pricelistDf.where(col(\"PRICE_CS\").isNull()))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:46.375",
+      "dateUpdated": "2023-02-02T11:07:58+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -479,9 +535,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -496,18 +552,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1006507341",
+      "jobName": "paragraph_1675324802047_215319915",
       "id": "20220826-112951_1730589436",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:46.377",
-      "dateFinished": "2022-08-29 06:43:46.591",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:58+0000",
+      "dateFinished": "2023-02-02T11:07:58+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9009"
     },
     {
-      "text": "%pyspark\nghHierarchySoldToDf\u003dgHierarchyActiveDf.select(col(\"SoldToPoint\"),col(\"0DISTR_CHAN\"),col(\"ZCUSTHG04\").alias(\"GHierarchyId\"),col(\"ZCUSTHG04___T\").alias(\"GHierarchyName\"))\n\nghHierarchySoldToDf\u003dghHierarchySoldToDf.withColumn(\u0027GHierarchyId\u0027,regexp_replace(\u0027GHierarchyId\u0027,\u0027^0*\u0027,\u0027\u0027))\n\nprint(\"Soldto count:\",ghHierarchySoldToDf.count())\n\n\ngHierPricelistTypeDf\u003dcustomerSalesSubsetDf.join(ghHierarchySoldToDf,(customerSalesSubsetDf[\"KUNNR_PK\"]\u003d\u003dghHierarchySoldToDf[\"SoldToPoint\"]) \u0026 (customerSalesSubsetDf[\"DISTR_CH\"]\u003d\u003dghHierarchySoldToDf[\"0DISTR_CHAN\"]),how\u003d\"inner\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())\n\ngHierPricelistTypeDf\u003dgHierPricelistTypeDf.select(\"DISTR_CH\",\"PLTYP\",\"ERDAT\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())",
+      "text": "%pyspark\nghHierarchySoldToDf=gHierarchyActiveDf.select(col(\"SoldToPoint\"),col(\"0DISTR_CHAN\"),col(\"ZCUSTHG04\").alias(\"GHierarchyId\"),col(\"ZCUSTHG04___T\").alias(\"GHierarchyName\"))\n\nghHierarchySoldToDf=ghHierarchySoldToDf.withColumn('GHierarchyId',regexp_replace('GHierarchyId','^0*',''))\n\nprint(\"Soldto count:\",ghHierarchySoldToDf.count())\n\n\ngHierPricelistTypeDf=customerSalesSubsetDf.join(ghHierarchySoldToDf,(customerSalesSubsetDf[\"KUNNR_PK\"]==ghHierarchySoldToDf[\"SoldToPoint\"]) & (customerSalesSubsetDf[\"DISTR_CH\"]==ghHierarchySoldToDf[\"0DISTR_CHAN\"]),how=\"inner\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())\n\ngHierPricelistTypeDf=gHierPricelistTypeDf.select(\"DISTR_CH\",\"PLTYP\",\"ERDAT\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:43:46.677",
-      "progress": 74,
+      "dateUpdated": "2023-02-02T11:07:58+0000",
+      "progress": 65,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -516,9 +573,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -531,7 +588,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "Soldto count: 25614\nSoldto count: 198\nSoldto count: 165\n"
+            "data": "Soldto count: 1044\nSoldto count: 195\nSoldto count: 162\n"
           }
         ]
       },
@@ -544,31 +601,35 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d886"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=13",
+              "$$hashKey": "object:10700"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d888"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=15",
+              "$$hashKey": "object:10701"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d890"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=17",
+              "$$hashKey": "object:10702"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_439085304",
+      "jobName": "paragraph_1675324802047_1512029555",
       "id": "20220826-112951_957634637",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:43:46.679",
-      "dateFinished": "2022-08-29 06:44:07.706",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:07:58+0000",
+      "dateFinished": "2023-02-02T11:08:04+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9010"
     },
     {
-      "text": "%pyspark\nwindow \u003d Window.\\\n              partitionBy(\"DISTR_CH\",\"PLTYP\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").\\\n              orderBy(gHierPricelistTypeDf[\"ERDAT\"].desc())\ncustPartDf \u003d gHierPricelistTypeDf\\\n            .where(col(\"PLTYP\").isNotNull())\\\n            .withColumn(\"MAX_ERDAT\",max(\"ERDAT\").over(window))\\\n\ncustSubsetDf\u003dcustPartDf.where(col(\"ERDAT\")\u003d\u003dcol(\"MAX_ERDAT\")).drop(\"MAX_ERDAT\")\ncustSubsetDf.dropDuplicates().count()\n",
+      "text": "%pyspark\nwindow = Window.\\\n              partitionBy(\"DISTR_CH\",\"PLTYP\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").\\\n              orderBy(gHierPricelistTypeDf[\"ERDAT\"].desc())\ncustPartDf = gHierPricelistTypeDf\\\n            .where(col(\"PLTYP\").isNotNull())\\\n            .withColumn(\"MAX_ERDAT\",max(\"ERDAT\").over(window))\\\n\ncustSubsetDf=custPartDf.where(col(\"ERDAT\")==col(\"MAX_ERDAT\")).drop(\"MAX_ERDAT\")\ncustSubsetDf.dropDuplicates().count()\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:07.802",
-      "progress": 83,
+      "dateUpdated": "2023-02-02T11:08:04+0000",
+      "progress": 82,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -577,9 +638,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -592,7 +653,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "90"
+            "data": "86"
           }
         ]
       },
@@ -605,24 +666,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d892"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=19",
+              "$$hashKey": "object:10768"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1610220197",
+      "jobName": "paragraph_1675324802047_1996788720",
       "id": "20220826-112951_741635051",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:07.804",
-      "dateFinished": "2022-08-29 06:44:14.874",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:04+0000",
+      "dateFinished": "2023-02-02T11:08:08+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9011"
     },
     {
       "text": "%pyspark\n# display(custSubsetDf.orderBy(\"GHierarchyName\"))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:14.911",
+      "dateUpdated": "2023-02-02T11:08:08+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -632,9 +695,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -649,18 +712,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1161903333",
+      "jobName": "paragraph_1675324802047_9007327",
       "id": "20220826-112951_1647306585",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:14.913",
-      "dateFinished": "2022-08-29 06:44:15.128",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:08+0000",
+      "dateFinished": "2023-02-02T11:08:08+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9012"
     },
     {
-      "text": "%pyspark\ncustSubsetDf\u003dcustSubsetDf.fillna({\"ODQ_CHANGEMODE\":\"I\"})\n\nwindow \u003d Window.\\\n              partitionBy(\"GHierarchyId\",\"GHierarchyName\",\"DISTR_CH\",\"ERDAT\").\\\n              orderBy(custSubsetDf[\"ODQ_CHANGEMODE\"].desc())\ncustPart2Df \u003d custSubsetDf.withColumn(\"GROUP_ODQ_CHANGEMODE\",first(\"ODQ_CHANGEMODE\",True).over(window))\nclientToPricelistMapDf\u003dcustPart2Df.where(col(\"ODQ_CHANGEMODE\")\u003d\u003dcol(\"GROUP_ODQ_CHANGEMODE\")).drop(\"GROUP_ODQ_CHANGEMODE\")\nclientToPricelistMapDf\u003dclientToPricelistMapDf.select(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\").dropDuplicates([\"GHierarchyId\",\"GHierarchyName\"])\n\nclientToPricelistMapDf.persist()\nclientToPricelistMapDf.count()",
+      "text": "%pyspark\ncustSubsetDf=custSubsetDf.fillna({\"ODQ_CHANGEMODE\":\"I\"})\n\nwindow = Window.\\\n              partitionBy(\"GHierarchyId\",\"GHierarchyName\",\"DISTR_CH\",\"ERDAT\").\\\n              orderBy(custSubsetDf[\"ODQ_CHANGEMODE\"].desc())\ncustPart2Df = custSubsetDf.withColumn(\"GROUP_ODQ_CHANGEMODE\",first(\"ODQ_CHANGEMODE\",True).over(window))\nclientToPricelistMapDf=custPart2Df.where(col(\"ODQ_CHANGEMODE\")==col(\"GROUP_ODQ_CHANGEMODE\")).drop(\"GROUP_ODQ_CHANGEMODE\")\nclientToPricelistMapDf=clientToPricelistMapDf.select(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\").dropDuplicates([\"GHierarchyId\",\"GHierarchyName\"])\n\nclientToPricelistMapDf.persist()\nclientToPricelistMapDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:15.214",
-      "progress": 91,
+      "dateUpdated": "2023-02-02T11:08:08+0000",
+      "progress": 94,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -669,9 +733,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -697,24 +761,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d894"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=21",
+              "$$hashKey": "object:10868"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1957173343",
+      "jobName": "paragraph_1675324802047_1203643795",
       "id": "20220826-112951_810293426",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:15.216",
-      "dateFinished": "2022-08-29 06:44:23.652",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:08+0000",
+      "dateFinished": "2023-02-02T11:08:12+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9013"
     },
     {
       "text": "%pyspark\n# display(clientToPricelistMapDf.orderBy(\"GHierarchyName\"))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:23.724",
+      "dateUpdated": "2023-02-02T11:08:12+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -724,9 +790,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -741,18 +807,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_472101746",
+      "jobName": "paragraph_1675324802047_1156300614",
       "id": "20220826-112951_721549510",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:23.726",
-      "dateFinished": "2022-08-29 06:44:23.942",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:12+0000",
+      "dateFinished": "2023-02-02T11:08:12+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9014"
     },
     {
-      "text": "%pyspark\ndupsDf\u003dclientToPricelistMapDf\\\n.groupBy(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\")\\\n.agg((count(\"*\")\u003e1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")\u003e0)\n\ndupsDf.count()",
+      "text": "%pyspark\ndupsDf=clientToPricelistMapDf\\\n.groupBy(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\")\\\n.agg((count(\"*\")>1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")>0)\n\ndupsDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:24.027",
-      "progress": 13,
+      "dateUpdated": "2023-02-02T11:08:12+0000",
+      "progress": 5,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -761,9 +828,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -789,25 +856,27 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d895"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=22",
+              "$$hashKey": "object:10968"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_299522019",
+      "jobName": "paragraph_1675324802047_1606774839",
       "id": "20220826-112951_606432614",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:24.029",
-      "dateFinished": "2022-08-29 06:44:25.918",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:12+0000",
+      "dateFinished": "2023-02-02T11:08:14+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9015"
     },
     {
-      "text": "%pyspark\npriceLevelPricesDf\u003dpricelistDf.where(col(\"SOLD_TO\").isNull())\npriceLevelPricesDf.count()",
+      "text": "%pyspark\npriceLevelPricesDf=pricelistDf.where(col(\"SOLD_TO\").isNull())\npriceLevelPricesDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:25.932",
-      "progress": 20,
+      "dateUpdated": "2023-02-02T11:08:14+0000",
+      "progress": 100,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -816,9 +885,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -831,7 +900,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "154337"
+            "data": "164585"
           }
         ]
       },
@@ -844,24 +913,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d896"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=23",
+              "$$hashKey": "object:11026"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1377110184",
+      "jobName": "paragraph_1675324802047_459461143",
       "id": "20220826-112951_967660436",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:25.933",
-      "dateFinished": "2022-08-29 06:44:26.503",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:14+0000",
+      "dateFinished": "2023-02-02T11:08:14+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9016"
     },
     {
-      "text": "%pyspark\npricelistClientsDf\u003dpriceLevelPricesDf.join(clientToPricelistMapDf,priceLevelPricesDf[\"PRICELIST\"]\u003d\u003dclientToPricelistMapDf[\"PLTYP\"],how\u003d\"left\")\npricelistClientsDf.count()",
+      "text": "%pyspark\npricelistClientsDf=priceLevelPricesDf.join(clientToPricelistMapDf,priceLevelPricesDf[\"PRICELIST\"]==clientToPricelistMapDf[\"PLTYP\"],how=\"left\")\npricelistClientsDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:26.534",
+      "dateUpdated": "2023-02-02T11:08:15+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -871,9 +942,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -886,7 +957,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "545844"
+            "data": "559038"
           }
         ]
       },
@@ -899,24 +970,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d898"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=25",
+              "$$hashKey": "object:11084"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_15205742",
+      "jobName": "paragraph_1675324802047_2128085750",
       "id": "20220826-112951_1769227675",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:26.536",
-      "dateFinished": "2022-08-29 06:44:28.416",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:15+0000",
+      "dateFinished": "2023-02-02T11:08:16+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9017"
     },
     {
       "text": "%pyspark\nprint(\"clients price type codes:\",clientToPricelistMapDf.select(\"PLTYP\").distinct().count())\nprint(\"pricelist price type codes:\",pricelistDf.select(\"PRICELIST\").distinct().count())\nprint(\"Not mapped price level prices:\",pricelistClientsDf.where(col(\"GHierarchyId\").isNull()).count())",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:28.439",
+      "dateUpdated": "2023-02-02T11:08:16+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -926,9 +999,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -941,7 +1014,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "clients price type codes: 10\npricelist price type codes: 24\nNot mapped price level prices: 51594\n"
+            "data": "clients price type codes: 11\npricelist price type codes: 24\nNot mapped price level prices: 53710\n"
           }
         ]
       },
@@ -954,30 +1027,34 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d899"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=26",
+              "$$hashKey": "object:11142"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d900"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=27",
+              "$$hashKey": "object:11143"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d902"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=29",
+              "$$hashKey": "object:11144"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_891114024",
+      "jobName": "paragraph_1675324802047_2031195581",
       "id": "20220826-112951_1293375419",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:28.441",
-      "dateFinished": "2022-08-29 06:44:31.739",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:16+0000",
+      "dateFinished": "2023-02-02T11:08:18+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9018"
     },
     {
       "text": "%pyspark\n# display(pricelistClientsDf.where((col(\"GHierarchyId\").isNull()) ).select(\"PRICELIST\").distinct())",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:31.745",
+      "dateUpdated": "2023-02-02T11:08:18+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -987,9 +1064,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1004,17 +1081,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_945257835",
+      "jobName": "paragraph_1675324802047_337147463",
       "id": "20220826-112951_1112952098",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:31.747",
-      "dateFinished": "2022-08-29 06:44:31.963",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:18+0000",
+      "dateFinished": "2023-02-02T11:08:18+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9019"
     },
     {
-      "text": "%pyspark\nsoldtoLevelPricesDf\u003dpricelistDf.where(col(\"SOLD_TO\").isNotNull())\nsoldtoLevelPricesDf.count()",
+      "text": "%pyspark\nsoldtoLevelPricesDf=pricelistDf.where(col(\"SOLD_TO\").isNotNull())\nsoldtoLevelPricesDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:32.047",
+      "dateUpdated": "2023-02-02T11:08:18+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1024,9 +1102,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1039,7 +1117,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "41643"
+            "data": "42555"
           }
         ]
       },
@@ -1052,25 +1130,27 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d903"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=30",
+              "$$hashKey": "object:11252"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_1137521202",
+      "jobName": "paragraph_1675324802047_132673800",
       "id": "20220826-112951_297043727",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:32.050",
-      "dateFinished": "2022-08-29 06:44:32.519",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:18+0000",
+      "dateFinished": "2023-02-02T11:08:19+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9020"
     },
     {
-      "text": "%pyspark\nghHierarchySoldToSubsetDf\u003dghHierarchySoldToDf.withColumn(\u0027SoldToPoint\u0027,regexp_replace(\u0027SoldToPoint\u0027,\u0027^0*\u0027,\u0027\u0027))\n\nghHierarchySoldToSubsetDf\u003dghHierarchySoldToSubsetDf\\\n.dropDuplicates()\\\n.where((col(\"SoldToPoint\").isNotNull()) \u0026 ~(col(\"ZCUSTHG04\")\u003d\u003d\"0\"))\\\n.withColumn(\u0027GHierarchyId\u0027,regexp_replace(\u0027GHierarchyId\u0027,\u0027^0*\u0027,\u0027\u0027))\n\nprint(ghHierarchySoldToSubsetDf.count())\n\npricelistSoldtoClientsDf\u003dsoldtoLevelPricesDf.join(ghHierarchySoldToSubsetDf,soldtoLevelPricesDf[\"SOLD_TO\"]\u003d\u003dghHierarchySoldToSubsetDf[\"SoldToPoint\"],how\u003d\"left\")\npricelistSoldtoClientsDf.count()",
+      "text": "%pyspark\nghHierarchySoldToSubsetDf=ghHierarchySoldToDf.withColumn('SoldToPoint',regexp_replace('SoldToPoint','^0*',''))\n\nghHierarchySoldToSubsetDf=ghHierarchySoldToSubsetDf\\\n.dropDuplicates()\\\n.where((col(\"SoldToPoint\").isNotNull()) & ~(col(\"ZCUSTHG04\")==\"0\"))\\\n.withColumn('GHierarchyId',regexp_replace('GHierarchyId','^0*',''))\n\nprint(ghHierarchySoldToSubsetDf.count())\n\npricelistSoldtoClientsDf=soldtoLevelPricesDf.join(ghHierarchySoldToSubsetDf,soldtoLevelPricesDf[\"SOLD_TO\"]==ghHierarchySoldToSubsetDf[\"SoldToPoint\"],how=\"left\")\npricelistSoldtoClientsDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:32.550",
-      "progress": 0,
+      "dateUpdated": "2023-02-02T11:08:19+0000",
+      "progress": 100,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1079,9 +1159,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1094,7 +1174,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "197\n44463"
+            "data": "195\n44300"
           }
         ]
       },
@@ -1107,28 +1187,31 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d904"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=31",
+              "$$hashKey": "object:11310"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d906"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=33",
+              "$$hashKey": "object:11311"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391772_450512",
+      "jobName": "paragraph_1675324802047_1449423203",
       "id": "20220826-112951_1520914495",
-      "dateCreated": "2022-08-26 11:29:51.772",
-      "dateStarted": "2022-08-29 06:44:32.553",
-      "dateFinished": "2022-08-29 06:44:35.297",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:19+0000",
+      "dateFinished": "2023-02-02T11:08:21+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9021"
     },
     {
       "text": "%pyspark\nprint(\"Not mapped price level prices:\",pricelistSoldtoClientsDf.where(col(\"GHierarchyId\").isNull()).count())",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:35.356",
-      "progress": 40,
+      "dateUpdated": "2023-02-02T11:08:21+0000",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1137,9 +1220,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1152,7 +1235,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "Not mapped price level prices: 5069\n"
+            "data": "Not mapped price level prices: 5221\n"
           }
         ]
       },
@@ -1165,24 +1248,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d908"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=35",
+              "$$hashKey": "object:11373"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_86594240",
+      "jobName": "paragraph_1675324802047_1961431289",
       "id": "20220826-112951_771386975",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:44:35.358",
-      "dateFinished": "2022-08-29 06:44:36.935",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:21+0000",
+      "dateFinished": "2023-02-02T11:08:22+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9022"
     },
     {
-      "text": "%pyspark\npricelistClientsDf\u003dpricelistClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates()\n# Sold to level prices with soldto\u0027s belonging to same ghierachy id must by collapsed to one record\npricelistSoldtoClientsDf\u003dpricelistSoldtoClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates([\u0027GHierarchyId\u0027,\u0027MATERIAL\u0027,\u0027START_DATE\u0027,\u0027END_DATE\u0027])",
+      "text": "%pyspark\npricelistClientsDf=pricelistClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates()\n# Sold to level prices with soldto's belonging to same ghierachy id must by collapsed to one record\npricelistSoldtoClientsDf=pricelistSoldtoClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates(['GHierarchyId','MATERIAL','START_DATE','END_DATE'])",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:36.960",
+      "dateUpdated": "2023-02-02T11:08:22+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1192,9 +1277,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1209,18 +1294,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1777304377",
+      "jobName": "paragraph_1675324802047_2025116231",
       "id": "20220826-112951_1563756959",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:44:36.962",
-      "dateFinished": "2022-08-29 06:44:37.177",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:22+0000",
+      "dateFinished": "2023-02-02T11:08:22+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9023"
     },
     {
       "text": "%pyspark\npricelistClientsDf.count()\npricelistSoldtoClientsDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:37.262",
-      "progress": 73,
+      "dateUpdated": "2023-02-02T11:08:22+0000",
+      "progress": 28,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1229,9 +1315,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1244,7 +1330,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "29721"
+            "data": "30008"
           }
         ]
       },
@@ -1257,28 +1343,31 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d910"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=37",
+              "$$hashKey": "object:11473"
             },
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d912"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=39",
+              "$$hashKey": "object:11474"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1217379725",
+      "jobName": "paragraph_1675324802047_1386389354",
       "id": "20220826-112951_1754030537",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:44:37.265",
-      "dateFinished": "2022-08-29 06:44:44.485",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:22+0000",
+      "dateFinished": "2023-02-02T11:08:27+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9024"
     },
     {
-      "text": "%pyspark\npricelistPriceLevelFinalDf\u003dpricelistClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\npricelistSoldtoLevelFinalDf\u003dpricelistSoldtoClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\n\nmergedDf\u003dpricelistPriceLevelFinalDf.unionByName(pricelistSoldtoLevelFinalDf)\n# Giving the priority to prices. Soltdo level prices have more priority than price level ones.\nmergedDf\u003dmergedDf.withColumn(\"PRIORITY\",when(col(\"SOLD_TO\").isNull(),10).otherwise(20))\nmergedDf.count()",
+      "text": "%pyspark\npricelistPriceLevelFinalDf=pricelistClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\npricelistSoldtoLevelFinalDf=pricelistSoldtoClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\n\nmergedDf=pricelistPriceLevelFinalDf.unionByName(pricelistSoldtoLevelFinalDf)\n# Giving the priority to prices. Soltdo level prices have more priority than price level ones.\nmergedDf=mergedDf.withColumn(\"PRIORITY\",when(col(\"SOLD_TO\").isNull(),10).otherwise(20))\nmergedDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:44.573",
-      "progress": 78,
+      "dateUpdated": "2023-02-02T11:08:27+0000",
+      "progress": 83,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1287,9 +1376,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1302,7 +1391,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "523971"
+            "data": "535336"
           }
         ]
       },
@@ -1315,25 +1404,27 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d915"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=42",
+              "$$hashKey": "object:11536"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1638843776",
+      "jobName": "paragraph_1675324802047_672546106",
       "id": "20220826-112951_139129423",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:44:44.575",
-      "dateFinished": "2022-08-29 06:44:50.440",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:27+0000",
+      "dateFinished": "2023-02-02T11:08:30+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9025"
     },
     {
-      "text": "%pyspark\nwindow \u003d Window.\\\n              partitionBy(\u0027G_HIERARCHY_ID\u0027,\u0027MATERIAL\u0027,\u0027START_DATE\u0027,\u0027END_DATE\u0027).\\\n              orderBy(mergedDf[\"PRIORITY\"].desc())\nfinalPartDf \u003d mergedDf.withColumn(\"MAX_PRIORITY\",max(\"PRIORITY\").over(window))\nfinalDf\u003dfinalPartDf.where(col(\"PRIORITY\")\u003d\u003dcol(\"MAX_PRIORITY\")).drop(\"MAX_PRIORITY\")\nfinalDf\u003dfinalDf.dropDuplicates([\u0027G_HIERARCHY_ID\u0027,\u0027ZREP\u0027,\u0027START_DATE\u0027,\u0027END_DATE\u0027])\nfinalDf.count()\n\n",
+      "text": "%pyspark\nwindow = Window.\\\n              partitionBy('G_HIERARCHY_ID','MATERIAL','START_DATE','END_DATE').\\\n              orderBy(mergedDf[\"PRIORITY\"].desc())\nfinalPartDf = mergedDf.withColumn(\"MAX_PRIORITY\",max(\"PRIORITY\").over(window))\nfinalDf=finalPartDf.where(col(\"PRIORITY\")==col(\"MAX_PRIORITY\")).drop(\"MAX_PRIORITY\")\nfinalDf=finalDf.dropDuplicates(['G_HIERARCHY_ID','ZREP','START_DATE','END_DATE'])\nfinalDf.count()\n\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:44:50.483",
-      "progress": 99,
+      "dateUpdated": "2023-02-02T11:08:30+0000",
+      "progress": 92,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1342,9 +1433,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1357,7 +1448,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "454819"
+            "data": "468589"
           }
         ]
       },
@@ -1370,24 +1461,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d918"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=45",
+              "$$hashKey": "object:11594"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_667786787",
+      "jobName": "paragraph_1675324802047_1196170530",
       "id": "20220826-112951_1983704463",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:44:50.485",
-      "dateFinished": "2022-08-29 06:45:06.672",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:30+0000",
+      "dateFinished": "2023-02-02T11:08:46+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9026"
     },
     {
-      "text": "%pyspark\nfinalJupiterDf\u003dfinalDf.withColumn(\"UNIT_OF_MEASURE\",lit(\"CS\")).select(\u0027G_HIERARCHY_ID\u0027,\u0027ZREP\u0027,col(\u0027PRICE_CS\u0027).alias(\u0027PRICE\u0027),\u0027START_DATE\u0027,col(\u0027END_DATE\u0027).alias(\u0027FINISH_DATE\u0027),\u0027UNIT_OF_MEASURE\u0027,\u0027CURRENCY\u0027)\nfinalDf\u003dfinalDf.select(\u0027G_HIERARCHY_ID\u0027,\u0027MATERIAL\u0027,\u0027ZREP\u0027,\u0027PRICE_CS\u0027,\u0027PRICE_KG\u0027,\u0027PRICE_ST\u0027,\u0027START_DATE\u0027,\u0027END_DATE\u0027,\u0027RELEASE_STATUS\u0027)\n",
+      "text": "%pyspark\nfinalJupiterDf=finalDf.withColumn(\"UNIT_OF_MEASURE\",lit(\"CS\")).select('G_HIERARCHY_ID','ZREP',col('PRICE_CS').alias('PRICE'),'START_DATE',col('END_DATE').alias('FINISH_DATE'),'UNIT_OF_MEASURE','CURRENCY')\nfinalDf=finalDf.select('G_HIERARCHY_ID','MATERIAL','ZREP','PRICE_CS','PRICE_KG','PRICE_ST','START_DATE','END_DATE','RELEASE_STATUS')\n",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:06.704",
+      "dateUpdated": "2023-02-02T11:08:46+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1397,9 +1490,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1414,18 +1507,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_2109616003",
+      "jobName": "paragraph_1675324802047_901952824",
       "id": "20220826-112951_53508902",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:06.706",
-      "dateFinished": "2022-08-29 06:45:06.970",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:46+0000",
+      "dateFinished": "2023-02-02T11:08:46+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9027"
     },
     {
-      "text": "%pyspark\ndupsDf\u003dfinalDf\\\n.groupBy(\u0027G_HIERARCHY_ID\u0027,\u0027ZREP\u0027,\u0027START_DATE\u0027,\u0027END_DATE\u0027)\\\n.agg((count(\"*\")\u003e1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")\u003e0)\n\ndupsDf.count()",
+      "text": "%pyspark\ndupsDf=finalDf\\\n.groupBy('G_HIERARCHY_ID','ZREP','START_DATE','END_DATE')\\\n.agg((count(\"*\")>1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")>0)\n\ndupsDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:07.007",
-      "progress": 96,
+      "dateUpdated": "2023-02-02T11:08:46+0000",
+      "progress": 95,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1434,9 +1528,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1462,24 +1556,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d921"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=48",
+              "$$hashKey": "object:11694"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_822437223",
+      "jobName": "paragraph_1675324802047_1758724436",
       "id": "20220826-112951_138002592",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:07.009",
-      "dateFinished": "2022-08-29 06:45:22.945",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:08:46+0000",
+      "dateFinished": "2023-02-02T11:09:02+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9028"
     },
     {
       "text": "%pyspark\n# display(finalJupiterDf)",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:23.029",
+      "dateUpdated": "2023-02-02T11:09:02+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1489,9 +1585,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1506,17 +1602,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1987065872",
+      "jobName": "paragraph_1675324802047_1510253938",
       "id": "20220826-112951_1472107362",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:23.032",
-      "dateFinished": "2022-08-29 06:45:23.246",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:09:02+0000",
+      "dateFinished": "2023-02-02T11:09:02+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9029"
     },
     {
       "text": "%pyspark\n# display(finalJupiterDf.where(col(\"ZREP\").isNull()))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:23.332",
+      "dateUpdated": "2023-02-02T11:09:02+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1526,9 +1623,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1543,18 +1640,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1396234377",
+      "jobName": "paragraph_1675324802047_671128713",
       "id": "20220826-112951_1191140495",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:23.334",
-      "dateFinished": "2022-08-29 06:45:23.551",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:09:02+0000",
+      "dateFinished": "2023-02-02T11:09:03+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9030"
     },
     {
       "text": "%pyspark\nfinalJupiterDf.count()",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:23.634",
-      "progress": 91,
+      "dateUpdated": "2023-02-02T11:09:03+0000",
+      "progress": 88,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1563,9 +1661,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1578,7 +1676,7 @@
         "msg": [
           {
             "type": "TEXT",
-            "data": "454819"
+            "data": "468589"
           }
         ]
       },
@@ -1591,24 +1689,26 @@
           "group": "spark",
           "values": [
             {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d924"
+              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=51",
+              "$$hashKey": "object:11836"
             }
           ],
           "interpreterSettingId": "spark"
         }
       },
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1446573901",
+      "jobName": "paragraph_1675324802047_1742624695",
       "id": "20220826-112951_1175909949",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:23.636",
-      "dateFinished": "2022-08-29 06:45:37.713",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:09:03+0000",
+      "dateFinished": "2023-02-02T11:09:11+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9031"
     },
     {
       "text": "%pyspark\ntry:\n  subprocess.call([\"hadoop\", \"fs\", \"-rm\",\"-r\", PRICELIST_FDM_ARCHIVE_OUTPUT_DIR])\n  subprocess.call([\"hadoop\", \"fs\", \"-cp\", PRICELIST_FDM_OUTPUT_DIR, PRICELIST_FDM_ARCHIVE_OUTPUT_DIR])\nexcept Exception as e:\n  print(str(e))",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:37.754",
+      "dateUpdated": "2023-02-02T11:09:11+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1618,9 +1718,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1635,18 +1735,19 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1059631126",
+      "jobName": "paragraph_1675324802047_1433098868",
       "id": "20220826-112951_15467167",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:37.756",
-      "dateFinished": "2022-08-29 06:45:41.244",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:09:11+0000",
+      "dateFinished": "2023-02-02T11:09:14+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:9032"
     },
     {
-      "text": "%pyspark\n# finalJupiterDf.write.mode(\"overwrite\").parquet(PRICELIST_FDM_OUTPUT_DIR)\n\nfinalJupiterDf\\\n.repartition(1)\\\n.write.csv(PRICELIST_FDM_OUTPUT_DIR,\nsep\u003d\"\\u0001\",\nheader\u003dTrue,\nmode\u003d\"overwrite\",\nemptyValue\u003d\"\",\ntimestampFormat\u003d\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "text": "%pyspark\n# finalJupiterDf.write.mode(\"overwrite\").parquet(PRICELIST_FDM_OUTPUT_DIR)\n\nfinalJupiterDf\\\n.withColumn('START_DATE',col('START_DATE').cast('timestamp'))\\\n.withColumn('FINISH_DATE',col('START_DATE').cast('timestamp'))\\\n.repartition(1)\\\n.write.csv(PRICELIST_FDM_OUTPUT_DIR,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)",
       "user": "anonymous",
-      "dateUpdated": "2022-08-29 06:45:41.260",
-      "progress": 99,
+      "dateUpdated": "2023-02-02T11:31:33+0000",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -1655,9 +1756,9 @@
           "completionKey": "TAB"
         },
         "editorMode": "ace/mode/python",
-        "colWidth": 12.0,
+        "colWidth": 12,
         "editorHide": false,
-        "fontSize": 9.0,
+        "fontSize": 9,
         "results": {},
         "enabled": true
       },
@@ -1666,44 +1767,40 @@
         "forms": {}
       },
       "results": {
-        "code": "SUCCESS",
-        "msg": []
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m<ipython-input-144-ab298b29dbef>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# finalJupiterDf.write.mode(\"overwrite\").parquet(PRICELIST_FDM_OUTPUT_DIR)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m \u001b[0mfinalJupiterDf\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      4\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mrepartition\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m .write.csv(PRICELIST_FDM_OUTPUT_DIR,\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding=encoding, emptyValue=emptyValue, lineSep=lineSep)\n\u001b[0;32m-> 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1304\u001b[0;31m         return_value = get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o524.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user=zeppelin, access=WRITE, inode=\"/JUPITER/OUTPUT/jupiter_pricelist_fdm\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:258)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1614)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:949)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:946)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:956)\n\tat org.apache.spark.internal.io.FileCommitProtocol.deleteWithJob(FileCommitProtocol.scala:124)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.deleteMatchingPartitions(InsertIntoHadoopFsRelationCommand.scala:226)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:129)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:767)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:750)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user=zeppelin, access=WRITE, inode=\"/JUPITER/OUTPUT/jupiter_pricelist_fdm\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:258)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:644)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1612)\n\t... 39 more\n"
+          }
+        ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "http://rc1b-dataproc-d-nxh7ji9rxwajctvq.mdb.yandexcloud.net:44623/jobs/job?id\u003d927"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1661513391773_1593210099",
+      "jobName": "paragraph_1675324802047_322582281",
       "id": "20220826-112951_594195555",
-      "dateCreated": "2022-08-26 11:29:51.773",
-      "dateStarted": "2022-08-29 06:45:41.262",
-      "dateFinished": "2022-08-29 06:45:58.919",
-      "status": "FINISHED"
+      "dateCreated": "2023-02-02T08:00:02+0000",
+      "dateStarted": "2023-02-02T11:09:14+0000",
+      "dateFinished": "2023-02-02T11:09:15+0000",
+      "status": "ERROR",
+      "$$hashKey": "object:9034"
     }
   ],
-  "name": "JUPITER/PRICELIST/JUPITER_PRICELIST_FDM",
-  "id": "2HDAR9ETH",
+  "name": "JUPITER_PRICELIST_FDM",
+  "id": "2HSRSRQ1P",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},
   "noteForms": {},
   "angularObjects": {},
   "config": {
-    "isZeppelinNotebookCronEnable": false
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
   },
   "info": {
     "isRunning": false
-  }
+  },
+  "path": "/JUPITER/PRICELIST/JUPITER_PRICELIST_FDM"
 }
