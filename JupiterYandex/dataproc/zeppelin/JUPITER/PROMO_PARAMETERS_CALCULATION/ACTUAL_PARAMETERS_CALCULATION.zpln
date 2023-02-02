@@ -1443,7 +1443,7 @@
       "$$hashKey": "object:2273"
     }
   ],
-  "name": "ACTUAL_PARAMETERS_CALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION",
   "id": "2HR194A3W",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
