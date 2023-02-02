@@ -46,8 +46,8 @@
                     ],
                     listeners: {
                         resize: function (panel) {
-                            
-                            panel.setWidth(panel.getHeight());                            
+
+                            panel.setWidth(panel.getHeight());
                             panel.down('#glyphRight').setHeight(panel.down('#glyphRight').getWidth());
                             //panel.down('#glyphRight').setWidth(panel.getHeight());
                         }
@@ -56,7 +56,7 @@
                 {
                     layout: {
                         type: 'vbox',
-                        align: 'center'
+                        align: 'stretch '
                     },
                     flex: 2,
                     height: '100%',
@@ -69,19 +69,26 @@
 
                             cls: 'title-name-metrics',
                             text: '0',
-                            //width: '100%',
+                            width: '100%',
                             flex: 1,
                         },
                         {
                             xtype: 'label',
                             itemId: 'CountLabel',
                             cls: 'title-count-metrics',
-                            //width: '100%',
+                            width: '100%',
                             text: '0',
                             //height: '50%',
                             flex: 1,
                         },
-                    ]
+                    ],
+                    listeners: {
+                        resize: function (panel) {
+                            Ext.get(panel.down('#NameLabel').id).setStyle('font-size', (panel.getHeight() * 0.30) + 'px');
+                            Ext.get(panel.down('#CountLabel').id).setStyle('font-size', (panel.getHeight() * 0.30) + 'px');
+
+                        }
+                    },
                 },
             ],
         },
@@ -136,6 +143,11 @@
                         }
                     }
                 ],
+                listeners: {
+                    resize: function (panel) {
+                        Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (panel.getHeight() * 0.50) + 'px');
+                    }
+                },
             }]
         },
         {
