@@ -1,4 +1,4 @@
-FROM apache/airflow:2.4.0-python3.10
+FROM apache/airflow:2.4.3-python3.10
 
 USER root
 RUN apt-get update
@@ -52,14 +52,33 @@ COPY core-site.xml /etc/hadoop/core-site.xml
 COPY hdfs-site.xml /etc/hadoop/hdfs-site.xml
 
 #Copy auxilary scripts
-COPY ../utils/. /utils
+COPY /utils/. /utils
+
+#Install postgresql client
+RUN apt-get -y install postgresql-client
+
+#Install misc utilities
+RUN apt-get -y install telnet nano iputils-ping nmap traceroute wget
 
 #Build bcp_import utility
 RUN apt-get -y install build-essential libcsv-dev uuid-dev libkrb5-dev
-COPY ../bcp_import/src/. /utils
+COPY /bcp_import_src/. /utils
 WORKDIR /utils/
 RUN gcc bcp_import.c -I /opt/microsoft/msodbcsql18/include -I /usr/include/uuid -o bcp_import -lodbc -lmsodbcsql-18 -lcsv -luuid
 
+RUN mkdir -p /hadoop/tmp/mapred/local
+RUN chmod -R 777 /hadoop/tmp/mapred
+
+#Install s3cmd
+RUN apt-get -y install s3cmd
+
+# Download and extract azcopy
+RUN wget -O downloadazcopy.tar.gz https://aka.ms/downloadazcopy-v10-linux && \
+    tar -xf downloadazcopy.tar.gz --strip-components=1 && \
+    rm -f /usr/bin/azcopy && \
+    cp ./azcopy /usr/bin/ && \
+    chmod 755 /usr/bin/azcopy && \
+    rm -f ./downloadazcopy.tar.gz && rm -f ./azcopy
 
 #Install python modules
 USER airflow
@@ -75,9 +94,15 @@ ENV AIRFLOW__API__AUTH_BACKEND="airflow.api.auth.backend.basic_auth"
 #K8s settings
 ENV LD_LIBRARY_PATH /usr/lib64:$LD_LIBRARY_PATH	
 ENV AIRFLOW__KUBERNETES__WORKER_PODS_CREATION_BATCH_SIZE=10
-ENV AIRFLOW__KUBERNETES__DELETE_WORKER_PODS=False
+#ENV AIRFLOW__KUBERNETES__DELETE_WORKER_PODS=False
 ENV AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT=120
 ENV AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT=240
+
+
+#ENV AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION=False
+ENV AIRFLOW__CORE__PARALLELISM=250
+RUN mkdir /tmp/hadoop/
+RUN mkdir /tmp/hadoop/mapred
 
 #Email settings 
 ENV AIRFLOW__EMAIL__EMAIL_BACKEND="airflow.utils.email.send_email_smtp"
@@ -88,12 +113,5 @@ ENV AIRFLOW__SMTP__SMTP_PASSWORD=$smtp_password
 ENV AIRFLOW__SMTP__SMTP_USER="$smtp_user"
 ENV AIRFLOW__SMTP__SMTP_STARTTLS=True
 ENV AIRFLOW__SMTP__SMTP_MAIL_FROM="$smtp_mail_from"
-ENV AIRFLOW__CORE__KILLED_TASK_CLEANUP_TIME=604800
-#ENV AIRFLOW__SCHEDULER__JOB_HEARTBEAT_SEC=60
-#ENV AIRFLOW__SCHEDULER__SCHEDULER_HEARTBEAT_SEC=200
-#ENV AIRFLOW__SCHEDULER__SCHEDULER_HEALTH_CHECK_THRESHOLD=600
-ENV AIRFLOW__SCHEDULER__SCHEDULE_AFTER_TASK_EXECUTION=False
-ENV AIRFLOW__CORE__PARALLELISM=250
-#ENV HADOOP_ROOT_LOGGER=DEBUG,console
 
-
+#ADD /dags /opt/airflow/dags
