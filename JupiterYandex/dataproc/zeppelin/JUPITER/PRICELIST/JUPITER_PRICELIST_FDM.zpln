@@ -42,7 +42,7 @@
       "dateFinished": "2023-02-02T11:07:17+0000",
       "status": "FINISHED",
       "focus": true,
-      "$$hashKey": "object:8998"
+      "$$hashKey": "object:602"
     },
     {
       "title": "Function to determine runtime(Notebook or pure python)",
@@ -82,7 +82,7 @@
       "dateStarted": "2023-02-02T11:07:17+0000",
       "dateFinished": "2023-02-02T11:07:43+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:8999"
+      "$$hashKey": "object:603"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nfrom pyspark.sql.window import Window\nimport datetime as datetime\nimport pandas as pd\nfrom dateutil.relativedelta import relativedelta\nimport math\nimport subprocess",
@@ -120,7 +120,7 @@
       "dateStarted": "2023-02-02T11:07:43+0000",
       "dateFinished": "2023-02-02T11:07:43+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9000"
+      "$$hashKey": "object:604"
     },
     {
       "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": '\n '\"/JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_\", '\n '\"ProcessDate\": \"2023-01-31\", \"Schema\": \"Jupiter\", \"PipelineName\": '\n '\"jupiter_pricelist_fdm\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n os.environ[\"HADOOP_USER_NAME\"] = \"airflow\"",
@@ -157,7 +157,7 @@
       "dateStarted": "2023-02-02T11:07:43+0000",
       "dateFinished": "2023-02-02T11:07:44+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9001"
+      "$$hashKey": "object:605"
     },
     {
       "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR = es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR = es.SETTING_OUTPUT_DIR\n\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\npipelineSubfolderName = es.input_params.get(\"PipelineName\")\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')",
@@ -201,31 +201,31 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=0",
-              "$$hashKey": "object:10266"
+              "$$hashKey": "object:1779"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=1",
-              "$$hashKey": "object:10267"
+              "$$hashKey": "object:1780"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=2",
-              "$$hashKey": "object:10268"
+              "$$hashKey": "object:1781"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=3",
-              "$$hashKey": "object:10269"
+              "$$hashKey": "object:1782"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=4",
-              "$$hashKey": "object:10270"
+              "$$hashKey": "object:1783"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=5",
-              "$$hashKey": "object:10271"
+              "$$hashKey": "object:1784"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=6",
-              "$$hashKey": "object:10272"
+              "$$hashKey": "object:1785"
             }
           ],
           "interpreterSettingId": "spark"
@@ -238,7 +238,7 @@
       "dateStarted": "2023-02-02T11:07:44+0000",
       "dateFinished": "2023-02-02T11:07:52+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9002"
+      "$$hashKey": "object:606"
     },
     {
       "text": "%pyspark\n# Get current date\ntoday = datetime.datetime.today()\nprint(today)\n",
@@ -281,7 +281,7 @@
       "dateStarted": "2023-02-02T11:07:52+0000",
       "dateFinished": "2023-02-02T11:07:52+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9003"
+      "$$hashKey": "object:607"
     },
     {
       "text": "%pyspark\n# Inputs\nCUST_SALES_ATTR_DIR=SETTING_RAW_DIR+'/SOURCES/HYDRATEATLAS/0CUST_SALES_ATTR.PARQUET'\nCUSTOMER_HIER_DIR=SETTING_RAW_DIR+'/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_CUSTOMERS.csv'\nPRICELIST_DIR=SETTING_RAW_DIR+'/SOURCES/UNIVERSALCATALOG/MARS_UNIVERSAL_PETCARE_PRICELIST_GENERAL.csv'\n\n# Outputs\nOUTPUT_DIR=SETTING_OUTPUT_DIR+\"/\"+pipelineSubfolderName\nPRICELIST_FDM_OUTPUT_DIR=OUTPUT_DIR+\"/PRICELIST_FDM.CSV\"\nPRICELIST_FDM_ARCHIVE_OUTPUT_DIR=OUTPUT_DIR+\"/#ARCHIVE/PRICELIST_FDM.CSV\"\n",
@@ -319,7 +319,7 @@
       "dateStarted": "2023-02-02T11:07:52+0000",
       "dateFinished": "2023-02-02T11:07:53+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9004"
+      "$$hashKey": "object:608"
     },
     {
       "text": "%pyspark\npricelistSchema=StructType([StructField('SOLD_TO' , StringType(), False),\n                              StructField('MATERIAL' , StringType(), False),\n                              StructField('ZREP' , StringType(), False),\n                              StructField('PRICE_CS' , DoubleType(), False),\n                              StructField('PRICE_ST' , DoubleType(), False),\n                              StructField('PRICE_KG' , DoubleType(), False),\n                              StructField('START_DATE' , DateType(), False),\n                              StructField('END_DATE' , DateType(), False),\n                              StructField('CURRENCY' , StringType(), False), \n                              StructField('PRICELIST' , StringType(), False), \n                              StructField('DELETION_INDICATOR' , StringType(), False),\n                              StructField('RELEASE_STATUS' , StringType(), False), \n                              StructField('CREATED_ON' , DateType(), False)])",
@@ -357,7 +357,7 @@
       "dateStarted": "2023-02-02T11:07:53+0000",
       "dateFinished": "2023-02-02T11:07:53+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9005"
+      "$$hashKey": "object:609"
     },
     {
       "text": "%pyspark\ncustomerSalesAttributesDf=spark.read.parquet(CUST_SALES_ATTR_DIR)\n\ngHierarchyDf = spark.read.format(\"csv\").option(\"header\", \"true\").option(\"delimiter\", \"\\u0001\").load(CUSTOMER_HIER_DIR)\n\npricelistDf=spark.read.format(\"csv\").schema(pricelistSchema).option(\"header\", \"true\").load(PRICELIST_DIR)\n",
@@ -396,11 +396,11 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=7",
-              "$$hashKey": "object:10480"
+              "$$hashKey": "object:1975"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=8",
-              "$$hashKey": "object:10481"
+              "$$hashKey": "object:1976"
             }
           ],
           "interpreterSettingId": "spark"
@@ -413,7 +413,7 @@
       "dateStarted": "2023-02-02T11:07:53+0000",
       "dateFinished": "2023-02-02T11:07:54+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9006"
+      "$$hashKey": "object:610"
     },
     {
       "text": "%pyspark\npricelistDf=pricelistDf\\\n            .where((col(\"DELETION_INDICATOR\").isNull()) & (col(\"PRICE_CS\").isNotNull())& (col(\"PRICE_ST\").isNotNull())& (col(\"PRICE_KG\").isNotNull()))\nprint(\"Price list rows:\",pricelistDf.count())\n\nprint(\"GH Full rows:\",gHierarchyDf.count())\n\n# Choose only active data from GHierarchy\ngHierarchyActiveDf=gHierarchyDf\\\n.withColumn(\"Active_From\",to_date(col('Active_From'), 'yyyy/MM/dd'))\\\n.withColumn(\"Active_Till\",to_date(col('Active_Till'), 'yyyy/MM/dd'))\\\n.where(((col(\"Active_From\") <= today )&(col(\"Active_Till\") >=today)) | ((col(\"Active_From\") <= today )&(col(\"Active_Till\").isNull())) )\n\nprint(\"GH active rows:\",gHierarchyActiveDf.count())\n\ngHierarchyActiveDf=gHierarchyActiveDf\\\n.withColumn('SoldToPoint',regexp_replace('SoldToPoint','^0*',''))\\\n.withColumn('0CUST_SALES',regexp_replace('0CUST_SALES','^0*',''))\n\ncustomerSalesSubsetDf=customerSalesAttributesDf.select(\"KUNNR_PK\",\"VKORG_PK\",\"VTWEG_PK\",\"SPART_PK\",\"PLTYP\",\"KTGRD\",\"ERDAT\",\"LOEVM\",\"ODQ_CHANGEMODE\").withColumn('KUNNR_PK',regexp_replace('KUNNR_PK','^0*',''))\ncustomerSalesSubsetDf=customerSalesSubsetDf.where((col(\"VKORG_PK\")==261)&(col(\"SPART_PK\")==51) & (col(\"VTWEG_PK\").isin(11,22,33))& (col(\"LOEVM\").isNull()) & (col(\"PLTYP\").isNotNull())).select(col(\"KUNNR_PK\"),col(\"VTWEG_PK\").alias(\"DISTR_CH\"),col(\"PLTYP\"),col(\"ERDAT\"),col(\"ODQ_CHANGEMODE\"))\nprint(\"0CUST_SALES_ATTR rows:\",customerSalesSubsetDf.count())",
@@ -457,19 +457,19 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=9",
-              "$$hashKey": "object:10543"
+              "$$hashKey": "object:2026"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=10",
-              "$$hashKey": "object:10544"
+              "$$hashKey": "object:2027"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=11",
-              "$$hashKey": "object:10545"
+              "$$hashKey": "object:2028"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=12",
-              "$$hashKey": "object:10546"
+              "$$hashKey": "object:2029"
             }
           ],
           "interpreterSettingId": "spark"
@@ -482,7 +482,7 @@
       "dateStarted": "2023-02-02T11:07:54+0000",
       "dateFinished": "2023-02-02T11:07:57+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9007"
+      "$$hashKey": "object:611"
     },
     {
       "text": "%pyspark\n# 10104987\n# display(pricelistDf.where(col(\"ZREP\")==\"10104987\"))",
@@ -520,7 +520,7 @@
       "dateStarted": "2023-02-02T11:07:57+0000",
       "dateFinished": "2023-02-02T11:07:58+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9008"
+      "$$hashKey": "object:612"
     },
     {
       "text": "%pyspark\n# display(pricelistDf.where(col(\"PRICE_CS\").isNull()))",
@@ -558,7 +558,7 @@
       "dateStarted": "2023-02-02T11:07:58+0000",
       "dateFinished": "2023-02-02T11:07:58+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9009"
+      "$$hashKey": "object:613"
     },
     {
       "text": "%pyspark\nghHierarchySoldToDf=gHierarchyActiveDf.select(col(\"SoldToPoint\"),col(\"0DISTR_CHAN\"),col(\"ZCUSTHG04\").alias(\"GHierarchyId\"),col(\"ZCUSTHG04___T\").alias(\"GHierarchyName\"))\n\nghHierarchySoldToDf=ghHierarchySoldToDf.withColumn('GHierarchyId',regexp_replace('GHierarchyId','^0*',''))\n\nprint(\"Soldto count:\",ghHierarchySoldToDf.count())\n\n\ngHierPricelistTypeDf=customerSalesSubsetDf.join(ghHierarchySoldToDf,(customerSalesSubsetDf[\"KUNNR_PK\"]==ghHierarchySoldToDf[\"SoldToPoint\"]) & (customerSalesSubsetDf[\"DISTR_CH\"]==ghHierarchySoldToDf[\"0DISTR_CHAN\"]),how=\"inner\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())\n\ngHierPricelistTypeDf=gHierPricelistTypeDf.select(\"DISTR_CH\",\"PLTYP\",\"ERDAT\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").dropDuplicates()\nprint(\"Soldto count:\",gHierPricelistTypeDf.count())",
@@ -602,15 +602,15 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=13",
-              "$$hashKey": "object:10700"
+              "$$hashKey": "object:2167"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=15",
-              "$$hashKey": "object:10701"
+              "$$hashKey": "object:2168"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=17",
-              "$$hashKey": "object:10702"
+              "$$hashKey": "object:2169"
             }
           ],
           "interpreterSettingId": "spark"
@@ -623,7 +623,7 @@
       "dateStarted": "2023-02-02T11:07:58+0000",
       "dateFinished": "2023-02-02T11:08:04+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9010"
+      "$$hashKey": "object:614"
     },
     {
       "text": "%pyspark\nwindow = Window.\\\n              partitionBy(\"DISTR_CH\",\"PLTYP\",\"ODQ_CHANGEMODE\",\"GHierarchyId\",\"GHierarchyName\").\\\n              orderBy(gHierPricelistTypeDf[\"ERDAT\"].desc())\ncustPartDf = gHierPricelistTypeDf\\\n            .where(col(\"PLTYP\").isNotNull())\\\n            .withColumn(\"MAX_ERDAT\",max(\"ERDAT\").over(window))\\\n\ncustSubsetDf=custPartDf.where(col(\"ERDAT\")==col(\"MAX_ERDAT\")).drop(\"MAX_ERDAT\")\ncustSubsetDf.dropDuplicates().count()\n",
@@ -667,7 +667,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=19",
-              "$$hashKey": "object:10768"
+              "$$hashKey": "object:2223"
             }
           ],
           "interpreterSettingId": "spark"
@@ -680,7 +680,7 @@
       "dateStarted": "2023-02-02T11:08:04+0000",
       "dateFinished": "2023-02-02T11:08:08+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9011"
+      "$$hashKey": "object:615"
     },
     {
       "text": "%pyspark\n# display(custSubsetDf.orderBy(\"GHierarchyName\"))",
@@ -718,7 +718,7 @@
       "dateStarted": "2023-02-02T11:08:08+0000",
       "dateFinished": "2023-02-02T11:08:08+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9012"
+      "$$hashKey": "object:616"
     },
     {
       "text": "%pyspark\ncustSubsetDf=custSubsetDf.fillna({\"ODQ_CHANGEMODE\":\"I\"})\n\nwindow = Window.\\\n              partitionBy(\"GHierarchyId\",\"GHierarchyName\",\"DISTR_CH\",\"ERDAT\").\\\n              orderBy(custSubsetDf[\"ODQ_CHANGEMODE\"].desc())\ncustPart2Df = custSubsetDf.withColumn(\"GROUP_ODQ_CHANGEMODE\",first(\"ODQ_CHANGEMODE\",True).over(window))\nclientToPricelistMapDf=custPart2Df.where(col(\"ODQ_CHANGEMODE\")==col(\"GROUP_ODQ_CHANGEMODE\")).drop(\"GROUP_ODQ_CHANGEMODE\")\nclientToPricelistMapDf=clientToPricelistMapDf.select(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\").dropDuplicates([\"GHierarchyId\",\"GHierarchyName\"])\n\nclientToPricelistMapDf.persist()\nclientToPricelistMapDf.count()",
@@ -762,7 +762,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=21",
-              "$$hashKey": "object:10868"
+              "$$hashKey": "object:2309"
             }
           ],
           "interpreterSettingId": "spark"
@@ -775,7 +775,7 @@
       "dateStarted": "2023-02-02T11:08:08+0000",
       "dateFinished": "2023-02-02T11:08:12+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9013"
+      "$$hashKey": "object:617"
     },
     {
       "text": "%pyspark\n# display(clientToPricelistMapDf.orderBy(\"GHierarchyName\"))",
@@ -813,7 +813,7 @@
       "dateStarted": "2023-02-02T11:08:12+0000",
       "dateFinished": "2023-02-02T11:08:12+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9014"
+      "$$hashKey": "object:618"
     },
     {
       "text": "%pyspark\ndupsDf=clientToPricelistMapDf\\\n.groupBy(\"GHierarchyId\",\"GHierarchyName\",\"PLTYP\")\\\n.agg((count(\"*\")>1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")>0)\n\ndupsDf.count()",
@@ -857,7 +857,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=22",
-              "$$hashKey": "object:10968"
+              "$$hashKey": "object:2395"
             }
           ],
           "interpreterSettingId": "spark"
@@ -870,7 +870,7 @@
       "dateStarted": "2023-02-02T11:08:12+0000",
       "dateFinished": "2023-02-02T11:08:14+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9015"
+      "$$hashKey": "object:619"
     },
     {
       "text": "%pyspark\npriceLevelPricesDf=pricelistDf.where(col(\"SOLD_TO\").isNull())\npriceLevelPricesDf.count()",
@@ -914,7 +914,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=23",
-              "$$hashKey": "object:11026"
+              "$$hashKey": "object:2441"
             }
           ],
           "interpreterSettingId": "spark"
@@ -927,7 +927,7 @@
       "dateStarted": "2023-02-02T11:08:14+0000",
       "dateFinished": "2023-02-02T11:08:14+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9016"
+      "$$hashKey": "object:620"
     },
     {
       "text": "%pyspark\npricelistClientsDf=priceLevelPricesDf.join(clientToPricelistMapDf,priceLevelPricesDf[\"PRICELIST\"]==clientToPricelistMapDf[\"PLTYP\"],how=\"left\")\npricelistClientsDf.count()",
@@ -971,7 +971,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=25",
-              "$$hashKey": "object:11084"
+              "$$hashKey": "object:2487"
             }
           ],
           "interpreterSettingId": "spark"
@@ -984,7 +984,7 @@
       "dateStarted": "2023-02-02T11:08:15+0000",
       "dateFinished": "2023-02-02T11:08:16+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9017"
+      "$$hashKey": "object:621"
     },
     {
       "text": "%pyspark\nprint(\"clients price type codes:\",clientToPricelistMapDf.select(\"PLTYP\").distinct().count())\nprint(\"pricelist price type codes:\",pricelistDf.select(\"PRICELIST\").distinct().count())\nprint(\"Not mapped price level prices:\",pricelistClientsDf.where(col(\"GHierarchyId\").isNull()).count())",
@@ -1028,15 +1028,15 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=26",
-              "$$hashKey": "object:11142"
+              "$$hashKey": "object:2533"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=27",
-              "$$hashKey": "object:11143"
+              "$$hashKey": "object:2534"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=29",
-              "$$hashKey": "object:11144"
+              "$$hashKey": "object:2535"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1049,7 +1049,7 @@
       "dateStarted": "2023-02-02T11:08:16+0000",
       "dateFinished": "2023-02-02T11:08:18+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9018"
+      "$$hashKey": "object:622"
     },
     {
       "text": "%pyspark\n# display(pricelistClientsDf.where((col(\"GHierarchyId\").isNull()) ).select(\"PRICELIST\").distinct())",
@@ -1087,7 +1087,7 @@
       "dateStarted": "2023-02-02T11:08:18+0000",
       "dateFinished": "2023-02-02T11:08:18+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9019"
+      "$$hashKey": "object:623"
     },
     {
       "text": "%pyspark\nsoldtoLevelPricesDf=pricelistDf.where(col(\"SOLD_TO\").isNotNull())\nsoldtoLevelPricesDf.count()",
@@ -1131,7 +1131,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=30",
-              "$$hashKey": "object:11252"
+              "$$hashKey": "object:2629"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1144,7 +1144,7 @@
       "dateStarted": "2023-02-02T11:08:18+0000",
       "dateFinished": "2023-02-02T11:08:19+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9020"
+      "$$hashKey": "object:624"
     },
     {
       "text": "%pyspark\nghHierarchySoldToSubsetDf=ghHierarchySoldToDf.withColumn('SoldToPoint',regexp_replace('SoldToPoint','^0*',''))\n\nghHierarchySoldToSubsetDf=ghHierarchySoldToSubsetDf\\\n.dropDuplicates()\\\n.where((col(\"SoldToPoint\").isNotNull()) & ~(col(\"ZCUSTHG04\")==\"0\"))\\\n.withColumn('GHierarchyId',regexp_replace('GHierarchyId','^0*',''))\n\nprint(ghHierarchySoldToSubsetDf.count())\n\npricelistSoldtoClientsDf=soldtoLevelPricesDf.join(ghHierarchySoldToSubsetDf,soldtoLevelPricesDf[\"SOLD_TO\"]==ghHierarchySoldToSubsetDf[\"SoldToPoint\"],how=\"left\")\npricelistSoldtoClientsDf.count()",
@@ -1188,11 +1188,11 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=31",
-              "$$hashKey": "object:11310"
+              "$$hashKey": "object:2675"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=33",
-              "$$hashKey": "object:11311"
+              "$$hashKey": "object:2676"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1205,7 +1205,7 @@
       "dateStarted": "2023-02-02T11:08:19+0000",
       "dateFinished": "2023-02-02T11:08:21+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9021"
+      "$$hashKey": "object:625"
     },
     {
       "text": "%pyspark\nprint(\"Not mapped price level prices:\",pricelistSoldtoClientsDf.where(col(\"GHierarchyId\").isNull()).count())",
@@ -1249,7 +1249,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=35",
-              "$$hashKey": "object:11373"
+              "$$hashKey": "object:2726"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1262,7 +1262,7 @@
       "dateStarted": "2023-02-02T11:08:21+0000",
       "dateFinished": "2023-02-02T11:08:22+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9022"
+      "$$hashKey": "object:626"
     },
     {
       "text": "%pyspark\npricelistClientsDf=pricelistClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates()\n# Sold to level prices with soldto's belonging to same ghierachy id must by collapsed to one record\npricelistSoldtoClientsDf=pricelistSoldtoClientsDf.where(col(\"GHierarchyId\").isNotNull()).dropDuplicates(['GHierarchyId','MATERIAL','START_DATE','END_DATE'])",
@@ -1300,7 +1300,7 @@
       "dateStarted": "2023-02-02T11:08:22+0000",
       "dateFinished": "2023-02-02T11:08:22+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9023"
+      "$$hashKey": "object:627"
     },
     {
       "text": "%pyspark\npricelistClientsDf.count()\npricelistSoldtoClientsDf.count()",
@@ -1344,11 +1344,11 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=37",
-              "$$hashKey": "object:11473"
+              "$$hashKey": "object:2812"
             },
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=39",
-              "$$hashKey": "object:11474"
+              "$$hashKey": "object:2813"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1361,7 +1361,7 @@
       "dateStarted": "2023-02-02T11:08:22+0000",
       "dateFinished": "2023-02-02T11:08:27+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9024"
+      "$$hashKey": "object:628"
     },
     {
       "text": "%pyspark\npricelistPriceLevelFinalDf=pricelistClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\npricelistSoldtoLevelFinalDf=pricelistSoldtoClientsDf.select(*pricelistDf.columns,col(\"GHierarchyId\").alias(\"G_HIERARCHY_ID\"))\n\nmergedDf=pricelistPriceLevelFinalDf.unionByName(pricelistSoldtoLevelFinalDf)\n# Giving the priority to prices. Soltdo level prices have more priority than price level ones.\nmergedDf=mergedDf.withColumn(\"PRIORITY\",when(col(\"SOLD_TO\").isNull(),10).otherwise(20))\nmergedDf.count()",
@@ -1405,7 +1405,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=42",
-              "$$hashKey": "object:11536"
+              "$$hashKey": "object:2863"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1418,7 +1418,7 @@
       "dateStarted": "2023-02-02T11:08:27+0000",
       "dateFinished": "2023-02-02T11:08:30+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9025"
+      "$$hashKey": "object:629"
     },
     {
       "text": "%pyspark\nwindow = Window.\\\n              partitionBy('G_HIERARCHY_ID','MATERIAL','START_DATE','END_DATE').\\\n              orderBy(mergedDf[\"PRIORITY\"].desc())\nfinalPartDf = mergedDf.withColumn(\"MAX_PRIORITY\",max(\"PRIORITY\").over(window))\nfinalDf=finalPartDf.where(col(\"PRIORITY\")==col(\"MAX_PRIORITY\")).drop(\"MAX_PRIORITY\")\nfinalDf=finalDf.dropDuplicates(['G_HIERARCHY_ID','ZREP','START_DATE','END_DATE'])\nfinalDf.count()\n\n",
@@ -1462,7 +1462,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=45",
-              "$$hashKey": "object:11594"
+              "$$hashKey": "object:2909"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1475,7 +1475,7 @@
       "dateStarted": "2023-02-02T11:08:30+0000",
       "dateFinished": "2023-02-02T11:08:46+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9026"
+      "$$hashKey": "object:630"
     },
     {
       "text": "%pyspark\nfinalJupiterDf=finalDf.withColumn(\"UNIT_OF_MEASURE\",lit(\"CS\")).select('G_HIERARCHY_ID','ZREP',col('PRICE_CS').alias('PRICE'),'START_DATE',col('END_DATE').alias('FINISH_DATE'),'UNIT_OF_MEASURE','CURRENCY')\nfinalDf=finalDf.select('G_HIERARCHY_ID','MATERIAL','ZREP','PRICE_CS','PRICE_KG','PRICE_ST','START_DATE','END_DATE','RELEASE_STATUS')\n",
@@ -1513,7 +1513,7 @@
       "dateStarted": "2023-02-02T11:08:46+0000",
       "dateFinished": "2023-02-02T11:08:46+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9027"
+      "$$hashKey": "object:631"
     },
     {
       "text": "%pyspark\ndupsDf=finalDf\\\n.groupBy('G_HIERARCHY_ID','ZREP','START_DATE','END_DATE')\\\n.agg((count(\"*\")>1).cast(\"int\").alias(\"DUPLICATE\"))\\\n.where(col(\"DUPLICATE\")>0)\n\ndupsDf.count()",
@@ -1557,7 +1557,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=48",
-              "$$hashKey": "object:11694"
+              "$$hashKey": "object:2995"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1570,7 +1570,7 @@
       "dateStarted": "2023-02-02T11:08:46+0000",
       "dateFinished": "2023-02-02T11:09:02+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9028"
+      "$$hashKey": "object:632"
     },
     {
       "text": "%pyspark\n# display(finalJupiterDf)",
@@ -1608,7 +1608,7 @@
       "dateStarted": "2023-02-02T11:09:02+0000",
       "dateFinished": "2023-02-02T11:09:02+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9029"
+      "$$hashKey": "object:633"
     },
     {
       "text": "%pyspark\n# display(finalJupiterDf.where(col(\"ZREP\").isNull()))",
@@ -1646,7 +1646,7 @@
       "dateStarted": "2023-02-02T11:09:02+0000",
       "dateFinished": "2023-02-02T11:09:03+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9030"
+      "$$hashKey": "object:634"
     },
     {
       "text": "%pyspark\nfinalJupiterDf.count()",
@@ -1690,7 +1690,7 @@
           "values": [
             {
               "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-c-yxo0bcsk7jm0xjj7-43275.dataproc-ui.yandexcloud.net/jobs/job?id=51",
-              "$$hashKey": "object:11836"
+              "$$hashKey": "object:3121"
             }
           ],
           "interpreterSettingId": "spark"
@@ -1703,7 +1703,7 @@
       "dateStarted": "2023-02-02T11:09:03+0000",
       "dateFinished": "2023-02-02T11:09:11+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9031"
+      "$$hashKey": "object:635"
     },
     {
       "text": "%pyspark\ntry:\n  subprocess.call([\"hadoop\", \"fs\", \"-rm\",\"-r\", PRICELIST_FDM_ARCHIVE_OUTPUT_DIR])\n  subprocess.call([\"hadoop\", \"fs\", \"-cp\", PRICELIST_FDM_OUTPUT_DIR, PRICELIST_FDM_ARCHIVE_OUTPUT_DIR])\nexcept Exception as e:\n  print(str(e))",
@@ -1741,12 +1741,12 @@
       "dateStarted": "2023-02-02T11:09:11+0000",
       "dateFinished": "2023-02-02T11:09:14+0000",
       "status": "FINISHED",
-      "$$hashKey": "object:9032"
+      "$$hashKey": "object:636"
     },
     {
-      "text": "%pyspark\n# finalJupiterDf.write.mode(\"overwrite\").parquet(PRICELIST_FDM_OUTPUT_DIR)\n\nfinalJupiterDf\\\n.withColumn('START_DATE',col('START_DATE').cast('timestamp'))\\\n.withColumn('FINISH_DATE',col('START_DATE').cast('timestamp'))\\\n.repartition(1)\\\n.write.csv(PRICELIST_FDM_OUTPUT_DIR,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "text": "%pyspark\n# finalJupiterDf.write.mode(\"overwrite\").parquet(PRICELIST_FDM_OUTPUT_DIR)\n\nfinalJupiterDf\\\n.withColumn('START_DATE',col('START_DATE').cast('timestamp'))\\\n.withColumn('FINISH_DATE',col('FINISH_DATE').cast('timestamp'))\\\n.repartition(1)\\\n.write.csv(PRICELIST_FDM_OUTPUT_DIR,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)",
       "user": "anonymous",
-      "dateUpdated": "2023-02-02T11:31:33+0000",
+      "dateUpdated": "2023-02-03T07:00:47+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1784,7 +1784,7 @@
       "dateStarted": "2023-02-02T11:09:14+0000",
       "dateFinished": "2023-02-02T11:09:15+0000",
       "status": "ERROR",
-      "$$hashKey": "object:9034"
+      "$$hashKey": "object:637"
     }
   ],
   "name": "JUPITER_PRICELIST_FDM",

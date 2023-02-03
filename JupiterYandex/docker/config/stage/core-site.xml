@@ -21,7 +21,7 @@
     </property>
     <property>
         <name>fs.defaultFS</name>
-        <value>hdfs://rc1b-dataproc-m-3iu6zt2tusazxrxi.mdb.yandexcloud.net</value>
+        <value>hdfs://rc1a-dataproc-m-sexo9fqjeaebsjjh.mdb.yandexcloud.net</value>
     </property>
     <property>
         <name>io.file.buffer.size</name>
