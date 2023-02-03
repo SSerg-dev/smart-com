@@ -237,7 +237,7 @@ except Exception as e:
 
 finalJupiterDf\
 .withColumn('START_DATE',col('START_DATE').cast('timestamp'))\
-.withColumn('FINISH_DATE',col('START_DATE').cast('timestamp'))\
+.withColumn('FINISH_DATE',col('FINISH_DATE').cast('timestamp'))\
 .repartition(1)\
 .write.csv(PRICELIST_FDM_OUTPUT_DIR,
 sep="\u0001",
