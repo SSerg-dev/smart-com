@@ -1,6 +1,7 @@
 ﻿using Core.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -18,6 +19,10 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpirationDate { get; set; }
+
+        public bool IsMLmodel { get; set; }
+        [StringLength(100)]
+        public string TaskStatus { get; set; }
 
         public bool IsSendForApproval  { get; set; }
         public bool IsCMManagerApproved { get; set; }

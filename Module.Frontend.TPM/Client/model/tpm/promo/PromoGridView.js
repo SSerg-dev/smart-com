@@ -103,6 +103,7 @@
         { name: 'WorkflowStep', type: 'string', hidden: false, isDefault: true },
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
         { name: 'IsPriceIncrease', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'MLPromoId', type: 'string', hidden: true, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

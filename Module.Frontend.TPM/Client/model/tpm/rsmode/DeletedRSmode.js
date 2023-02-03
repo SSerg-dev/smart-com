@@ -16,6 +16,8 @@
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
             defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
         },
+        { name: 'IsMLmodel', type: 'boolean', hidden: false, isDefault: true },
+        { name: 'TaskStatus', type: 'string', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

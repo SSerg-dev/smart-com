@@ -86,6 +86,16 @@
             disabled: true
         },
         {
+            xtype: 'button',
+            itemId: 'btn_promoML',
+            glyph: 0xfbd3,
+            cls: 'in-out-promo-header-button custom-top-panel-item',
+            text: 'ML',
+            height: 20,
+            hidden: true,
+            disabled: true
+        },
+        {
             xtype: 'tbspacer',
             flex: 1
         },

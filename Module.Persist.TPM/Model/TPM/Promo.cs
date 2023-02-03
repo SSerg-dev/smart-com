@@ -297,6 +297,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoIncrementalCOGSTn { get; set; }
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
+        public string MLPromoId { get; set; }
+
         // соединения к другим entity сначала с ключами, потом списки
         public Guid? BrandId { get; set; }
         public virtual Brand Brand { get; set; }

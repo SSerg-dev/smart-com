@@ -53,7 +53,7 @@
 								 ELSE ''  
 							  END), 
 							  '') as WorkflowStep,
-							  pr.InvoiceNumber, pr.IsPriceIncrease
+							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
