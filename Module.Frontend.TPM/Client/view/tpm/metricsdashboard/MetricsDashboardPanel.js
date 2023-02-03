@@ -145,7 +145,7 @@
                 ],
                 listeners: {
                     resize: function (panel) {
-                        Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (panel.getHeight() * 0.50) + 'px');
+                        Ext.get(panel.down('#CountLabel_LSV').id).setStyle('font-size', (panel.getHeight() * 0.30) + 'px');
                     }
                 },
             }]

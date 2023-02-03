@@ -14,7 +14,8 @@
         flex: 1,
         height: 2000,
     },
-
+    minHeight: 500,
+    minWidth: 750,
     height: '100%',
     cls: 'metrics-dashboard',
     items: [
