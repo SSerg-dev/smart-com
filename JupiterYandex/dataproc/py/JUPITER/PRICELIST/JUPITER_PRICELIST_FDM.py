@@ -27,7 +27,10 @@ import math
 import subprocess
 
 if is_notebook():
- sys.argv=['','{"MaintenancePathPrefix": "/JUPITER/OUTPUT/#MAINTENANCE/2022-08-23_manual__2022-08-23T07%3A07%3A22%2B00%3A00_", "ProcessDate": "2022-08-23", "Schema": "Jupiter", "PipelineName": "jupiter_pricelist_fdm"}']
+ sys.argv=['','{"MaintenancePathPrefix": '
+ '"/JUPITER/OUTPUT/#MAINTENANCE/2023-01-31_scheduled__2023-01-31T17%3A00%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-31", "Schema": "Jupiter", "PipelineName": '
+ '"jupiter_pricelist_fdm"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  os.environ["HADOOP_USER_NAME"] = "airflow"
@@ -233,6 +236,8 @@ except Exception as e:
 # finalJupiterDf.write.mode("overwrite").parquet(PRICELIST_FDM_OUTPUT_DIR)
 
 finalJupiterDf\
+.withColumn('START_DATE',col('START_DATE').cast('timestamp'))\
+.withColumn('FINISH_DATE',col('START_DATE').cast('timestamp'))\
 .repartition(1)\
 .write.csv(PRICELIST_FDM_OUTPUT_DIR,
 sep="\u0001",

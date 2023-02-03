@@ -407,7 +407,7 @@
       "status": "READY"
     }
   ],
-  "name": "CUSTOMERS_FILTER",
+  "name": "JUPITER/UNIVERSALCATALOG/CUSTOMERS_FILTER",
   "id": "2HT3H8WEX",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

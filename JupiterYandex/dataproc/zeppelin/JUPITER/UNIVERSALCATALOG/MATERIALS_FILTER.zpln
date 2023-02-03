@@ -626,7 +626,7 @@
       "status": "ERROR"
     }
   ],
-  "name": "MATERIALS_FILTER",
+  "name": "JUPITER/UNIVERSALCATALOG/MATERIALS_FILTER",
   "id": "2HDKZ531B",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

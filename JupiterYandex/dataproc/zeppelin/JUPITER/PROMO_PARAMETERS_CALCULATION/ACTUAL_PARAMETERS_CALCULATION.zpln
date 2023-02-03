@@ -1,0 +1,1460 @@
+﻿{
+  "paragraphs": [
+    {
+      "text": "%md\n####Notebook \"ACTUAL_PARAMETERS_CALCULATION\". \n####*Main night actual parameters recalculation notebook. Get actual parameters for promo, promoproduct*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "tableHide": true,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####Notebook &ldquo;ACTUAL_PARAMETERS_CALCULATION&rdquo;.<br />\n####<em>Main night actual parameters recalculation notebook. Get actual parameters for promo, promoproduct</em>.</p>\n<h6><em>Developer: <a href=\"http://smartcom.software/\">LLC Smart-Com</a>, <a href=\"mailto:andrey.philushkin@effem.com\">andrey.philushkin@effem.com</a></em></h6>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793971_1039197490",
+      "id": "20220811-123004_1411750556",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "focus": true,
+      "$$hashKey": "object:2236"
+    },
+    {
+      "title": "Function checks whether we in notebook or python",
+      "text": "%pyspark\ndef is_notebook() -> bool:\n    try:\n        shell = get_ipython().__class__.__name__\n        if shell == 'ZMQInteractiveShell':\n            return True   # Jupyter notebook or qtconsole\n        elif shell == 'TerminalInteractiveShell':\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_59941309",
+      "id": "paragraph_1660554861938_314618819",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2237"
+    },
+    {
+      "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json\nimport subprocess",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_2067220434",
+      "id": "20220811-123004_618106294",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2238"
+    },
+    {
+      "text": "%pyspark\ndatesDimSchema = StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])\n\ninputLogMessageSchema = StructType([\n  StructField(\"logMessage\", StringType(), False)\n])",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_130866805",
+      "id": "20220811-123004_644564687",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2239"
+    },
+    {
+      "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": '\n '\"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_\", '\n '\"ProcessDate\": \"2023-01-09\", \"Schema\": \"Jupiter\", \"HandlerId\": '\n '\"f18a98f9-3b2e-449a-ba96-e247d63d5b7c\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1431957239",
+      "id": "paragraph_1660554908442_1434817015",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2240"
+    },
+    {
+      "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nsc = SparkContext.getOrCreate();\n\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR = es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR = es.SETTING_OUTPUT_DIR\n\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\nhandlerId=es.input_params.get(\"HandlerId\")\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')\n\nimport SUPPORT_FUNCTIONS as sp",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "EXTRACT_ENTITIES_AUTO_PATH=hdfs:///JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_EXTRACT_ENTITIES_AUTO.csv\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1667288317",
+      "id": "20220811-123004_424311855",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2241"
+    },
+    {
+      "text": "%pyspark\nDIRECTORY = SETTING_RAW_DIR + '/SOURCES/'\n\n# PROMO_PATH = DIRECTORY + 'JUPITER/Promo.PARQUET'\n# PROMOPRODUCT_PATH = DIRECTORY + 'JUPITER/PromoProduct.PARQUET'\n# PROMOSUPPORTPROMO_PATH = DIRECTORY + 'JUPITER/PromoSupportPromo.PARQUET'\n\nPROMO_PATH = SETTING_PROCESS_DIR + '/Promo/Promo.parquet'\nPROMOPRODUCT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/PromoProduct.parquet'\nPROMOSUPPORTPROMO_PATH = SETTING_PROCESS_DIR + '/PromoSupportPromo/PromoSupportPromo.parquet'\n\n# input promo to compare values after calculation\nINPUT_PROMO_PATH = DIRECTORY + 'JUPITER/Promo'\n\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\nPRODUCT_PATH = DIRECTORY + 'JUPITER/Product'\nPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'\nPROMOPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/PromoProductTree'\nPRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'\nBASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'\nSHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'\nCLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'\nCLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'\nDATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'\nCORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'\nINCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\nCOGS_PATH = DIRECTORY + 'JUPITER/COGS'\nCOGSTn_PATH = DIRECTORY + 'JUPITER/PlanCOGSTn'\nTI_PATH = DIRECTORY + 'JUPITER/TradeInvestment'\nACTUALCOGS_PATH = DIRECTORY + 'JUPITER/ActualCOGS'\nACTUALCOGSTn_PATH = DIRECTORY + 'JUPITER/ActualCOGSTn'\nACTUALTI_PATH = DIRECTORY + 'JUPITER/ActualTradeInvestment'\nBTL_PATH = DIRECTORY + 'JUPITER/BTL'\nBTLPROMO_PATH = DIRECTORY + 'JUPITER/BTLPromo'\nPROMOSUPPORT_PATH = DIRECTORY + 'JUPITER/PromoSupport'\nBUDGETITEM_PATH = DIRECTORY + 'JUPITER/BudgetItem'\nBUDGETSUBITEM_PATH = DIRECTORY + 'JUPITER/BudgetSubItem'\nASSORTMENTMARTIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'\nBRANDTECH_PATH = DIRECTORY + 'JUPITER/BrandTech'\nCHANGESINCIDENTS_PATH = DIRECTORY + 'JUPITER/ChangesIncident'\nRATISHOPPER_PATH = DIRECTORY + 'JUPITER/RATIShopper'\n\nFILTERED_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'\n\nINPUT_FILE_LOG_PATH = SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'\n# OUTPUT_LOG_PATH =  SETTING_PROCESS_DIR + '/Logs/'\n# OUTPUT_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + '.csv'\n# OUTPUT_TEMP_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + 'temp.csv'\n\nPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/Promo/Promo.CSV'\nPROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/PromoProduct/PromoProduct.CSV'\nPROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/PromoSupportPromo/PromoSupportPromo.CSV'\n\n# DEBUG OUTPUT\n# OUTPUT_SOURCE_PROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromo/SourcePromo.csv'\n# OUTPUT_PROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/Promo/Promo.csv'\n# OUTPUT_SOURCE_PROMOPRODUCT_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromoProduct/SourcePromoProduct.csv'\n# OUTPUT_PROMOPRODUCT_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/PromoProduct/PromoProduct.csv'\n# OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromoSupportPromo/SourcePromoSupportPromo.csv'\n# OUTPUT_PROMOSUPPORTPROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/PromoSupportPromo/PromoSupportPromo.csv'",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1885912220",
+      "id": "20220811-123004_400393776",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2242"
+    },
+    {
+      "title": "Load raw entities schemas from json files to map",
+      "text": "%pyspark\nSCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'\nschemas_map = sp.getSchemasMap(SCHEMAS_DIR)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_354459489",
+      "id": "paragraph_1660555260465_1606094102",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2243"
+    },
+    {
+      "text": "%pyspark\npromoDF = spark.read.format(\"parquet\").load(PROMO_PATH) \npromoSupportPromoDF = spark.read.format(\"parquet\").load(PROMOSUPPORTPROMO_PATH)\npromoProductDF = spark.read.format(\"parquet\").load(PROMOPRODUCT_PATH)\n\npriceListDF = spark.read.csv(PRICELIST_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ninputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\nproductDF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproduct01DF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductTree\"])\npromoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF = spark.read.csv(BASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF = spark.read.csv(SHARES_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTree\"]).withColumn(\"DemandCode\", when(col(\"DemandCode\")==\"\\0\",lit(None)).otherwise(col(\"DemandCode\")))\nclientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeHierarchyView\"])\ndatesDF = spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF = spark.read.csv(CORRECTION_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF = spark.read.csv(BTL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF = spark.read.csv(BTLPROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF = spark.read.csv(INCREMENTAL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF = spark.read.csv(COGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF = spark.read.csv(COGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF = spark.read.csv(TI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsDF = spark.read.csv(ACTUALCOGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsTnDF = spark.read.csv(ACTUALCOGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualTiDF = spark.read.csv(ACTUALTI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualTradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF = spark.read.csv(PROMOSUPPORT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF = spark.read.csv(BUDGETITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF = spark.read.csv(BUDGETSUBITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF = spark.read.csv(ASSORTMENTMARTIX_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF = spark.read.csv(BRANDTECH_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nchangesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF = spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:31:29+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mAnalysisException\u001b[0m                         Traceback (most recent call last)\n\u001b[0;32m<ipython-input-196-0bd08b7496c7>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mpromoDF\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mspark\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mformat\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"parquet\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mload\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mPROMO_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      2\u001b[0m \u001b[0mpromoSupportPromoDF\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mspark\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mformat\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"parquet\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mload\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mPROMOSUPPORTPROMO_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mpromoProductDF\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mspark\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mformat\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"parquet\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mload\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mPROMOPRODUCT_PATH\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mpriceListDF\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mspark\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mPRICELIST_PATH\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0msep\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"\\u0001\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mheader\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mschema\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mschemas_map\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"PriceList\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwithColumn\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mcol\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcast\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mBooleanType\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mload\u001b[0;34m(self, path, format, schema, **options)\u001b[0m\n\u001b[1;32m    176\u001b[0m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0moptions\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m**\u001b[0m\u001b[0moptions\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    177\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mbasestring\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 178\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_df\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jreader\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mload\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    179\u001b[0m         \u001b[0;32melif\u001b[0m \u001b[0mpath\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    180\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mtype\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m!=\u001b[0m \u001b[0mlist\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1304\u001b[0;31m         return_value = get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    132\u001b[0m                 \u001b[0;31m# Hide where the exception came from that shows a non-Pythonic\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    133\u001b[0m                 \u001b[0;31m# JVM exception message.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 134\u001b[0;31m                 \u001b[0mraise_from\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mconverted\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    135\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    136\u001b[0m                 \u001b[0;32mraise\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mraise_from\u001b[0;34m(e)\u001b[0m\n\n\u001b[0;31mAnalysisException\u001b[0m: Path does not exist: hdfs:https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-m-7sxg5on8twau3zoq-.dataproc-ui.yandexcloud.net/JUPITER/PROCESS/Promo/Promo.parquet;"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_2046296304",
+      "id": "20220811-123004_268370752",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2244"
+    },
+    {
+      "text": "%pyspark\ntry:\n inputLogMessageDF = spark.read.format(\"csv\").option(\"delimiter\",\"\\u0001\").option(\"header\",\"true\").load(INPUT_FILE_LOG_PATH)\n print('Log has been already made')\nexcept:\n inputLogMessageDF = spark.createDataFrame(sc.emptyRDD(), inputLogMessageSchema)\n print('Init log')\n  \n\n",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Log has been already made\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1743045636",
+      "id": "20220811-123004_1935569230",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2245"
+    },
+    {
+      "text": "%md\n####*Date transformation*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Date transformation</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_2132933698",
+      "id": "20220811-123004_968871950",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2246"
+    },
+    {
+      "text": "%pyspark\npriceListDF = priceListDF\\\n  .withColumn('StartDate', date_add(to_date(priceListDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(priceListDF.EndDate, 'yyyy-MM-dd'), 1))\n\nbaselineDF = baselineDF\\\n  .withColumn('StartDate', date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1))\n\nassortmentMatrixDF = assortmentMatrixDF\\\n  .withColumn('StartDate', date_add(to_date(assortmentMatrixDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(assortmentMatrixDF.EndDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('CreateDate', date_add(to_date(assortmentMatrixDF.CreateDate, 'yyyy-MM-dd'), 1))\n\ntiDF = tiDF\\\n  .withColumn('StartDate', date_add(to_date(tiDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(tiDF.EndDate, 'yyyy-MM-dd'), 1))\n\ncogsDF = cogsDF\\\n  .withColumn('StartDate', date_add(to_date(cogsDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsDF.EndDate, 'yyyy-MM-dd'), 1))\n\ncogsTnDF = cogsTnDF\\\n  .withColumn('StartDate', date_add(to_date(cogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsTnDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualTiDF = actualTiDF\\\n  .withColumn('StartDate', date_add(to_date(actualTiDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualTiDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualCogsDF = actualCogsDF\\\n  .withColumn('StartDate', date_add(to_date(actualCogsDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualCogsDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualCogsTnDF = actualCogsTnDF\\\n  .withColumn('StartDate', date_add(to_date(actualCogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualCogsTnDF.EndDate, 'yyyy-MM-dd'), 1))",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1622263099",
+      "id": "20220811-123004_1118321935",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2247"
+    },
+    {
+      "text": "%md\n####*Prepare dataframes for calculation*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Prepare dataframes for calculation</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_294129288",
+      "id": "20220811-123004_893043481",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2248"
+    },
+    {
+      "text": "%pyspark\nfilteredPromoDF = filteredPromoDF.dropDuplicates()\n\n# promoProduct\npromoProductCols = promoProductDF.columns\nallCalcActualPromoProductDF = promoProductDF.where(col('Disabled') == 'False')\nallCalcActualPromoProductIdsDF = allCalcActualPromoProductDF.select(col('Id'))\ndisabledPromoProductDF = promoProductDF.join(allCalcActualPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])\n\n# print('promoProducts count:', promoProductDF.count())\n# print('notDisabledPromoProducts count:', allCalcActualPromoProductDF.count())\n# print('disabledPromoProducts count:', disabledPromoProductDF.count())\n\n# promo\ncalcActualPromoDF = promoDF.where(col('Disabled') == 'False')\n\n# all promo\npromoCols = promoDF.columns\nallCalcActualPromoDF = promoDF.where(col('Disabled') == 'false')\nallCalcActualPromoIdsDF = allCalcActualPromoDF.select(col('Id'))\ndisabledPromoDF = promoDF.join(allCalcActualPromoIdsDF, 'Id', 'left_anti').select(promoDF['*'])\n\n# print('promoDF count:', promoDF.count())\n# print('notDisabledPromoDF count:', allCalcActualPromoDF.count())\n# print('disabledPromoDF count:', disabledPromoDF.count())\n\n# priceList\nactualParamsPriceListDF = priceListDF\\\n  .where(col('Disabled') == 'False')\\\n  .select(\\\n           to_date(col('StartDate'), 'yyyy-MM-dd').alias('priceStartDate')\n          ,to_date(col('EndDate'), 'yyyy-MM-dd').alias('priceEndDate')\n          ,col('ProductId').alias('priceProductId')\n          ,col('Price').cast(DecimalType(30,6))\n          ,col('ClientTreeId').alias('priceClientTreeId')\n         )\n\n# incremental\nactualParamsIncrementalDF = incrementalDF\\\n  .where(col('Disabled') == 'False')\\\n  .select(\\\n           col('PromoId').alias('incrementalPromoId')\n          ,col('ProductId').alias('incrementalProductId')\n          ,col('PlanPromoIncrementalCases')\n         )\n\n# support\npromoSupportDF = promoSupportDF.where(col('Disabled') == 'False')\npromoSupportPromoCols = promoSupportPromoDF.columns\nactivePromoSupportPromoDF = promoSupportPromoDF.where(col('Disabled') == 'False').select(promoSupportPromoCols)\nactivePromoSupportPromoIdsDF = activePromoSupportPromoDF.select(col('Id'))\ndisabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoIdsDF, 'Id', 'left_anti').select(promoSupportPromoCols)\n\n# print('promoSupportPromoDF count:', promoSupportPromoDF.count())\n# print('activePromoSupportPromoDF count:', activePromoSupportPromoDF.count())\n# print('disabledPromoSupportPromoDF count:', disabledPromoSupportPromoDF.count())\n\n# btl\nbtlDF = btlDF.where(col('Disabled') == 'False')\nbtlPromoDF = btlPromoDF.where(col('Disabled') == 'False')\n\n# AM\nassortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'False')\n\n# COGS, TI, BrandTech\nbrandTechDF = brandTechDF.where(col('Disabled') == 'false')\ntiDF = tiDF.where(col('Disabled') == 'false')\ncogsDF = cogsDF.where(col('Disabled') == 'false')\ncogsTnDF = cogsTnDF.where(col('Disabled') == 'false')\n\nactualTiDF = actualTiDF.where(col('Disabled') == 'false')\nactualCogsDF = actualCogsDF.where(col('Disabled') == 'false')\nactualCogsTnDF = actualCogsTnDF.where(col('Disabled') == 'false')\n\nactiveChangesIncidentsDF = changesIncidentsDF\\\n  .withColumn('ItemId', upper(col('ItemId')))\\\n  .where(col('ProcessDate').isNull())\n\nactualCogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualTiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualTradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1867550037",
+      "id": "20220811-123004_896401649",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2249"
+    },
+    {
+      "text": "%pyspark\n#status list for actual parameters recalculation\nactualParametersStatuses = ['Finished']\n\n# notCheckPromoStatusList = ['Draft','Cancelled','Deleted','Closed']\nnotCheckPromoStatusList = ['Cancelled','Deleted']",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1713319798",
+      "id": "20220811-123004_1922472434",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2250"
+    },
+    {
+      "text": "%pyspark\nlightPromoDF = promoDF\\\n  .where((col('Disabled') == 'False'))\\\n  .select(\\\n           col('Id').alias('promoIdCol')\n          ,col('Number').alias('promoNumber')\n          ,col('BrandTechId').alias('promoBrandTechId')\n          ,col('PromoStatusId').alias('promoStatusId')\n          ,col('StartDate').alias('promoStartDate')\n          ,col('EndDate').alias('promoEndDate')\n          ,col('DispatchesStart').alias('promoDispatchesStart')\n          ,col('ClientTreeKeyId').alias('promoClientTreeKeyId')\n          ,col('ClientTreeId').alias('promoClientTreeId')\n          ,col('IsOnInvoice').alias('promoIsOnInvoice')\n          ,col('InOut').alias('promoInOut')\n          ,col('LoadFromTLC').alias('promoLoadFromTLC')\n          ,col('PlanPromoBaselineLSV')\n          ,col('ActualPromoBaselineLSV')\n          ,col('ActualPromoLSVSO')\n          ,col('ActualPromoPostPromoEffectLSV')\n         )\n\nlightPromoDF = lightPromoDF\\\n  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId == clientTreeDF.Id, 'inner')\\\n  .select(\\\n           lightPromoDF['*']\n          ,to_date(clientTreeDF.EndDate, 'yyyy-MM-dd').alias('ctEndDate')\n          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')\n          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')\n          )\\\n  .where(col('ctEndDate').isNull())\\\n  .drop('ctEndDate')\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\\\n  .select(\\\n           calcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('LoadFromTLC') == 'False'))\n\nactualPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('promoLoadFromTLC') == 'False'))\n\nfinCloPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(['Finished','Closed'])) & (col('promoLoadFromTLC') == 'False'))\n\nactualsLoadPromoDF = actualPromoProductDF\\\n  .select(\\\n           actualPromoProductDF.promoIdCol\n          ,actualPromoProductDF.promoNumber\n          ,actualPromoProductDF.ActualProductPCQty\n         )\n\nfinCloLoadActualsPromoDF = finCloPromoProductDF\\\n  .select(\\\n           finCloPromoProductDF.promoIdCol\n          ,finCloPromoProductDF.promoNumber\n          ,finCloPromoProductDF.ActualProductPCQty\n         )\n\nactualsLoadPromoIdDF = actualsLoadPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\nfinCloLoadActualsPromoIdDF = finCloLoadActualsPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\ncalcActualPromoProductDF = actualPromoProductDF\\\n  .join(actualsLoadPromoIdDF, 'promoIdCol', 'inner')\\\n  .select(actualPromoProductDF['*'])\n\ncalcActualPromoProductIdsDF = calcActualPromoProductDF.select(col('Id'))\nnotCalcActualPromoProductDF = allCalcActualPromoProductDF.join(calcActualPromoProductIdsDF, 'Id', 'left_anti').select(allCalcActualPromoProductDF['*'])\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(actualsLoadPromoIdDF, actualsLoadPromoIdDF.promoIdCol == calcActualPromoDF.Id, 'inner')\\\n  .select(calcActualPromoDF['*'])\n\ncalcActualPromoProductDF = calcActualPromoProductDF\\\n  .join(productDF, productDF.Id == calcActualPromoProductDF.ProductId, 'left')\\\n  .select(\\\n           calcActualPromoProductDF['*']\n          ,productDF.UOM_PC2Case\n          ,productDF.CaseVolume\n          ,productDF.PCVolume\n         )\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(lightPromoDF, lightPromoDF.promoNumber == calcActualPromoDF.Number, 'inner')\\\n  .select(\\\n           calcActualPromoDF['*']\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\n# print(allCalcActualPromoProductDF.count())\n# print(calcActualPromoProductDF.count())\n# print(notCalcActualPromoProductDF.count())\n# print(calcActualPromoDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1830513071",
+      "id": "20220811-123004_1901429482",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2251"
+    },
+    {
+      "text": "%pyspark\nimport ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS as actual_product_params_calculation_process\ncalcActualPromoProductDF,allCalcActualPromoDF,logPricePromoDF = actual_product_params_calculation_process.run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCalcActualPromoDF,promoProductCols)\n",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "check actual products1\nActual product parameters calculation completed!\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_672840136",
+      "id": "20220811-123004_303343058",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2252"
+    },
+    {
+      "text": "%md\n####*Promo support calculation*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Promo support calculation</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_830724216",
+      "id": "20220811-123004_1463305961",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2253"
+    },
+    {
+      "text": "%pyspark\nallCalcActualPromoDF = allCalcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == allCalcActualPromoDF.PromoStatusId, 'left')\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoDF.Id, 'left')\\\n  .select(\\\n           allCalcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\ncalcActualSupportPromoDF = allCalcActualPromoDF\\\n  .where(~col('promoStatusSystemName').isin(*notCheckPromoStatusList))\n\ncalcActualSupportPromoIdsDF = calcActualSupportPromoDF.select(col('Id'))\nnotCalcActualSupportPromoDF = allCalcActualPromoDF.join(calcActualSupportPromoIdsDF, 'Id', 'left_anti').select(allCalcActualPromoDF['*'])",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_70573020",
+      "id": "20220811-123004_287775989",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2254"
+    },
+    {
+      "text": "%pyspark\nimport ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS as actual_support_params_calculation_process\ncalcActualSupportPromoDF,allPromoSupportPromoDF = actual_support_params_calculation_process.run(promoSupportDF,activePromoSupportPromoDF,calcActualSupportPromoDF,btlDF,btlPromoDF,budgetItemDF,budgetSubItemDF,promoSupportPromoCols)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Actual support parameters calculation completed!\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1123090080",
+      "id": "20220811-123004_1287163625",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2255"
+    },
+    {
+      "text": "%md\n####*Actual promo parameters calculation*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Actual promo parameters calculation</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_2091512477",
+      "id": "20220811-123004_2067110041",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2256"
+    },
+    {
+      "text": "%pyspark\nallCalcActualPromoDF = calcActualSupportPromoDF.union(notCalcActualSupportPromoDF)\n\nallCalcActualPromoDF = allCalcActualPromoDF\\\n  .join(brandTechDF, brandTechDF.Id == allCalcActualPromoDF.BrandTechId, 'left')\\\n  .join(actualCogsCiIdsDF, actualCogsCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .join(actualCogsTnCiIdsDF, actualCogsTnCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .join(actualTiCiIdsDF, actualTiCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .select(\\\n           allCalcActualPromoDF['*']\n          ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')\n          ,actualCogsCiIdsDF.Id.alias('acogsId')\n          ,actualCogsCiIdsDF.Id.alias('acogstnId')\n          ,actualTiCiIdsDF.Id.alias('atiId')\n         )\\\n  .withColumn('UseActualCOGS', when(~col('acogstnId').isNull(), True).otherwise(col('UseActualCOGS')))\\\n  .withColumn('UseActualTI', when(~col('atiId').isNull(), True).otherwise(col('UseActualTI')))\\\n  .dropDuplicates()\n\ncalcActualPromoDF = allCalcActualPromoDF\\\n  .join(finCloLoadActualsPromoIdDF, finCloLoadActualsPromoIdDF.promoIdCol == allCalcActualPromoDF.Id, 'inner')\\\n  .where((col('promoStatusSystemName') == 'Finished') | ~col('acogstnId').isNull() | ~col('atiId').isNull())\n\ncalcActualPromoIdsDF = calcActualPromoDF.select(col('Id'))\nnotCalcActualPromoDF = allCalcActualPromoDF.join(calcActualPromoIdsDF, 'Id', 'left_anti').select(allCalcActualPromoDF['*'])",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_316558327",
+      "id": "20220811-123004_1857000984",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2257"
+    },
+    {
+      "text": "%pyspark\n# display(calcActualPromoDF.select(col('Number'),col('promoStatusSystemName'),col('UseActualCOGS'),col('UseActualTI'),col('acogstnId'),col('atiId')))",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1619989581",
+      "id": "20220811-123004_1195835276",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2258"
+    },
+    {
+      "text": "%pyspark\nimport ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS as actual_promo_params_calculation_process\ncalcActualPromoDF,logCOGS,logTI,logCOGSTn,logActualCOGS,logActualTI,logActualCOGSTn = actual_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPromoDF,promoDF,actualCogsDF,actualCogsTnDF,actualTiDF)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Actual promo parameters calculation completed!\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_444480876",
+      "id": "20220811-123004_1333915211",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2259"
+    },
+    {
+      "text": "%md\n####*Result*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Result</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_2057945549",
+      "id": "20220811-123004_413619826",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2260"
+    },
+    {
+      "text": "%pyspark\n# promoproduct\nnotCalcActualPromoProductDF = notCalcActualPromoProductDF.select(promoProductCols)\ncalcActualPromoProductDF = calcActualPromoProductDF.select(promoProductCols)\nallCalcActualPromoProductDF = calcActualPromoProductDF.union(notCalcActualPromoProductDF)\nresultPromoProductDF = allCalcActualPromoProductDF.union(disabledPromoProductDF)\nresultPromoProductDF.drop('$QCCount')\n# ---\n\n# promo\nnotCalcActualPromoDF = notCalcActualPromoDF.select(promoCols)\ncalcActualPromoDF = calcActualPromoDF.select(promoCols)\nallCalcActualPromoDF = calcActualPromoDF.union(notCalcActualPromoDF)\nresultPromoDF = allCalcActualPromoDF.union(disabledPromoDF)\nresultPromoDF = resultPromoDF.drop('$QCCount')\n# ---\n\n# promosuportpromo\nresultPromoSupportPromoDF = allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)\n# ---",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_584774689",
+      "id": "20220811-123004_170531880",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2261"
+    },
+    {
+      "text": "%md\n####*Set last changed date*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Set last changed date</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_646705234",
+      "id": "20220811-123004_2053122174",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2262"
+    },
+    {
+      "text": "%pyspark\ndef isDemandFinanceChanged(value):\n  return array_contains(value, 'PlanPromoLSV') | array_contains(value, 'PlanPromoIncrementalLSV') | array_contains(value, 'PlanPromoUpliftPercent') | \\\n        array_contains(value, 'ActualPromoLSV') | array_contains(value, 'ActualPromoIncrementalLSV') | array_contains(value, 'ActualPromoUpliftPercent') | \\\n        array_contains(value, 'ActualPromoLSVByCompensation')\n\ninputPromoDF = inputPromoDF.drop('#QCCount')\n\ncompareConditions = [when(inputPromoDF[c] != resultPromoDF[c], lit(c)).otherwise(\"\") for c in inputPromoDF.columns if c not in  ('Id',\"StartDate\",\"EndDate\",\"DispatchesStart\",\"DispatchesEnd\")]\n\ntimestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')\nselect_expr = [col(\"Id\"), *[resultPromoDF[c] for c in resultPromoDF.columns if c != 'Id'], array_remove(array(*compareConditions), \"\").alias(\"changedColumns\")]\nresultPromoDF = inputPromoDF\\\n  .join(resultPromoDF, \"Id\")\\\n  .select(*select_expr)\\\n  .withColumn('isChanged', size(col('changedColumns')) > 0)\\\n  .withColumn('isDemandFinanceChanged', isDemandFinanceChanged(col('changedColumns')))\\\n  .withColumn('LastChangedDate', when(col('isChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\")).otherwise(col('LastChangedDate')))\\\n  .withColumn('LastChangedDateDemand', when(col('isDemandFinanceChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\"))\\\n              .otherwise(col('LastChangedDateDemand')))\\\n  .withColumn('LastChangedDateFinance', when(col('isDemandFinanceChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\"))\\\n              .otherwise(col('LastChangedDateFinance')))\\\n  .drop('isChanged', 'isDemandFinanceChanged', 'changedColumns')",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1734776065",
+      "id": "20220811-123004_978543311",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2263"
+    },
+    {
+      "text": "%pyspark\n# print(resultPromoProductDF.count())\n# print(resultPromoDF.count())\n# print(resultPromoSupportPromoDF.count())",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1502850426",
+      "id": "20220811-123004_409315121",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2264"
+    },
+    {
+      "text": "%pyspark\ntry:\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMO_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH])\nexcept Exception as e:\n   print(e)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1006061623",
+      "id": "20220811-123004_1114907465",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2265"
+    },
+    {
+      "title": "Save results",
+      "text": "%pyspark\n# resultPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoDF.write.mode(\"overwrite\").parquet(PROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n\nresultPromoProductDF.fillna(False,subset=['Disabled',\n'AverageMarker'])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(IntegerType()))\\\n.repartition(1)\\\n.write.csv(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultPromoDF.fillna(False,subset=['Disabled',\n'LoadFromTLC',\n'InOutExcludeAssortmentMatrixProductsButtonPressed',\n'IsGrowthAcceleration',\n'IsOnInvoice',\n'IsApolloExport',\n'DeviationCoefficient',\n'UseActualTI',\n'UseActualCOGS',\n'IsSplittable',\n'IsLSVBased',\n'IsInExchange',\n'NeedRecountUplift',\n'IsAutomaticallyApproved',\n'IsCMManagerApproved',\n'IsDemandPlanningApproved',\n'IsDemandFinanceApproved',\n'Calculating',\n'InOut',\n'ManualInputSumInvoice',\n'IsGAManagerApproved'\n]).withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(IntegerType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(IntegerType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(IntegerType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(IntegerType()))\\\n.withColumn(\"DeviationCoefficient\",col(\"DeviationCoefficient\").cast(IntegerType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(IntegerType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(IntegerType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(IntegerType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(IntegerType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(IntegerType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(IntegerType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(IntegerType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(IntegerType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(IntegerType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(IntegerType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"MechanicComment\", when(col(\"MechanicComment\").contains(\"\\\"\"),concat(lit(\"'\"),col(\"MechanicComment\"),lit(\"'\"))).otherwise(col(\"MechanicComment\")))\\\n.repartition(1)\\\n.write.csv(PROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\",\nescape=\"\",\nquote=\"\",\n)\n\nresultPromoSupportPromoDF\\\n.repartition(1)\\\n.write.csv(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:32:08+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m<ipython-input-384-e708c7e0f8b0>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0;31m# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m resultPromoProductDF.fillna(False,subset=['Disabled',\n\u001b[0m\u001b[1;32m      6\u001b[0m 'AverageMarker'])\\\n\u001b[1;32m      7\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mwithColumn\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mcol\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Disabled\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcast\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mIntegerType\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding=encoding, emptyValue=emptyValue, lineSep=lineSep)\n\u001b[0;32m-> 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1304\u001b[0;31m         return_value = get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o29071.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user=zeppelin, access=WRITE, inode=\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2432)\n\tat org.apache.hadoop.hdfs.DFSClient.mkdirs(DFSClient.java:2406)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1338)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$27.doCall(DistributedFileSystem.java:1335)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirsInternal(DistributedFileSystem.java:1352)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.mkdirs(DistributedFileSystem.java:1327)\n\tat org.apache.hadoop.fs.FileSystem.mkdirs(FileSystem.java:2304)\n\tat org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter.setupJob(FileOutputCommitter.java:355)\n\tat org.apache.spark.internal.io.HadoopMapReduceCommitProtocol.setupJob(HadoopMapReduceCommitProtocol.scala:163)\n\tat org.apache.spark.sql.execution.datasources.FileFormatWriter$.write(FileFormatWriter.scala:173)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:178)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:767)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:750)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user=zeppelin, access=WRITE, inode=\"/JUPITER/OUTPUT/PromoProduct\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.check(FSPermissionChecker.java:399)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:255)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1880)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkAncestorAccess(FSDirectory.java:1839)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:59)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3252)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:1158)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:723)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.mkdirs(ClientNamenodeProtocolTranslatorPB.java:663)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.mkdirs(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.primitiveMkdir(DFSClient.java:2430)\n\t... 43 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_737287760",
+      "id": "20220811-123004_959238305",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2266"
+    },
+    {
+      "text": "%md\n####*Logging*",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true
+        },
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12,
+        "editorHide": true,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<p>####<em>Logging</em></p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1410586279",
+      "id": "20220811-123004_407406673",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2267"
+    },
+    {
+      "text": "%pyspark\nlogPromoProductDF = logPricePromoDF\\\n  .join(logCOGS, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logCOGSTn, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logTI, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualCOGS, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualCOGSTn, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualTI, 'promoNumber', 'full')\n\ntitleMessage = '[INFO]: ACTUAL PARAMETERS CALCULATION'\ntitleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\nlogMessageDF = logPromoProductDF\\\n  .select(concat(lit('[WARNING]: Promo №:'), col('promoNumber'),\\\n                 when(col('nullPriceMessage').isNull(), '').otherwise(concat(lit(' There\\'re no price for ZREP: '), col('nullPriceMessage'))),\\\n                 when(col('zeroPriceMessage').isNull(), '').otherwise(concat(lit('.\\r\\n There\\'re zero price for ZREP: '), col('zeroPriceMessage'))),\\\n                 when(col('COGSMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('COGSMessage'))),\\\n                 when(col('COGSTnMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('COGSTnMessage'))),\\\n                 when(col('TIMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('TIMessage'))),\\\n                 when(col('ActualCOGSMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualCOGSMessage'))),\\\n                 when(col('ActualCOGSTnMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualCOGSTnMessage'))),\\\n                 when(col('ActualTIMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualTIMessage'))),\\\n                 (lit('.\\r\\n'))\n                ).alias('logMessage'))\\\n  .where((col('logMessage') != \"\") & ~(col('logMessage').isNull()))\n\noutputLogMessageDF = inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_534306907",
+      "id": "20220811-123004_765589574",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2268"
+    },
+    {
+      "text": "%pyspark\nsc.setCheckpointDir(\"tmp\")\n\noutputLogMessageDF\\\n.checkpoint(eager=True)\\\n.repartition(1)\\\n.write.csv(INPUT_FILE_LOG_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\n)\n\n# subprocess.call([\"hadoop\", \"fs\", \"-mv\", OUTPUT_TEMP_FILE_LOG_PATH, OUTPUT_LOG_PATH])\n# subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\", OUTPUT_TEMP_FILE_LOG_PATH])\n\n  ",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m<ipython-input-200-90a199bbf2fe>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0msc\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msetCheckpointDir\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"tmp\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 3\u001b[0;31m \u001b[0moutputLogMessageDF\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      4\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mcheckpoint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0meager\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0;34m.\u001b[0m\u001b[0mrepartition\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;31m\\\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/readwriter.py\u001b[0m in \u001b[0;36mcsv\u001b[0;34m(self, path, mode, compression, sep, quote, escape, header, nullValue, escapeQuotes, quoteAll, dateFormat, timestampFormat, ignoreLeadingWhiteSpace, ignoreTrailingWhiteSpace, charToEscapeQuoteEscaping, encoding, emptyValue, lineSep)\u001b[0m\n\u001b[1;32m   1028\u001b[0m                        \u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mcharToEscapeQuoteEscaping\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1029\u001b[0m                        encoding=encoding, emptyValue=emptyValue, lineSep=lineSep)\n\u001b[0;32m-> 1030\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_jwrite\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcsv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpath\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1031\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1032\u001b[0m     \u001b[0;34m@\u001b[0m\u001b[0msince\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1.5\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1302\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1303\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1304\u001b[0;31m         return_value = get_return_value(\n\u001b[0m\u001b[1;32m   1305\u001b[0m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[1;32m   1306\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/pyspark/sql/utils.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    126\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    127\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 128\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    129\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mpy4j\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mprotocol\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    130\u001b[0m             \u001b[0mconverted\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mconvert_exception\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/usr/lib/spark/python/lib/py4j-0.10.9-src.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    324\u001b[0m             \u001b[0mvalue\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mOUTPUT_CONVERTER\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mtype\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgateway_client\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    325\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0manswer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0mREFERENCE_TYPE\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 326\u001b[0;31m                 raise Py4JJavaError(\n\u001b[0m\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    328\u001b[0m                     format(target_id, \".\", name), value)\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o8727.csv.\n: org.apache.hadoop.security.AccessControlException: Permission denied: user=zeppelin, access=ALL, inode=\"/JUPITER/PROCESS/Logs/7ac7ab63-c489-4a51-a90a-6ae1beabf723.csv\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:121)\n\tat org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:88)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1614)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:949)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem$19.doCall(DistributedFileSystem.java:946)\n\tat org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)\n\tat org.apache.hadoop.hdfs.DistributedFileSystem.delete(DistributedFileSystem.java:956)\n\tat org.apache.spark.internal.io.FileCommitProtocol.deleteWithJob(FileCommitProtocol.scala:124)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.deleteMatchingPartitions(InsertIntoHadoopFsRelationCommand.scala:226)\n\tat org.apache.spark.sql.execution.datasources.InsertIntoHadoopFsRelationCommand.run(InsertIntoHadoopFsRelationCommand.scala:129)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult$lzycompute(commands.scala:108)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.sideEffectResult(commands.scala:106)\n\tat org.apache.spark.sql.execution.command.DataWritingCommandExec.doExecute(commands.scala:131)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$execute$1(SparkPlan.scala:180)\n\tat org.apache.spark.sql.execution.SparkPlan.$anonfun$executeQuery$1(SparkPlan.scala:218)\n\tat org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)\n\tat org.apache.spark.sql.execution.SparkPlan.executeQuery(SparkPlan.scala:215)\n\tat org.apache.spark.sql.execution.SparkPlan.execute(SparkPlan.scala:176)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd$lzycompute(QueryExecution.scala:127)\n\tat org.apache.spark.sql.execution.QueryExecution.toRdd(QueryExecution.scala:126)\n\tat org.apache.spark.sql.DataFrameWriter.$anonfun$runCommand$1(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$5(SQLExecution.scala:100)\n\tat org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:160)\n\tat org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:87)\n\tat org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:764)\n\tat org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)\n\tat org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:962)\n\tat org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:414)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:398)\n\tat org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:287)\n\tat org.apache.spark.sql.DataFrameWriter.csv(DataFrameWriter.scala:952)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.AccessControlException): Permission denied: user=zeppelin, access=ALL, inode=\"/JUPITER/PROCESS/Logs/7ac7ab63-c489-4a51-a90a-6ae1beabf723.csv\":dataproc-agent:hadoop:drwxr-xr-x\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkSubAccess(FSPermissionChecker.java:348)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:265)\n\tat org.apache.hadoop.hdfs.server.namenode.FSPermissionChecker.checkPermission(FSPermissionChecker.java:193)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirectory.checkPermission(FSDirectory.java:1896)\n\tat org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:110)\n\tat org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3104)\n\tat org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:1127)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:708)\n\tat org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:528)\n\tat org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1086)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:1029)\n\tat org.apache.hadoop.ipc.Server$RpcCall.run(Server.java:957)\n\tat java.security.AccessController.doPrivileged(Native Method)\n\tat javax.security.auth.Subject.doAs(Subject.java:422)\n\tat org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1762)\n\tat org.apache.hadoop.ipc.Server$Handler.run(Server.java:2957)\n\n\tat org.apache.hadoop.ipc.Client.getRpcResponse(Client.java:1562)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1508)\n\tat org.apache.hadoop.ipc.Client.call(Client.java:1405)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:233)\n\tat org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:118)\n\tat com.sun.proxy.$Proxy17.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.delete(ClientNamenodeProtocolTranslatorPB.java:644)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:422)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeMethod(RetryInvocationHandler.java:165)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invoke(RetryInvocationHandler.java:157)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler$Call.invokeOnce(RetryInvocationHandler.java:95)\n\tat org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:359)\n\tat com.sun.proxy.$Proxy18.delete(Unknown Source)\n\tat org.apache.hadoop.hdfs.DFSClient.delete(DFSClient.java:1612)\n\t... 39 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_288544830",
+      "id": "20220811-123004_1311566032",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2269"
+    },
+    {
+      "text": "%pyspark\nprint('ACTUAL_PARAMETERS_CALCULATION_DONE')",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "ACTUAL_PARAMETERS_CALCULATION_DONE\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1406214815",
+      "id": "paragraph_1660894172186_932724280",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2270"
+    },
+    {
+      "text": "%pyspark\n# promoProductDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMOPRODUCT_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoProductDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMOPRODUCT_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_555969012",
+      "id": "20220811-123004_299536492",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2271"
+    },
+    {
+      "text": "%pyspark\n# promoDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1261502824",
+      "id": "20220811-123004_1301059590",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2272"
+    },
+    {
+      "text": "%pyspark\n# promoSupportPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoSupportPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMOSUPPORTPROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
+      "user": "anonymous",
+      "dateUpdated": "2023-02-02T07:26:33+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "colWidth": 12,
+        "editorHide": false,
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1675322793972_1375455053",
+      "id": "20220811-123004_1867332153",
+      "dateCreated": "2023-02-02T07:26:33+0000",
+      "status": "READY",
+      "$$hashKey": "object:2273"
+    }
+  ],
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION",
+  "id": "2HR194A3W",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {},
+  "path": "/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION"
+}

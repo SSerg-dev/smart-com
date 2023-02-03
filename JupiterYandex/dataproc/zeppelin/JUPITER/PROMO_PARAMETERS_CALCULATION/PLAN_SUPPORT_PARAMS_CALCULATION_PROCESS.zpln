@@ -95,7 +95,7 @@
       "status": "READY"
     }
   ],
-  "name": "PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS",
   "id": "2HABS7FVC",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

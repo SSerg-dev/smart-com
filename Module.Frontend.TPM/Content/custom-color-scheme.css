@@ -3521,7 +3521,7 @@ x-slider-inner:before {
         font-weight: 600;
     }
 
-    .metrics-dashboard-panel .container-metrics .x-box-inner {
+    .metrics-dashboard-panel .container-metrics {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -3531,30 +3531,30 @@ x-slider-inner:before {
         color: black;
         text-align: center;
         font-weight: 600;
-        font-size: 3.2vw;
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
-@media (max-width: 1366px) {
+/*@media (max-width: 1366px) {
     .metrics-dashboard-panel .title-name-metrics {
         font-size: 2.5vw;
     }
-}
+}*/
     .metrics-dashboard-panel .title-count-metrics {
         color: black;
         text-align: center;
         font-weight: 600;
-        font-size: 3.2vw;
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
-@media (max-width: 1366px) {
+/*@media (max-width: 1366px) {
     .metrics-dashboard-panel .title-count-metrics {
         font-size: 2.5vw;
     }
-}
+}*/
 
     .metrics-dashboard-panel .title-count-metrics-lsv {
         color: lightgray;
@@ -3562,14 +3562,13 @@ x-slider-inner:before {
         align-items: center;
         justify-content: center;
         font-weight: 400;
-        font-size: 2.8vw;
     }
 
-@media (max-width: 1366px) {
+/*@media (max-width: 1366px) {
     .metrics-dashboard-panel .title-count-metrics-lsv {
         font-size: 2.3vw;
     }
-}
+}*/
 
     .metrics-dashboard-panel .glyph-container {
         padding: 1.55ex;

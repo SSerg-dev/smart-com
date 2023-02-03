@@ -1011,7 +1011,7 @@
       "status": "ERROR"
     }
   ],
-  "name": "JUPITER_ORDERS_DELIVERY_FDM",
+  "name": "JUPITER/ORDERS_DELIVERY/JUPITER_ORDERS_DELIVERY_FDM",
   "id": "2HA8N5874",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",

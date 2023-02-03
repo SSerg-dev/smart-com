@@ -1094,7 +1094,7 @@
       "status": "FINISHED"
     }
   ],
-  "name": "MERGE_SCENARIO_DATA",
+  "name": "JUPITER/UPLOAD_FROM_SCENARIO/MERGE_SCENARIO_DATA",
   "id": "2HCGAVK9W",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
