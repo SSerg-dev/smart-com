@@ -3411,6 +3411,10 @@
     <Compile Include="Migrations\202302010903383_After_Create_developPriceIncrease2.Designer.cs">
       <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302060725129_Add_MLPromoId_TaskStatus_IsMLmodel.cs" />
+    <Compile Include="Migrations\202302060725129_Add_MLPromoId_TaskStatus_IsMLmodel.Designer.cs">
+      <DependentUpon>202302060725129_Add_MLPromoId_TaskStatus_IsMLmodel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6422,6 +6426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302010903383_After_Create_developPriceIncrease2.resx">
       <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302060725129_Add_MLPromoId_TaskStatus_IsMLmodel.resx">
+      <DependentUpon>202302060725129_Add_MLPromoId_TaskStatus_IsMLmodel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -991,6 +991,7 @@
 
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'PriceIncrease',
+        'MLPromoId': 'MLPromo',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -3041,6 +3042,8 @@
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'PromoStatusName': 'Status',
+        'IsMLmodel': 'MLmodel',
+        'TaskStatus': 'Task',
     },
     'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity'],
     'MetricsLiveHistory': {

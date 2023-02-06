@@ -754,6 +754,7 @@
                 {
                     text: l10n.ns('tpm', 'Promo').value('MLPromoId'),
                     dataIndex: 'MLPromoId',
+                    hidden: true
                 },
             ]
         }
