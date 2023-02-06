@@ -1,0 +1,6 @@
+<configuration>
+  <property>
+    <name>dfs.client.block.write.replace-datanode-on-failure.best-effort</name>
+    <value>true</value>
+  </property>
+</configuration>
