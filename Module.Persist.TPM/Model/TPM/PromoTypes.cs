@@ -23,6 +23,9 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         public string SystemName { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<Mechanic> Mechanics { get; set; }
     }
 }

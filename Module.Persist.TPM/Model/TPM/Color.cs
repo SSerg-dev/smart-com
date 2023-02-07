@@ -23,5 +23,8 @@ namespace Module.Persist.TPM.Model.TPM {
         [Index("Unique_Color", 1, IsUnique = true)]
         public Guid? BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

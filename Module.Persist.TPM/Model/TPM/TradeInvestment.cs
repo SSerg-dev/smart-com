@@ -23,6 +23,9 @@ namespace Module.Persist.TPM.Model.TPM
         public bool MarcCalcBudgets { get; set; }
         public int Year { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public System.Guid? BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
         public int ClientTreeId { get; set; }

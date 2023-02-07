@@ -27,6 +27,9 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(20)]
         public string Color { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
     }
 }

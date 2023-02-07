@@ -20,6 +20,9 @@ namespace Module.Persist.TPM.Model.TPM
         public int ClientTreeId { get; set; }
         public double Value { get; set; }
         public double ValueLSV { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
     public enum TypeMetrics
     {

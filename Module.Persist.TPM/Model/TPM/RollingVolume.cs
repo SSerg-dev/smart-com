@@ -35,5 +35,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

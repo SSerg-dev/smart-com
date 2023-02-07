@@ -24,5 +24,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
         public int ProductTreeId { get; set; }
         public virtual ProductTree ProductTree { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

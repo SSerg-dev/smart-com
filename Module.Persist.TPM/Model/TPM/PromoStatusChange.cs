@@ -39,5 +39,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? RejectReasonId { get; set; }
         [ForeignKey("RejectReasonId")]
         public virtual RejectReason RejectReason { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

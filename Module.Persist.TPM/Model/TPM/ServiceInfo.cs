@@ -19,5 +19,8 @@ namespace Module.Persist.TPM.Model.TPM
         public string Name { get; set; }
         public string Value { get; set; }
         public string Description { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

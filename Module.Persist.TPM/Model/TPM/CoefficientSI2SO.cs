@@ -24,6 +24,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public object Clone()
         {
             return new CoefficientSI2SO()
