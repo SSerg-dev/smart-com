@@ -103,7 +103,8 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXRPAActualEANPCImportHandler(),
                 new Handlers.FullXLSXRpaActualPluImportHandler(),
                 new Handlers.RSperiodExpiredHandler(),
-                new Handlers.MetricsLiveHistoryHandler()
+                new Handlers.MetricsLiveHistoryHandler(),
+                new Handlers.Interface.Incoming.InputMLProcessHandler()
             };
         }
     }

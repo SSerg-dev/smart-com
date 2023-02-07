@@ -23,6 +23,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsMLmodel { get; set; }
         [StringLength(100)]
         public string TaskStatus { get; set; }
+        public Guid? FileBufferId { get; set; }
 
         public bool IsSendForApproval  { get; set; }
         public bool IsCMManagerApproved { get; set; }

@@ -406,6 +406,7 @@
     <Compile Include="Actions\Notifications\PromoUpliftFailNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoDemandChangeNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoProductChangeNotificationAction.cs" />
+    <Compile Include="Handlers\Interface\Incoming\InputMLProcessHandler.cs" />
     <Compile Include="Handlers\MassApproveHandler.cs" />
     <Compile Include="Handlers\CalculateBTLBudgetsHandler.cs" />
     <Compile Include="Handlers\CreateCoefficientSI2SOHandler.cs" />
