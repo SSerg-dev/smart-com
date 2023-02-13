@@ -41,7 +41,7 @@ namespace Module.Persist.TPM.Migrations
                  VALUES
                        (NEWID()
                        ,(SELECT [Id] FROM [DefaultSchemaSetting].[Interface] Where Name Like '%ML_CALENDAR_ANAPLAN%')
-                       ,'in/Apollo/ML'
+                       ,'ML'
                        ,'*.csv*'
                        ,'')
             GO
