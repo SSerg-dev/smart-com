@@ -34,6 +34,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid TechnologyId { get; set; }
         public virtual Technology Technology { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }
         public ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
         public ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }

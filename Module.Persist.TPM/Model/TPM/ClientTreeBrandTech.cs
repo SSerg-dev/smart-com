@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -18,5 +19,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
         public Guid BrandTechId { get; set; }
         public virtual BrandTech BrandTech { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

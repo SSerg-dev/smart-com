@@ -28,6 +28,9 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("CompetitorId")]
         public virtual Competitor Competitor { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
     }
 }

@@ -13,5 +13,8 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual ClientTree ClientTree { get; set; }
         public Guid BudgetSubItemId { get; set; }
         public virtual BudgetSubItem BudgetSubItem { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

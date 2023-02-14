@@ -19,6 +19,10 @@ namespace Module.Persist.TPM.Model.TPM
         public double EffectWeek2 { get; set; }
         public double TotalEffect { get; set; }
 
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public virtual ClientTree ClientTree { get; set; }
         public virtual ProductTree ProductTree { get; set; }
     }

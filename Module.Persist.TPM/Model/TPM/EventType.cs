@@ -20,6 +20,9 @@ namespace Module.Persist.TPM.Model.TPM
         public string Name { get; set; }
         public bool National { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<Event> Events { get; set; }
     }
 }

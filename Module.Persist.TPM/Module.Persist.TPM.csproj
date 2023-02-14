@@ -3311,6 +3311,14 @@
     <Compile Include="Migrations\202301310651264_Empty_Migration_After_Merge.Designer.cs">
       <DependentUpon>202301310651264_Empty_Migration_After_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302060629538_ModifiedDate.cs" />
+    <Compile Include="Migrations\202302060629538_ModifiedDate.Designer.cs">
+      <DependentUpon>202302060629538_ModifiedDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302060646430_ModifiedDate_Triggers.cs" />
+    <Compile Include="Migrations\202302060646430_ModifiedDate_Triggers.Designer.cs">
+      <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.cs" />
     <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
       <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
@@ -3410,6 +3418,10 @@
     <Compile Include="Migrations\202302010903383_After_Create_developPriceIncrease2.cs" />
     <Compile Include="Migrations\202302010903383_After_Create_developPriceIncrease2.Designer.cs">
       <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302140841058_Empty_After_Merge_develop.cs" />
+    <Compile Include="Migrations\202302140841058_Empty_After_Merge_develop.Designer.cs">
+      <DependentUpon>202302140841058_Empty_After_Merge_develop.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -6351,6 +6363,12 @@
     <EmbeddedResource Include="Migrations\202301310651264_Empty_Migration_After_Merge.resx">
       <DependentUpon>202301310651264_Empty_Migration_After_Merge.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302060629538_ModifiedDate.resx">
+      <DependentUpon>202302060629538_ModifiedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302060646430_ModifiedDate_Triggers.resx">
+      <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209131057274_IncreaseBaseLine_Create.resx">
       <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
     </EmbeddedResource>
@@ -6422,6 +6440,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302010903383_After_Create_developPriceIncrease2.resx">
       <DependentUpon>202302010903383_After_Create_developPriceIncrease2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302140841058_Empty_After_Merge_develop.resx">
+      <DependentUpon>202302140841058_Empty_After_Merge_develop.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

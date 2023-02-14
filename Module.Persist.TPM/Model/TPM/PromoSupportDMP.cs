@@ -12,5 +12,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? PromoSupportId { get; set; }
         public string ExternalCode { get; set; }
         public int Quantity { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

@@ -25,6 +25,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid EventId { get; set; }
         public virtual Event Event { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<BTLPromo> BTLPromoes { get; set; }
     }
 }

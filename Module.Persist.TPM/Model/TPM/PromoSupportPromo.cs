@@ -30,5 +30,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid PromoSupportId { get; set; }
         public virtual PromoSupport PromoSupport { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
     }
 }

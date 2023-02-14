@@ -15,5 +15,6 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? DeletedDate { get; set; }
         public bool Disabled { get; set; }
 
+
     }
 }

@@ -2054,6 +2054,19 @@
 		GO
 		";
 
+		public static string UpdateTriggerModifiedDate(string defaultSchema, string table)
+		{
+			return UpdateTriggerModifiedDateString.Replace("DefaultSchemaSetting", defaultSchema).Replace("table_name", table);
+		}
+		private static string UpdateTriggerModifiedDateString = @"
+            CREATE TRIGGER [DefaultSchemaSetting].table_name_Update_Trigger
+            ON [DefaultSchemaSetting].[table_name]
+            AFTER INSERT, UPDATE AS
+              UPDATE [DefaultSchemaSetting].[table_name]
+              SET ModifiedDate = CURRENT_TIMESTAMP
+              WHERE Id IN (SELECT DISTINCT Id FROM Inserted)
+			GO";
+
 		public static string UpdateClientDashboardRSViewString(string defaultSchema)
 		{
 			return UpdateClientDashboardRSViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);

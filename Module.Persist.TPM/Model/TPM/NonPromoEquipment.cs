@@ -25,6 +25,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? BudgetItemId { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<NonPromoSupport> NonPromoSupports { get; set; }
     }
 }

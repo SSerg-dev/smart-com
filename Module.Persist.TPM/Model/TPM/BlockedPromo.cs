@@ -15,6 +15,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid HandlerId { get; set; }
         public DateTimeOffset CreateDate { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         //!!! НИ ПРИКАКИХ ОБСТОЯТЕЛЬСТВАХ НЕ ДОБАВЛЯТЬ ВНЕШНИЕ СВЯЗИ
     }
 }

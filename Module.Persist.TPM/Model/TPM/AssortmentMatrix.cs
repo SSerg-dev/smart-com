@@ -17,6 +17,9 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? EndDate { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
         public int ClientTreeId { get; set; }

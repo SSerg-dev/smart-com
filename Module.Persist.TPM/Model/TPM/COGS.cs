@@ -21,6 +21,9 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual BrandTech BrandTech { get; set; }
         public int ClientTreeId { get; set; }
         public virtual ClientTree ClientTree { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 
     public class COGS : BaseCOGS { }

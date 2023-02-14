@@ -67,5 +67,8 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("CompetitorBrandTechId")]
         public virtual CompetitorBrandTech CompetitorBrandTech { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
     }
 }

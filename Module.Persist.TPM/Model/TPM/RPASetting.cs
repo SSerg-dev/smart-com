@@ -17,5 +17,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Column(TypeName = "NVARCHAR(MAX)")]
         [Required]
         public string Name { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }
