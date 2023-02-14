@@ -2,7 +2,10 @@
 using Interfaces.Core.Common;
 using Interfaces.Implementation.Inbound.Collector;
 using Looper.Core;
+using Module.Frontend.TPM.Controllers;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
+using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model.Interface;
@@ -88,18 +91,61 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                                    Format = x[2],
                                    ClientCode = int.Parse(x[3]),
                                    ZREP = int.Parse(x[4]),
-                                   StartDate = x[5],
-                                   EndDate = x[6],
+                                   StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                                   EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[6])),
                                    MechanicMars = x[7],
-                                   DiscountMars = int.Parse(x[8]),
+                                   DiscountMars = double.Parse(x[8], CultureInfo.InvariantCulture),
                                    MechInstore = x[9],
-                                   InstoreDiscount = x[10],
-                                   PlannedUplift = x[11],
-                                   PlanInStoreShelfPrice = x[12],
+                                   InstoreDiscount = double.Parse(x[10], CultureInfo.InvariantCulture),
+                                   PlannedUplift = double.Parse(x[11], CultureInfo.InvariantCulture),
+                                   PlanInStoreShelfPrice = double.Parse(x[12], CultureInfo.InvariantCulture),
                                    TypeML = x[13]
                                })
                                .ToList();
+                        List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
+                        foreach (int inputMlId in inputMlIds)
+                        {
+                            InputML firstInputML = inputMLs.FirstOrDefault(g => g.PromoId == inputMlId);
+                            Promo promo = PromoHelper.CreateRSDefaultPromo(context);
 
+                            promo.BudgetYear = TimeHelper.ThisStartYear().Year;
+
+                            ClientTree clientTree = context.Set<ClientTree>().Where(x => x.EndDate == null && x.Id == firstInputML.ClientCode).FirstOrDefault();
+                            promo.ClientHierarchy = clientTree.FullPathName;
+                            promo.ClientTreeId = clientTree.ObjectId;
+                            promo.ClientTreeKeyId = clientTree.Id;
+                            promo.DeviationCoefficient = clientTree.DeviationCoefficient.Value * 100;
+
+                            promo.StartDate = firstInputML.StartDate;
+                            promo.EndDate = firstInputML.EndDate;
+                            PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(clientTree);
+                            if (clientDispatchDays.IsStartAdd)
+                            {
+                                promo.DispatchesStart = firstInputML.StartDate.AddDays(clientDispatchDays.StartDays);
+                            }
+                            else
+                            {
+                                promo.DispatchesStart = firstInputML.StartDate.AddDays(-clientDispatchDays.StartDays);
+                            }
+                            if (clientDispatchDays.IsEndAdd)
+                            {
+                                promo.DispatchesEnd = firstInputML.EndDate.AddDays(clientDispatchDays.EndDays);
+                            }
+                            else
+                            {
+                                promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
+                            }
+
+                            Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
+                            promo.MarsMechanicId = mechanic.Id;
+                            promo.MarsMechanicDiscount = firstInputML.DiscountMars;
+                            Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
+                            promo.PlanInstoreMechanicId = mechanicInstore.Id;
+                            promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
+
+                            //promo.Name = PromoHelper.GetNamePromo(context, mechanic.Id, )
+                            
+                        }
                     }
                 }
             }

@@ -20,21 +20,21 @@ namespace Module.Persist.TPM.Model.SimpleModel
         [Display(Name = "ZREP")]
         public int ZREP { get; set; }
         [Display(Name = "StartDate")]
-        public string StartDate { get; set; }
+        public DateTimeOffset StartDate { get; set; }
         [Display(Name = "EndDate")]
-        public string EndDate { get; set; }
+        public DateTimeOffset EndDate { get; set; }
         [Display(Name = "Mechanic(Mars)")]
         public string MechanicMars { get; set; }
         [Display(Name = "Discount(Mars)")]
-        public int DiscountMars { get; set; }
+        public double DiscountMars { get; set; }
         [Display(Name = "Mech(Instore)")]
         public string MechInstore { get; set; }
         [Display(Name = "Instore Discount")]
-        public string InstoreDiscount { get; set; }
+        public double InstoreDiscount { get; set; }
         [Display(Name = "Planned Uplift")]
-        public string PlannedUplift { get; set; }
+        public double PlannedUplift { get; set; }
         [Display(Name = "PlanInStore Shelf Price")]
-        public string PlanInStoreShelfPrice { get; set; }
+        public double PlanInStoreShelfPrice { get; set; }
         [Display(Name = "Type")]
         public string TypeML { get; set; }
     }

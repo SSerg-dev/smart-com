@@ -6,6 +6,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
@@ -632,6 +633,190 @@ namespace Module.Frontend.TPM.Util
                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
             };
             return columns;
+        }
+        public static Promo CreateDefaultPromo(DatabaseContext context)
+        {
+            int dayspromo = 4;
+            DateTimeOffset startD = TimeHelper.TodayStartDay();
+            DateTimeOffset endD = startD.AddDays(dayspromo);
+            DateTimeOffset startP = startD.AddDays(14);
+            DateTimeOffset endP = endD.AddDays(14);
+            Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+            Guid EventId = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo").Id;
+            Guid MechanicId = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == "Other" && g.PromoTypesId == PromoTypesId).Id;
+            Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "Draft").Id;
+            Promo promo = new Promo
+            {
+                TPMmode = TPMmode.Current,
+                ActualPromoBTL = 0,
+                ActualPromoBranding = 0,
+                ActualPromoCost = 0,
+                ActualPromoLSV = 0,
+                ActualPromoLSVSO = 0,
+                ActualPromoTIShopper = 0,
+                AdditionalUserTimestamp = "",
+                BudgetYear = 2023,
+                CalendarPriority = 3,
+                ClientHierarchy = "NA > Tander > Magnit MM",
+                ClientTreeId = 5000004,
+                ClientTreeKeyId = 19,
+                DeviationCoefficient = 10,
+                DispatchesStart = startD,
+                DispatchesEnd = endD,
+                StartDate = startP,
+                EndDate = endP,
+                EventId = EventId,
+                Id = Guid.NewGuid(),
+                InOutProductIds = "to change!!! 8af37b51-e73d-ea11-a86c-000d3a46085b;a5f37b51-e73d-ea11-a86c-000d3a46085b;",
+                IsApolloExport = true,
+                MarsMechanicDiscount = 20,
+                MarsMechanicId = MechanicId,
+                Name = "Unpublish Promo",
+                NeedRecountUplift = true,
+                ProductHierarchy = "Kitekat > Dry",
+                ProductTreeObjectIds = "1000043",
+                PromoStatusId = PromoStatusId,
+                PromoTypesId = PromoTypesId,
+
+            };
+            return promo;
+        }
+        public static Promo CreateRSDefaultPromo(DatabaseContext context)
+        {
+            int dayspromo = 4;
+            DateTimeOffset startD = TimeHelper.TodayStartDay();
+            DateTimeOffset endD = startD.AddDays(dayspromo);
+            DateTimeOffset startP = startD.AddDays(14);
+            DateTimeOffset endP = endD.AddDays(14);
+            Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+            Guid EventId = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo").Id;
+            Guid MechanicId = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == "Other" && g.PromoTypesId == PromoTypesId).Id;
+            Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
+            Promo promo = new Promo
+            {
+                TPMmode = TPMmode.RS,
+                ActualPromoBTL = 0,
+                ActualPromoBranding = 0,
+                ActualPromoCost = 0,
+                ActualPromoLSV = 0,
+                ActualPromoLSVSO = 0,
+                ActualPromoTIShopper = 0,
+                AdditionalUserTimestamp = "",
+                BudgetYear = 2023,
+                CalendarPriority = 3,
+                ClientHierarchy = "NA > Tander > Magnit MM",
+                ClientTreeId = 5000004,
+                ClientTreeKeyId = 19,
+                DeviationCoefficient = 10,
+                DispatchesStart = startD,
+                DispatchesEnd = endD,
+                StartDate = startP,
+                EndDate = endP,
+                EventId = EventId,
+                Id = Guid.NewGuid(),
+                InOutProductIds = "to change!!! 8af37b51-e73d-ea11-a86c-000d3a46085b;a5f37b51-e73d-ea11-a86c-000d3a46085b;",
+                IsApolloExport = true,
+                MarsMechanicDiscount = 20,
+                MarsMechanicId = MechanicId,
+                Name = "Unpublish Promo",
+                NeedRecountUplift = true,
+                ProductHierarchy = "Kitekat > Dry",
+                ProductTreeObjectIds = "1000043",
+                PromoStatusId = PromoStatusId,
+                PromoTypesId = PromoTypesId,
+
+            };
+            return promo;
+        }
+        public static string GetNamePromo(DatabaseContext context, Guid MechanicId, int ProductTreeObjectId, double MarsMechanicDiscount)
+        {
+            // доработать если нужен тип VP
+            var promoNameProductTreeAbbreviations = "";
+
+            var productTree = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == ProductTreeObjectId);
+            if (productTree != null)
+            {
+                if (productTree.Type != "Brand")
+                {
+                    var currentTreeNode = productTree;
+                    while (currentTreeNode != null && currentTreeNode.Type != "Brand")
+                    {
+                        currentTreeNode = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == currentTreeNode.parentId);
+                    }
+                    promoNameProductTreeAbbreviations = currentTreeNode.Abbreviation;
+                }
+                promoNameProductTreeAbbreviations = promoNameProductTreeAbbreviations + " " + productTree.Abbreviation;
+            }
+
+
+            var mechanic = context.Set<Mechanic>().FirstOrDefault(x => x.Id == MechanicId);
+            var promoNameMechanic = "";
+            if (mechanic != null)
+            {
+                promoNameMechanic = mechanic.Name;
+                if (mechanic.SystemName == "TPR" || mechanic.SystemName == "Other")
+                {
+                    promoNameMechanic += " " + MarsMechanicDiscount + "%";
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                    //promoNameMechanic += " " + promo.MarsMechanicType.Name;
+                }
+            }
+
+            return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
+        }
+        public static ClientDispatchDays GetClientDispatchDays(ClientTree clientTree)
+        {
+            ClientDispatchDays clientDispatchDays = new ClientDispatchDays();
+            if (clientTree.IsBeforeStart != null)
+            {
+                if (clientTree.IsBeforeStart.Value)
+                {
+                    clientDispatchDays.IsStartAdd = false;
+                }
+                else
+                {
+                    clientDispatchDays.IsStartAdd = true;
+                }
+                if (clientTree.IsDaysStart.Value)
+                {
+                    clientDispatchDays.StartDays = clientTree.DaysStart.Value;
+                }
+                else
+                {
+                    clientDispatchDays.StartDays = clientTree.DaysStart.Value * 7;
+                }
+            }
+            if (clientTree.IsBeforeEnd != null)
+            {
+                if (clientTree.IsBeforeEnd.Value)
+                {
+                    clientDispatchDays.IsEndAdd = false;
+                }
+                else
+                {
+                    clientDispatchDays.IsEndAdd = true;
+                }
+                if (clientTree.IsDaysEnd.Value)
+                {
+                    clientDispatchDays.EndDays = clientTree.DaysEnd.Value;
+                }
+                else
+                {
+                    clientDispatchDays.EndDays = clientTree.DaysEnd.Value * 7;
+                }
+            }
+
+            return clientDispatchDays;
+        }
+        public class ClientDispatchDays
+        {
+            public int StartDays { get; set; }
+            public bool IsStartAdd { get; set; } // true прибавляет дни
+            public int EndDays { get; set; }
+            public bool IsEndAdd { get; set; } // true прибавляет дни
         }
     }
 }
