@@ -3420,6 +3420,10 @@
     <Compile Include="Migrations\202302071122292_Add_MLUpload.Designer.cs">
       <DependentUpon>202302071122292_Add_MLUpload.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302151316050_Add_CalculateML.cs" />
+    <Compile Include="Migrations\202302151316050_Add_CalculateML.designer.cs">
+      <DependentUpon>202302151316050_Add_CalculateML.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6438,6 +6442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302071122292_Add_MLUpload.resx">
       <DependentUpon>202302071122292_Add_MLUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302151316050_Add_CalculateML.resx">
+      <DependentUpon>202302151316050_Add_CalculateML.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

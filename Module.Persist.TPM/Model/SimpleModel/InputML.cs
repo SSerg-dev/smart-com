@@ -15,8 +15,6 @@ namespace Module.Persist.TPM.Model.SimpleModel
         public string PPG { get; set; }
         [Display(Name = "Format")]
         public string Format { get; set; }
-        [Display(Name = "Client code")]
-        public int ClientCode { get; set; }
         [Display(Name = "ZREP")]
         public int ZREP { get; set; }
         [Display(Name = "StartDate")]
@@ -35,7 +33,13 @@ namespace Module.Persist.TPM.Model.SimpleModel
         public double PlannedUplift { get; set; }
         [Display(Name = "PlanInStore Shelf Price")]
         public double PlanInStoreShelfPrice { get; set; }
-        [Display(Name = "Type")]
-        public string TypeML { get; set; }
+        [Display(Name = "FormatCode")]
+        public int FormatCode { get; set; }
+        [Display(Name = "Source")]
+        public string Source { get; set; }
+        [Display(Name = "BaseLSV")]
+        public double BaseLSV { get; set; }
+        [Display(Name = "TotalLSV")]
+        public double TotalLSV { get; set; }
     }
 }

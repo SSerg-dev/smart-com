@@ -52,7 +52,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     IEnumerable<string> fBufferNames = fileBuffers.Select(g => g.FileName).OrderBy(f => f);
                     IEnumerable<string> NotPresents = fileNames.Except(fBufferNames);
                     List<FileBuffer> fileBuffersAdd = new List<FileBuffer>();
-                    
+
                     foreach (string filename in NotPresents)
                     {
                         string file = files.FirstOrDefault(g => Path.GetFileName(g) == filename);
@@ -76,7 +76,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         .Where(g => g.InterfaceId == interfaceId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None)
                         .OrderBy(d => d.CreateDate)
                         .ToList();
-                    
+
                     foreach (FileBuffer buffer in fileBuffersNone)
                     {
                         string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
@@ -89,17 +89,19 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                                    PromoId = int.Parse(x[0]),
                                    PPG = x[1],
                                    Format = x[2],
-                                   ClientCode = int.Parse(x[3]),
-                                   ZREP = int.Parse(x[4]),
-                                   StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
-                                   EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[6])),
-                                   MechanicMars = x[7],
-                                   DiscountMars = double.Parse(x[8], CultureInfo.InvariantCulture),
-                                   MechInstore = x[9],
-                                   InstoreDiscount = double.Parse(x[10], CultureInfo.InvariantCulture),
-                                   PlannedUplift = double.Parse(x[11], CultureInfo.InvariantCulture),
-                                   PlanInStoreShelfPrice = double.Parse(x[12], CultureInfo.InvariantCulture),
-                                   TypeML = x[13]
+                                   ZREP = int.Parse(x[3]),
+                                   StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                                   EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                                   MechanicMars = x[6],
+                                   DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                                   MechInstore = x[8],
+                                   InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                                   PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                                   PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                                   FormatCode = int.Parse(x[12]),
+                                   Source = x[13],
+                                   BaseLSV = double.Parse(x[14], CultureInfo.InvariantCulture),
+                                   TotalLSV = double.Parse(x[15], CultureInfo.InvariantCulture),
                                })
                                .ToList();
                         List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
@@ -110,7 +112,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
 
                             promo.BudgetYear = TimeHelper.ThisStartYear().Year;
 
-                            ClientTree clientTree = context.Set<ClientTree>().Where(x => x.EndDate == null && x.Id == firstInputML.ClientCode).FirstOrDefault();
+                            ClientTree clientTree = context.Set<ClientTree>().Where(x => x.EndDate == null && x.ObjectId == firstInputML.FormatCode).FirstOrDefault();
                             promo.ClientHierarchy = clientTree.FullPathName;
                             promo.ClientTreeId = clientTree.ObjectId;
                             promo.ClientTreeKeyId = clientTree.Id;
@@ -135,6 +137,9 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                             {
                                 promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
                             }
+                            List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
+                            List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
+                            promo.InOutProductIds = string.Join(";", products.Select(g=>g.Id));
 
                             Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
                             promo.MarsMechanicId = mechanic.Id;
@@ -143,8 +148,8 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                             promo.PlanInstoreMechanicId = mechanicInstore.Id;
                             promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
 
-                            //promo.Name = PromoHelper.GetNamePromo(context, mechanic.Id, )
-                            
+                            promo.Name = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
+
                         }
                     }
                 }

@@ -298,6 +298,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
 
         public string MLPromoId { get; set; }
+        public bool CalculateML { get; set; }
 
         // соединения к другим entity сначала с ключами, потом списки
         public Guid? BrandId { get; set; }

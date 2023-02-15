@@ -728,12 +728,11 @@ namespace Module.Frontend.TPM.Util
             };
             return promo;
         }
-        public static string GetNamePromo(DatabaseContext context, Guid MechanicId, int ProductTreeObjectId, double MarsMechanicDiscount)
+        public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, ProductTree productTree, double MarsMechanicDiscount)
         {
             // доработать если нужен тип VP
             var promoNameProductTreeAbbreviations = "";
 
-            var productTree = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == ProductTreeObjectId);
             if (productTree != null)
             {
                 if (productTree.Type != "Brand")
@@ -749,7 +748,38 @@ namespace Module.Frontend.TPM.Util
             }
 
 
-            var mechanic = context.Set<Mechanic>().FirstOrDefault(x => x.Id == MechanicId);
+            var promoNameMechanic = "";
+            if (mechanic != null)
+            {
+                promoNameMechanic = mechanic.Name;
+                if (mechanic.SystemName == "TPR" || mechanic.SystemName == "Other")
+                {
+                    promoNameMechanic += " " + MarsMechanicDiscount + "%";
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                    //promoNameMechanic += " " + promo.MarsMechanicType.Name;
+                }
+            }
+
+            return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
+        }
+        public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, Product product, double MarsMechanicDiscount)
+        {
+            // доработать если нужен тип VP
+            var promoNameProductTreeAbbreviations = "";
+
+            if (product != null)
+            {
+                Brand brand = context.Set<Brand>().FirstOrDefault(g => g.Brand_code == product.Brand_code);
+                Technology technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code);
+                ProductTree productTreeBrand = context.Set<ProductTree>().FirstOrDefault(g => g.BrandId == brand.Id);
+                ProductTree productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.TechnologyId == technology.Id);
+                promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
+            }
+
+
             var promoNameMechanic = "";
             if (mechanic != null)
             {
@@ -789,6 +819,10 @@ namespace Module.Frontend.TPM.Util
                     clientDispatchDays.StartDays = clientTree.DaysStart.Value * 7;
                 }
             }
+            else
+            {
+                throw new Exception($"Client {clientTree.ObjectId} without dispatch dates");
+            }
             if (clientTree.IsBeforeEnd != null)
             {
                 if (clientTree.IsBeforeEnd.Value)
@@ -807,6 +841,10 @@ namespace Module.Frontend.TPM.Util
                 {
                     clientDispatchDays.EndDays = clientTree.DaysEnd.Value * 7;
                 }
+            }
+            else
+            {
+                throw new Exception($"Client {clientTree.ObjectId} without dispatch dates");
             }
 
             return clientDispatchDays;
