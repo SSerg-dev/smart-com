@@ -33,7 +33,8 @@ RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql18
 RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated mssql-tools18
 RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bash_profile
 RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
-RUN apt-get install -y unixodbc-dev
+#16.02.023 RUN apt-get install -y unixodbc-dev
+RUN apt-get install -y unixodbc-dev=2.3.7
 RUN apt-get install -y g++
 RUN apt-get -y install libcsv3
 RUN apt-get -y install procps 
