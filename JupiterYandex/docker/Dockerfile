@@ -16,9 +16,14 @@ ARG SMTP_MAIL_FROM
 # RUN echo "ENVIRONMENT: $ENVIRONMENT"
 
 USER root
-RUN apt-get update
-RUN apt-get -y install gnupg2
-RUN apt-get -y install curl
+# RUN apt-get update
+# RUN apt-get -y install gnupg2
+# RUN apt-get -y install curl
+
+RUN apt-get update \
+    && apt-get -y install gnupg2 \
+    && apt-get -y install curl
+
 
 # Build MSSQL ODBC driver
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
