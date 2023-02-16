@@ -1,4 +1,6 @@
-﻿using Core.Settings;
+﻿using Core.Security;
+using Core.Security.Models;
+using Core.Settings;
 using Interfaces.Core.Common;
 using Interfaces.Implementation.Inbound.Collector;
 using Looper.Core;
@@ -20,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utility.FileWorker;
 using Utility.LogWriter;
+using Utility.Security;
 
 namespace Module.Host.TPM.Handlers.Interface.Incoming
 {
@@ -45,6 +48,10 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     FileCollectInterfaceSetting fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
                     string sourceFilesPath = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath);
                     CSVProcessInterfaceSetting cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
+
+                    var authorizationManager = new SystemAuthorizationManager();
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    RoleInfo role = authorizationManager.GetCurrentRole();
                     // загружаем новые в FileBuffer
                     IEnumerable<string> files = Directory.EnumerateFiles(sourceFilesPath, fileCollectInterfaceSetting.SourceFileMask, SearchOption.TopDirectoryOnly);
                     IEnumerable<string> fileNames = files.Select(g => Path.GetFileName(g)).OrderBy(f => f);
@@ -139,7 +146,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                             }
                             List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
                             List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
-                            promo.InOutProductIds = string.Join(";", products.Select(g=>g.Id));
+                            promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
 
                             Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
                             promo.MarsMechanicId = mechanic.Id;
@@ -147,9 +154,12 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                             Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
                             promo.PlanInstoreMechanicId = mechanicInstore.Id;
                             promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
+                            promo.PlanInStoreShelfPrice = firstInputML.PlanInStoreShelfPrice;
+                            promo.CalculateML = true;
 
                             promo.Name = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
 
+                            promo = PromoHelper.SavePromo(promo, context, user, role);
                         }
                     }
                 }

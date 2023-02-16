@@ -2,6 +2,7 @@
 using Core.Settings;
 using Looper.Core;
 using Module.Frontend.TPM.Controllers;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
@@ -64,7 +65,6 @@ namespace Module.Host.TPM.Handlers
                     if (promoes.Count > 0)
                     {
                         var swPlanParameters = new Stopwatch();
-                        var promoesController = new PromoesController();
                         var draftStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName.ToLower() == "draft");
                         var startedStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName.ToLower() == "started");
 
@@ -75,17 +75,17 @@ namespace Module.Host.TPM.Handlers
                                 handlerLogger.Write(true, String.Format("Calculation of promo number {0}", promo.Number), "Message");
 
 								bool isSubrangeChanged = false;
-                                List<PromoProductTree> promoProductTrees = promoesController.AddProductTrees(promo.ProductTreeObjectIds, promo, out isSubrangeChanged, context);
-                                promoesController.SetPromoByProductTree(promo, promoProductTrees, context);
-                                promoesController.SetPromoMarsDates(promo);
-                                promoesController.SetPromoByClientTree(promo, context);
-                                promoesController.SetMechanic(promo, context);
-                                promoesController.SetMechanicIA(promo, context);
+                                List<PromoProductTree> promoProductTrees = PromoHelper.AddProductTrees(promo.ProductTreeObjectIds, promo, out isSubrangeChanged, context);
+                                PromoHelper.SetPromoByProductTree(promo, promoProductTrees, context);
+                                PromoHelper.SetPromoMarsDates(promo);
+                                PromoHelper.SetPromoByClientTree(promo, context);
+                                PromoHelper.SetMechanic(promo, context);
+                                PromoHelper.SetMechanicIA(promo, context);
 
                                 try
                                 {
                                     List<Product> filteredProducts;
-                                    promoesController.CheckSupportInfo(promo, promoProductTrees, out filteredProducts, context);
+                                    PromoHelper.CheckSupportInfo(promo, promoProductTrees, out filteredProducts, context);
                                 }
                                 catch (Exception e)
                                 {
