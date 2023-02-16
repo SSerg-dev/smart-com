@@ -70,7 +70,7 @@ COPY ./JupiterYandex/docker/config/$ENVIRONMENT/core-site.xml /etc/hadoop/core-s
 COPY ./JupiterYandex/docker/config/$ENVIRONMENT/hdfs-site.xml /etc/hadoop/hdfs-site.xml
 
 # только для dev:
-COPY ./JupiterYandex/docker/config/$ENVIRONMENT/YandexCA* /tmp/
+#16.02.023 временно отключил: COPY ./JupiterYandex/docker/config/$ENVIRONMENT/YandexCA* /tmp/
 
 
 #Copy auxilary scripts
