@@ -11,7 +11,7 @@ images:
     pullPolicy: IfNotPresent
     # pullPolicy: Always
     repository: cr.yandex/crpfa31m8cvuaupjepgi/yac-cr-nprd-tpm-jupiter-00001
-    tag: airflow-jupiter-stage
+    tag: airflow-jupiter-stage-v1.0.0
 loadExamples: false
 rbac.create: true
 redis.enabled: false
