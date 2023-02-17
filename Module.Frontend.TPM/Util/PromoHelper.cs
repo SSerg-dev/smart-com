@@ -771,17 +771,31 @@ namespace Module.Frontend.TPM.Util
 
             return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
         }
-        public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, Product product, double MarsMechanicDiscount)
+        public static ReturnName GetNamePromo(DatabaseContext context, Mechanic mechanic, Product product, double MarsMechanicDiscount)
         {
             // доработать если нужен тип VP
             var promoNameProductTreeAbbreviations = "";
-
+            ProductTree productTreeTech = new ProductTree();
             if (product != null)
             {
                 Brand brand = context.Set<Brand>().FirstOrDefault(g => g.Brand_code == product.Brand_code);
-                Technology technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code);
+
+                Technology technology = new Technology();
+                string compositname;
+                if (string.IsNullOrEmpty(product.SubBrand_code))
+                {
+                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
+                    compositname = technology.Name;
+                }
+                else
+                {
+                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == product.SubBrand_code);
+                    compositname = technology.Name + " " + technology.SubBrand;
+                }
+                
                 ProductTree productTreeBrand = context.Set<ProductTree>().FirstOrDefault(g => g.BrandId == brand.Id);
-                ProductTree productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.TechnologyId == technology.Id);
+                
+                productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
                 promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
             }
 
@@ -801,7 +815,15 @@ namespace Module.Frontend.TPM.Util
                 }
             }
 
-            return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
+            return new ReturnName {
+                Name = promoNameProductTreeAbbreviations + " " + promoNameMechanic,
+                ProductTree = productTreeTech
+            };
+        }
+        public class ReturnName
+        {
+            public string Name { get; set; }
+            public ProductTree ProductTree { get; set; }
         }
         public static ClientDispatchDays GetClientDispatchDays(ClientTree clientTree)
         {
@@ -950,7 +972,7 @@ namespace Module.Frontend.TPM.Util
 
 
             // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
-            if (result.PromoStatus.SystemName.ToLower() != "draft" || !result.CalculateML)
+            if (result.PromoStatus.SystemName.ToLower() != "draft" && !result.CalculateML)
             {
                 // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
                 List<Product> filteredProducts; // продукты, подобранные по фильтрам

@@ -5,6 +5,7 @@ using Interfaces.Core.Common;
 using Interfaces.Implementation.Inbound.Collector;
 using Looper.Core;
 using Module.Frontend.TPM.Controllers;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
@@ -38,7 +39,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
             try
             {
                 handlerLogger = new LogWriter(info.HandlerId.ToString());
-                handlerLogger.Write(true, String.Format("File processing begin: {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
+                handlerLogger.Write(true, string.Format("File processing begin: {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
                 using (DatabaseContext context = new DatabaseContext())
                 {
@@ -52,6 +53,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     var authorizationManager = new SystemAuthorizationManager();
                     UserInfo user = authorizationManager.GetCurrentUser();
                     RoleInfo role = authorizationManager.GetCurrentRole();
+                    StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
                     // загружаем новые в FileBuffer
                     IEnumerable<string> files = Directory.EnumerateFiles(sourceFilesPath, fileCollectInterfaceSetting.SourceFileMask, SearchOption.TopDirectoryOnly);
                     IEnumerable<string> fileNames = files.Select(g => Path.GetFileName(g)).OrderBy(f => f);
@@ -112,6 +114,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                                })
                                .ToList();
                         List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
+                        List<Promo> promoes = new List<Promo>();
                         foreach (int inputMlId in inputMlIds)
                         {
                             InputML firstInputML = inputMLs.FirstOrDefault(g => g.PromoId == inputMlId);
@@ -127,40 +130,54 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
 
                             promo.StartDate = firstInputML.StartDate;
                             promo.EndDate = firstInputML.EndDate;
-                            PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(clientTree);
-                            if (clientDispatchDays.IsStartAdd)
+
+                            if (((DateTimeOffset)promo.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate)
                             {
-                                promo.DispatchesStart = firstInputML.StartDate.AddDays(clientDispatchDays.StartDays);
+                                handlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", promo.MLPromoId, promo.StartDate), "Message");
                             }
                             else
                             {
-                                promo.DispatchesStart = firstInputML.StartDate.AddDays(-clientDispatchDays.StartDays);
-                            }
-                            if (clientDispatchDays.IsEndAdd)
-                            {
-                                promo.DispatchesEnd = firstInputML.EndDate.AddDays(clientDispatchDays.EndDays);
-                            }
-                            else
-                            {
-                                promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
-                            }
-                            List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
-                            List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
-                            promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
+                                PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(clientTree);
+                                if (clientDispatchDays.IsStartAdd)
+                                {
+                                    promo.DispatchesStart = firstInputML.StartDate.AddDays(clientDispatchDays.StartDays);
+                                }
+                                else
+                                {
+                                    promo.DispatchesStart = firstInputML.StartDate.AddDays(-clientDispatchDays.StartDays);
+                                }
+                                if (clientDispatchDays.IsEndAdd)
+                                {
+                                    promo.DispatchesEnd = firstInputML.EndDate.AddDays(clientDispatchDays.EndDays);
+                                }
+                                else
+                                {
+                                    promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
+                                }
+                                List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
+                                List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
+                                promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
 
-                            Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
-                            promo.MarsMechanicId = mechanic.Id;
-                            promo.MarsMechanicDiscount = firstInputML.DiscountMars;
-                            Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
-                            promo.PlanInstoreMechanicId = mechanicInstore.Id;
-                            promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
-                            promo.PlanInStoreShelfPrice = firstInputML.PlanInStoreShelfPrice;
-                            promo.CalculateML = true;
+                                Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
+                                promo.MarsMechanicId = mechanic.Id;
+                                promo.MarsMechanicDiscount = firstInputML.DiscountMars;
+                                Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
+                                promo.PlanInstoreMechanicId = mechanicInstore.Id;
+                                promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
+                                promo.PlanInStoreShelfPrice = firstInputML.PlanInStoreShelfPrice;
+                                
+                                promo.CalculateML = true;
 
-                            promo.Name = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
+                                PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
+                                promo.Name = returnName.Name;
+                                promo.ProductHierarchy = returnName.ProductTree.FullPathName;
+                                promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
 
-                            promo = PromoHelper.SavePromo(promo, context, user, role);
+                                promo = PromoHelper.SavePromo(promo, context, user, role);
+                                promoes.Add(promo);
+                            }
                         }
+                        RSPeriodHelper.RemoveOldCreateNewRSPeriodML(promoes.FirstOrDefault(), context);
                     }
                 }
             }
@@ -181,7 +198,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
 
                 if (handlerLogger != null)
                 {
-                    handlerLogger.Write(true, String.Format("Finish: {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.Write(true, string.Format("Finish: {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds), "Message");
                     handlerLogger.UploadToBlob();
                 }
             }

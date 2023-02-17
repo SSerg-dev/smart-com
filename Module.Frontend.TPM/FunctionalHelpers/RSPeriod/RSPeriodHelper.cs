@@ -577,5 +577,40 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 item.ItemId = id.ToString();
             }
         }
+        public static void RemoveOldCreateNewRSPeriodML(Promo promo, DatabaseContext Context)
+        {
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+                .Include(g => g.Promoes)
+                .Include(g => g.PromoStatus)
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && g.PromoStatus.SystemName != StateNames.APPROVED && g.IsMLmodel);
+
+
+            if (rollingScenarioExist != null)
+            {
+                CreateMLRSperiod(promo, Context);
+            }
+            else
+            {
+                DeleteRSPeriod(rollingScenarioExist.Id, Context);
+                CreateMLRSperiod(promo, Context);
+            }
+            Context.SaveChanges();
+        }
+        private static void CreateMLRSperiod(Promo promo, DatabaseContext Context)
+        {
+            List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
+            StartEndModel startEndModel = GetRSPeriod(Context);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+            RollingScenario rollingScenario = new RollingScenario
+            {
+                StartDate = startEndModel.StartDate,
+                EndDate = startEndModel.EndDate,
+                PromoStatus = promoStatuses.FirstOrDefault(g => g.SystemName == "Draft"),
+                ClientTree = client,
+                Promoes = new List<Promo>()
+            };
+            rollingScenario.Promoes.Add(promo);
+            Context.Set<RollingScenario>().Add(rollingScenario);
+        }
     }
 }
