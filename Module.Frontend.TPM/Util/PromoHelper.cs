@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Dependency;
 using Core.MarsCalendar;
-using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Extensions.Export;
@@ -20,13 +19,12 @@ using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Http.OData;
-using Utility;
 
 namespace Module.Frontend.TPM.Util
 {
@@ -518,6 +516,7 @@ namespace Module.Frontend.TPM.Util
             };
             return columns;
         }
+
         public static IEnumerable<Column> GetViewExportSettingsRS()
         {
             IEnumerable<Column> columns = new List<Column>()
@@ -734,6 +733,35 @@ namespace Module.Frontend.TPM.Util
             };
             return promo;
         }
+        public static List<InputML> GetInputML(string pathfile, string delimiter)
+        {
+            var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            List<InputML> inputMLs = Lines
+                   .Skip(1)
+                   .Select(x => x.Split(char.Parse(delimiter)))
+                   .Select(x => new InputML
+                   {
+                       PromoId = int.Parse(x[0]),
+                       PPG = x[1],
+                       Format = x[2],
+                       ZREP = int.Parse(x[3]),
+                       StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                       EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                       MechanicMars = x[6],
+                       DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                       MechInstore = x[8],
+                       InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                       PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                       PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                       FormatCode = int.Parse(x[12]),
+                       Source = x[13],
+                       BaseLSV = double.Parse(x[14], CultureInfo.InvariantCulture),
+                       TotalLSV = double.Parse(x[15], CultureInfo.InvariantCulture),
+                   })
+                   .Where(g => g.Source == "optimizer")
+                   .ToList();
+            return inputMLs;
+        }
         public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, ProductTree productTree, double MarsMechanicDiscount)
         {
             // доработать если нужен тип VP
@@ -792,9 +820,9 @@ namespace Module.Frontend.TPM.Util
                     technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == product.SubBrand_code);
                     compositname = technology.Name + " " + technology.SubBrand;
                 }
-                
+
                 ProductTree productTreeBrand = context.Set<ProductTree>().FirstOrDefault(g => g.BrandId == brand.Id);
-                
+
                 productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
                 promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
             }
@@ -815,7 +843,8 @@ namespace Module.Frontend.TPM.Util
                 }
             }
 
-            return new ReturnName {
+            return new ReturnName
+            {
                 Name = promoNameProductTreeAbbreviations + " " + promoNameMechanic,
                 ProductTree = productTreeTech
             };
@@ -978,7 +1007,7 @@ namespace Module.Frontend.TPM.Util
                 List<Product> filteredProducts; // продукты, подобранные по фильтрам
                 CheckSupportInfo(result, promoProductTrees, out filteredProducts, context);
                 //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                CalculatePromo(result, context, user, role, false, false, false, true);
+                CalculatePromo(result, context, (Guid)user.Id, (Guid)role.Id, false, false, false, true);
             }
             else
             {
@@ -1452,11 +1481,8 @@ namespace Module.Frontend.TPM.Util
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
         /// </summary>
         /// <param name="promo"></param>
-        public static void CalculatePromo(Promo promo, DatabaseContext context, UserInfo user, RoleInfo role, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
+        public static void CalculatePromo(Promo promo, DatabaseContext context, Guid userId, Guid roleId, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
         {
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-
             HandlerData data = new HandlerData();
             HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);

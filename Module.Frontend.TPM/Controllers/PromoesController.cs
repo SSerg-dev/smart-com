@@ -548,7 +548,7 @@ namespace Module.Frontend.TPM.Controllers
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
 
-                            PromoHelper.CalculatePromo(model, Context, user, role, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                            PromoHelper.CalculatePromo(model, Context, (Guid)user.Id, (Guid)role.Id, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
                         }
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
@@ -767,7 +767,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 try
                 {
-                    PromoHelper.CalculatePromo(promo, Context, user, role, true, false, false);
+                    PromoHelper.CalculatePromo(promo, Context, (Guid)user.Id, (Guid)role.Id, true, false, false);
                     transaction.Commit();
                 }
                 catch (Exception e)

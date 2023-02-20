@@ -331,6 +331,7 @@
     <Compile Include="ElasticSearch\LocalElasticHistoryReader.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
     <Compile Include="ElasticSearch\InsteadHistoricalAttribute.cs" />
+    <Compile Include="Enum\RSstateNames.cs" />
     <Compile Include="Hubs\LogHub.cs" />
     <Compile Include="Hubs\TasksLogHub.cs" />
     <Compile Include="KeyVault\LocalKeyStorage.cs" />
@@ -3424,6 +3425,14 @@
     <Compile Include="Migrations\202302151316050_Add_CalculateML.designer.cs">
       <DependentUpon>202302151316050_Add_CalculateML.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302201147216_Add_NewStatusRS.cs" />
+    <Compile Include="Migrations\202302201147216_Add_NewStatusRS.designer.cs">
+      <DependentUpon>202302201147216_Add_NewStatusRS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302201219586_Remove_Promostatus_RS.cs" />
+    <Compile Include="Migrations\202302201219586_Remove_Promostatus_RS.designer.cs">
+      <DependentUpon>202302201219586_Remove_Promostatus_RS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6445,6 +6454,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302151316050_Add_CalculateML.resx">
       <DependentUpon>202302151316050_Add_CalculateML.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302201147216_Add_NewStatusRS.resx">
+      <DependentUpon>202302201147216_Add_NewStatusRS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302201219586_Remove_Promostatus_RS.resx">
+      <DependentUpon>202302201219586_Remove_Promostatus_RS.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

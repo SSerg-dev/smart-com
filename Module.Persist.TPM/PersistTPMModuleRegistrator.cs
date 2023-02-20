@@ -1236,8 +1236,6 @@ namespace Module.Persist.TPM
             builder.Entity<RPA>().Collection.Action("SaveRPA");
             builder.Entity<RPA>().Collection.Action("DownloadTemplateXLSX");
 
-            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
-            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");

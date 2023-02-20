@@ -28,9 +28,8 @@ namespace Module.Persist.TPM.Model.TPM
         public bool IsSendForApproval  { get; set; }
         public bool IsCMManagerApproved { get; set; }
 
-        [ForeignKey("PromoStatus")]
-        public Guid PromoStatusId { get; set; }
-        public PromoStatus PromoStatus { get; set; }
+        [StringLength(100)]
+        public string RSstatus { get; set; }
 
         [ForeignKey("ClientTree")]
         public int ClientTreeId { get; set; }

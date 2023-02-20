@@ -3041,7 +3041,7 @@
         'ExpirationDate': 'Expiration Date',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
-        'PromoStatusName': 'Status',
+        'RSstatus': 'Status',
         'IsMLmodel': 'MLmodel',
         'TaskStatus': 'Task',
     },

@@ -206,30 +206,8 @@
                     renderer: Ext.util.Format.dateRenderer('d.m.Y')
                 },
                 {
-                    text: l10n.ns('tpm', 'RSmode').value('PromoStatusName'),
-                    dataIndex: 'PromoStatusName',
-                    width: 120,
-                    filter: {
-                        type: 'search',
-                        selectorWidget: 'promostatus',
-                        valueField: 'Name',
-                        operator: 'eq',
-                        store: {
-                            type: 'directorystore',
-                            model: 'App.model.tpm.promostatus.PromoStatus',
-                            extendedFilter: {
-                                xclass: 'App.ExtFilterContext',
-                                supportedModels: [{
-                                    xclass: 'App.ExtSelectionFilterModel',
-                                    model: 'App.model.tpm.promostatus.PromoStatus',
-                                    modelId: 'efselectionmodel'
-                                }, {
-                                    xclass: 'App.ExtTextFilterModel',
-                                    modelId: 'eftextmodel'
-                                }]
-                            }
-                        }
-                    }
+                    text: l10n.ns('tpm', 'RSmode').value('RSstatus'),
+                    dataIndex: 'RSstatus',
                 },
                 {
                     text: l10n.ns('tpm', 'RSmode').value('IsMLmodel'),

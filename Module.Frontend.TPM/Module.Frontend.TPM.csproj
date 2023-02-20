@@ -522,6 +522,7 @@
     <Compile Include="Util\GetExceptionMessage.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
+    <Compile Include="Util\ReAuthorizationManager.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
     <Compile Include="Util\ScriptGenerator.cs" />
     <Compile Include="Controllers\ClientDashboardController.cs" />
