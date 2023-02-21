@@ -11,10 +11,9 @@ using Persist;
 using Persist.Model.Interface;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility.LogWriter;
 using Utility.Security;
 
@@ -53,16 +52,24 @@ namespace Module.Host.TPM.Actions
                     var authorizationManager = new SystemAuthorizationManager();
                     user = authorizationManager.GetCurrentUser();
                     role = authorizationManager.GetCurrentRole();
-                    rollingScenario = context.Set<RollingScenario>().OrderBy(g => g.RSId).FirstOrDefault(g => g.IsMLmodel && g.RSstatus == RSstateNames.WAITING);
+                    rollingScenario = context.Set<RollingScenario>()
+                        .Include(g => g.Promoes)
+                        .OrderBy(g => g.RSId).FirstOrDefault(g => g.IsMLmodel && g.RSstatus == RSstateNames.WAITING);
                 }
                 else
                 {
                     var authorizationManager = new ReAuthorizationManager(context, UserId, RoleId);
                     user = authorizationManager.GetCurrentUser();
                     role = authorizationManager.GetCurrentRole();
-                    rollingScenario = context.Set<RollingScenario>().FirstOrDefault(g => g.RSId == RsId);
+                    rollingScenario = context.Set<RollingScenario>()
+                        .Include(g => g.Promoes)
+                        .FirstOrDefault(g => g.RSId == RsId && g.RSstatus == RSstateNames.WAITING);
                 }
 
+                if (rollingScenario == null)
+                {
+                    HandlerLogger.Write(true, "Missing RS Period", "Message");
+                }
                 FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId);
 
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
@@ -84,30 +91,30 @@ namespace Module.Host.TPM.Actions
 
                     promo.StartDate = firstInputML.StartDate;
                     promo.EndDate = firstInputML.EndDate;
-
-                    if (((DateTimeOffset)promo.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate)
+                    PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(clientTree);
+                    if (clientDispatchDays.IsStartAdd)
+                    {
+                        promo.DispatchesStart = firstInputML.StartDate.AddDays(clientDispatchDays.StartDays);
+                    }
+                    else
+                    {
+                        promo.DispatchesStart = firstInputML.StartDate.AddDays(-clientDispatchDays.StartDays);
+                    }
+                    if (clientDispatchDays.IsEndAdd)
+                    {
+                        promo.DispatchesEnd = firstInputML.EndDate.AddDays(clientDispatchDays.EndDays);
+                    }
+                    else
+                    {
+                        promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
+                    }
+                    if ((DateTimeOffset)promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate)
                     {
                         HandlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", promo.MLPromoId, promo.StartDate), "Message");
                     }
                     else
                     {
-                        PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(clientTree);
-                        if (clientDispatchDays.IsStartAdd)
-                        {
-                            promo.DispatchesStart = firstInputML.StartDate.AddDays(clientDispatchDays.StartDays);
-                        }
-                        else
-                        {
-                            promo.DispatchesStart = firstInputML.StartDate.AddDays(-clientDispatchDays.StartDays);
-                        }
-                        if (clientDispatchDays.IsEndAdd)
-                        {
-                            promo.DispatchesEnd = firstInputML.EndDate.AddDays(clientDispatchDays.EndDays);
-                        }
-                        else
-                        {
-                            promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
-                        }
+                        
                         List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
                         List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
                         promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
@@ -128,10 +135,12 @@ namespace Module.Host.TPM.Actions
                         promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
 
                         promo = PromoHelper.SavePromo(promo, context, user, role);
-                        promoes.Add(promo);
+                        rollingScenario.Promoes.Add(promo);
                     }
                 }
-
+                rollingScenario.RSstatus = RSstateNames.CALCULATING;
+                rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
+                context.SaveChanges();
 
             }
         }

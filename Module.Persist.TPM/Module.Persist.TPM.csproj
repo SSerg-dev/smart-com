@@ -332,6 +332,7 @@
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
     <Compile Include="ElasticSearch\InsteadHistoricalAttribute.cs" />
     <Compile Include="Enum\RSstateNames.cs" />
+    <Compile Include="Enum\TaskStatusNames.cs" />
     <Compile Include="Hubs\LogHub.cs" />
     <Compile Include="Hubs\TasksLogHub.cs" />
     <Compile Include="KeyVault\LocalKeyStorage.cs" />
