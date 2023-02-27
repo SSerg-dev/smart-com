@@ -88,7 +88,7 @@
         {
             xtype: 'button',
             itemId: 'btn_promoML',
-            glyph: 0xfbd3,
+            glyph: 0xfbeb,
             cls: 'in-out-promo-header-button custom-top-panel-item',
             text: 'ML',
             height: 20,

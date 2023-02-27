@@ -70,7 +70,7 @@ namespace Module.Host.TPM.Actions
                 {
                     HandlerLogger.Write(true, "Missing RS Period", "Message");
                 }
-                FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId);
+                FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
 
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
                 List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSetting.Delimiter);
@@ -125,8 +125,10 @@ namespace Module.Host.TPM.Actions
                         Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
                         promo.PlanInstoreMechanicId = mechanicInstore.Id;
                         promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
-                        promo.PlanInStoreShelfPrice = firstInputML.PlanInStoreShelfPrice;
 
+                        promo.PlanInStoreShelfPrice = firstInputML.PlanInStoreShelfPrice;
+                        promo.PlanPromoUpliftPercent = firstInputML.PlannedUplift;
+                        promo.PlanPromoUpliftPercentPI = firstInputML.PlannedUplift;
                         promo.CalculateML = true;
 
                         PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
@@ -134,12 +136,25 @@ namespace Module.Host.TPM.Actions
                         promo.ProductHierarchy = returnName.ProductTree.FullPathName;
                         promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
 
+                        promo.MLPromoId = buffer.FileName + "_" + firstInputML.PromoId;
+
                         promo = PromoHelper.SavePromo(promo, context, user, role);
                         rollingScenario.Promoes.Add(promo);
                     }
                 }
-                rollingScenario.RSstatus = RSstateNames.CALCULATING;
-                rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
+                if (rollingScenario.Promoes.Count > 0)
+                {
+                    rollingScenario.RSstatus = RSstateNames.CALCULATING;
+                    rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
+                }
+                else
+                {
+                    rollingScenario.RSstatus = RSstateNames.WAITING;
+                    rollingScenario.TaskStatus = TaskStatusNames.ERROR;
+                    HandlerLogger.Write(true, string.Format("RS period: {0}", rollingScenario.Id), "Message");
+                }
+                buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
+                buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
                 context.SaveChanges();
 
             }

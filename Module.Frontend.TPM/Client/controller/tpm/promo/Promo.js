@@ -413,7 +413,6 @@
     },
 
     massSendForApprovalButtonDisable: function (grid, store) {
-        debugger;
         var filters = store.filters.items;
         
         var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
@@ -2934,6 +2933,11 @@
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();
                     }
+                    if (record.data.CalculateML) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
                 }
             });
             var promoMechanics = promoeditorcustom.down('promomechanic');
@@ -2948,6 +2952,10 @@
         }
         else {
             this.showIsPriceIncreaseWindowLabel(false);
+        }
+        if (record.data.MLPromoId.length > 0) {
+            var promoMLLabel = Ext.ComponentQuery.query('#btn_promoML')[0];
+            promoMLLabel.show();
         }
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;

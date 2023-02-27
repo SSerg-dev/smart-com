@@ -267,6 +267,7 @@
         { name: 'NeedRecountUpliftPI', type: 'bool', hidden: true, isDefault: false },
         { name: 'IsPriceIncrease', type: 'boolean', hidden: false, isDefault: true },
         { name: 'MLPromoId', type: 'string', hidden: false, isDefault: true },
+        { name: 'CalculateML', type: 'boolean', hidden: false, isDefault: true },
     ],
     //hasMany: [
     //    //{

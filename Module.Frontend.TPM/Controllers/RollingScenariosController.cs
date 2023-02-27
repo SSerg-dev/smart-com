@@ -21,6 +21,7 @@ using Utility;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using System.Data.Entity.Infrastructure;
 using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Enum;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -49,7 +50,7 @@ namespace Module.Frontend.TPM.Controllers
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<RollingScenario> query = Context.Set<RollingScenario>().AsNoTracking();
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active); 
+            query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active);
 
 
             logger.Stop();
@@ -95,9 +96,9 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     try
                     {
-                        
+
                         RSPeriodHelper.DeleteRSPeriod(rollingScenarioId, Context);
-                        
+
                         transaction.Commit();
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
                     }
@@ -159,7 +160,7 @@ namespace Module.Frontend.TPM.Controllers
 
             if (role.SystemName == "CMManager" || role.SystemName == "Administrator")
             {
-                
+
                 using (var transaction = Context.Database.BeginTransaction())
                 {
                     try
@@ -200,49 +201,90 @@ namespace Module.Frontend.TPM.Controllers
                 RollingScenario RS = Context.Set<RollingScenario>()
                     .AsNoTracking()
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
-                if (!RS.IsSendForApproval && !RS.Disabled)
+                if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true })); //статусы инвертированы для.setDisabled(false) 
+                    if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                    }
+                    if (RS.RSstatus == RSstateNames.CALCULATING)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
                 else
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                    if (!RS.IsSendForApproval && !RS.Disabled)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true })); //статусы инвертированы для.setDisabled(false) 
+                    }
+                    else
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
+
             }
             if (role.SystemName == "CMManager")
             {
                 RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.Promoes)
                     .AsNoTracking()
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
-                if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false }));
+                    if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                    }
+                    if (RS.RSstatus == RSstateNames.CALCULATING)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
                 else
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                    if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true }));
+                    }
+                    else
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
-
             }
             if (role.SystemName == "Administrator")
             {
                 RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.Promoes)
                     .AsNoTracking()
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
-                if (!RS.IsSendForApproval && !RS.Disabled)
+                if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true }));
-                }
-                else if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
-                {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false }));
+                    if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                    }
+                    if (RS.RSstatus == RSstateNames.CALCULATING)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
                 else
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true }));
+                    if (!RS.IsSendForApproval && !RS.Disabled)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true }));
+                    }
+                    else if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true }));
+                    }
+                    else
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                    }
                 }
+
             }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
         }

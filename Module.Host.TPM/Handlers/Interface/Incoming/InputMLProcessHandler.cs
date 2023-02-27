@@ -77,8 +77,6 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         {
                             RSPeriodHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
                         }
-                        buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
-                        buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                     }
                     context.SaveChanges();
                 }
