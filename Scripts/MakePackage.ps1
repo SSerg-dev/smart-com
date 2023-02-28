@@ -124,7 +124,7 @@ try {
 			} else {
 				Copy-Item $path\bin\Release\*.* -Exclude "*.config" -Destination $dest\$MigrationFolderName
 			}
-			Copy-Item $source\packages\EntityFramework.6.4.4\tools\migrate.exe -Destination $dest\$MigrationFolderName
+			Copy-Item $source\packages\EntityFramework.6.4.4\tools\net45\any\ef6.exe -Destination $dest\$MigrationFolderName
 
 			# Write-Zip -Path "$dest\$MigrationFolderName\*" -OutputPath "$dest\$MigrationFolderName.zip" -Quiet > $null
 			& "C:\Program Files\7-Zip\7z.exe" a "$dest\$MigrationFolderName.zip" "$dest\$MigrationFolderName\*" > $null
