@@ -1243,6 +1243,7 @@ namespace Module.Persist.TPM
             builder.Entity<RollingScenario>().Collection.Action("OnApproval");
             builder.Entity<RollingScenario>().Collection.Action("Approve");
             builder.Entity<RollingScenario>().Collection.Action("Decline");
+            builder.Entity<RollingScenario>().Collection.Action("Calculate");
             builder.Entity<RollingScenario>().Collection.Action("GetVisibleButton");
             builder.Entity<RollingScenario>().Collection.Action("GetCanceled");
             builder.Entity<RollingScenario>().Collection.Action("MassApprove");
