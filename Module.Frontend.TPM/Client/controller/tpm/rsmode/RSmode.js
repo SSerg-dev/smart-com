@@ -50,6 +50,9 @@
                 'rsmode #declinebutton': {
                     click: this.onDeclineButtonClick
                 },
+                'rsmode #calculatebutton': {
+                    click: this.onCalculateButtonClick
+                },
                 'rsmode #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
@@ -179,6 +182,35 @@
     onMassApproveButtonClick: function (button) {
         debugger;
     },
+    onCalculateButtonClick: function(button) {
+        var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
+        grid.setLoading(l10n.ns('core').value('savingText'));
+        var selected = grid.getSelectionModel().getSelection()[0];
+        $.ajax({
+            dataType: 'json',
+            url: '/odata/RollingScenarios/Calculate?rsId=' + selected.data.RSId,
+            type: 'POST',
+            success: function (response) {
+                var data = Ext.JSON.decode(response.value);
+                if (data.success) {
+                    grid.getStore().load();
+                    grid.setLoading(false);
+                    App.Notify.pushInfo('Export task created successfully');
+                    App.System.openUserTasksPanel();
+                }
+                else {
+                    grid.setLoading(false);
+                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
+                }
+
+            },
+            error: function (data) {
+                grid.setLoading(false);
+                App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
+            }
+        });
+
+    },
     onDeclineButtonClick: function (button) {
         var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
         grid.setLoading(l10n.ns('core').value('savingText'));
@@ -216,11 +248,8 @@
                     Ext.ComponentQuery.query('button[itemId=onapprovalbutton]')[0].setDisabled(data.OnApproval);
                     Ext.ComponentQuery.query('button[itemId=approvebutton]')[0].setDisabled(data.Approve);
                     Ext.ComponentQuery.query('button[itemId=declinebutton]')[0].setDisabled(data.Decline);
+                    Ext.ComponentQuery.query('button[itemId=calculatebutton]')[0].setDisabled(data.Calculate);
                 }
-                else {
-                    //App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
-                }
-
             },
             error: function (data) {
                 App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);

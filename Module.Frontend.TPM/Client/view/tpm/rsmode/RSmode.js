@@ -96,6 +96,14 @@
                 tooltip: 'Decline'
             },
             {
+                itemId: 'calculatebutton',
+                action: 'Calculate',
+                disabled: true,
+                glyph: 0xF0EC,
+                text: 'Update to draft',
+                tooltip: 'Update to draft'
+            },
+            {
                 itemId: 'deletedbutton',
                 resource: 'Deleted{0}',
                 action: 'Get{0}',

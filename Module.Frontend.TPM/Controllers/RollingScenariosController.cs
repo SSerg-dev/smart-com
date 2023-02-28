@@ -22,6 +22,9 @@ using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using System.Data.Entity.Infrastructure;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Enum;
+using Looper.Core;
+using Looper.Parameters;
+using Persist;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -113,6 +116,59 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+            }
+        }
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult Calculate(int rsId)
+        {
+            try
+            {
+                UserInfo user = authorizationManager.GetCurrentUser();
+                Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+                RoleInfo role = authorizationManager.GetCurrentRole();
+                Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+                if (role.SystemName == "CMManager" || role.SystemName == "Administrator" || role.SystemName == "FunctionalExpert" ||
+                    role.SystemName == "KeyAccountManager" || role.SystemName == "CustomerMarketing" || role.SystemName == "SupportAdministrator")
+                {
+                    HandlerData handlerData = new HandlerData();
+                    HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("RsId", rsId, handlerData, visible: false, throwIfNotExists: false);
+
+                    using (DatabaseContext context = new DatabaseContext())
+                    {
+                        LoopHandler handler = new LoopHandler()
+                        {
+                            Id = Guid.NewGuid(),
+                            ConfigurationName = "PROCESSING",
+                            Description = "Update to draft",
+                            Name = "Module.Host.TPM.Handlers.ProcessMLCalendarHandler",
+                            ExecutionPeriod = null,
+                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                            LastExecutionDate = null,
+                            NextExecutionDate = null,
+                            ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                            UserId = userId,
+                            RoleId = roleId
+                        };
+                        handler.SetParameterData(handlerData);
+                        context.LoopHandlers.Add(handler);
+                        context.SaveChanges();
+                    }
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+                }
+                else
+                {
+                    return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+                }
+            }
+            catch (Exception e)
+            {
+                return Content<string>(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 

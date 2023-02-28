@@ -3434,6 +3434,10 @@
     <Compile Include="Migrations\202302201219586_Remove_Promostatus_RS.designer.cs">
       <DependentUpon>202302201219586_Remove_Promostatus_RS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302280812091_Add_Calculate_RS_AP.cs" />
+    <Compile Include="Migrations\202302280812091_Add_Calculate_RS_AP.designer.cs">
+      <DependentUpon>202302280812091_Add_Calculate_RS_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6461,6 +6465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302201219586_Remove_Promostatus_RS.resx">
       <DependentUpon>202302201219586_Remove_Promostatus_RS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302280812091_Add_Calculate_RS_AP.resx">
+      <DependentUpon>202302280812091_Add_Calculate_RS_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
