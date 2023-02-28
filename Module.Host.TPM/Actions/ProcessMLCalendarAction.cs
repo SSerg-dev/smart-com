@@ -1,6 +1,7 @@
 ﻿using Core.Security.Models;
 using Core.Settings;
 using Interfaces.Implementation.Action;
+using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Enum;
@@ -75,7 +76,6 @@ namespace Module.Host.TPM.Actions
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
                 List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSetting.Delimiter);
                 List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
-                List<Promo> promoes = new List<Promo>();
                 foreach (int inputMlId in inputMlIds)
                 {
                     InputML firstInputML = inputMLs.FirstOrDefault(g => g.PromoId == inputMlId);
@@ -156,8 +156,11 @@ namespace Module.Host.TPM.Actions
                 buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                 buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
                 context.SaveChanges();
-
-            }
+                if (rollingScenario.Promoes.Count > 0)
+                {
+                    RSmodeHelper.AddDisableRSPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
+                }
+            }            
         }
     }
 }

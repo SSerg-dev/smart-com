@@ -42,9 +42,10 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
         public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
         {
+            List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && g.RSstatus != StateNames.APPROVED);
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
 
             StartEndModel startEndModel = GetRSPeriod(Context);
             RollingScenario rollingScenario = new RollingScenario();
@@ -511,13 +512,16 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                                 correction.DeletedDate = DateTimeOffset.Now;
                                 correction.Disabled = true;
                             }
-                            PromoProductPriceIncrease promoProductPriceIncrease = promoProduct.PromoProductPriceIncreases.FirstOrDefault(f => !f.Disabled);
-                            promoProductPriceIncrease.DeletedDate = DateTimeOffset.Now;
-                            promoProductPriceIncrease.Disabled = true;
-                            foreach (var correction in promoProductPriceIncrease.ProductCorrectionPriceIncreases)
+                            if (promoProduct.PromoProductPriceIncreases != null)
                             {
-                                correction.DeletedDate = DateTimeOffset.Now;
-                                correction.Disabled = true;
+                                PromoProductPriceIncrease promoProductPriceIncrease = promoProduct.PromoProductPriceIncreases.FirstOrDefault(f => !f.Disabled);
+                                promoProductPriceIncrease.DeletedDate = DateTimeOffset.Now;
+                                promoProductPriceIncrease.Disabled = true;
+                                foreach (var correction in promoProductPriceIncrease.ProductCorrectionPriceIncreases)
+                                {
+                                    correction.DeletedDate = DateTimeOffset.Now;
+                                    correction.Disabled = true;
+                                }
                             }
                         }
                     }

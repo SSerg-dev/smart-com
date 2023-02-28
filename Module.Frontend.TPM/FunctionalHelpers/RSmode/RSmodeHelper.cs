@@ -122,11 +122,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 
             Context.Set<Promo>().Add(promoRS);
             Context.SaveChanges();
-            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRS.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
+            if (promoRS.PromoPriceIncrease != null)
             {
-                PromoProduct promoProduct = promoRS.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
-                promoProductPriceIncrease.PromoProductId = promoProduct.Id;
-            }
+                foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRS.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
+                {
+                    PromoProduct promoProduct = promoRS.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
+                    promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                }
+            }            
             Context.SaveChanges();
             RSPeriodHelper.CreateRSPeriod(promoRS, Context);
             return promoRS;
@@ -455,6 +458,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             RSPeriodHelper.CreateRSPeriod(incrementalPromosRS.Select(g => g.Promo).ToList(), Context);
             return incrementalPromosRS;
         }
-
+        public static void AddDisableRSPromoFromMLPeriod(List<Promo> promos, DatabaseContext Context)
+        {
+            DateTimeOffset? startPeriod = promos.Select(g => g.DispatchesStart).Min();
+            DateTimeOffset? endPeriod = promos.Select(g => g.EndDate).Min();
+            var client = promos.FirstOrDefault().ClientTreeId;
+            List<Promo> promosToDeleteRS = Context.Set<Promo>().Where(g => g.ClientTreeId == client && g.DispatchesStart > startPeriod && g.EndDate < endPeriod).ToList();
+            EditToPromoRS(Context, promosToDeleteRS, true, DateTimeOffset.Now);
+        }
     }
 }
