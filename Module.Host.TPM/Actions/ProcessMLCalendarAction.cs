@@ -8,6 +8,7 @@ using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist;
 using Persist.Model.Interface;
 using System;
@@ -27,12 +28,14 @@ namespace Module.Host.TPM.Actions
         private Guid RoleId { get; }
         public string HandlerStatus { get; private set; }
         public int RsId { get; set; }
-        public ProcessMLCalendarAction(LogWriter Logger, Guid userId, Guid roleId, int rsId)
+        public Guid HandlerId { get; set; }
+        public ProcessMLCalendarAction(Guid handlerId, LogWriter Logger, Guid userId, Guid roleId, int rsId)
         {
             HandlerLogger = Logger;
             UserId = userId;
             RoleId = roleId;
             RsId = rsId;
+            HandlerId = handlerId;
         }
 
         public override void Execute()
@@ -114,7 +117,7 @@ namespace Module.Host.TPM.Actions
                     }
                     else
                     {
-                        
+
                         List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
                         List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
                         promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
@@ -137,7 +140,7 @@ namespace Module.Host.TPM.Actions
                         promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
 
                         promo.MLPromoId = buffer.FileName + "_" + firstInputML.PromoId;
-
+                        HandlerLogger.Write(true, string.Format("Promo {0} processing has started", promo.MLPromoId), "Message");
                         promo = PromoHelper.SavePromo(promo, context, user, role);
                         rollingScenario.Promoes.Add(promo);
                     }
@@ -146,21 +149,42 @@ namespace Module.Host.TPM.Actions
                 {
                     rollingScenario.RSstatus = RSstateNames.CALCULATING;
                     rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
+                    HandlerLogger.Write(true, string.Format("RS period: {0}. {1} added promo", rollingScenario.RSId, rollingScenario.Promoes.Count), "Message");
                 }
                 else
                 {
                     rollingScenario.RSstatus = RSstateNames.WAITING;
                     rollingScenario.TaskStatus = TaskStatusNames.ERROR;
-                    HandlerLogger.Write(true, string.Format("RS period: {0}", rollingScenario.Id), "Message");
+                    HandlerLogger.Write(true, string.Format("RS period: {0}. No added promo", rollingScenario.RSId), "Message");
                 }
                 buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                 buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
                 context.SaveChanges();
                 if (rollingScenario.Promoes.Count > 0)
                 {
-                    RSmodeHelper.AddDisableRSPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
+                    MLTaskModel mLTask = new MLTaskModel
+                    {
+                        HandlerId = HandlerId,
+                        ClientId = (int)rollingScenario.Promoes.FirstOrDefault().ClientTreeId
+                    };                    
+                    string numbers = RSmodeHelper.AddDisableRSPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
+                    if (!string.IsNullOrEmpty(numbers))
+                    {
+                        HandlerLogger.Write(true, string.Format("RS period: {0}. {1} mark to delete RS promo", rollingScenario.RSId, numbers), "Message");
+                    }                    
+                    CloudTask cloudTask = new CloudTask
+                    {
+                        PipeLine = "ProcessMLCalendarHandler",
+                        CreateDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now),
+                        Status = Looper.Consts.StatusName.WAITING,
+                        Model = mLTask.GetType().Name,
+                        ModelJson = JsonConvert.SerializeObject(mLTask)
+                    };
+                    context.Set<CloudTask>().Add(cloudTask);
+                    context.SaveChanges();
+
                 }
-            }            
+            }
         }
     }
 }

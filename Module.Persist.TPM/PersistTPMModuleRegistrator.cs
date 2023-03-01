@@ -175,6 +175,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>().ToTable("PromoProductCorrectionPriceIncreaseView");
 
             modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
+            modelBuilder.Entity<CloudTask>();
         }
 
 

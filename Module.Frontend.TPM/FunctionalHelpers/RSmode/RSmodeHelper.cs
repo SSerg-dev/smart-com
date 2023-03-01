@@ -458,13 +458,15 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             RSPeriodHelper.CreateRSPeriod(incrementalPromosRS.Select(g => g.Promo).ToList(), Context);
             return incrementalPromosRS;
         }
-        public static void AddDisableRSPromoFromMLPeriod(List<Promo> promos, DatabaseContext Context)
+        public static string AddDisableRSPromoFromMLPeriod(List<Promo> promos, DatabaseContext Context)
         {
             DateTimeOffset? startPeriod = promos.Select(g => g.DispatchesStart).Min();
             DateTimeOffset? endPeriod = promos.Select(g => g.EndDate).Min();
             var client = promos.FirstOrDefault().ClientTreeId;
-            List<Promo> promosToDeleteRS = Context.Set<Promo>().Where(g => g.ClientTreeId == client && g.DispatchesStart > startPeriod && g.EndDate < endPeriod).ToList();
+            List<Promo> promosToDeleteRS = Context.Set<Promo>().Where(g => g.ClientTreeId == client && g.DispatchesStart > startPeriod && g.EndDate < endPeriod && string.IsNullOrEmpty(g.MLPromoId)).ToList();
+            string numbers = string.Join(",", promosToDeleteRS.Select(g=>g.Number).ToList());
             EditToPromoRS(Context, promosToDeleteRS, true, DateTimeOffset.Now);
+            return numbers;
         }
     }
 }

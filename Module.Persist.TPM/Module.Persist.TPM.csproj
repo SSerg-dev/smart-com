@@ -3438,6 +3438,10 @@
     <Compile Include="Migrations\202302280812091_Add_Calculate_RS_AP.designer.cs">
       <DependentUpon>202302280812091_Add_Calculate_RS_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303011226584_Add_CloudTask.cs" />
+    <Compile Include="Migrations\202303011226584_Add_CloudTask.designer.cs">
+      <DependentUpon>202303011226584_Add_CloudTask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3581,11 +3585,13 @@
     <Compile Include="Model\SimpleModel\InputML.cs" />
     <Compile Include="Model\SimpleModel\MARS_UNIVERSAL_PETCARE_MATERIALS.cs" />
     <Compile Include="Model\SimpleModel\MarsUniversalPetcareCustomers.cs" />
+    <Compile Include="Model\SimpleModel\MLTaskModel.cs" />
     <Compile Include="Model\SimpleModel\PlanUplift.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoRATIShopper.cs" />
     <Compile Include="Model\SimpleModel\SimplePromoCOGSTI.cs" />
     <Compile Include="Model\SimpleModel\StartEndModel.cs" />
     <Compile Include="Model\SimpleModel\YEAR_END_ESTIMATE_FDM.cs" />
+    <Compile Include="Model\TPM\CloudTask.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
@@ -6468,6 +6474,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302280812091_Add_Calculate_RS_AP.resx">
       <DependentUpon>202302280812091_Add_Calculate_RS_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303011226584_Add_CloudTask.resx">
+      <DependentUpon>202303011226584_Add_CloudTask.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
