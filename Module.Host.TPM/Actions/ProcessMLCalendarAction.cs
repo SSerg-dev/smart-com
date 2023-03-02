@@ -159,6 +159,7 @@ namespace Module.Host.TPM.Actions
                 }
                 buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                 buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
+                rollingScenario.HandlerId = HandlerId;
                 context.SaveChanges();
                 if (rollingScenario.Promoes.Count > 0)
                 {

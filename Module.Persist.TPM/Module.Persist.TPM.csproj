@@ -3442,6 +3442,10 @@
     <Compile Include="Migrations\202303011226584_Add_CloudTask.designer.cs">
       <DependentUpon>202303011226584_Add_CloudTask.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303021135424_Add_HandlerId_RS.cs" />
+    <Compile Include="Migrations\202303021135424_Add_HandlerId_RS.designer.cs">
+      <DependentUpon>202303021135424_Add_HandlerId_RS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6477,6 +6481,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303011226584_Add_CloudTask.resx">
       <DependentUpon>202303011226584_Add_CloudTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303021135424_Add_HandlerId_RS.resx">
+      <DependentUpon>202303021135424_Add_HandlerId_RS.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

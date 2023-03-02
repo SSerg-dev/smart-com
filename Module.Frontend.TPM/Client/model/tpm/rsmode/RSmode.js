@@ -16,6 +16,7 @@
         },
         { name: 'IsMLmodel', type: 'boolean', hidden: false, isDefault: true },
         { name: 'TaskStatus', type: 'string', hidden: false, isDefault: true },
+        { name: 'HandlerId', hidden: true}
     ],
     proxy: {
         type: 'breeze',
