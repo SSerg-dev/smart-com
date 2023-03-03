@@ -145,7 +145,7 @@ namespace Module.Frontend.TPM.Controllers
                         {
                             Id = Guid.NewGuid(),
                             ConfigurationName = "PROCESSING",
-                            Description = "Update to draft",
+                            Description = "Preparing scenario for calculation",
                             Name = "Module.Host.TPM.Handlers.ProcessMLCalendarHandler",
                             ExecutionPeriod = null,
                             CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -238,7 +238,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                return InternalServerError(new Exception("Only Key Account Manager send to approval!"));
+                return InternalServerError(new Exception("Only Customer Marketing Manager approve!"));
             }
         }
 
@@ -270,7 +270,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    if (!RS.IsSendForApproval && !RS.Disabled)
+                    if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true })); //статусы инвертированы для.setDisabled(false) 
                     }
@@ -299,7 +299,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
+                    if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus))) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
                     {
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true }));
                     }
@@ -327,7 +327,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
-                    if (!RS.IsSendForApproval && !RS.Disabled)
+                    if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true }));
                     }
