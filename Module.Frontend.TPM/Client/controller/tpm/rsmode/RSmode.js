@@ -53,6 +53,9 @@
                 'rsmode #calculatebutton': {
                     click: this.onCalculateButtonClick
                 },
+                'rsmode #showlogbutton': {
+                    click: this.onShowLogButtonClick
+                },
                 'rsmode #updatebutton': {
                     click: this.onUpdateButtonClick
                 },
@@ -181,6 +184,23 @@
     },
     onMassApproveButtonClick: function (button) {
         debugger;
+    },
+    onShowLogButtonClick: function (button) {
+        var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
+        var selected = grid.getSelectionModel().getSelection()[0];
+
+        if (!Ext.isEmpty(selected.data.HandlerId)) {
+            var calculatingInfoWindow = Ext.create('App.view.tpm.promocalculating.CalculatingInfoWindow');
+            calculatingInfoWindow.on({
+                beforeclose: function() {
+                    if ($.connection.tasksLogHub)
+                        requestHub($.connection.tasksLogHub.server.unsubscribeLog);
+                }
+            });
+            
+            calculatingInfoWindow.show();
+            requestHub($.connection.tasksLogHub.server.subscribeLog, [selected.data.HandlerId]);
+        }
     },
     onCalculateButtonClick: function(button) {
         var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];

@@ -104,6 +104,13 @@
                 tooltip: 'Update to draft'
             },
             {
+                itemId: 'showlogbutton',
+                disabled: false,
+                glyph: 0xF262,
+                text: 'Show Log',
+                tooltip: 'Show Log'
+            },
+            {
                 itemId: 'deletedbutton',
                 resource: 'Deleted{0}',
                 action: 'Get{0}',
