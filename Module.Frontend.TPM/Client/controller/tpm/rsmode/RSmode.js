@@ -215,7 +215,7 @@
                 if (data.success) {
                     grid.getStore().load();
                     grid.setLoading(false);
-                    App.Notify.pushInfo('Export task created successfully');
+                    App.Notify.pushInfo('Calculating task created successfully');
                     App.System.openUserTasksPanel();
                 }
                 else {
@@ -269,6 +269,7 @@
                     Ext.ComponentQuery.query('button[itemId=approvebutton]')[0].setDisabled(data.Approve);
                     Ext.ComponentQuery.query('button[itemId=declinebutton]')[0].setDisabled(data.Decline);
                     Ext.ComponentQuery.query('button[itemId=calculatebutton]')[0].setDisabled(data.Calculate);
+                    Ext.ComponentQuery.query('button[itemId=showlogbutton]')[0].setDisabled(data.ShowLog);
                 }
             },
             error: function (data) {

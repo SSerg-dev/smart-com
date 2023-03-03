@@ -261,22 +261,22 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
                 else
                 {
                     if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true })); //статусы инвертированы для.setDisabled(false) 
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) })); //статусы инвертированы для.setDisabled(false) 
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
 
@@ -290,22 +290,22 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
                 else
                 {
                     if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus))) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
             }
@@ -318,26 +318,26 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
                 else
                 {
                     if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                     else if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
                     }
                 }
 
