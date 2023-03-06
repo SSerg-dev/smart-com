@@ -252,92 +252,90 @@ namespace Module.Frontend.TPM.Controllers
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id ?? Guid.Empty);
 
+            RollingScenario RS = Context.Set<RollingScenario>()
+                .AsNoTracking()
+                .FirstOrDefault(g => g.Id == rollingScenarioId);
+
+            bool isApprovalDisabled = RS.RSstatus != RSstateNames.DRAFT;
+            bool isShowLogDisabled = RS.HandlerId == null;
+
             if (role.SystemName == "KeyAccountManager")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .AsNoTracking()
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
                 if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = false, ShowLog = isShowLogDisabled }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
                 else
                 {
                     if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) })); //статусы инвертированы для.setDisabled(false) 
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled })); //статусы инвертированы для.setDisabled(false) 
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
 
             }
             if (role.SystemName == "CMManager")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .AsNoTracking()
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
                 if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = false, ShowLog = isShowLogDisabled }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
                 else
                 {
                     if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus))) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = false, Decline = false, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
             }
             if (role.SystemName == "Administrator")
             {
-                RollingScenario RS = Context.Set<RollingScenario>()
-                    .AsNoTracking()
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
                 if (RS.RSstatus == RSstateNames.WAITING || RS.RSstatus == RSstateNames.CALCULATING)
                 {
                     if (RS.RSstatus == RSstateNames.WAITING && string.IsNullOrEmpty(RS.TaskStatus))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = false, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = false, ShowLog = isShowLogDisabled }));
                     }
                     if (RS.RSstatus == RSstateNames.CALCULATING)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
                 else
                 {
                     if (!RS.IsSendForApproval && !RS.Disabled && (RS.TaskStatus == TaskStatusNames.COMPLETE || string.IsNullOrEmpty(RS.TaskStatus)))
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = false, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                     else if (RS.IsSendForApproval && !RS.IsCMManagerApproved && !RS.Disabled) // TODO выяснить как определяется, нужно ли пересчитывать ночью промо
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = false, Decline = false, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = false, Decline = false, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                     else
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = true, Approve = true, Decline = true, Calculate = true, ShowLog = (RS.HandlerId == null) }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, OnApproval = isApprovalDisabled, Approve = true, Decline = true, Calculate = true, ShowLog = isShowLogDisabled }));
                     }
                 }
 
