@@ -63,3 +63,8 @@ webserver:
       yandex.cloud/load-balancer-type: internal
       yandex.cloud/subnet-id: "${subnetId}"
     type: LoadBalancer
+env: 
+  - name: "AIRFLOW__SECRETS__BACKEND"
+    value : "airflow.providers.hashicorp.secrets.vault.VaultBackend"
+  - name: "AIRFLOW__SECRETS__BACKEND_KWARGS"
+    value : '{"connections_path": "connections", "variables_path": "variables", "config_path": null, "url": "http://vault.vault.svc:8200", "auth_type": "kubernetes", "kubernetes_role":"airflow","kv_engine_version": 2}'

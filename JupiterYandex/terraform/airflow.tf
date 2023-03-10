@@ -46,10 +46,10 @@ resource "helm_release" "airflow-logs-pvc" {
   }
 }
 
-resource "helm_release" "airflow-pvc" {
+resource "helm_release" "airflow-dags-pvc" {
   namespace        = "airflow"
   create_namespace = true
-  name             = "airflow-pvc"
+  name             = "airflow-dags-pvc"
   chart            = "./pvc/helm"
   wait             = true
   depends_on = [
@@ -57,11 +57,11 @@ resource "helm_release" "airflow-pvc" {
   ]
   set {
     name  = "volumeName"
-    value = var.airflow-pv
+    value = var.airflow-dags-pv
   }
   set {
     name  = "pvcName"
-    value = var.airflow-pvc
+    value = var.airflow-dags-pvc
   }
   set {
     name  = "bucket"
@@ -87,7 +87,7 @@ resource "helm_release" "airflow" {
   timeout    = 600
   depends_on = [
   helm_release.airflow-logs-pvc,
-  helm_release.airflow-pvc,
+  helm_release.airflow-dags-pvc,
   null_resource.vault-policy
   ]
   values = [
@@ -95,8 +95,8 @@ resource "helm_release" "airflow" {
         subnetId = yandex_vpc_subnet.subnet.id
         image = var.airflow-image
         tag = var.airflow-tag
-        pvName = var.airflow-pv
-        pvcName = var.airflow-pvc
+        pvName = var.airflow-dags-pv
+        pvcName = var.airflow-dags-pvc
         })
   ]
 }

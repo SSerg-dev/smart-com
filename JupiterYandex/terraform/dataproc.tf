@@ -83,7 +83,7 @@ resource "yandex_dataproc_cluster" "dataproc" {
         disk_size          = var.dataproc.disk_data
       }
       subnet_id   = "${yandex_vpc_subnet.subnet.id}"
-      hosts_count = 1
+      hosts_count = 3
     }
     subcluster_spec {
       name = "compute"

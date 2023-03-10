@@ -137,11 +137,11 @@ variable "airflow-tag" {
     description = "Airflow image tag"
 }
 
-variable "airflow-pv" {
+variable "airflow-dags-pv" {
     description = "Airflow volume name in k8s"
 }
 
-variable "airflow-pvc" {
+variable "airflow-dags-pvc" {
     description = "Airflow volume claim name in k8s"
 }
 
@@ -166,3 +166,16 @@ variable "kafka" {
         disk = number
     })
 }
+
+# variable "kafka-proxy" {
+#     description = "Kafka Proxy VM"
+#     type = object({
+#         name = string
+#         platform_id = string
+#         cpu = number
+#         cpu_fraction = number
+#         memory = number
+#         disk = number
+#         ssh-key = string
+#     })
+# }

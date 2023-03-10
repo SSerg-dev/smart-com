@@ -60,8 +60,8 @@ dataproc = {
 airflow-sa-name = "jupiter-app-dev-airflow-sa"
 airflow-image = "cr.yandex/crp82nk4hju0v8d8r6pt/airflow"
 airflow-tag = "airflow-jupiter-dev"
-airflow-pv = "airflow-source-code"
-airflow-pvc = "airflow-source-code-pvc"
+airflow-dags-pv = "airflow-dags"
+airflow-dags-pvc = "airflow-dags-pvc"
 
 kafka = {
     name = "jupiter-app-dev-kafka"
@@ -69,3 +69,13 @@ kafka = {
     version = "3.0"
     disk = 32
 }
+
+# kafka-proxy = {
+#     name = "jupiter-app-dev-kafka-proxy-vm"
+#     platform_id = "standard-v3"
+#     cpu = 2
+#     cpu_fraction = 20
+#     memory = 2
+#     disk = 25
+#     ssh-key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhs734/KlEdJyOl6I2EmzvLDOdTrnrMuj7LTIwQSL5RjG+HEVr6yCBCeWRrNkBU2Lp2IdsN/FXtm4mZjNcezfhyJ+zcZCrgSyKYBpczXd22s54mXdNjjJ9nm1Xzzj9l7FyuZIFVb3Y5kcBqt6+XK3XQf46pEdLZqW3nUcFZPfbBnysKcgfLvQtFsmFSZjolbApH9B+6C+oi4y3Ls/YKwBTE+JkGy/MRaJkT9eyYzmAbQeretwHCsl83RwD90kNtIN9bidgdiA9R1H/V58l0376MUqmZHjjhMLgkezDLfpPM3EK9LSdH8mmt4198iYOkn24OfdoofwB3LGAUsVXAxy3 smartadmin"
+# }
