@@ -74,6 +74,9 @@ spec:
           operator: Exists
         - key: CriticalAddonsOnly
           operator: Exists
+        - operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
         {{- with .Values.tolerations.controller }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

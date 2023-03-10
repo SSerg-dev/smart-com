@@ -1,12 +1,40 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.volumeName }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: {{ .Values.size }}
+  csi:
+    driver: ru.yandex.s3.csi
+    volumeHandle: {{ .Values.bucket }}
+    controllerPublishSecretRef:
+      name: csi-s3-secret
+      namespace: {{ .Values.namespace }}
+    nodePublishSecretRef:
+      name: csi-s3-secret
+      namespace: {{ .Values.namespace }}
+    nodeStageSecretRef:
+      name: csi-s3-secret
+      namespace:  {{ .Values.namespace }}
+    volumeAttributes:
+      capacity: {{ .Values.size }}
+      mounter: geesefs
+      options: "--memory-limit=1000 --dir-mode=0777 --file-mode=0666 --uid=1001"
+    volumeHandle: "{{ .Values.bucket }}/{{ .Values.volumeName }}"
+  storageClassName: csi-s3
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata: 
-  name: {{ .Values.name }}
-  namespace: airflow
+  name: {{ .Values.pvcName }}
 spec:
   accessModes:
   - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.size }}
   storageClassName: "csi-s3"
+  volumeName: {{ .Values.volumeName }}

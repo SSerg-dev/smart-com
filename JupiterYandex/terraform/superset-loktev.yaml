@@ -1,6 +1,6 @@
-# image:
-#   repository: apache/superset
-  # tag: 326b6e8088f6b401fd668a2c0c26179c763f69ce
+image:
+  repository: apache/superset
+  tag: 326b6e8088f6b401fd668a2c0c26179c763f69ce
 supersetWorker:
   replicaCount: 4
   
@@ -55,12 +55,3 @@ configOverrides:
   # #!/bin/bash
   # pip install PyHive==0.6.5 &&\
   # if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
-
-service:
-  type: LoadBalancer
-  annotations: 
-    yandex.cloud/load-balancer-type: internal
-    yandex.cloud/subnet-id: "${subnetId}"
-  # nodePort:
-  # # -- (int)
-  # http: nil

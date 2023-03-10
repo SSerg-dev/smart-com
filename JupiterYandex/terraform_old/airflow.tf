@@ -15,34 +15,28 @@ resource "yandex_iam_service_account_static_access_key" "airflow-sa-key" {
   service_account_id = yandex_iam_service_account.airflow-sa.id
 }
 
-resource "helm_release" "airflow-logs-pvc" {
+resource "helm_release" "airflow-s3-storageClass" {
   namespace        = "airflow"
   create_namespace = true
-  name             = "airflow-logs-pvc"
-  chart            = "./pvc/helm"
+  name             = "csi-s3"
+  #repository       = "https://github.com/yandex-cloud/k8s-csi-s3"
+  #chart            = "csi-s3"
+  chart            = "./s3/deploy/helm"
   wait             = true
   depends_on = [
-  helm_release.s3-storageClass
+    yandex_kubernetes_node_group.k8s-nodes
   ]
   set {
-    name  = "volumeName"
-    value = "airflow-logs"
+    name = "secret.accessKey"
+    value = yandex_iam_service_account_static_access_key.airflow-sa-key.access_key
+  }  
+  set {  
+    name = "secret.secretKey"
+    value = yandex_iam_service_account_static_access_key.airflow-sa-key.secret_key
   }
-  set {
-    name  = "pvcName"
-    value = "airflow-logs-pvc"
-  }
-  set {
-    name  = "bucket"
-    value = yandex_storage_bucket.bucket.bucket
-  }
-  set {
-    name  = "namespace"
-    value = "airflow"
-  }
-  set {
-    name  = "size"
-    value = "10Gi"
+  set {  
+    name = "storageClass.singleBucket"
+    value = var.bucket-name
   }
 }
 
@@ -53,27 +47,11 @@ resource "helm_release" "airflow-pvc" {
   chart            = "./pvc/helm"
   wait             = true
   depends_on = [
-  helm_release.s3-storageClass
+  helm_release.airflow-s3-storageClass
   ]
   set {
-    name  = "volumeName"
-    value = var.airflow-pv
-  }
-  set {
-    name  = "pvcName"
-    value = var.airflow-pvc
-  }
-  set {
-    name  = "bucket"
-    value = yandex_storage_bucket.bucket.bucket
-  }
-  set {
-    name  = "namespace"
-    value = "airflow"
-  }
-  set {
-    name  = "size"
-    value = "5Gi"
+    name  = "name"
+    value = "airflow-source-code"
   }
 }
 
@@ -86,17 +64,17 @@ resource "helm_release" "airflow" {
   wait             = false
   timeout    = 600
   depends_on = [
-  helm_release.airflow-logs-pvc,
   helm_release.airflow-pvc,
-  null_resource.vault-policy
+  helm_release.vault
   ]
   values = [
     templatefile("airflow-values.yaml", {
         subnetId = yandex_vpc_subnet.subnet.id
-        image = var.airflow-image
-        tag = var.airflow-tag
-        pvName = var.airflow-pv
-        pvcName = var.airflow-pvc
+        airflowRepoPath = var.airflowRepoPath
         })
   ]
+  set {
+    name  = "airflow.dbMigrations.runAsJob"
+    value = "true"
+  }
 }

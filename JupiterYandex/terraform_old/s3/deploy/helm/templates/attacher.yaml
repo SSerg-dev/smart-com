@@ -77,10 +77,8 @@ spec:
     spec:
       serviceAccount: csi-attacher-sa
       tolerations:
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-        - key: CriticalAddonsOnly
-          operator: Exists
+      - key: node-role.kubernetes.io/master
+        operator: "Exists"
       containers:
         - name: csi-attacher
           image: {{ .Values.images.attacher }}

@@ -3,7 +3,7 @@ resource "yandex_iam_service_account" "dataproc-sa" {
   folder_id = yandex_resourcemanager_folder.folder.id
 }
 
-resource "yandex_resourcemanager_folder_iam_binding" "dataproc-sa-agent" {
+resource "yandex_resourcemanager_folder_iam_binding" "dataproc-agent-binding" {
   folder_id = yandex_resourcemanager_folder.folder.id
   role    = "mdb.dataproc.agent"
   members = [
@@ -11,25 +11,9 @@ resource "yandex_resourcemanager_folder_iam_binding" "dataproc-sa-agent" {
   ]
 }
 
-resource "yandex_resourcemanager_folder_iam_binding" "dataproc-sa-editor" {
+resource "yandex_resourcemanager_folder_iam_binding" "bucket-creator-binding" {
   folder_id = yandex_resourcemanager_folder.folder.id
   role    = "editor"
-  members = [
-    "serviceAccount:${yandex_iam_service_account.dataproc-sa.id}"
-  ]
-}
-
-resource "yandex_resourcemanager_folder_iam_binding" "dataproc-sa-vpc-user" {
-  folder_id = data.yandex_resourcemanager_folder.folder_net.id
-  role    = "vpc.user"
-  members = [
-    "serviceAccount:${yandex_iam_service_account.dataproc-sa.id}"
-  ]
-}
-
-resource "yandex_resourcemanager_folder_iam_binding" "dataproc-sa-dns-editor" {
-  folder_id = data.yandex_resourcemanager_folder.folder_net.id
-  role    = "dns.editor"
   members = [
     "serviceAccount:${yandex_iam_service_account.dataproc-sa.id}"
   ]
@@ -39,13 +23,22 @@ resource "yandex_iam_service_account_static_access_key" "dataproc-sa-key" {
   service_account_id = yandex_iam_service_account.dataproc-sa.id
 }
 
+resource "yandex_storage_bucket" "bucket" {
+  depends_on = [
+    yandex_resourcemanager_folder_iam_binding.bucket-creator-binding
+  ]
+  bucket     = var.bucket-name
+  access_key = yandex_iam_service_account_static_access_key.dataproc-sa-key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.dataproc-sa-key.secret_key
+}
+
 resource "yandex_dataproc_cluster" "dataproc" {
   folder_id           = yandex_resourcemanager_folder.folder.id
   bucket              = var.bucket-name
   name                = var.dataproc.name
   service_account_id  = yandex_iam_service_account.dataproc-sa.id
   zone_id             = var.zone
-  # deletion_protection = false
+  deletion_protection = true
   ui_proxy = true
   depends_on = [
     yandex_storage_bucket.bucket
@@ -60,7 +53,7 @@ resource "yandex_dataproc_cluster" "dataproc" {
          "conda:python-hdfs" = "2.7.0"
       }
       ssh_public_keys = [
-        var.dataproc.ssh-key
+        file("./id_rsa.pub")
       ]
     }
     subcluster_spec {
