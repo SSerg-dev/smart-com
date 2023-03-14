@@ -77,9 +77,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 promo.PlanPromoPostPromoEffectVolumeW2 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW2 / 100;
                                 promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
                                 // PriceIncrease
-                                var PlanPromoPostPromoEffectLSVW1PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
-                                var PlanPromoPostPromoEffectLSVW2PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
-                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = PlanPromoPostPromoEffectLSVW1PI + PlanPromoPostPromoEffectLSVW2PI;
+                                if (promo.PromoPriceIncrease != null)
+                                {
+                                    var PlanPromoPostPromoEffectLSVW1PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
+                                    var PlanPromoPostPromoEffectLSVW2PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
+                                    promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = PlanPromoPostPromoEffectLSVW1PI + PlanPromoPostPromoEffectLSVW2PI;
+                                }
                             }
 
                             promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);
@@ -98,7 +101,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             promo.PlanPromoPostPromoEffectVolumeW2 = 0;
                             promo.PlanPromoPostPromoEffectVolume = 0;
                             // PriceIncrease
-                            promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = 0;
+                            if (promo.PromoPriceIncrease != null)
+                            {
+                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = 0;
+                            }
                         }
 
                         promo.PlanPromoNetLSV = (promo.PlanPromoBaselineLSV ?? 0) + (promo.PlanPromoNetIncrementalLSV ?? 0);
