@@ -4,7 +4,6 @@ resource "yandex_mdb_kafka_cluster" "kafka" {
   environment = "PRODUCTION"
   network_id  = data.yandex_vpc_network.network.id
   subnet_ids  = ["${yandex_vpc_subnet.subnet.id}"]
-
   config {
     version          = var.kafka.version
     brokers_count    = 1
@@ -26,13 +25,13 @@ resource "yandex_mdb_kafka_cluster" "kafka" {
     day  = "SUN"
     hour = "1"
   }
-#   user {
-#     name     = var.kafka.user
-#     password = var.kafka.password
-#     permission {
-#       topic_name = "ENBL_IN"
-#       role = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
-#     }
+  user {
+    name     = var.kafka.user
+    password = var.kafka.pass
+    # permission {
+    #   topic_name = "ENBL_IN"
+    #   role = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
+    }
 #     permission {
 #       topic_name = "YRLAM_IN"
 #       role = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]

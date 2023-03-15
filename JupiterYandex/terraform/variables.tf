@@ -164,18 +164,21 @@ variable "kafka" {
         preset_id = string
         version = string
         disk = number
+        user = string
+        pass = string
     })
 }
 
-# variable "kafka-proxy" {
-#     description = "Kafka Proxy VM"
-#     type = object({
-#         name = string
-#         platform_id = string
-#         cpu = number
-#         cpu_fraction = number
-#         memory = number
-#         disk = number
-#         ssh-key = string
-#     })
-# }
+variable "kafka-proxy" {
+    description = "Kafka Proxy VM"
+    type = object({
+        name = string
+        platform_id = string
+        cpu = number
+        cpu_fraction = number
+        memory = number
+        disk = number
+        sa-name = string
+        image = string
+    })
+}
