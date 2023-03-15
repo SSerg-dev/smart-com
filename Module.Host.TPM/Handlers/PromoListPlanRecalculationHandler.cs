@@ -79,12 +79,13 @@ namespace Module.Host.TPM.Handlers
                 {
                     var activePromo = context.Set<Promo>().Where(x => !x.Disabled);
                     var promoIdsToRecalculate = promoesToRecalculate.Select(y => y.Id);
+                    var promoOldStatuses = promoesToRecalculate.Select(g => new { g.Id, g.PromoStatusId });
                     var query = activePromo.Where(x => promoIdsToRecalculate.Contains(x.Id));
                     var promoesList = query.ToList();
 
                     if (promoesList.Count > 0)
                     {
-                        foreach(var promo in promoesList)
+                        foreach (var promo in promoesList)
                         {
                             handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
                             handlerLogger.Write(true, "");
@@ -208,7 +209,11 @@ namespace Module.Host.TPM.Handlers
                                 logLine = String.Format("Plan parameters don't recalculate for promo in statuses: {0}", promoStatusesNotPlanRecalculateSetting);
                                 handlerLogger.Write(true, logLine, "Warning");
                             }
-                           
+                            // return status
+                            if (promoOldStatuses.Select(g=>g.Id).Contains(promo.Id))
+                            {
+                                promo.PromoStatusId = promoOldStatuses.FirstOrDefault(g => g.Id == promo.Id).PromoStatusId;                                
+                            }
                             //promo.Calculating = false;
                             context.SaveChanges();
                         }
