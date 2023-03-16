@@ -77,6 +77,10 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         {
                             RSPeriodHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
                         }
+                        if (inputMlClients.Count == 0)
+                        {
+                            handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}",  buffer.FileName), "Error");
+                        }
                     }
                     context.SaveChanges();
                 }
