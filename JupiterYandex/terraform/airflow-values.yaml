@@ -64,6 +64,8 @@ webserver:
       yandex.cloud/subnet-id: "${subnetId}"
     type: LoadBalancer
 env: 
+  - name: "CORE_CONF_fs_defaultFS"
+    value : ${dataprocUri}
   - name: "AIRFLOW__SECRETS__BACKEND"
     value : "airflow.providers.hashicorp.secrets.vault.VaultBackend"
   - name: "AIRFLOW__SECRETS__BACKEND_KWARGS"
