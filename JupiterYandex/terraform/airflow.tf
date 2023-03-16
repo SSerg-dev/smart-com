@@ -97,6 +97,7 @@ resource "helm_release" "airflow" {
         tag = var.airflow-tag
         pvName = var.airflow-dags-pv
         pvcName = var.airflow-dags-pvc
+        dataprocUri = "hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
         })
   ]
 }
