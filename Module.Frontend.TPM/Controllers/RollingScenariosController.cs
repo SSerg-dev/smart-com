@@ -25,6 +25,7 @@ using Module.Persist.TPM.Enum;
 using Looper.Core;
 using Looper.Parameters;
 using Persist;
+using Persist.Model.Settings;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -125,6 +126,13 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
+                Setting settingTime = Context.Set<Setting>().FirstOrDefault(g => g.Name == "ML_TIME_BLOCK");
+                List<DateTimeOffset> times = settingTime.Value.Split(';').Select(g => ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(g))).ToList();
+                DateTimeOffset TimeNow = TimeHelper.Now();
+                if (TimeNow < times[0] || times[1] < TimeNow)
+                {
+                    return InternalServerError(new Exception(string.Format("Scenario calculation can be started from {0} to {1}", times[0], times[1])));
+                }
                 UserInfo user = authorizationManager.GetCurrentUser();
                 Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
                 RoleInfo role = authorizationManager.GetCurrentRole();
