@@ -80,6 +80,8 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         if (inputMlClients.Count == 0)
                         {
                             handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}",  buffer.FileName), "Error");
+                            data.SetValue<bool>("HasErrors", true);
+                            logger.Error(new Exception(string.Format("Empty file or error format, filename: {0}", buffer.FileName)));
                         }
                     }
                     context.SaveChanges();
