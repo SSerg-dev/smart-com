@@ -82,7 +82,7 @@ namespace Module.Host.TPM.Handlers
                         context.SaveChanges();
                         logLine = String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers);
                         handlerLogger.Write(true, logLine, "Message");
-                        
+
                         double? promoSummPlanLSV = promoes.Any() ? promoes.Where(n => n.PlanPromoLSV.HasValue).Sum(n => n.PlanPromoLSV.Value) : 0;
                         double? closedBudgetBTL = closedPromoes.Any() ? closedPromoes.Where(n => n.ActualPromoBTL.HasValue).Sum(n => n.ActualPromoBTL.Value) : 0;
                         if (promoSummPlanLSV == null) promoSummPlanLSV = 0;
@@ -101,6 +101,7 @@ namespace Module.Host.TPM.Handlers
 
                             promo.PlanPromoBTL = Math.Round((BTL.PlanBTLTotal.Value - closedBudgetBTL.Value) * kPlan, 2, MidpointRounding.AwayFromZero);
                             promo.ActualPromoBTL = Math.Round((BTL.ActualBTLTotal.Value - closedBudgetBTL.Value) * kPlan, 2, MidpointRounding.AwayFromZero);
+                            context.SaveChanges();
                             string calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promo.Id, context);
 
                             if (calculateError != null)
@@ -108,10 +109,15 @@ namespace Module.Host.TPM.Handlers
                                 logLine = string.Format("Error when calculating the plan parameters Promo: {0}", calculateError);
                                 handlerLogger.Write(true, logLine, "Error");
                             }
-                            calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
-                            if (calculateError != null)
+                            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+                            if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
-                                logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
+                                calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                                if (calculateError != null)
+                                {
+                                    logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
+
+                                }
                                 handlerLogger.Write(true, logLine, "Error");
                             }
                             logLine = String.Format("Calculation of BTL params for promo № {0} completed.", promo.Number);
@@ -128,7 +134,7 @@ namespace Module.Host.TPM.Handlers
 
                             promo.PlanPromoBTL = 0;
                             promo.ActualPromoBTL = 0;
-
+                            context.SaveChanges();
                             string calculateError = PlanPromoParametersCalculation.CalculatePromoParameters(promo.Id, context);
 
                             if (calculateError != null)
@@ -136,13 +142,16 @@ namespace Module.Host.TPM.Handlers
                                 logLine = string.Format("Error when calculating the plan parameters Promo: {0}", calculateError);
                                 handlerLogger.Write(true, logLine, "Error");
                             }
-                            calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
-                            if (calculateError != null)
+                            var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
+                            if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
-                                logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
-                                handlerLogger.Write(true, logLine, "Error");
+                                calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                                if (calculateError != null)
+                                {
+                                    logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
+                                    handlerLogger.Write(true, logLine, "Error");
+                                }
                             }
-
                             logLine = String.Format("Reset of BTL params for unlinked promo № {0} completed.", promo.Number);
                             handlerLogger.Write(true, logLine, "Message");
 
