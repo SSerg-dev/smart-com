@@ -487,6 +487,9 @@
                     property: "IsInExchange", operation: "Equals", value: false
                 },
                 {
+                    property: "IsOnHold", operation: "Equals", value: false
+                },
+                {
                     operator: "or",
                     rules: [
                         {
@@ -531,6 +534,9 @@
                     property: "IsInExchange", operation: "Equals", value: false
                 },
                 {
+                    property: "IsOnHold", operation: "Equals", value: false
+                },
+                {
                     operator: "or",
                     rules: [
                         {
@@ -569,6 +575,9 @@
                     property: "IsInExchange", operation: "Equals", value: false
                 },
                 {
+                    property: "IsOnHold", operation: "Equals", value: false
+                },
+                {
                     operator: "or",
                     rules: [
                         {
@@ -601,6 +610,9 @@
                     property: "DispatchesStart", operation: "LessThan", value: date
                 },
                 {
+                    property: "IsOnHold", operation: "Equals", value: false
+                },
+                {
                     operator: "or",
                     rules: [
                         {
@@ -626,6 +638,46 @@
         };
 
         return filter;
+    },
+
+    getTimeCriticalKeyAccountManagerFilter: function () {
+        var date = new Date();
+        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+        date = Ext.Date.add(date, Ext.Date.HOUR, 48);
+        
+        return {
+            operator: "or",
+            rules: [{
+                operator: "and",
+                rules: [{
+                    property: "PromoStatusName", operation: "Equals", value: 'Draft(published)'
+                },
+                    {
+                        property: "StartDate", operation: "LessThan", value: date
+                    }
+                ]
+            },
+            {
+                operator: "and",
+                rules: [{
+                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                },
+                    {
+                        property: "DispatchesStart", operation: "LessThan", value: date
+                    }
+                ]
+            },
+            {
+                operator: "and",
+                rules: [{
+                    property: "PromoStatusName", operation: "Equals", value: 'Approved'
+                },
+                    {
+                        property: "StartDate", operation: "LessThan", value: date
+                    }
+                ]
+            }]
+        };
     },
 
     getOnApprovalGAFilterDP: function () {

@@ -845,7 +845,7 @@
         'Budget': 'Budget',
         'ROIHeader': 'ROIHeader',
         'UpliftHeader': 'UpliftHeader',
-        'Confirm Approval': 'Do you really want to approve the PROMO form?',
+        'Confirm Approval': 'GA, GA InExchange promo will not be considered.<br>Do you really want to approve the PROMO form?',
         'ConfirmSendForApproval': 'Do you really want send promoes for Approval?',
         'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
         'FailToSelectStatus': 'You can not select current status.',

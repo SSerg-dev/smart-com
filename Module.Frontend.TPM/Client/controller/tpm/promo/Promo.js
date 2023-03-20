@@ -399,6 +399,7 @@
         var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
         var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
         var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
+        var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
 
         var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
@@ -406,8 +407,9 @@
             !this.compareFilters(filter, onApprovalFilterCMM) &&
             !this.compareFilters(filter, onApprovalGAFilterDP) &&
             !this.compareFilters(filter, onApprovalGAFilterDF) &&
-            !this.compareFilters(filter, onApprovalGAFilterCMM) &&
-            !this.compareFilters(filter, onApprovalGAFilterGAM);
+            !this.compareFilters(filter, onApprovalGAFilterGAM) ||
+            this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
+            this.compareFilters(filter, onApprovalGAFilterCMM);
 
         maButton.setDisabled(isDisabled);
     },
@@ -5853,8 +5855,14 @@
 
         if (proxy.extraParams.canChangeStateOnly) {
             button.addCls('showEditablePromo-btn-active');
+            store.setFixedFilter('IsOnHold', {
+                property: 'IsOnHold',
+                operation: 'Equals',
+                value: false
+            });            
         } else {
             button.removeCls('showEditablePromo-btn-active');
+            store.removeFixedFilter('IsOnHold');
         }
     },
 

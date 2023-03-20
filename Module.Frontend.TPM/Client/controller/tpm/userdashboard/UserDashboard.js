@@ -50,43 +50,9 @@
         }
     },
     getTimeCriticalKeyAccountManager: function () {
-        var date = new Date();
-        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
+        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
 
-        date = Ext.Date.add(date, Ext.Date.HOUR, 48);
-        var filter = {
-            operator: "or",
-            rules: [{
-                operator: "and",
-                rules: [{
-                    property: "PromoStatusName", operation: "Equals", value: 'Draft(published)'
-                },
-                {
-                    property: "StartDate", operation: "LessThan", value: date
-                }
-                ]
-            },
-            {
-                operator: "and",
-                rules: [{
-                    property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-                },
-                {
-                    property: "DispatchesStart", operation: "LessThan", value: date
-                }
-                ]
-            },
-            {
-                operator: "and",
-                rules: [{
-                    property: "PromoStatusName", operation: "Equals", value: 'Approved'
-                },
-                {
-                    property: "StartDate", operation: "LessThan", value: date
-                }
-                ]
-            }]
-        }
+        var filter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
         var widget = 'promo';
         var text = "Time Critical";
         var panel = 'panel1';
