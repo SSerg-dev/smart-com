@@ -50,6 +50,9 @@ namespace Module.Persist.TPM.Model.TPM
 
         public string SFAClientCode { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
         public ICollection<BudgetSubItemClientTree> BudgetSubItemClientTrees { get; set; }
         public ICollection<ClientTreeBrandTech> ClientTreeBrandTeches { get; set; }

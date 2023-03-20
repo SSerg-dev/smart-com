@@ -18,5 +18,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid CommercialNetId { get; set; }
 
         public virtual CommercialNet CommercialNet { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

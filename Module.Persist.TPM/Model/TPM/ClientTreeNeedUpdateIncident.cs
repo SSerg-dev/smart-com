@@ -15,5 +15,8 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? ProcessDate { get; set; }
         public string PropertyName { get; set; }
         public string PropertyValue { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

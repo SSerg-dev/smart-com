@@ -29,5 +29,8 @@ namespace Module.Persist.TPM.Model.TPM
 
         public ICollection<BTL> BTLs { get; set; }
         public ICollection<EventClientTree> EventClientTrees { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

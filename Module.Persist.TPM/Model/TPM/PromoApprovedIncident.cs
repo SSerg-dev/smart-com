@@ -14,6 +14,9 @@ namespace Module.Persist.TPM.Model.TPM
         [Index]
         public DateTimeOffset? ProcessDate { get; set; }
 
-		public virtual Promo Promo { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+        public virtual Promo Promo { get; set; }
     }
 }

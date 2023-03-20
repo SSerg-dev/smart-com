@@ -32,6 +32,10 @@ namespace Module.Persist.TPM.Model.TPM
 
         public Guid Id { get; set; }
 
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
     }
 
     /// <summary>

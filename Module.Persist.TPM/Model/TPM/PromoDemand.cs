@@ -30,7 +30,11 @@ namespace Module.Persist.TPM.Model.TPM
         public double Baseline { get; set; }
         public double Uplift { get; set; }
         public double Incremental { get; set; }
-        public double Activity { get; set; }        
+        public double Activity { get; set; }
+
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
 
         public virtual BrandTech BrandTech { get; set; }
         public virtual Mechanic Mechanic { get; set; }

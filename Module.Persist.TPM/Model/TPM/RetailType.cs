@@ -20,7 +20,10 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(255)]
         [Index("Unique_Name", 1, IsUnique = true)]
         [Required]
-        public string Name {get; set;}
+        public string Name {get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
 
     }
 }

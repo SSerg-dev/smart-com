@@ -26,6 +26,10 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PriceList", 3, IsUnique = true)]
         public DateTimeOffset EndDate { get; set; }
 
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public double Price { get; set; }
 
         [Index("Unique_PriceList", 4, IsUnique = true)]

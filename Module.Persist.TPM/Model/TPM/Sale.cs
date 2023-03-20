@@ -25,5 +25,8 @@ namespace Module.Persist.TPM.Model.TPM
         public Promo Promo { get; set; }
         public Budget Budget { get; set; }
         public BudgetItem BudgetItem { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

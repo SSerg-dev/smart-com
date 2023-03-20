@@ -19,6 +19,9 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_Competitor", 0, IsUnique = true)]
         public string Name { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<CompetitorBrandTech> CompetitorBrandTechs { get; set; }
         public ICollection<CompetitorPromo> CompetitorPromoes { get; set; }
     }

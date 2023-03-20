@@ -26,6 +26,9 @@ namespace Module.Persist.TPM.Model.TPM
         public Guid? PromoTypesId { get; set; }
         public PromoTypes PromoTypes { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<NoneNego> NoneNegoes { get; set; }
     }
 }

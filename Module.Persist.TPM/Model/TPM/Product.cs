@@ -146,6 +146,10 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double? PCVolume { get; set; }
 
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
         public ICollection<BaseLine> BaseLines { get; set; }
         public ICollection<IncreaseBaseLine> IncreaseBaseLines { get; set; }

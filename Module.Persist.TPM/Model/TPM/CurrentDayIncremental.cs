@@ -26,5 +26,8 @@ namespace Module.Persist.TPM.Model.TPM
         [Index("Unique_PromoProduct", 1, IsUnique = true)]
         public Guid ProductId { get; set; }
         public Product Product { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }

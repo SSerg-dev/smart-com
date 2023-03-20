@@ -24,6 +24,9 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool Custom { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public ICollection<PromoStatusChange> PromoStatusChanges { get; set; }
     }
 }

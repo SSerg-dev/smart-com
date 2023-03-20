@@ -2982,10 +2982,6 @@
     <Compile Include="Migrations\202206240651346_Empty_After_Merge_AddTI.Designer.cs">
       <DependentUpon>202206240651346_Empty_After_Merge_AddTI.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202207050757114_Change_Roi_Report.cs" />
-    <Compile Include="Migrations\202207050757114_Change_Roi_Report.Designer.cs">
-      <DependentUpon>202207050757114_Change_Roi_Report.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.cs" />
     <Compile Include="Migrations\202207191248355_Empty_Migration_Fix_Deploy.Designer.cs">
       <DependentUpon>202207191248355_Empty_Migration_Fix_Deploy.cs</DependentUpon>
@@ -3314,6 +3310,14 @@
     <Compile Include="Migrations\202301310651264_Empty_Migration_After_Merge.Designer.cs">
       <DependentUpon>202301310651264_Empty_Migration_After_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302060629538_ModifiedDate.cs" />
+    <Compile Include="Migrations\202302060629538_ModifiedDate.Designer.cs">
+      <DependentUpon>202302060629538_ModifiedDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302060646430_ModifiedDate_Triggers.cs" />
+    <Compile Include="Migrations\202302060646430_ModifiedDate_Triggers.Designer.cs">
+      <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.cs" />
     <Compile Include="Migrations\202209121055439_Add_Future_Price_Marker_To_PriceList.Designer.cs">
       <DependentUpon>202209121055439_Add_Future_Price_Marker_To_PriceList.cs</DependentUpon>
@@ -3449,6 +3453,18 @@
     <Compile Include="Migrations\202303171021290_Add_ML_Time_Setting.cs" />
     <Compile Include="Migrations\202303171021290_Add_ML_Time_Setting.designer.cs">
       <DependentUpon>202303171021290_Add_ML_Time_Setting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302140841058_Empty_After_Merge_develop.cs" />
+    <Compile Include="Migrations\202302140841058_Empty_After_Merge_develop.Designer.cs">
+      <DependentUpon>202302140841058_Empty_After_Merge_develop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303141209321_Remove_PPCPI_defaultvalue.cs" />
+    <Compile Include="Migrations\202303141209321_Remove_PPCPI_defaultvalue.Designer.cs">
+      <DependentUpon>202303141209321_Remove_PPCPI_defaultvalue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303141210377_ADD_PPCPI_defaultvalue.cs" />
+    <Compile Include="Migrations\202303141210377_ADD_PPCPI_defaultvalue.Designer.cs">
+      <DependentUpon>202303141210377_ADD_PPCPI_defaultvalue.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -6393,6 +6409,12 @@
     <EmbeddedResource Include="Migrations\202301310651264_Empty_Migration_After_Merge.resx">
       <DependentUpon>202301310651264_Empty_Migration_After_Merge.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302060629538_ModifiedDate.resx">
+      <DependentUpon>202302060629538_ModifiedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302060646430_ModifiedDate_Triggers.resx">
+      <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209131057274_IncreaseBaseLine_Create.resx">
       <DependentUpon>202209131057274_IncreaseBaseLine_Create.cs</DependentUpon>
     </EmbeddedResource>
@@ -6491,6 +6513,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303171021290_Add_ML_Time_Setting.resx">
       <DependentUpon>202303171021290_Add_ML_Time_Setting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302140841058_Empty_After_Merge_develop.resx">
+      <DependentUpon>202302140841058_Empty_After_Merge_develop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303141209321_Remove_PPCPI_defaultvalue.resx">
+      <DependentUpon>202303141209321_Remove_PPCPI_defaultvalue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303141210377_ADD_PPCPI_defaultvalue.resx">
+      <DependentUpon>202303141210377_ADD_PPCPI_defaultvalue.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

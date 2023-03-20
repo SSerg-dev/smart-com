@@ -45,6 +45,10 @@ namespace Module.Persist.TPM.Model.TPM {
 		// Дата обработки записи (отправки нотификации)
 		public DateTimeOffset? ProcessDate { get; set; }
 
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
+
         public PromoDemandChangeIncident() { }
 
 		/// <summary>

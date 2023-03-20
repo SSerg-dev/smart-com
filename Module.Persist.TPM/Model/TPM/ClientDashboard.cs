@@ -30,5 +30,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanLSV { get; set; }
         public double? PromoTiCostPlanPercent { get; set; }
         public double? NonPromoTiCostPlanPercent { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
     }
 }
