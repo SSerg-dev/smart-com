@@ -25,9 +25,9 @@
            ,[Description])
              VALUES
                    (NEWID()
-                   ,'ML_TIME_WORK'
+                   ,'ML_TIME_BLOCK'
                    ,'string'
-                   ,'06:00;22:00'
+                   ,'06:00;22:00;23:00'
                    ,'ML the time period when file processing is open')
             GO
             ";
