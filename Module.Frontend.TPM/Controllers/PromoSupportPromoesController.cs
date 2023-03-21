@@ -487,7 +487,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 Context.SaveChanges();
 
-                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { key });
+                CalculateBudgetsCreateTask(new List<Guid>() { model.PromoSupportId }, new List<Guid>() { model.PromoId });
                 //CalculateBudgetsCreateTask(key.ToString(), true, true, true, true);
 
                 PromoSupportPromo promoSupportPromoRS = Context.Set<PromoSupportPromo>()
