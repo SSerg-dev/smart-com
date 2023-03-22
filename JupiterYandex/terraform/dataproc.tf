@@ -107,3 +107,7 @@ resource "yandex_dataproc_cluster" "dataproc" {
     }
   }
 }
+
+output "dataproc-test" {
+  value = yandex_dataproc_cluster.dataproc.cluster_config[0].subcluster_spec[0].resources
+}

@@ -4,6 +4,7 @@ zone = "ru-central1-b"
 network-name = "smartcom-env-network"
 
 folder = "jupiter-app-dev-rg"
+dns-zone = "jupiter-app-dev"
 
 subnet-name = "jupiter-app-dev-subnet"
 subnet-cidr = ["172.20.1.0/24"]
@@ -82,3 +83,5 @@ kafka-proxy = {
     sa-name = "jupiter-app-dev-kafka-proxy-sa"
     image = "cr.yandex/crp82nk4hju0v8d8r6pt/airflow:yandex-kafka-rest"
 }
+
+deploy-sa-name = "jupiter-app-dev-deploy-sa"

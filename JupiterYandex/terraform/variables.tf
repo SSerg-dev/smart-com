@@ -6,6 +6,10 @@ variable "folder" {
     description = "YC Folder name"
 }
 
+variable "dns-zone" {
+    description = "Dns zone name"
+}
+
 variable "folder_net" {
     description = "YC Network folder name"
 }
@@ -181,4 +185,8 @@ variable "kafka-proxy" {
         sa-name = string
         image = string
     })
+}
+
+variable "deploy-sa-name" {
+    description = "Deployment service account"
 }

@@ -66,6 +66,8 @@ webserver:
 env: 
   - name: "CORE_CONF_fs_defaultFS"
     value : ${dataprocUri}
+  - name: "HADOOP_OPTS"
+    value : "-Dfs.defaultFS=hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
   - name: "AIRFLOW__SECRETS__BACKEND"
     value : "airflow.providers.hashicorp.secrets.vault.VaultBackend"
   - name: "AIRFLOW__SECRETS__BACKEND_KWARGS"
