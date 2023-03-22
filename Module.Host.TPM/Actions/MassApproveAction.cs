@@ -76,14 +76,61 @@ namespace Module.Host.TPM.Actions
 
         private void ValidatePromoes(ref List<Promo> promoes)
         {
-            var notValidPromoes = promoes.Where(x => x.PromoStatus.SystemName != "OnApproval").ToList();
-            if (notValidPromoes.Any())
+            using (DatabaseContext context = new DatabaseContext())
             {
-                promoes = promoes.Where(x => !notValidPromoes.Any(p => p.Id == x.Id)).ToList();
-                string message = "Promoes in wrong status: " + String.Join(", ", notValidPromoes.Select(x => x.Number).ToArray());
+                Guid promoTypesRegularId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+                Guid promoTypesDynamicId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Dynamic").Id;
+                Guid promoTypesLoyaltyId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Loyalty").Id;
+                Guid promoTypesInOutId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "InOut").Id;
 
-                HandlerLogger.Write(true, message, "Error");
-                HandlerStatus = "HasErrors";
+                var notValidPromoesBaselineLSV = new List<Promo>();
+                var notValidPromoesIncrementalLSV = new List<Promo>();
+                
+                foreach (var promo in promoes)
+                {
+                    if ((promo.PromoTypesId == promoTypesRegularId || promo.PromoTypesId == promoTypesDynamicId ||
+                         promo.PromoTypesId == promoTypesLoyaltyId) && (promo.PlanPromoBaselineLSV is null ||
+                        promo.PlanPromoBaselineLSV == 0))
+                    {
+                        notValidPromoesBaselineLSV.Add(promo);
+                    }
+                    else if (promo.PromoTypesId == promoTypesInOutId && (promo.PlanPromoIncrementalLSV is null ||
+                              promo.PlanPromoIncrementalLSV == 0))
+                    {
+                        notValidPromoesIncrementalLSV.Add(promo);
+                    }
+                }
+
+                if (notValidPromoesBaselineLSV.Count > 0)
+                {
+                    promoes = promoes.Where(x => !notValidPromoesBaselineLSV.Any(p => p.Id == x.Id)).ToList();
+                    string message = "The Plan Baseline LSV must not be empty or equal to zero: " +
+                                     String.Join(", ", notValidPromoesBaselineLSV.Select(x => x.Number).ToArray());
+
+                    HandlerLogger.Write(true, message, "Warning");
+                    HandlerStatus = "HasErrors";
+                }
+
+                if (notValidPromoesIncrementalLSV.Count > 0)
+                {
+                    promoes = promoes.Where(x => !notValidPromoesIncrementalLSV.Any(p => p.Id == x.Id)).ToList();
+                    string message = "The Plan Promo Incremental LSV must not be empty or equal to zero: " +
+                                     String.Join(", ", notValidPromoesIncrementalLSV.Select(x => x.Number).ToArray());
+
+                    HandlerLogger.Write(true, message, "Warning");
+                    HandlerStatus = "HasErrors";
+                }
+
+                var notValidPromoes = promoes.Where(x => x.PromoStatus.SystemName != "OnApproval").ToList();
+                if (notValidPromoes.Any())
+                {
+                    promoes = promoes.Where(x => !notValidPromoes.Any(p => p.Id == x.Id)).ToList();
+                    string message = "Promoes in wrong status: " +
+                                     String.Join(", ", notValidPromoes.Select(x => x.Number).ToArray());
+
+                    HandlerLogger.Write(true, message, "Error");
+                    HandlerStatus = "HasErrors";
+                }
             }
         }
 
