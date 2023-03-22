@@ -39,7 +39,7 @@ namespace Module.Host.TPM.Handlers
 
             handlerLogger = new LogWriter(info.HandlerId.ToString());
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
+            logLine = string.Format("The calculation of the BTL budgets started at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow));
             handlerLogger.Write(true, logLine, "Message");
 
             string btlId = HandlerDataHelper.GetIncomingArgument<string>("BTLId", info.Data, false);
@@ -80,7 +80,7 @@ namespace Module.Host.TPM.Handlers
                         string promoNumbers = string.Join(",", promoes.Select(x => x.Number));
 
                         context.SaveChanges();
-                        logLine = String.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers);
+                        logLine = string.Format("At the time of calculation, the following promo are blocked for editing: {0}", promoNumbers);
                         handlerLogger.Write(true, logLine, "Message");
 
                         double? promoSummPlanLSV = promoes.Any() ? promoes.Where(n => n.PlanPromoLSV.HasValue).Sum(n => n.PlanPromoLSV.Value) : 0;
@@ -91,7 +91,7 @@ namespace Module.Host.TPM.Handlers
                         foreach (var promo in promoes)
                         {
                             handlerLogger.Write(true, "");
-                            logLine = String.Format("Calculation of BTL params for promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
+                            logLine = string.Format("Calculation of BTL params for promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
                             handlerLogger.Write(true, logLine, "Message");
 
                             double kPlan = promo.PlanPromoLSV.HasValue ? promo.PlanPromoLSV.Value / promoSummPlanLSV.Value : 0;
@@ -112,15 +112,12 @@ namespace Module.Host.TPM.Handlers
                             var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                             if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
-                                calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
-                                if (calculateError != null)
-                                {
-                                    logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
-
-                                }
-                                handlerLogger.Write(true, logLine, "Error");
+                                string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                                // записываем ошибки если они есть
+                                if (errorString != null)
+                                    WriteErrorsInLog(handlerLogger, errorString);
                             }
-                            logLine = String.Format("Calculation of BTL params for promo № {0} completed.", promo.Number);
+                            logLine = string.Format("Calculation of BTL params for promo № {0} completed.", promo.Number);
                             handlerLogger.Write(true, logLine, "Message");
 
                             CalculationTaskManager.UnLockPromo(promo.Id);
@@ -129,7 +126,7 @@ namespace Module.Host.TPM.Handlers
                         foreach (var promo in unlinkedPromoes)
                         {
                             handlerLogger.Write(true, "");
-                            logLine = String.Format("Reset of BTL params for unlinked promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
+                            logLine = string.Format("Reset of BTL params for unlinked promo № {0} started at {1:yyyy-MM-dd HH:mm:ss}", promo.Number, DateTimeOffset.Now);
                             handlerLogger.Write(true, logLine, "Message");
 
                             promo.PlanPromoBTL = 0;
@@ -145,14 +142,12 @@ namespace Module.Host.TPM.Handlers
                             var promoProductList = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled).ToList();
                             if (promo.LoadFromTLC || promoProductList.Any(x => x.ActualProductPCQty.HasValue))
                             {
-                                calculateError = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
-                                if (calculateError != null)
-                                {
-                                    logLine = string.Format("Error when calculating the actual parameters Promo: {0}", calculateError);
-                                    handlerLogger.Write(true, logLine, "Error");
-                                }
+                                string errorString = ActualPromoParametersCalculation.CalculatePromoParameters(promo, context);
+                                // записываем ошибки если они есть
+                                if (errorString != null)
+                                    WriteErrorsInLog(handlerLogger, errorString);
                             }
-                            logLine = String.Format("Reset of BTL params for unlinked promo № {0} completed.", promo.Number);
+                            logLine = string.Format("Reset of BTL params for unlinked promo № {0} completed.", promo.Number);
                             handlerLogger.Write(true, logLine, "Message");
 
                             CalculationTaskManager.UnLockPromo(promo.Id);
@@ -166,7 +161,7 @@ namespace Module.Host.TPM.Handlers
                         foreach (var promoToUnlink in promoesToUnlink)
                         {
                             handlerLogger.Write(true, "");
-                            logLine = String.Format("Promo № {0} unlinking from BTL started at {1:yyyy-MM-dd HH:mm:ss}", promoToUnlink.Number, DateTimeOffset.Now);
+                            logLine = string.Format("Promo № {0} unlinking from BTL started at {1:yyyy-MM-dd HH:mm:ss}", promoToUnlink.Number, DateTimeOffset.Now);
                             handlerLogger.Write(true, logLine, "Message");
 
                             // Отвязываем промо от BTL
@@ -182,7 +177,7 @@ namespace Module.Host.TPM.Handlers
                             promoToUnlink.PlanPromoBTL = 0;
                             promoToUnlink.ActualPromoBTL = 0;
 
-                            logLine = String.Format("Promo № {0} unlinking from BTL completed.", promoToUnlink.Number);
+                            logLine = string.Format("Promo № {0} unlinking from BTL completed.", promoToUnlink.Number);
                             handlerLogger.Write(true, logLine, "Message");
 
                             CalculationTaskManager.UnLockPromo(promoToUnlink.Id);
@@ -204,9 +199,23 @@ namespace Module.Host.TPM.Handlers
 
             sw.Stop();
             handlerLogger.Write(true, "");
-            logLine = String.Format("The calculation of the BTL budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
+            logLine = string.Format("The calculation of the BTL budgets ended at {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow), sw.Elapsed.TotalSeconds);
             handlerLogger.Write(true, logLine, "Message");
             handlerLogger.UploadToBlob();
+        }
+        /// <summary>
+        /// Записать ошибки в лог
+        /// </summary>
+        /// <param name="handlerLogger">Лог</param>
+        /// <param name="errorString">Список ошибок, записанных через ';'</param>
+        private void WriteErrorsInLog(LogWriter handlerLogger, string errorString)
+        {
+            string[] errors = errorString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string message = "";
+            foreach (string e in errors)
+                message += e + "\n";
+
+            handlerLogger.Write(true, message);
         }
     }
 }
