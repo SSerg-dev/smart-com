@@ -326,7 +326,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { key });
+                CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { model.PromoId });
                 Context.SaveChanges();
                 return StatusCode(HttpStatusCode.NoContent);
             }
