@@ -3427,6 +3427,10 @@
     <Compile Include="Migrations\202303141210377_ADD_PPCPI_defaultvalue.Designer.cs">
       <DependentUpon>202303141210377_ADD_PPCPI_defaultvalue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303220822106_BTL_Increment_Number.cs" />
+    <Compile Include="Migrations\202303220822106_BTL_Increment_Number.designer.cs">
+      <DependentUpon>202303220822106_BTL_Increment_Number.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6453,6 +6457,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303141210377_ADD_PPCPI_defaultvalue.resx">
       <DependentUpon>202303141210377_ADD_PPCPI_defaultvalue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303220822106_BTL_Increment_Number.resx">
+      <DependentUpon>202303220822106_BTL_Increment_Number.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
