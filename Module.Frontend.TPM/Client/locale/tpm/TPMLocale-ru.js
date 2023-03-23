@@ -2018,6 +2018,7 @@
         'ClientHierarchy': 'Client',
         'Name': 'Promo name',
         'BrandTech': 'Brandtech',
+        'ProductSubrangesList': 'Subrange',
         'Event': 'Event',
         'Mechanic': 'Mars mechanic',
         'MechanicIA': 'IA mechanic',

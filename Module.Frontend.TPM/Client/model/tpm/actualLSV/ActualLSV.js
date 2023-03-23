@@ -19,6 +19,7 @@
                 return value;
             }
         },
+        { name: 'ProductSubrangesList', type: 'string', hidden: false, isDefault: true },
         { name: 'Event', type: 'string', hidden: false, isDefault: true },
         { name: 'Mechanic', type: 'string', hidden: false, isDefault: true },
         { name: 'MechanicIA', type: 'string', hidden: false, isDefault: true },
