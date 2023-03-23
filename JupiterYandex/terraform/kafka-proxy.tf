@@ -8,6 +8,14 @@ resource "yandex_iam_service_account" "kafka-proxy-sa" {
  folder_id   = yandex_resourcemanager_folder.folder.id
 }
 
+resource "yandex_resourcemanager_folder_iam_binding" "kafka-proxy-sa-pull" {
+ folder_id = yandex_resourcemanager_folder.folder.id
+ role      = "container-registry.images.puller"
+ members   = [
+   "serviceAccount:${yandex_iam_service_account.kafka-proxy-sa.id}"
+ ]
+}
+
 resource "yandex_compute_instance" "kafka-proxy" {
   folder_id   = yandex_resourcemanager_folder.folder.id
   name        = var.kafka-proxy.name

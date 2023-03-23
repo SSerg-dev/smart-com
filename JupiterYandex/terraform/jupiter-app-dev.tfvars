@@ -59,7 +59,7 @@ dataproc = {
 }
 
 airflow-sa-name = "jupiter-app-dev-airflow-sa"
-airflow-image = "cr.yandex/crp82nk4hju0v8d8r6pt/airflow"
+airflow-image = "cr.yandex/crphfbb3tge0u19a9s58/airflow"
 airflow-tag = "airflow-jupiter-dev"
 airflow-dags-pv = "airflow-dags"
 airflow-dags-pvc = "airflow-dags-pvc"
@@ -81,7 +81,7 @@ kafka-proxy = {
     memory = 2
     disk = 30
     sa-name = "jupiter-app-dev-kafka-proxy-sa"
-    image = "cr.yandex/crp82nk4hju0v8d8r6pt/airflow:yandex-kafka-rest"
+    image = "cr.yandex/crphfbb3tge0u19a9s58/airflow:yandex-kafka-rest"
 }
 
 deploy-sa-name = "jupiter-app-dev-deploy-sa"
