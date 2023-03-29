@@ -1,0 +1,66 @@
+version: "3.6"
+services:
+  kafka-rest:
+    command:
+      - /etc/confluent/docker/run
+    container_name: kafka-rest
+    environment:
+      - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_PASSWORD=changeit
+      - KAFKA_REST_LISTENERS=http://0.0.0.0:8082
+      - KAFKA_REST_SCHEMA_REGISTRY_URL=http://localhost:8081
+      - KAFKA_REST_BOOTSTRAP_SERVERS=${kafkaNodeUri}:9091
+      - KAFKA_REST_CLIENT_SECURITY_PROTOCOL=SASL_SSL
+      - KAFKA_REST_CLIENT_SASL_MECHANISM=SCRAM-SHA-512
+      - KAFKA_REST_CLIENT_SASL_JAAS_CONFIG=org.apache.kafka.common.security.scram.ScramLoginModule
+        required username=${kafkaUser} password=${kafkaPass};
+      - KAFKA_REST_CLIENT_SSL_TRUSTSTORE_LOCATION=/tmp/certs/cacerts.jks
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - container=oci
+      - LANG=C.UTF-8
+      - CUB_CLASSPATH="/usr/share/java/cp-base-new/*"
+      - COMPONENT=kafka-rest
+    hostname: aa1ab276e738
+    image: ${kafkaProxyImage}
+    ipc: private
+    labels:
+      architecture: x86_64
+      build-date: 2022-11-01T04:29:11
+      com.redhat.component: ubi8-minimal-container
+      com.redhat.license_terms: https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI
+      description: Common base image for Confluent's Docker images.
+      distribution-scope: public
+      io.buildah.version: 1.26.2
+      io.confluent.docker: "true"
+      io.confluent.docker.build.number: "2"
+      io.confluent.docker.git.id: ce3e182f
+      io.confluent.docker.git.repo: confluentinc/kafka-rest-images
+      io.k8s.description: The Universal Base Image Minimal is a stripped down image
+        that uses microdnf as a package manager. This base image is freely
+        redistributable, but Red Hat only supports Red Hat technologies through
+        subscriptions for Red Hat products. This image is maintained by Red Hat
+        and updated regularly.
+      io.k8s.display-name: Red Hat Universal Base Image 8 Minimal
+      io.openshift.expose-services: ""
+      io.openshift.tags: minimal rhel8
+      maintainer: partner-support@confluent.io
+      name: cp-kafka-rest
+      release: 7.3.1
+      summary: The Confluent REST Proxy provides a RESTful interface to a Kafka
+        cluster, making it easy to produce and consume messages, view the state
+        of the cluster, and perform administrative actions without using the
+        native Kafka protocol or clients.
+      url: https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8-minimal/images/8.7-923
+      vcs-ref: 146fdafc2595e26f5f9c1b9a2b3f36bbca8237e4
+      vcs-type: git
+      vendor: Confluent
+      version: 699b961f
+    logging:
+      driver: json-file
+      options: {}
+    mac_address: 02:42:ac:11:00:02
+    network_mode: bridge
+    ports:
+      - 8081:8081/tcp
+      - 8082:8082/tcp
+    user: appuser
+    working_dir: /home/appuser

@@ -1,0 +1,38 @@
+executor: KubernetesExecutor
+loadExamples: false
+rbac.create: true
+redis.enabled: false
+serviceaccount.create: true
+dags:
+  persistence:
+    enabled: false
+  gitSync:
+    enabled: true
+    repo: ${airflowRepoPath}
+    subPath: ""
+    branch: main
+images:
+  airflow:
+    pullPolicy: Always
+    repository: wrmtv40/demo-tools
+    tag: airflow-hadoop-client
+logs:
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClassName: csi-s3
+workers:
+  extraVolumeMounts:  [ { "name" : "airflow-source-code", "mountPath" : "/tmp/data" } ]
+  extraVolumes: [ {"name" : "airflow-source-code", "persistentVolumeClaim" : {"claimName": "airflow-source-code"} } ]
+webserver:
+  service:
+    type: LoadBalancer
+    annotations:
+      yandex.cloud/load-balancer-type: external
+      # yandex.cloud/load-balancer-type: internal
+      # yandex.cloud/subnet-id: "${subnetId}"
+    ports:
+      - name: airflow-ui
+        port: "8080"
+    loadBalancerIP: ~
+    loadBalancerSourceRanges: []

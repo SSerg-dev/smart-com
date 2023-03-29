@@ -16,9 +16,14 @@ ARG SMTP_MAIL_FROM
 # RUN echo "ENVIRONMENT: $ENVIRONMENT"
 
 USER root
-RUN apt-get update
-RUN apt-get -y install gnupg2
-RUN apt-get -y install curl
+# RUN apt-get update
+# RUN apt-get -y install gnupg2
+# RUN apt-get -y install curl
+
+RUN apt-get update \
+    && apt-get -y install gnupg2 \
+    && apt-get -y install curl
+
 
 # Build MSSQL ODBC driver
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
@@ -28,7 +33,8 @@ RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql18
 RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated mssql-tools18
 RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bash_profile
 RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
-RUN apt-get install -y unixodbc-dev
+#16.02.023 RUN apt-get install -y unixodbc-dev
+RUN apt-get install -y unixodbc-dev=2.3.7
 RUN apt-get install -y g++
 RUN apt-get -y install libcsv3
 RUN apt-get -y install procps 
@@ -70,7 +76,7 @@ COPY ./JupiterYandex/docker/config/$ENVIRONMENT/core-site.xml /etc/hadoop/core-s
 COPY ./JupiterYandex/docker/config/$ENVIRONMENT/hdfs-site.xml /etc/hadoop/hdfs-site.xml
 
 # только для dev:
-COPY ./JupiterYandex/docker/config/$ENVIRONMENT/YandexCA* /tmp/
+#16.02.023 временно отключил: COPY ./JupiterYandex/docker/config/$ENVIRONMENT/YandexCA* /tmp/
 
 
 #Copy auxilary scripts

@@ -15,43 +15,65 @@ resource "yandex_iam_service_account_static_access_key" "airflow-sa-key" {
   service_account_id = yandex_iam_service_account.airflow-sa.id
 }
 
-resource "helm_release" "airflow-s3-storageClass" {
+resource "helm_release" "airflow-logs-pvc" {
   namespace        = "airflow"
   create_namespace = true
-  name             = "csi-s3"
-  #repository       = "https://github.com/yandex-cloud/k8s-csi-s3"
-  #chart            = "csi-s3"
-  chart            = "./s3/deploy/helm"
-  wait             = true
-  depends_on = [
-    yandex_kubernetes_node_group.k8s-nodes
-  ]
-  set {
-    name = "secret.accessKey"
-    value = yandex_iam_service_account_static_access_key.airflow-sa-key.access_key
-  }  
-  set {  
-    name = "secret.secretKey"
-    value = yandex_iam_service_account_static_access_key.airflow-sa-key.secret_key
-  }
-  set {  
-    name = "storageClass.singleBucket"
-    value = var.bucket-name
-  }
-}
-
-resource "helm_release" "airflow-pvc" {
-  namespace        = "airflow"
-  create_namespace = true
-  name             = "airflow-pvc"
+  name             = "airflow-logs-pvc"
   chart            = "./pvc/helm"
   wait             = true
   depends_on = [
-  helm_release.airflow-s3-storageClass
+  helm_release.s3-storageClass
   ]
   set {
-    name  = "name"
-    value = "airflow-source-code"
+    name  = "volumeName"
+    value = "airflow-logs"
+  }
+  set {
+    name  = "pvcName"
+    value = "airflow-logs-pvc"
+  }
+  set {
+    name  = "bucket"
+    value = yandex_storage_bucket.bucket.bucket
+  }
+  set {
+    name  = "namespace"
+    value = "airflow"
+  }
+  set {
+    name  = "size"
+    value = "10Gi"
+  }
+}
+
+resource "helm_release" "airflow-dags-pvc" {
+  namespace        = "airflow"
+  create_namespace = true
+  name             = "airflow-dags-pvc"
+  chart            = "./pvc/helm"
+  wait             = true
+  depends_on = [
+  helm_release.s3-storageClass
+  ]
+  set {
+    name  = "volumeName"
+    value = var.airflow-dags-pv
+  }
+  set {
+    name  = "pvcName"
+    value = var.airflow-dags-pvc
+  }
+  set {
+    name  = "bucket"
+    value = yandex_storage_bucket.bucket.bucket
+  }
+  set {
+    name  = "namespace"
+    value = "airflow"
+  }
+  set {
+    name  = "size"
+    value = "5Gi"
   }
 }
 
@@ -64,17 +86,18 @@ resource "helm_release" "airflow" {
   wait             = false
   timeout    = 600
   depends_on = [
-  helm_release.airflow-pvc,
-  helm_release.vault
+  helm_release.airflow-logs-pvc,
+  helm_release.airflow-dags-pvc,
+  null_resource.vault-policy
   ]
   values = [
     templatefile("airflow-values.yaml", {
         subnetId = yandex_vpc_subnet.subnet.id
-        airflowRepoPath = var.airflowRepoPath
+        image = var.airflow-image
+        tag = var.airflow-tag
+        pvName = var.airflow-dags-pv
+        pvcName = var.airflow-dags-pvc
+        dataprocUri = "hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
         })
   ]
-  set {
-    name  = "airflow.dbMigrations.runAsJob"
-    value = "true"
-  }
 }

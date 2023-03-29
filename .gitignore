@@ -378,3 +378,10 @@ MigrationBackup/
 !.vscode/extensions.json
 /Frontend/wwwroot
 /Frontend.TPM/Bundles
+
+# Terraform
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+

@@ -1,38 +1,74 @@
+USER-SUPPLIED VALUES:
+dagProcessor:
+  extraVolumeMounts:
+  - mountPath: /opt/airflow/dags
+    name: ${pvName}
+  extraVolumes:
+  - name: ${pvName}
+    persistentVolumeClaim:
+      claimName: ${pvcName}
 executor: KubernetesExecutor
 loadExamples: false
 rbac.create: true
 redis.enabled: false
 serviceaccount.create: true
-dags:
-  persistence:
-    enabled: false
-  gitSync:
-    enabled: true
-    repo: ${airflowRepoPath}
-    subPath: ""
-    branch: main
 images:
   airflow:
     pullPolicy: Always
-    repository: wrmtv40/demo-tools
-    tag: airflow-hadoop-client
+    repository: ${image}
+    tag: ${tag}
 logs:
   persistence:
     enabled: true
-    size: 50Gi
-    storageClassName: csi-s3
+    existingClaim: airflow-logs-pvc
 workers:
-  extraVolumeMounts:  [ { "name" : "airflow-source-code", "mountPath" : "/tmp/data" } ]
-  extraVolumes: [ {"name" : "airflow-source-code", "persistentVolumeClaim" : {"claimName": "airflow-source-code"} } ]
+  extraVolumeMounts:
+  - mountPath: /opt/airflow/dags
+    name: ${pvName}
+  extraVolumes:
+  - name: ${pvName}
+    persistentVolumeClaim:
+      claimName: ${pvcName}
+scheduler:
+  extraVolumeMounts:
+  - mountPath: /opt/airflow/dags
+    name: ${pvName}
+  extraVolumes:
+  - name: ${pvName}
+    persistentVolumeClaim:
+      claimName: ${pvcName}
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 30
+    periodSeconds: 180
+    timeoutSeconds: 40
+triggerer:
+  extraVolumeMounts:
+  - mountPath: /opt/airflow/dags
+    name: ${pvName}
+  extraVolumes:
+  - name: ${pvName}
+    persistentVolumeClaim:
+      claimName: ${pvcName}
 webserver:
+  extraVolumeMounts:
+  - mountPath: /opt/airflow/dags
+    name: ${pvName}
+  extraVolumes:
+  - name: ${pvName}
+    persistentVolumeClaim:
+      claimName: ${pvcName}
   service:
-    type: LoadBalancer
     annotations:
-      yandex.cloud/load-balancer-type: external
-      # yandex.cloud/load-balancer-type: internal
-      # yandex.cloud/subnet-id: "${subnetId}"
-    ports:
-      - name: airflow-ui
-        port: "8080"
-    loadBalancerIP: ~
-    loadBalancerSourceRanges: []
+      yandex.cloud/load-balancer-type: internal
+      yandex.cloud/subnet-id: "${subnetId}"
+    type: LoadBalancer
+env: 
+  - name: "CORE_CONF_fs_defaultFS"
+    value : ${dataprocUri}
+  - name: "HADOOP_OPTS"
+    value : "-Dfs.defaultFS=hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
+  - name: "AIRFLOW__SECRETS__BACKEND"
+    value : "airflow.providers.hashicorp.secrets.vault.VaultBackend"
+  - name: "AIRFLOW__SECRETS__BACKEND_KWARGS"
+    value : '{"connections_path": "connections", "variables_path": "variables", "config_path": null, "url": "http://vault.vault.svc:8200", "auth_type": "kubernetes", "kubernetes_role":"airflow","kv_engine_version": 2}'

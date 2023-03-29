@@ -1,0 +1,57 @@
+image:
+  repository: apache/superset
+  tag: 326b6e8088f6b401fd668a2c0c26179c763f69ce
+supersetWorker:
+  replicaCount: 4
+  
+supersetCeleryBeat:
+  enabled: true
+
+supersetCeleryFlower:
+  enabled: false
+  
+configOverrides:
+  celery_conf: |
+    from celery.schedules import crontab
+
+    class CeleryConfig(object):
+      broker_url = f"redis://{env('REDIS_HOST')}:{env('REDIS_PORT')}/0"
+      imports = ('superset.sql_lab', "superset.tasks", "superset.tasks.thumbnails", )
+      result_backend = f"redis://{env('REDIS_HOST')}:{env('REDIS_PORT')}/0"
+      task_annotations = {
+          'sql_lab.get_sql_results': {
+              'rate_limit': '100/s',
+          },
+          'email_reports.send': {
+              'rate_limit': '1/s',
+              'time_limit': 600,
+              'soft_time_limit': 600,
+              'ignore_result': True,
+          },
+      }
+      beat_schedule = {
+          'reports.scheduler': {
+              'task': 'reports.scheduler',
+              'schedule': crontab(minute='*', hour='*'),
+          },
+          'reports.prune_log': {
+              'task': 'reports.prune_log',
+              'schedule': crontab(minute=0, hour=0),
+          },
+          'cache-warmup-hourly': {
+              'task': 'cache-warmup',
+              'schedule': crontab(minute='*/30', hour='*'),
+              'kwargs': {
+                  'strategy_name': 'top_n_dashboards',
+                  'top_n': 10,
+                  'since': '7 days ago',
+              },
+          }
+      }
+
+    CELERY_CONFIG = CeleryConfig  
+
+# bootstrapScript: |
+  # #!/bin/bash
+  # pip install PyHive==0.6.5 &&\
+  # if [ ! -f ~/bootstrap ]; then echo "Running Superset with uid {{ .Values.runAsUser }}" > ~/bootstrap; fi
