@@ -175,6 +175,25 @@
         { name: 'Priority', useNull: true, type: 'int', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ProductSubrangesList', type: 'string', useNull: true, hidden: false, isDefault: true, defaultValue: null },
 
+        //
+        { name: 'PlanPromoBaselineVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoPostPromoEffectVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoPostPromoEffectVolumeW1', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoPostPromoEffectVolumeW2', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoBaselineVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoPostPromoEffectVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoVolumeByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoVolumeSI', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoNetIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoNetIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
 
