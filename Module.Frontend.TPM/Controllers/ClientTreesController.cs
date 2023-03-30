@@ -657,6 +657,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IHttpActionResult UpdateNode([FromBody] ClientTree model)
         {
             if (!ModelState.IsValid)
