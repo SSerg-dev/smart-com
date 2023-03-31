@@ -41,7 +41,7 @@
         var panel = button.up('panel');
         Ext.Msg.show({
             title: l10n.ns('tpm', 'text').value('Confirmation'),
-            msg: l10n.ns('tpm', 'Promo').value('Confirm Approval'),
+            msg: l10n.ns('tpm', 'Promo').value('Confirm Mass Approval'),
             fn: function (btn) {
                 if (btn === 'yes') {
                     me.onOkMassApprovalClick(btn, me, panel);
