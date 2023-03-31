@@ -319,6 +319,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "SumInvoice", Header = "Sum In Invoice", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "IsApolloExport", Header = "Anaplan Export", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "MLmodel", Header = "ML model", Quoting = false },
             };
             return columns;
         }
@@ -470,6 +471,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column { Order = orderNumber++, Field = "SumInvoice", Header = "Sum In Invoice", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "IsPriceIncrease", Header = "Price Increase", Quoting = false,  Format = "0.00"  },
                 new Column { Order = orderNumber++, Field = "IsApolloExport", Header = "Anaplan Export", Quoting = false,  Format = "0.00"  },
+                new Column { Order = orderNumber++, Field = "MLmodel", Header = "ML model", Quoting = false },
             };
             return columns;
         }
