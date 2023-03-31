@@ -391,6 +391,7 @@
     massApprovalButtonDisable: function (grid, store) {
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
         var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
+        var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
 
         var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
         var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
@@ -407,6 +408,7 @@
             !this.compareFilters(filter, onApprovalFilterCMM) &&
             !this.compareFilters(filter, onApprovalGAFilterDP) &&
             !this.compareFilters(filter, onApprovalGAFilterDF) &&
+            !isOnHold &&
             !this.compareFilters(filter, onApprovalGAFilterGAM) ||
             this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
             this.compareFilters(filter, onApprovalGAFilterCMM);
