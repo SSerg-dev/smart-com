@@ -157,7 +157,7 @@
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: false },
         { name: 'IsPriceIncrease', type: 'bool', hidden: false, isDefault: true },
         { name: 'IsApolloExport', type: 'bool', hidden: false, isDefault: true },
-
+        { name: 'MLmodel', type: 'bool', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

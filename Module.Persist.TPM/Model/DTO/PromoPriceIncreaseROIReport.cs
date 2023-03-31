@@ -209,5 +209,6 @@ namespace Module.Persist.TPM.Model.DTO
         public bool IsApolloExport { get; set; }
         public bool Disabled { get; set; }
         public bool IsPriceIncrease { get; set; }
+        public bool MLmodel { get; set; }
     }
 }

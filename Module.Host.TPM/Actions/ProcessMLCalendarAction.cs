@@ -134,6 +134,10 @@ namespace Module.Host.TPM.Actions
                             {
                                 HandlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", inputMlId, promo.StartDate), "Warning");
                             }
+                            else if (promo.StartDate > promo.EndDate || promo.DispatchesStart > promo.DispatchesEnd)
+                            {
+                                HandlerLogger.Write(true, string.Format("ML Promo: {0} the start date is greater than the end date", inputMlId), "Warning");
+                            }
                             else
                             {
 

@@ -308,6 +308,13 @@
                         return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
                 },
+                {
+                    text: l10n.ns('tpm', 'PromoPriceIncreaseROIReport').value('MLmodel'),
+                    dataIndex: 'MLmodel',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
             ]
         }
     }, {

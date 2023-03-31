@@ -2280,7 +2280,8 @@
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'Price Increase',
-        'IsApolloExport': 'Anaplan Export'
+        'IsApolloExport': 'Anaplan Export',
+        'MLmodel': 'ML model'
     },
     'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 
