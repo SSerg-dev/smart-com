@@ -389,31 +389,39 @@
     },
 
     massApprovalButtonDisable: function (grid, store) {
-        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
-        var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
-        var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
-
-        var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
-        var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
-        var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
-        var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
-        var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
-        var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
-        var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
-        var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+        var currentRole = App.UserInfo.getCurrentRole();
+        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']);
+        if (isMassButtonVisible) {
+            maButton.setVisible(true);
+            
+            var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+            var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
+            var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
 
-        var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
-            !this.compareFilters(filter, onApprovalFilterDF) &&
-            !this.compareFilters(filter, onApprovalFilterCMM) &&
-            this.compareFilters(filter, onApprovalGAFilterDP) &&
-            !this.compareFilters(filter, onApprovalGAFilterDF) &&
-            !isOnHold &&
-            !this.compareFilters(filter, onApprovalGAFilterGAM) ||
-            this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
-            this.compareFilters(filter, onApprovalGAFilterCMM);
+            var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
+            var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
+            var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
+            var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
+            var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
+            var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
+            var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
+            var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
 
-        maButton.setDisabled(isDisabled);
+            var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
+                !this.compareFilters(filter, onApprovalFilterDF) &&
+                !this.compareFilters(filter, onApprovalFilterCMM) &&
+                this.compareFilters(filter, onApprovalGAFilterDP) &&
+                !this.compareFilters(filter, onApprovalGAFilterDF) &&
+                !isOnHold &&
+                !this.compareFilters(filter, onApprovalGAFilterGAM) ||
+                this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
+                this.compareFilters(filter, onApprovalGAFilterCMM);
+
+            maButton.setDisabled(isDisabled);
+        } else {
+            maButton.setVisible(false);
+        }
     },
 
     massSendForApprovalButtonDisable: function (grid, store) {
