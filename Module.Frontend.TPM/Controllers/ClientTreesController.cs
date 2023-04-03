@@ -606,8 +606,12 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (model.DemandCode == "" || model.DemandCode == " ")
                 {
-                    model.DemandCode = null;
+                    model.DemandCode = "";
                 }
+            }
+            else
+            {
+                model.DemandCode = "";
             }
 
             activeTree = GetConstraintedQuery();
