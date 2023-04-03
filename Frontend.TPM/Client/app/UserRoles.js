@@ -40,8 +40,7 @@ UserRoles = {
     isSuperReader: function(roleName) {
         return roleName === this.SuperReader;
     },
-    
-    isMassApproveRole: function(roleName) {
+    isMassiveApproveRole: function(roleName) {
         return [this.CustomerMarketingManager, this.DemandPlanning].indexOf(roleName) >= 0;
     } 
 };

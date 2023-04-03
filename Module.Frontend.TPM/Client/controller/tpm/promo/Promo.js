@@ -391,7 +391,7 @@
     massApprovalButtonDisable: function (grid, store) {
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
         var currentRole = App.UserInfo.getCurrentRole();
-        var isMassButtonVisible = UserRoles.isMassApproveRole(currentRole['SystemName']);
+        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']);
         if (isMassButtonVisible) {
             maButton.setVisible(true);
             
