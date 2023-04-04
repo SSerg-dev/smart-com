@@ -417,7 +417,7 @@
             var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
                 !this.compareFilters(filter, onApprovalFilterDF) &&
                 !this.compareFilters(filter, onApprovalFilterCMM) &&
-                this.compareFilters(filter, onApprovalGAFilterDP) &&
+                !this.compareFilters(filter, onApprovalGAFilterDP) &&
                 !this.compareFilters(filter, onApprovalGAFilterDF) &&
                 !isOnHold &&
                 !this.compareFilters(filter, onApprovalGAFilterGAM) ||
