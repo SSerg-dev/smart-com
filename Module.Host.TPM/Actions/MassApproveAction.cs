@@ -87,6 +87,8 @@ namespace Module.Host.TPM.Actions
                 var notValidPromoesBaselineLSV = new List<Promo>();
                 var notValidPromoesIncrementalLSV = new List<Promo>();
                 
+                promoes = promoes.Where(x => x.MasterPromoId is null && x.IsInExchange == false && x.IsGrowthAcceleration == false).ToList();
+                
                 foreach (var promo in promoes)
                 {
                     if ((promo.PromoTypesId == promoTypesRegularId || promo.PromoTypesId == promoTypesDynamicId ||
