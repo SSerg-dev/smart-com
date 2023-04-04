@@ -78,6 +78,7 @@ namespace Module.Host.TPM.Actions
         {
             using (DatabaseContext context = new DatabaseContext())
             {
+                string role = context.Roles.FirstOrDefault(r => r.Id == RoleId).SystemName;
                 Guid promoTypesRegularId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
                 Guid promoTypesDynamicId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Dynamic").Id;
                 Guid promoTypesLoyaltyId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Loyalty").Id;
@@ -94,7 +95,7 @@ namespace Module.Host.TPM.Actions
                     {
                         notValidPromoesBaselineLSV.Add(promo);
                     }
-                    else if (promo.PromoTypesId == promoTypesInOutId && (promo.PlanPromoIncrementalLSV is null ||
+                    else if (promo.PromoTypesId == promoTypesInOutId && role != "CMManager" && (promo.PlanPromoIncrementalLSV is null ||
                               promo.PlanPromoIncrementalLSV == 0))
                     {
                         notValidPromoesIncrementalLSV.Add(promo);
