@@ -168,7 +168,24 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            query = query.Where(x => !x.Disabled);
+            switch (mode)
+            {
+                case TPMmode.Current:
+                    query = query.Where(x => x.TPMmode == TPMmode.Current);
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.Where(x => !x.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.Where(x => x.Disabled);
+                    }
+                    break;
+                case TPMmode.RS:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    //query = query.Where(x => x.TPMmode == TPMmode.RS);
+                    break;
+            }
             return query;
         }
 
