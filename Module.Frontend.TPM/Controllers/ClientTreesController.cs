@@ -606,12 +606,8 @@ namespace Module.Frontend.TPM.Controllers
             {
                 if (model.DemandCode == "" || model.DemandCode == " ")
                 {
-                    model.DemandCode = "";
+                    model.DemandCode = null;
                 }
-            }
-            else
-            {
-                model.DemandCode = "";
             }
 
             activeTree = GetConstraintedQuery();
@@ -663,7 +659,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
+        //[EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IHttpActionResult UpdateNode([FromBody] ClientTree model)
         {
             if (!ModelState.IsValid)
