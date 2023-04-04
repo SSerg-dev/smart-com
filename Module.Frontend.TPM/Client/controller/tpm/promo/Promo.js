@@ -387,11 +387,17 @@
             }
         }
     },
+    
+    isRsMode: function() {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        return mode.data.value == 1;
+    },
 
     massApprovalButtonDisable: function (grid, store) {
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
         var currentRole = App.UserInfo.getCurrentRole();
-        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']);
+        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']) && !this.isRsMode();
         if (isMassButtonVisible) {
             maButton.setVisible(true);
             
