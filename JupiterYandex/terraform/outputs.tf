@@ -38,10 +38,14 @@ kubectl create secret generic deploy-sa -n ${var.k8s-vault-namespace} --from-lit
   }
 }
 
-output "k8s-ip" {
-  value = local.k8s-ip
-}
+# output "k8s-ip" {
+#   value = local.k8s-ip
+# }
 
-output "registry-url" {
-  value = local.registry-url
-}
+# output "registry-url" {
+#   value = local.registry-url
+# }
+
+# output "dataproc-test" {
+#   value = yandex_dataproc_cluster.dataproc.cluster_config[0].subcluster_spec[0].resources
+# }
