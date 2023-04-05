@@ -189,6 +189,7 @@ with DAG(
     parameters = get_parameters()
     child_dag_config = create_child_dag_config(parameters)
     baseline_upload_script = generate_baseline_upload_script(parameters)
+    increase_baseline_upload_script = generate_increase_baseline_upload_script(parameters)
     
     clear_old_baseline = BashOperator(
         task_id='clear_old_baseline',

@@ -150,7 +150,7 @@ def create_file_info(parameters:dict, entity):
     copy_command = f'hadoop dfs -cp -f {src_path} {dst_path}'
     
     
-    return {"InterfaceName":"BASELINE_ANAPLAN", "File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
+    return {"File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
 
 @task
 def get_incr_intermediate_file_metadata(parameters:dict):
@@ -176,17 +176,26 @@ def create_incr_file_info(parameters:dict, entity):
     copy_command = f'hadoop dfs -cp -f {src_path} {dst_path}'
     
     
-    return {"InterfaceName":"INCREASE_BASELINE_ANAPLAN", "File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
+    return {"File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
 
 @task(trigger_rule=TriggerRule.ALL_SUCCESS)
 def add_filebuffer_sp(parameters:dict, entity):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @InterfaceName = ? ,@FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["InterfaceName"],entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
+    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @InterfaceName = 'BASELINE_APOLLO' ,@FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
     print(result)
 
     return result
-	
+
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def add_filebuffer_incr_sp(parameters:dict, entity):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @InterfaceName = 'INCREASE_BASELINE_APOLLO' ,@FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
+    print(result)
+
+    return result
+		
 @task
 def generate_azure_copy_script(parameters:dict, entity):
     src_path = entity['SrcPath']
@@ -237,7 +246,7 @@ with DAG(
                                        do_xcom_push=True,
                                       bash_command=file_info_incr["CopyCommand"],
                                               )
-    add_filebuffer_incr_sp = add_filebuffer_sp(parameters=parameters, entity=file_info_incr)
+    add_filebuffer_incr_sp = add_filebuffer_incr_sp(parameters=parameters, entity=file_info_incr)
     
     copy_remote_to_intermediate >> get_intermediate_file_metadata >> file_info >> copy_file_to_target_folder >> add_filebuffer_sp >> get_intermediate_file_metadata_incr >> file_info_incr >> copy_file_to_target_folder_incr >> add_filebuffer_incr_sp
 
