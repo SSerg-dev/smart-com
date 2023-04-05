@@ -253,6 +253,25 @@ namespace Module.Persist.TPM.Model.History {
         public double? ActualPromoNetIncrementalCOGS { get; set; }
         public double? ActualPromoNetBaseTI { get; set; }
         public double? ActualPromoNSV { get; set; }
+        //
+        public double? PlanPromoBaselineVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW1 { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW2 { get; set; }
+        public double? PlanPromoIncrementalVolume { get; set; }
+        public double? PlanPromoNetIncrementalVolume { get; set; }
+        public double? ActualPromoBaselineVolume { get; set; }
+        public double? ActualPromoPostPromoEffectVolume { get; set; }
+        public double? ActualPromoVolumeByCompensation { get; set; }
+        public double? ActualPromoVolumeSI { get; set; }
+        public double? ActualPromoVolume { get; set; }
+        public double? ActualPromoIncrementalVolume { get; set; }
+        public double? ActualPromoNetIncrementalVolume { get; set; }
+        public double? PlanPromoIncrementalCOGSTn { get; set; }
+        public double? PlanPromoNetIncrementalCOGSTn { get; set; }
+        public double? ActualPromoIncrementalCOGSTn { get; set; }
+        public double? ActualPromoNetIncrementalCOGSTn { get; set; }
+
         public bool? InOut { get; set; }
         // Id операции (по сути транзакции) для предотвращения дублирования
         public Guid? OperationId { get; set; }

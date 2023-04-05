@@ -43,6 +43,7 @@ BCP_SEPARATOR = '0x01'
 CSV_SEPARATOR = '\u0001'
 TAGS=["jupiter", "baseline", "dev"]
 BASELINE_ENTITY_NAME='BaseLine'
+INCREASE_BASELINE_ENTITY_NAME='IncreaseBaseLine'
 
 def separator_convert_hex_to_string(sep):
     sep_map = {'0x01':'\x01'}
@@ -151,6 +152,25 @@ def generate_baseline_upload_script(parameters:dict):
     return script  
 
 @task
+def generate_increase_baseline_upload_script(parameters:dict):
+    query = mssql_scripts.generate_db_schema_query(white_list=f'{parameters["Schema"]}.{INCREASE_BASELINE_ENTITY_NAME}', black_list=parameters['BlackList'])
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    
+    db_schema_df = odbc_hook.get_pandas_df(query)
+    db_schema_buf = StringIO()
+    db_schema_df.to_csv(db_schema_buf, index=False, sep=CSV_SEPARATOR)
+    db_schema_text = db_schema_buf.getvalue()
+      
+    entities_df = mssql_scripts.generate_table_select_query(
+        parameters["CurrentUploadDate"], parameters["LastUploadDate"], StringIO(db_schema_text))
+    entity_json = json.loads(entities_df.to_json(orient="records"))[0]
+
+    script = '/utils/exec_query.sh "{}" {}{}/{}.csv "{}" {} {} "{}" '.format(entity_json["Extraction"].replace("\'\'", "\'\\'").replace(
+            "\n", " "), parameters["UploadPath"], entity_json["EntityName"], entity_json["EntityName"], parameters["BcpParameters"], BCP_SEPARATOR, entity_json["Schema"], entity_json["Columns"].replace(",", separator_convert_hex_to_string(BCP_SEPARATOR)))
+
+    return script  
+
+@task
 def create_child_dag_config(parameters:dict):
     conf={"parent_run_id":parameters["ParentRunId"],"parent_process_date":parameters["ProcessDate"],"schema":parameters["Schema"],"FileName":parameters["FileName"]}
     return conf
@@ -169,6 +189,7 @@ with DAG(
     parameters = get_parameters()
     child_dag_config = create_child_dag_config(parameters)
     baseline_upload_script = generate_baseline_upload_script(parameters)
+    increase_baseline_upload_script = generate_increase_baseline_upload_script(parameters)
     
     clear_old_baseline = BashOperator(
         task_id='clear_old_baseline',
@@ -181,6 +202,16 @@ with DAG(
                                  bash_command=baseline_upload_script,
                                 )
     
+    clear_old_increase_baseline = BashOperator(
+        task_id='clear_old_increase_baseline',
+        bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}}{{params.EntityName}} ',
+        params={'EntityName': INCREASE_BASELINE_ENTITY_NAME},
+          )
+    
+    copy_increase_baseline_from_source = BashOperator(task_id="copy_increase_baseline_from_source",
+                                 do_xcom_push=True,
+                                 bash_command=increase_baseline_upload_script,
+                                )
     
     trigger_jupiter_input_baseline_processing = TriggerDagRunOperator(
         task_id="trigger_jupiter_input_baseline_processing",
@@ -199,6 +230,6 @@ with DAG(
     complete_filebuffer_status = complete_filebuffer_status_sp(parameters)
     error_filebuffer_status = error_filebuffer_status_sp(parameters)
     
-    child_dag_config >> baseline_upload_script >> clear_old_baseline >>  copy_baseline_from_source >> trigger_jupiter_input_baseline_processing >> trigger_jupiter_update_baseline >> [complete_filebuffer_status,error_filebuffer_status]
+    child_dag_config >> baseline_upload_script >> clear_old_baseline >>  copy_baseline_from_source >> increase_baseline_upload_script >> clear_old_increase_baseline >>  copy_increase_baseline_from_source >> trigger_jupiter_input_baseline_processing >> trigger_jupiter_update_baseline >> [complete_filebuffer_status,error_filebuffer_status]
     
 

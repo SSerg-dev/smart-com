@@ -211,7 +211,7 @@ finalDf=finalDf.dropDuplicates(['G_HIERARCHY_ID','ZREP','START_DATE','END_DATE']
 finalDf.count()
 
 
-finalJupiterDf=finalDf.withColumn("UNIT_OF_MEASURE",lit("CS")).select('G_HIERARCHY_ID','ZREP',col('PRICE_CS').alias('PRICE'),'START_DATE',col('END_DATE').alias('FINISH_DATE'),'UNIT_OF_MEASURE','CURRENCY')
+finalJupiterDf=finalDf.withColumn("UNIT_OF_MEASURE",lit("CS")).select('G_HIERARCHY_ID','ZREP',col('PRICE_CS').alias('PRICE'),'START_DATE',col('END_DATE').alias('FINISH_DATE'),'UNIT_OF_MEASURE','CURRENCY','RELEASE_STATUS')
 finalDf=finalDf.select('G_HIERARCHY_ID','MATERIAL','ZREP','PRICE_CS','PRICE_KG','PRICE_ST','START_DATE','END_DATE','RELEASE_STATUS')
 
 dupsDf=finalDf\

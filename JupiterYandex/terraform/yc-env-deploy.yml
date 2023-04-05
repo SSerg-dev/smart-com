@@ -1,0 +1,78 @@
+name: $(tfProjectName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+ paths:
+   include:
+     - 'JupiterYandex/terraform/*'
+ branches:
+   include:
+    - develop
+
+stages:
+- stage: Plan
+  jobs:
+  - job:
+    steps:
+    - bash: mv .terraformrc ~/.terraformrc
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Registry Config    
+    - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Init
+    - bash: terraform validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Validate
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -input=false -out deployment.tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Plan
+
+- stage: Apply
+  dependsOn: [Plan]
+  condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
+  jobs:
+  - job:
+    steps:
+    - bash: |
+        yc config profile create sa-terraform
+        yc config set service-account-key authorized_key.json
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: YC Cli Config   
+    - bash: mv .terraformrc ~/.terraformrc
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Config    
+    - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Init
+    - bash: terraform validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Validate
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -input=false -out deployment.tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Plan
+    - bash: terraform apply -input=false deployment.tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Apply
+
+- stage: Destroy
+  dependsOn: [Plan]
+  condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], true))
+  jobs:
+  - job:
+    steps:
+    - bash: |
+        yc config profile create sa-terraform
+        yc config set service-account-key authorized_key.json
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: YC Cli Config   
+    - bash: mv .terraformrc ~/.terraformrc
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Config    
+    - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Init
+    - bash: terraform validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Validate
+    - bash: terraform destroy -auto-approve -var-file=$(tfProjectName).tfvars
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Destroy

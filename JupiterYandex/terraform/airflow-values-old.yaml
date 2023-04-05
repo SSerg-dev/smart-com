@@ -1,0 +1,41 @@
+executor: KubernetesExecutor
+loadExamples: false
+rbac.create: true
+redis.enabled: false
+serviceaccount.create: true
+dags:
+  persistence:
+    enabled: false
+  gitSync:
+    enabled: true
+    repo: ${airflowRepoPath}
+    subPath: ""
+    branch: main
+images:
+  airflow:
+    pullPolicy: Always
+    repository: wrmtv40/demo-tools
+    tag: airflow-hadoop-client
+logs:
+  persistence:
+    enabled: true
+    existingClaim: airflow-logs-pvc
+workers:
+  extraVolumeMounts:  [ { "name" : "airflow-source-code", "mountPath" : "/tmp/data" } ]
+  extraVolumes: [ {"name" : "airflow-source-code", "persistentVolumeClaim" : {"claimName": "airflow-source-code-pvc"} } ]
+webserver:
+  service:
+    type: LoadBalancer
+    annotations:
+      yandex.cloud/load-balancer-type: internal
+      yandex.cloud/subnet-id: "${subnetId}"
+    ports:
+      - name: airflow-ui
+        port: "8080"
+    loadBalancerIP: ~
+    loadBalancerSourceRanges: []
+env: 
+  - name: "AIRFLOW__SECRETS__BACKEND"
+    value : "airflow.providers.hashicorp.secrets.vault.VaultBackend"
+  - name: "AIRFLOW__SECRETS__BACKEND_KWARGS"
+    value : '{"connections_path": "connections", "variables_path": "variables", "config_path": null, "url": "http://vault.vault.svc:8200", "auth_type": "kubernetes", "kubernetes_role":"airflow","kv_engine_version": 2}'
