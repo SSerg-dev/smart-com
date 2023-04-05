@@ -3478,6 +3478,10 @@
     <Compile Include="Migrations\202303311213116_PromoROIReportView_Add_ML.designer.cs">
       <DependentUpon>202303311213116_PromoROIReportView_Add_ML.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304050724113_Empty_ML_PriceIncrease.cs" />
+    <Compile Include="Migrations\202304050724113_Empty_ML_PriceIncrease.designer.cs">
+      <DependentUpon>202304050724113_Empty_ML_PriceIncrease.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6543,6 +6547,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303311213116_PromoROIReportView_Add_ML.resx">
       <DependentUpon>202303311213116_PromoROIReportView_Add_ML.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304050724113_Empty_ML_PriceIncrease.resx">
+      <DependentUpon>202304050724113_Empty_ML_PriceIncrease.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
