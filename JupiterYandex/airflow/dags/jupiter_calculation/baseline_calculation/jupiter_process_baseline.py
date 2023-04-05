@@ -204,7 +204,7 @@ with DAG(
     clear_old_increase_baseline = BashOperator(
         task_id='clear_old_increase_baseline',
         bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}}{{params.EntityName}} ',
-        params={'EntityName': BASELINE_INCREASE_ENTITY_NAME},
+        params={'EntityName': INCREASE_BASELINE_ENTITY_NAME},
           )
     
     copy_increase_baseline_from_source = BashOperator(task_id="copy_increase_baseline_from_source",

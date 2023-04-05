@@ -233,7 +233,7 @@ with DAG(
     
     get_intermediate_file_metadata_incr = get_incr_intermediate_file_metadata(parameters)
     file_info_incr = create_incr_file_info(parameters=parameters, entity=get_intermediate_file_metadata_incr)
-    copy_file_to_target_folder_incr = BashOperator(task_id="copy_file_to_target_folder",
+    copy_file_to_target_folder_incr = BashOperator(task_id="copy_file_to_target_folder_incr",
                                        do_xcom_push=True,
                                       bash_command=file_info_incr["CopyCommand"],
                                               )
