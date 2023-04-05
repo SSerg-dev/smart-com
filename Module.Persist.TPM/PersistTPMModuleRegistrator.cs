@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Web.Http.OData.Builder;
 
 namespace Module.Persist.TPM
@@ -176,6 +177,10 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
             modelBuilder.Entity<CloudTask>();
+            modelBuilder.Entity<DiscountRange>();
+            modelBuilder.Entity<DurationRange>();
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DiscountRange);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DurationRange);
         }
 
 

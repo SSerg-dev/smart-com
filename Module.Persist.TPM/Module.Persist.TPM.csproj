@@ -3482,6 +3482,10 @@
     <Compile Include="Migrations\202304050724113_Empty_ML_PriceIncrease.designer.cs">
       <DependentUpon>202304050724113_Empty_ML_PriceIncrease.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304050832193_Add_PlanPostPromoEffect.cs" />
+    <Compile Include="Migrations\202304050832193_Add_PlanPostPromoEffect.designer.cs">
+      <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3634,9 +3638,12 @@
     <Compile Include="Model\TPM\CloudTask.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
+    <Compile Include="Model\TPM\DiscountRange.cs" />
+    <Compile Include="Model\TPM\DurationRange.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
     <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\IncreaseBaseLine.cs" />
+    <Compile Include="Model\TPM\PlanPostPromoEffect.cs" />
     <Compile Include="Model\TPM\PromoPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductPriceIncrease.cs" />
@@ -6550,6 +6557,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304050724113_Empty_ML_PriceIncrease.resx">
       <DependentUpon>202304050724113_Empty_ML_PriceIncrease.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304050832193_Add_PlanPostPromoEffect.resx">
+      <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
