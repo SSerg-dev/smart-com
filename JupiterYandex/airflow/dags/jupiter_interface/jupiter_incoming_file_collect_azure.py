@@ -211,7 +211,7 @@ def generate_entity_list(parameters:dict):
     dst_dir=parameters['DstDir'] 
     dst_incr_dir=parameters['DstIncrDir'] 
     entities = [
-              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE_WO_PRICING/BASELINE_WO_PRICING.csv','DstPath':dst_dir},
+              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE_WO_PRICING/BASELINE_WO_PRICING_0.csv','DstPath':dst_dir},
               {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE/BASELINE_0.csv','DstPath':dst_incr_dir},
              ]
     return entities	
