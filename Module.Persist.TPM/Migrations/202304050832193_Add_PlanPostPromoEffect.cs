@@ -60,6 +60,8 @@ namespace Module.Persist.TPM.Migrations
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Id);
             
+            SqlString = SqlString.Replace("DefaultSchemaSetting", defaultSchema);
+            Sql(SqlString);
         }
         
         public override void Down()
@@ -80,5 +82,23 @@ namespace Module.Persist.TPM.Migrations
             DropTable($"{defaultSchema}.DiscountRange");
             DropTable($"{defaultSchema}.PlanPostPromoEffect");
         }
+        
+        private string SqlString = @"
+            INSERT INTO [DefaultSchemaSetting].[DiscountRange] ([Id], [Name], [MinValue], [MaxValue]) VALUES
+            (NEWID(), '0 – 5%', 0, 5),
+            (NEWID(), '6 – 10%', 6, 10),
+            (NEWID(), '11 – 15%', 11, 15),
+            (NEWID(), '16 – 20%', 16, 20),
+            (NEWID(), '21 – 25%', 21, 25),
+            (NEWID(), '26 – 30%', 26, 30),
+            (NEWID(), '31 – 35%', 31, 35),
+            (NEWID(), '36 – 40%', 36, 40)
+            GO
+            INSERT INTO [DefaultSchemaSetting].[DurationRange] ([Id], [Name], [MinValue], [MaxValue]) VALUES
+               (NEWID(), '0 – 7', 0, 7),
+               (NEWID(), '8 – 14', 8, 14),
+               (NEWID(), '15 – 21', 15, 21),
+               (NEWID(), '22 – 0', 22, 0)
+            GO";
     }
 }
