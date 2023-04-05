@@ -7,6 +7,13 @@ locals {
         "key_algorithm": yandex_iam_service_account_key.deploy-sa-auth-key.key_algorithm,
         "public_key": yandex_iam_service_account_key.deploy-sa-auth-key.public_key,
         "private_key": yandex_iam_service_account_key.deploy-sa-auth-key.private_key})
+  dataproc-sa-key-json = jsonencode({"id": yandex_iam_service_account_key.dataproc-sa-auth-key.id,
+      "service_account_id": yandex_iam_service_account.dataproc-sa.id,
+      "created_at": yandex_iam_service_account_key.dataproc-sa-auth-key.created_at,
+      "key_algorithm": yandex_iam_service_account_key.dataproc-sa-auth-key.key_algorithm,
+      "public_key": yandex_iam_service_account_key.dataproc-sa-auth-key.public_key,
+      "private_key": yandex_iam_service_account_key.dataproc-sa-auth-key.private_key})
+  dataproc-sa-uri = "yandexcloud://:admin@?extra__yandexcloud__folder_id=&extra__yandexcloud__oauth=&extra__yandexcloud__public_ssh_key=&extra__yandexcloud__service_account_json=${urlencode(local.dataproc-sa-key-json)}&extra__yandexcloud__service_account_json_path="
 }
 
 resource "null_resource" "vault-secrets" {
@@ -21,6 +28,7 @@ yc managed-kubernetes cluster get-credentials ${var.k8s-name} --internal --folde
 TOKEN=`kubectl get secret vault-init -n ${var.k8s-vault-namespace} -o jsonpath='{.data.token}' | base64 --decode`
 kubectl exec --stdin=true vault-0 -n ${var.k8s-vault-namespace} -- vault login -no-print=true $TOKEN
 kubectl exec --stdin=true vault-0 -n ${var.k8s-vault-namespace} -- vault kv put secret/ConnectionStrings K8s="${local.k8s-ip}" Registry="${local.registry-url}"
+kubectl exec --stdin=true vault-0 -n ${var.k8s-vault-namespace} -- vault kv put secret/connections/yandexcloud_default conn_uri="${local.dataproc-sa-uri}"
     EOT
   }
 }
@@ -48,4 +56,14 @@ kubectl create secret generic deploy-sa -n ${var.k8s-vault-namespace} --from-lit
 
 # output "dataproc-test" {
 #   value = yandex_dataproc_cluster.dataproc.cluster_config[0].subcluster_spec[0].resources
+# }
+
+# output "dataproc-json" {
+#   sensitive = true
+#   value = local.dataproc-sa-key-json
+# }
+
+# output "dataproc-uri" {
+#   sensitive = true
+#   value = local.dataproc-sa-uri
 # }

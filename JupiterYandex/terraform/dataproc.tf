@@ -39,6 +39,11 @@ resource "yandex_iam_service_account_static_access_key" "dataproc-sa-key" {
   service_account_id = yandex_iam_service_account.dataproc-sa.id
 }
 
+resource "yandex_iam_service_account_key" "dataproc-sa-auth-key" {
+  service_account_id = yandex_iam_service_account.dataproc-sa.id
+  key_algorithm      = "RSA_4096"
+}
+
 resource "yandex_dataproc_cluster" "dataproc" {
   folder_id           = yandex_resourcemanager_folder.folder.id
   bucket              = var.bucket-name
