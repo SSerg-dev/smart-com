@@ -163,7 +163,7 @@ with DAG(
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,
-    max_active_runs=3,
+    max_active_runs=1,
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
@@ -174,13 +174,14 @@ with DAG(
         task_id='clear_old_baseline',
         bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}}{{params.EntityName}} ',
         params={'EntityName': BASELINE_ENTITY_NAME},
-    )
+          )
     
     copy_baseline_from_source = BashOperator(task_id="copy_baseline_from_source",
                                  do_xcom_push=True,
                                  bash_command=baseline_upload_script,
-    )
-
+                                )
+    
+    
     trigger_jupiter_input_baseline_processing = TriggerDagRunOperator(
         task_id="trigger_jupiter_input_baseline_processing",
         trigger_dag_id="jupiter_input_baseline_processing",  
@@ -198,6 +199,6 @@ with DAG(
     complete_filebuffer_status = complete_filebuffer_status_sp(parameters)
     error_filebuffer_status = error_filebuffer_status_sp(parameters)
     
-    child_dag_config >> baseline_upload_script >> clear_old_baseline >> copy_baseline_from_source >> trigger_jupiter_input_baseline_processing >> trigger_jupiter_update_baseline >> [complete_filebuffer_status,error_filebuffer_status]
+    child_dag_config >> baseline_upload_script >> clear_old_baseline >>  copy_baseline_from_source >> trigger_jupiter_input_baseline_processing >> trigger_jupiter_update_baseline >> [complete_filebuffer_status,error_filebuffer_status]
     
 
