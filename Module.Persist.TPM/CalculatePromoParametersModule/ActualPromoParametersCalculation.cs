@@ -183,8 +183,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (promo.IsOnInvoice)
                         {
-                            promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
-                            promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW2 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                            throw new NotImplementedException();
+                            //promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                            //promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW2 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
                         }
 
                         promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) + (promo.ActualPromoPostPromoEffectLSV ?? 0);

@@ -3486,6 +3486,10 @@
     <Compile Include="Migrations\202304050832193_Add_PlanPostPromoEffect.designer.cs">
       <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304061159140_PPE_Change_models.cs" />
+    <Compile Include="Migrations\202304061159140_PPE_Change_models.designer.cs">
+      <DependentUpon>202304061159140_PPE_Change_models.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6560,6 +6564,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304050832193_Add_PlanPostPromoEffect.resx">
       <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304061159140_PPE_Change_models.resx">
+      <DependentUpon>202304061159140_PPE_Change_models.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

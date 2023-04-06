@@ -206,8 +206,9 @@ namespace Module.Host.TPM.Handlers
 
                 if (promo.IsOnInvoice)
                 {
-                    promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
-                    promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW2 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                    throw new NotImplementedException();
+                    //promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW1 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
+                    //promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (clientTree.PostPromoEffectW2 / (clientTree.PostPromoEffectW1 + clientTree.PostPromoEffectW2));
                 }
 
                 // Если есть от чего считать долю.

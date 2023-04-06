@@ -5,6 +5,7 @@ using Persist;
 using Module.Persist.TPM.Utils;
 using Module.Persist.TPM.Model.SimpleModel;
 using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace Module.Persist.TPM.CalculatePromoParametersModule
 {
@@ -21,11 +22,19 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 Promo promo = context.Set<Promo>()
                     .Include(g => g.PromoPriceIncrease)
+                    .Include(g => g.PromoProducts)
                     .Where(x => x.Id == promoId && !x.Disabled)
                     .FirstOrDefault();
 
                 ResetValues(promo, context);
-                double? sumPlanProductBaseLineLSV = context.Set<PromoProduct>().Where(x => x.PromoId == promoId && !x.Disabled).Sum(x => x.PlanProductBaselineLSV);
+                List<PromoProduct> promoProducts = promo.PromoProducts
+                    .Where(x => !x.Disabled)
+                    .ToList();
+                double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
+                double sumPlanProductPostPromoEffectVolumeW1 = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW1);
+                double sumPlanProductPostPromoEffectVolumeW2 = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW2);
+                double sumPlanProductPostPromoEffectLSVW1 = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectLSVW1);
+                double sumPlanProductPostPromoEffectLSVW2 = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectLSVW2);
                 ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
                 //promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
@@ -66,23 +75,20 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             promo.PlanPromoTotalCost = (promo.PlanPromoCost ?? 0) + (promo.PlanPromoBaseTI ?? 0);
 
-                            if (clientTree != null)
-                            {
-                                //TODO: Уточнить насчет деления на 100
-                                promo.PlanPromoPostPromoEffectLSVW1 = promo.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
-                                promo.PlanPromoPostPromoEffectLSVW2 = promo.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
-                                promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSVW1 + promo.PlanPromoPostPromoEffectLSVW2;
+                            //TODO: Уточнить насчет деления на 100
+                            promo.PlanPromoPostPromoEffectLSVW1 = sumPlanProductPostPromoEffectLSVW1;
+                            promo.PlanPromoPostPromoEffectLSVW2 = sumPlanProductPostPromoEffectLSVW2;
+                            promo.PlanPromoPostPromoEffectLSV = promo.PlanPromoPostPromoEffectLSVW1 + promo.PlanPromoPostPromoEffectLSVW2;
 
-                                promo.PlanPromoPostPromoEffectVolumeW1 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW1 / 100;
-                                promo.PlanPromoPostPromoEffectVolumeW2 = promo.PlanPromoBaselineVolume * clientTree.PostPromoEffectW2 / 100;
-                                promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
-                                // PriceIncrease
-                                if (promo.PromoPriceIncrease != null)
-                                {
-                                    var PlanPromoPostPromoEffectLSVW1PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW1 / 100;
-                                    var PlanPromoPostPromoEffectLSVW2PI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * clientTree.PostPromoEffectW2 / 100;
-                                    promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = PlanPromoPostPromoEffectLSVW1PI + PlanPromoPostPromoEffectLSVW2PI;
-                                }
+                            promo.PlanPromoPostPromoEffectVolumeW1 = sumPlanProductPostPromoEffectVolumeW1;
+                            promo.PlanPromoPostPromoEffectVolumeW2 = sumPlanProductPostPromoEffectVolumeW2;
+                            promo.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
+                            // PriceIncrease
+                            if (promo.PromoPriceIncrease != null)
+                            {
+                                var PlanPromoPostPromoEffectLSVW1PI = sumPlanProductPostPromoEffectLSVW1;
+                                var PlanPromoPostPromoEffectLSVW2PI = sumPlanProductPostPromoEffectLSVW2;
+                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectLSV = PlanPromoPostPromoEffectLSVW1PI + PlanPromoPostPromoEffectLSVW2PI;
                             }
 
                             promo.PlanPromoNetIncrementalLSV = (promo.PlanPromoIncrementalLSV ?? 0) + (promo.PlanPromoPostPromoEffectLSV ?? 0);

@@ -1202,8 +1202,6 @@ namespace Module.Frontend.TPM.Controllers
             IsBeforeEnd = treeNode.IsBeforeEnd;
             DaysEnd = treeNode.DaysEnd;
             IsDaysEnd = treeNode.IsDaysEnd;
-            PostPromoEffectW1 = treeNode.PostPromoEffectW1;
-            PostPromoEffectW2 = treeNode.PostPromoEffectW2;
             LogoFileName = treeNode.LogoFileName;
             DMDGroup = treeNode.DMDGroup;
             DistrMarkUp = treeNode.DistrMarkUp;
