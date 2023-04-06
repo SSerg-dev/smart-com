@@ -166,16 +166,16 @@ with DAG(
         task_id='clear_old_increase_baseline',
         bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}}{{params.EntityName}} ',
         params={'EntityName': INCREASE_BASELINE_ENTITY_NAME},
-          )
+    )
     
     copy_increase_baseline_from_source = BashOperator(task_id="copy_increase_baseline_from_source",
                                  do_xcom_push=True,
                                  bash_command=increase_baseline_upload_script,
-                                )
+    )
     
     trigger_jupiter_input_baseline_processing = TriggerDagRunOperator(
         task_id="trigger_jupiter_input_baseline_processing",
-        trigger_dag_id="jupiter_input_baseline_processing",  
+        trigger_dag_id="jupiter_input_increase_baseline_processing",  
         conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
         wait_for_completion = True,
     )                                      
