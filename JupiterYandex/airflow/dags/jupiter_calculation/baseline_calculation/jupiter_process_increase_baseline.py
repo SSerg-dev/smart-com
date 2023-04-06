@@ -11,12 +11,12 @@ from airflow.models import Variable
 from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
-# from airflow.operators.trigger_dagrun import TriggerDagRunOperator
-from cloud_scripts.trigger_dagrun import TriggerDagRunOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.hooks.base_hook import BaseHook
 from airflow.providers.hashicorp.hooks.vault import VaultHook
 from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.ssh.hooks.ssh import SSHHook
 
 import uuid
 from io import StringIO
@@ -28,10 +28,10 @@ import json
 import pandas as pd
 import glob
 import os
-import base64
-
 import struct
 from contextlib import closing
+from pathlib import Path
+import base64
 
 
 MSSQL_CONNECTION_NAME = 'odbc_jupiter'
@@ -42,15 +42,16 @@ S3_BUCKET_NAME_FOR_JOB_LOGS = 'jupiter-app-test-storage'
 BCP_SEPARATOR = '0x01'
 CSV_SEPARATOR = '\u0001'
 TAGS=["jupiter", "baseline", "dev"]
-BASELINE_ENTITY_NAME='BaseLine'
-BASELINE_OUTPUT_DIR='BaseLine.CSV/*.csv'
-INCREASE_BASELINE_OUTPUT_DIR='IncreaseBaseLine.CSV/*.csv'
-NEW_BASELINE_OUTPUT_DIR='NewBaseLine.CSV/*.csv'
-NEW_INCREASE_BASELINE_OUTPUT_DIR='NewIncreaseBaseLine.CSV/*.csv'
+INCREASE_BASELINE_ENTITY_NAME='IncreaseBaseLine'
 
 def separator_convert_hex_to_string(sep):
     sep_map = {'0x01':'\x01'}
     return sep_map.get(sep, sep)
+
+def handle_datetimeoffset(dto_value):
+    tup = struct.unpack("<6hI2h", dto_value)  # e.g., (2017, 3, 16, 10, 35, 18, 0, -6, 0)
+    tweaked = [tup[i] // 100 if i == 6 else tup[i] for i in range(len(tup))]
+    return "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}.{:07d} {:+03d}:{:02d}".format(*tweaked)
 
 @task(multiple_outputs=True)
 def get_parameters(**kwargs):
@@ -73,16 +74,14 @@ def get_parameters(**kwargs):
     output_path = Variable.get("OutputPath")
     white_list = Variable.get("WhiteList",default_var=None)
     black_list = Variable.get("BlackList",default_var=None)
-    upload_path = f'{raw_path}/{execution_date}/'
+    upload_path = f'{raw_path}/SOURCES/JUPITER/'
     system_name = Variable.get("SystemName")
     last_upload_date = Variable.get("LastUploadDate")
+    baseline_raw_path = f'{raw_path}/SOURCES/INCREASE_BASELINE/'
     
     db_conn = BaseHook.get_connection(MSSQL_CONNECTION_NAME)
     bcp_parameters =  base64.b64encode(('-S {} -d {} -U {} -P {}'.format(db_conn.host, db_conn.schema, db_conn.login,db_conn.password)).encode()).decode()
-    odbc_extras = mssql_scripts.get_odbc_extras_string(db_conn)
-    bcp_import_parameters =  base64.b64encode((f'DRIVER=ODBC Driver 18 for SQL Server;SERVER={db_conn.host};DATABASE={db_conn.schema};UID={db_conn.login};PWD={db_conn.password};{odbc_extras}').encode()).decode()
-    baseline_output_path=f'{output_path}/BASELINE/{execution_date}/'
-    
+
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,
                   "OutputPath": output_path,
@@ -101,94 +100,96 @@ def get_parameters(**kwargs):
                   "ParentRunId":parent_run_id,
                   "FileName":file_name,
                   "CreateDate":create_date,
-                  "BcpImportParameters":bcp_import_parameters,
-                  "BaseLineOutputPath":baseline_output_path,
+                  "BaselineRawPath":baseline_raw_path,
                   }
     print(parameters)
     return parameters
 
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def complete_filebuffer_status_sp(parameters:dict):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    result = odbc_hook.run(sql=f"""exec [{schema}].[UpdateFileBufferStatus] @Success = ? ,@InterfaceName = ?,  @CreateDate = ? """, parameters=(1,"INCREASE_BASELINE_APOLLO", parameters["CreateDate"]))
+    print(result)
+
+    return result
+
+@task(trigger_rule=TriggerRule.ONE_FAILED)
+def error_filebuffer_status_sp(parameters:dict):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    result = odbc_hook.run(sql=f"""exec [{schema}].[UpdateFileBufferStatus] @Success = ? ,@InterfaceName = ?,  @CreateDate = ? """, parameters=(0,"INCREASE_BASELINE_APOLLO", parameters["CreateDate"]))
+    print(result)
+
+    return result
+
+@task
+def generate_increase_baseline_upload_script(parameters:dict):
+    query = mssql_scripts.generate_db_schema_query(white_list=f'{parameters["Schema"]}.{INCREASE_BASELINE_ENTITY_NAME}', black_list=parameters['BlackList'])
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    
+    db_schema_df = odbc_hook.get_pandas_df(query)
+    db_schema_buf = StringIO()
+    db_schema_df.to_csv(db_schema_buf, index=False, sep=CSV_SEPARATOR)
+    db_schema_text = db_schema_buf.getvalue()
+      
+    entities_df = mssql_scripts.generate_table_select_query(
+        parameters["CurrentUploadDate"], parameters["LastUploadDate"], StringIO(db_schema_text))
+    entity_json = json.loads(entities_df.to_json(orient="records"))[0]
+
+    script = '/utils/exec_query.sh "{}" {}{}/{}.csv "{}" {} {} "{}" '.format(entity_json["Extraction"].replace("\'\'", "\'\\'").replace(
+            "\n", " "), parameters["UploadPath"], entity_json["EntityName"], entity_json["EntityName"], parameters["BcpParameters"], BCP_SEPARATOR, entity_json["Schema"], entity_json["Columns"].replace(",", separator_convert_hex_to_string(BCP_SEPARATOR)))
+
+    return script  
+
 @task
 def create_child_dag_config(parameters:dict):
-    conf={"parent_run_id":parameters["ParentRunId"],"parent_process_date":parameters["ProcessDate"],"schema":parameters["Schema"]}
+    conf={"parent_run_id":parameters["ParentRunId"],"parent_process_date":parameters["ProcessDate"],"schema":parameters["Schema"],"FileName":parameters["FileName"]}
     return conf
 
-@task
-def disable_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[DisableBaseLine]""")
-    print(result)
-
-    return result
-
-@task
-def update_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[UpdateBaseline]""")
-    print(result)
-
-    return result
-
-@task
-def add_new_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[AddNewBaseline]""")
-    print(result)
-
-    return result
-
-@task
-def enable_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[EnableBaseLine]""")
-    print(result)
-
-    return result
-
-@task
-def truncate_temp_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""truncate table [{schema}].[TEMP_BASELINE]""")
-    print(result)
-
-    return result
 
 with DAG(
-    dag_id='jupiter_update_baseline',
+    dag_id='jupiter_process_baseline',
     schedule_interval=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
     tags=TAGS,
     render_template_as_native_obj=True,
-    default_args={'retries': 2},	
+    max_active_runs=1,
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
-    dis_baseline = disable_baseline(parameters)
-
-    truncate_temp_baseline1 = truncate_temp_baseline(parameters)
-
-    upload_baseline = BashOperator(task_id="upload_baseline",
+    child_dag_config = create_child_dag_config(parameters)
+    increase_baseline_upload_script = generate_increase_baseline_upload_script(parameters)
+    
+    clear_old_increase_baseline = BashOperator(
+        task_id='clear_old_increase_baseline',
+        bash_command='hadoop dfs -rm -r {{ti.xcom_pull(task_ids="get_parameters",key="UploadPath")}}{{params.EntityName}} ',
+        params={'EntityName': INCREASE_BASELINE_ENTITY_NAME},
+          )
+    
+    copy_increase_baseline_from_source = BashOperator(task_id="copy_increase_baseline_from_source",
                                  do_xcom_push=True,
-                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',
-                                 params={'OUT_DIR':BASELINE_OUTPUT_DIR},  
-                                )
-
-    up_baseline=update_baseline(parameters)
-
-    truncate_temp_baseline2 = truncate_temp_baseline(parameters)
-
-    upload_new_baseline = BashOperator(task_id="upload_new_baseline",
-                                 do_xcom_push=True,
-                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',
-                                 params={'OUT_DIR':NEW_BASELINE_OUTPUT_DIR},  
+                                 bash_command=increase_baseline_upload_script,
                                 )
     
-    add_new_bs=add_new_baseline(parameters)
-    enable_baseline = enable_baseline(parameters)
-        
-    dis_baseline >> truncate_temp_baseline1 >> upload_baseline >> up_baseline >> truncate_temp_baseline2 >> upload_new_baseline >> add_new_bs >> enable_baseline
+    trigger_jupiter_input_baseline_processing = TriggerDagRunOperator(
+        task_id="trigger_jupiter_input_baseline_processing",
+        trigger_dag_id="jupiter_input_baseline_processing",  
+        conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
+        wait_for_completion = True,
+    )                                      
+    
+    trigger_jupiter_update_baseline = TriggerDagRunOperator(
+        task_id="trigger_jupiter_update_baseline",
+        trigger_dag_id="jupiter_update_baseline",  
+        conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
+        wait_for_completion = True,
+    )
+    
+    complete_filebuffer_status = complete_filebuffer_status_sp(parameters)
+    error_filebuffer_status = error_filebuffer_status_sp(parameters)
+    
+    child_dag_config >> increase_baseline_upload_script >> clear_old_increase_baseline >> copy_increase_baseline_from_source >> trigger_jupiter_input_baseline_processing >> trigger_jupiter_update_baseline >> [complete_filebuffer_status,error_filebuffer_status]
+    
+

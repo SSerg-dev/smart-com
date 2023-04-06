@@ -114,6 +114,18 @@ def get_unprocessed_baseline_files(parameters:dict, config:dict):
      item.update(config)
     
     return result
+    
+@task
+def get_unprocessed_increase_baseline_files(parameters:dict, config:dict):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    converters = [(-155, handle_datetimeoffset)]
+    result = mssql_scripts.get_records(odbc_hook,sql=f"""exec [{schema}].[GetUnprocessedIncreaseBaselineFiles]""",output_converters=converters)
+    
+    for item in result:
+     item.update(config)
+    
+    return result
 
 with DAG(
     dag_id='jupiter_baseline_dispatcher',
@@ -128,11 +140,17 @@ with DAG(
     parameters = get_parameters()
     child_dag_config = create_child_dag_config(parameters)
     unprocessed_baseline_files = get_unprocessed_baseline_files(parameters,child_dag_config)
+    unprocessed_increase_baseline_files = get_unprocessed_increase_baseline_files(parameters,child_dag_config)
     
     trigger_jupiter_process_baseline = TriggerDagRunOperator.partial(task_id="trigger_jupiter_process_baseline",
                                                                     wait_for_completion = True,
                                                                      trigger_dag_id="jupiter_process_baseline",
                                                                     ).expand(conf=unprocessed_baseline_files)
+    
+    trigger_jupiter_process_increase_baseline = TriggerDagRunOperator.partial(task_id="trigger_jupiter_process_increase_baseline",
+                                                                    wait_for_completion = True,
+                                                                     trigger_dag_id="jupiter_process_increase_baseline",
+                                                                    ).expand(conf=unprocessed_increase_baseline_files)
     
     trigger_jupiter_baseline_calculation = TriggerDagRunOperator(
         task_id="trigger_jupiter_baseline_calculation",
@@ -142,4 +160,4 @@ with DAG(
         trigger_rule=TriggerRule.ALL_DONE
     )  
 
-    trigger_jupiter_process_baseline >> trigger_jupiter_baseline_calculation
+    trigger_jupiter_process_baseline >> trigger_jupiter_process_increase_baseline >> trigger_jupiter_baseline_calculation
