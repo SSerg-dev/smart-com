@@ -15,9 +15,11 @@ namespace Module.Persist.TPM.Model.TPM
 
         [StringLength(255)]
         public string Size { get; set; }
-        public decimal PlanPostPromoEffectW1 { get; set; }
-        public decimal PlanPostPromoEffectW2 { get; set; }
-        
+        public double PlanPostPromoEffectW1 { get; set; }
+        public double PlanPostPromoEffectW2 { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTimeOffset? ModifiedDate { get; set; }
         public Guid DiscountRangeId { get; set; }
         public DiscountRange DiscountRange { get; set; }
         public Guid DurationRangeId { get; set; }
