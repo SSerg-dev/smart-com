@@ -1248,12 +1248,6 @@ namespace Module.Frontend.TPM.Util
             String resultMultiBaseStr = "";
             if (promo.ClientTreeId != null)
             {
-
-                IQueryable<ClientTree> ctQuery = context.Set<ClientTree>().Where(x => x.Type == "root"
-               || (DateTime.Compare(x.StartDate, DateTime.Now) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)));
-                ClientTree ct = ctQuery.FirstOrDefault(y => y.ObjectId == promo.ClientTreeId);
-
-
                 int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
                 if (upBaseClientId.HasValue)
                 {
@@ -1262,7 +1256,7 @@ namespace Module.Frontend.TPM.Util
                 else
                 {
                     resultMultiBaseStr =
-                        String.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, context));
+                        string.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, context));
                 }
 
             }

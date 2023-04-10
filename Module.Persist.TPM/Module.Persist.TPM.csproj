@@ -323,6 +323,7 @@
     <Compile Include="CalculatePromoParametersModule\BaselineAndPriceCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\BudgetsPromoCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\CalculationTaskManager.cs" />
+    <Compile Include="CalculatePromoParametersModule\PlanPostPromoEffectSelection.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoUpliftCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PromoUtils.cs" />
