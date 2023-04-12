@@ -77,6 +77,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     FillPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList());
                 }
 
+                PlanPostPromoEffectSelection.SelectPPEforPromoProduct(promoProductsNotDisabled.ToList(), promo, context);
+
                 foreach (PromoProduct promoProduct in promoProductsNotDisabled)
                 {
                     if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))

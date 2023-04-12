@@ -181,6 +181,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<DurationRange>();
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DiscountRange);
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DurationRange);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.BrandTech);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.ClientTree);
         }
 
 

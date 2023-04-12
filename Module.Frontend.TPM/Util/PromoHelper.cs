@@ -1245,7 +1245,7 @@ namespace Module.Frontend.TPM.Util
         public static void SetPromoByClientTree(Promo promo, DatabaseContext context)
         {
             int? ClientTreeId = promo.ClientTreeId;
-            String resultMultiBaseStr = "";
+            string resultMultiBaseStr = "";
             if (promo.ClientTreeId != null)
             {
                 int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
