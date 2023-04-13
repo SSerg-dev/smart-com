@@ -937,6 +937,18 @@ namespace Module.Persist.TPM
             builder.Entity<COGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<COGS>("COGSs");
             builder.Entity<HistoricalCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalCOGSs");
 
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects");
+            builder.EntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("ExportXLSX");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
+            builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalPlanPostPromoEffects");
+            
             builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
             builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");
             builder.EntitySet<HistoricalPlanCOGSTn>("HistoricalPlanCOGSTns");
