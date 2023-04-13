@@ -20,6 +20,7 @@ using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
+using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
@@ -173,7 +174,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 if (model.IsSplittable)//Split subranges
                 {
-                    Promo promo = SplitSubranges(model);
+                    Promo promo = SplitSubranges(model, false);
 
                     return Created(promo);
                 }
@@ -187,13 +188,13 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private Promo SplitSubranges(Promo model)
+        private Promo SplitSubranges(Promo model, bool patch)
         {
             Promo promo = new Promo();
             List<string> productTreeObjectIds = model.ProductTreeObjectIds.Split(';').ToList();
             List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
-            List<string> productSubranges = model.ProductSubrangesList == null ? null : model.ProductSubrangesList.Split(';').ToList();
-            List<string> productSubrangesRU = model.ProductSubrangesListRU == null ? null : model.ProductSubrangesListRU.Split(';').ToList();
+            List<string> productSubranges = model.ProductSubrangesList?.Split(';').ToList();
+            List<string> productSubrangesRU = model.ProductSubrangesListRU?.Split(';').ToList();
 
             inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
             for (int i = 0; i < productTreeObjectIds.Count(); i++)
@@ -271,11 +272,8 @@ namespace Module.Frontend.TPM.Controllers
                 throw new Exception(message);
             }
 
-            Promo proxy = Context.Set<Promo>().Create<Promo>();
-            var configuration = new MapperConfiguration(cfg =>
-                cfg.CreateMap<Promo, Promo>().ReverseMap());
-            var mapper = configuration.CreateMapper();
-            Promo result = mapper.Map(model, proxy);
+            Promo proxy = new Promo();
+            Promo result = AutomapperProfiles.PromoCopy(model, proxy);
 
             if (result.CreatorId == null)
             {
@@ -374,10 +372,11 @@ namespace Module.Frontend.TPM.Controllers
                 Promo promo = patch.GetEntity();
                 if (promo.IsSplittable)
                 {
+                    patch.Patch(model);
                     model.Name = promo.Name ?? model.Name;
-                    model.PromoStatusId = new Guid("FE7FFE19-4754-E911-8BC8-08606E18DF3F");//set status "Draft(Published)" by Promo
+                    model.PromoStatusId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == StateNames.DRAFT_PUBLISHED && !s.Disabled).Id;
                     model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
-                    SplitSubranges(model);
+                    SplitSubranges(model, true);
                     DeletePromo(key);
                     return Updated(model);
                 }
