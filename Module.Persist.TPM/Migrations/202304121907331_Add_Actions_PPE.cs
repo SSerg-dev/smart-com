@@ -31,8 +31,7 @@ namespace Module.Persist.TPM.Migrations
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'FullImportXLSX', NULL, 1)
                 GO
 
-                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='Administrator')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='Administrator');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -47,8 +46,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='SupportAdministrator')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='SupportAdministrator');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -63,8 +61,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='FunctionalExpert')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='FunctionalExpert');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -79,8 +76,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='DemandPlanning')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='DemandPlanning');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -95,8 +91,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='KeyAccountManager')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='KeyAccountManager');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -106,8 +101,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='CustomerMarketing')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='CustomerMarketing');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -117,8 +111,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='DemandFinance')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='DemandFinance');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -128,8 +121,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='GAManager')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='GAManager');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
@@ -139,8 +131,7 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
-                SET @RoleId = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='SuperReader')
-                GO
+                DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='SuperReader');
 
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])

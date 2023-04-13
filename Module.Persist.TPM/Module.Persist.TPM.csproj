@@ -3495,6 +3495,10 @@
     <Compile Include="Migrations\202304101026500_Change_Types_PPE.designer.cs">
       <DependentUpon>202304101026500_Change_Types_PPE.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304121907331_Add_Actions_PPE.cs" />
+    <Compile Include="Migrations\202304121907331_Add_Actions_PPE.designer.cs">
+      <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3529,6 +3533,7 @@
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
     <Compile Include="Model\History\HistoricalPlanCOGSTn.cs" />
+    <Compile Include="Model\History\HistoricalPlanPostPromoEffect.cs" />
     <Compile Include="Model\History\HistoricalPLUDictionary.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
@@ -6575,6 +6580,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304101026500_Change_Types_PPE.resx">
       <DependentUpon>202304101026500_Change_Types_PPE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304121907331_Add_Actions_PPE.resx">
+      <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
