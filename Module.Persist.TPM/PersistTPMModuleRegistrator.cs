@@ -293,6 +293,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.NonPromoSupportBrandTeches, "NonPromoSupportBrandTeches");
             builder.EntitySet<BrandTech>("BrandTeches").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
             builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
+            builder.EntitySet<BrandTech>("BrandTeches").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
             builder.EntitySet<HistoricalBrandTech>("HistoricalBrandTeches");
             builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Brand, "Brands");
             builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Technology, "Technologies");
@@ -655,6 +657,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.RATIShoppers, "RATIShoppers"); // Для получение только базовых клиентов из иерархии
             builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.TradeInvestments, "TradeInvestments"); // Для получение только базовых клиентов из иерархии
+            builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects"); // Для получение только базовых клиентов из иерархии
             builder.Entity<ClientTree>().Collection.Action("Delete");
             builder.Entity<ClientTree>().Collection.Action("Move");
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
@@ -947,7 +951,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
-            builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalPlanPostPromoEffects");
+            builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
             
             builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
             builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");

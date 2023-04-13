@@ -12,10 +12,8 @@ namespace Module.Persist.TPM.Model.History
         public string Size { get; set; }
         public double PlanPostPromoEffectW1 { get; set; }
         public double PlanPostPromoEffectW2 { get; set; }
-        public Guid DiscountRangeId { get; set; }
-        public DiscountRange DiscountRange { get; set; }
-        public Guid DurationRangeId { get; set; }
-        public DurationRange DurationRange { get; set; }
+        public string DiscountRangeName { get; set; }
+        public string DurationRangeName { get; set; }
 
         private string brandTechName;
         public string BrandTechName
