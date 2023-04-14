@@ -90,8 +90,8 @@ namespace Module.Persist.TPM.Utils
                     .ForMember(pTo => pTo.IncrementalPromoes, opt => opt.Condition(c => c.InOut == false))
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promoes, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Number, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Number, opt => opt.Ignore());
+                    //.ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
                 //cfg.CreateMap<PromoStatus, PromoStatus>()
                 //    .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore());
                 //cfg.CreateMap<Mechanic, Mechanic>()
