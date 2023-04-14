@@ -75,9 +75,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (promo.PromoPriceIncrease.PromoProductPriceIncreases == null)
                 {
                     FillPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList());
-                }
-
-                PlanPostPromoEffectSelection.SelectPPEforPromoProduct(promoProductsNotDisabled.ToList(), promo, context);
+                }                
 
                 foreach (PromoProduct promoProduct in promoProductsNotDisabled)
                 {
@@ -215,6 +213,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (duringTheSave.HasValue && !duringTheSave.Value)
                 {
                     context.SaveChanges();
+                    PlanPostPromoEffectSelection.SelectPPEforPromoProduct(context.Set<PromoProduct>().Where(g=>g.PromoId == promo.Id).ToList(), promo, context);
                 }
 
                 return needReturnToOnApprovalStatus;

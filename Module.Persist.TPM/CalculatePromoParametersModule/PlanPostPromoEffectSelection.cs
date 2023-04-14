@@ -11,22 +11,22 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static bool SelectPPEforPromoProduct(List<PromoProduct> promoProducts, Promo promo, DatabaseContext context)
         {
             ClientTree clientTree = context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == (int)promo.ClientTreeId);
-            var filterProducts = promoProducts.Select(f => f.Product).Select(d => new { d.Brandsegtech, d.Size }).ToList();
-            List<DurationRange> durationRanges = context.Set<DurationRange>().ToList();
-            DurationRange durationRange = durationRanges.OrderBy(g => g.MinValue).FirstOrDefault(g => g.MinValue >= promo.PromoDuration);
-            List<DiscountRange> discountRanges = context.Set<DiscountRange>().ToList();
-            DiscountRange discountRange = discountRanges.OrderBy(g => g.MinValue).FirstOrDefault(g => g.MinValue >= promo.MarsMechanicDiscount);
+            var filterProducts = promoProducts.Select(f => f.Product).Select(d => new { d.BrandsegTech_code, d.Size }).ToList();
+            List<DurationRange> durationRanges = context.Set<DurationRange>().OrderByDescending(g => g.MinValue).ToList();
+            DurationRange durationRange = durationRanges.FirstOrDefault(g => g.MinValue <= promo.PromoDuration);
+            List<DiscountRange> discountRanges = context.Set<DiscountRange>().OrderByDescending(g => g.MinValue).ToList();
+            DiscountRange discountRange = discountRanges.FirstOrDefault(g => g.MinValue <= promo.MarsMechanicDiscount);
             List<PlanPostPromoEffect> planPostPromoEffects = context.Set<PlanPostPromoEffect>()
                 .Include(f => f.BrandTech)
                 .Where(g => g.ClientTreeId == clientTree.Id &&
-                filterProducts.Select(a => a.Brandsegtech).Contains(g.BrandTech.BrandTech_code) &&
-                filterProducts.Select(a => a.Size).Contains(g.Size) &&
                 g.DurationRangeId == durationRange.Id &&
                 g.DiscountRangeId == discountRange.Id)
                 .ToList();
+            planPostPromoEffects = planPostPromoEffects.Where(g => filterProducts.Select(a => a.BrandsegTech_code).Contains(g.BrandTech.BrandTech_code) &&
+                filterProducts.Select(a => a.Size).Contains(g.Size)).ToList();
             foreach (var promoProduct in promoProducts)
             {
-                PlanPostPromoEffect planPostPromoEffect = planPostPromoEffects.FirstOrDefault(g => g.BrandTech.BrandTech_code == promoProduct.Product.Brandsegtech && g.Size == promoProduct.Product.Size);
+                PlanPostPromoEffect planPostPromoEffect = planPostPromoEffects.FirstOrDefault(g => g.BrandTech.BrandTech_code == promoProduct.Product.BrandsegTech_code && g.Size == promoProduct.Product.Size);
                 if (planPostPromoEffect != null)
                 {
                     promoProduct.PlanProductPostPromoEffectW1 = planPostPromoEffect.PlanPostPromoEffectW1;
