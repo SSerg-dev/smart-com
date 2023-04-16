@@ -39,8 +39,8 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('Row_Number', row_number().over(byPriceStartDate))\
       .where(col('Row_Number') == 1).drop('Row_Number')
 
-    calcPlanPromoProductDF = calcPlanPromoProductDF\\
-      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).othwerwise(lit('true')))
+    calcPlanPromoProductDF = calcPlanPromoProductDF\
+      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).othwerwise(lit('true')))\
       .withColumn('Price', col('calcPrice'))\
       .drop('calcPrice')
 
@@ -240,7 +240,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     #####*Calculate plan product parameters*
     #??
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .join(planParamsCorrectionDF, planParamsCorrectionDF.PromoProductPriceIncreaseId == calcPlanPromoProductDF.Id, 'left')\ 
+      .join(planParamsCorrectionDF, planParamsCorrectionDF.PromoProductPriceIncreaseId == calcPlanPromoProductDF.Id, 'left')\
       .select(\
                calcPlanPromoProductDF['*']
               ,when(planParamsCorrectionDF.correctionPlanProductUpliftPercentCorrected.isNull(), calcPlanPromoProductDF.PlanProductUpliftPercent)\
