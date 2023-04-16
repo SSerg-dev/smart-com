@@ -139,7 +139,7 @@ PLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/Promo/Pr
 PLAN_PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/PromoProduct.parquet'
 PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/PromoSupportPromo/PromoSupportPromo.parquet'
 PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/PromoProductPriceIncrease.CSV'
-PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/Promo/PromoPriceIncrease.CSV
+PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/Promo/PromoPriceIncrease.CSV'
 NEW_PROMOPRODUCT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/NewPromoProduct.CSV'
 SERVICEINFO_RESULT_PATH = SETTING_OUTPUT_DIR + '/ServiceInfo/ServiceInfo.CSV'
 NEW_PRODUCTCHANGEINCIDENTS_PATH = SETTING_OUTPUT_DIR + '/ProductChangeIncident/NewProductChangeIncident.CSV'
@@ -810,6 +810,9 @@ resultPromoDF.write.mode("overwrite").parquet(PLAN_PROMO_PARAMETERS_CALCULATION_
 resultPromoSupportPromoDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)
 
 # save increase promo + products
+
+resultIncreasePromoDF = resultIncreasePromoDF.drop('#QCCount')
+resultIncreasePromoProductDF = resultIncreasePromoProductDF.drop('#QCCount')
 
 resultIncreasePromoDF = resultIncreasePromoDF.persist()
 
