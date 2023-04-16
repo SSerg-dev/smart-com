@@ -3315,6 +3315,10 @@
     <Compile Include="Migrations\202302060646430_ModifiedDate_Triggers.Designer.cs">
       <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304160714421_BTL_Increment.cs" />
+    <Compile Include="Migrations\202304160714421_BTL_Increment.Designer.cs">
+      <DependentUpon>202304160714421_BTL_Increment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
@@ -6244,6 +6248,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302060646430_ModifiedDate_Triggers.resx">
       <DependentUpon>202302060646430_ModifiedDate_Triggers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304160714421_BTL_Increment.resx">
+      <DependentUpon>202304160714421_BTL_Increment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

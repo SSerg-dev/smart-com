@@ -68,8 +68,9 @@ namespace Module.Host.TPM.Handlers
                     promoes = promoes.Except(promoesToUnlink).ToList();
                     if (unlinkedPromoIdsList != null)
                     {
-                        var allBTLPromoes = context.Set<BTLPromo>().Where(x => x.BTLId == guidBTLId).Select(x => x.Promo);
+                        var allBTLPromoes = context.Set<BTLPromo>().Where(x => x.BTLId == guidBTLId).ToList().Select(x => x.Promo);
                         unlinkedPromoes.AddRange(allBTLPromoes.Where(x => unlinkedPromoIdsList.Contains(x.Id)));
+                        unlinkedPromoes = unlinkedPromoes.Distinct().ToList();
                         promoes = promoes.Except(unlinkedPromoes).ToList();
                     }
                     var closedPromoes = promoes.Where(x => x.PromoStatus.SystemName == "Closed").ToList();
