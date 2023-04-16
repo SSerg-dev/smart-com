@@ -60,9 +60,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-01-19_scheduled__2023-01-18T22%3A30%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-01-19", "Schema": "Jupiter", "HandlerId": '
- '"218e123f-c88f-4962-88f9-8d1acf0e5951"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T12%3A33%3A06.749342%2B00%3A00_", '
+ '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
+ '"946668af-13b9-426a-a943-266c4cec5ae9"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -114,8 +114,8 @@ SHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'
 CLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'
 CLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'
 DATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'
-CORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'
 CORRECTION_PRICEINCREASE_PATH = DIRECTORY + 'JUPITER/PromoProductCorrectionPriceIncrease'
+CORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'
 INCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'
 PROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'
 COGS_PATH = DIRECTORY + 'JUPITER/COGS'
@@ -191,7 +191,7 @@ promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=
 promoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProduct"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
 .withColumn("AverageMarker",col("AverageMarker").cast(BooleanType()))
-promoProductPriceIncreaseDF = spark.read.csv(PROMOPRODUCT_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+promoProductPriceIncreaseDF = spark.read.csv(PROMOPRODUCT_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 productDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProductDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProduct01DF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
@@ -204,7 +204,7 @@ clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=sc
 clientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeHierarchyView"])
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-correctionPriceIncreaseDF = spark.read.csv(CORRECTION_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PriceIncreaseCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+correctionPriceIncreaseDF = spark.read.csv(CORRECTION_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductCorrectionPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 btlDF = spark.read.csv(BTL_PATH,sep="\u0001",header=True,schema=schemas_map["BTL"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 btlPromoDF = spark.read.csv(BTLPROMO_PATH,sep="\u0001",header=True,schema=schemas_map["BTLPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 incrementalDF = spark.read.csv(INCREMENTAL_PATH,sep="\u0001",header=True,schema=schemas_map["IncrementalPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
@@ -221,7 +221,6 @@ serviceInfoDF = spark.read.csv(SERVICEINFO_PATH,sep="\u0001",header=True,schema=
 ratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep="\u0001",header=True,schema=schemas_map["RATIShopper"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 
 filteredPromoDF = spark.read.format("parquet").load(FILTERED_PROMO_PATH)
-
 filteredIncreasePromoDF = spark.read.format("parquet").load(FILTERED_INCREASE_PROMO_PATH)
 
 print(filteredPromoDF.count())
@@ -249,7 +248,7 @@ priceListDF = priceListDF\
 
 baselineDF = baselineDF\
   .withColumn('StartDate', date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1))
-
+  
 baselineIncreaseDF = baselineIncreaseDF\
   .withColumn('StartDate', date_add(to_date(baselineIncreaseDF.StartDate, 'yyyy-MM-dd'), 1))
 
@@ -302,7 +301,6 @@ disabledPromoDF = promoDF.join(allCalcPlanPromoIdsDF, 'Id', 'left_anti').select(
 # priceList
 planParamsPriceListDF = priceListDF\
   .where(col('Disabled') == 'False')\
-  .where(col('FuturePriceMarker') == 'False')\
   .select(\
            col('StartDate').alias('priceStartDate')
           ,col('EndDate').alias('priceEndDate')
@@ -322,7 +320,7 @@ planParamsFuturePriceListDF = priceListDF\
           ,col('Price').cast(DecimalType(30,6))
           ,col('ClientTreeId').alias('priceClientTreeId')
          )
-
+         
 # baseline
 planParamsBaselineDF = baselineDF\
   .where(col('Disabled') == 'False')\
@@ -332,8 +330,8 @@ planParamsBaselineDF = baselineDF\
           ,col('StartDate').alias('baselineStartDate')\
           ,col('SellInBaselineQTY').cast(DecimalType(30,6))\
           ,col('SellOutBaselineQTY').cast(DecimalType(30,6))\
-  )
-  
+         )
+
 # increase baseline
 planParamsBaselineIncreaseDF = baselineIncreaseDF\
   .where(col('Disabled') == 'False')\
@@ -343,7 +341,7 @@ planParamsBaselineIncreaseDF = baselineIncreaseDF\
           ,col('StartDate').alias('baselineStartDate')\
           ,col('SellInBaselineQTY').cast(DecimalType(30,6))\
           ,col('SellOutBaselineQTY').cast(DecimalType(30,6))\
-  )
+         )
 
 # shares
 planParamsSharesDF = sharesDF.where(col('Disabled') == 'False').drop('Disabled')
@@ -494,19 +492,22 @@ calcPlanPromoDF = calcPlanPromoDF\
           ,lightPromoDF.promoClientPostPromoEffectW2
          )
 
+print(filteredIncreasePromoDF.schema)
+
 #increase
 calcPromoPriceIncreaseDF = promoPriceIncreaseDF\
-  .join(filteredPromoDF, promoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'left')\
+  .join(filteredIncreasePromoDF, promoPriceIncreaseDF.Id == filteredIncreasePromoDF.PromoId, 'left')\
+  .join(calcPlanPromoDF, promoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'left')\
   .select(\
            promoPriceIncreaseDF['*']
           ,calcPlanPromoDF.promoStatusSystemName
          )
 
 calcIncreasePlanPromoProductDF = promoProductPriceIncreaseDF\
-  .join(promoProductDF, calcPromoPriceIncreaseDF.PromoProductId == promoProductDF.Id, 'inner')\
+  .join(promoProductDF, promoProductPriceIncreaseDF.PromoProductId == promoProductDF.Id, 'inner')\
   .join(calcPromoPriceIncreaseDF, calcPromoPriceIncreaseDF.Id == promoProductDF.PromoId, 'inner')\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
-  .select(promoProductPriceIncreaseDF['*'])
+  .select(promoProductPriceIncreaseDF['*'],promoProductDF.ProductId)
 
 calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
@@ -519,7 +520,6 @@ calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF\
           ,productDF.UOM_PC2Case
           ,productDF.CaseVolume
          )
-
 # print(calcPlanPromoProductDF.count())
 # print(calcPlanPromoDF.count())
 
@@ -654,6 +654,7 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
 calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
+
 import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
 calcIncreasePlanPromoProductDF,calcIncreasePlanPromoDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcIncreasePlanPromoDF,allCalcIncreasePlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
@@ -767,6 +768,7 @@ resultPromoDF = allCalcPlanPromoDF.union(disabledPromoDF)
 resultPromoDF = resultPromoDF.drop('#QCCount')
 # ---
 
+
 # promosuportpromo
 resultPromoSupportPromoDF = allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)
 # ---
@@ -809,7 +811,11 @@ resultPromoProductDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMOPRODU
 resultPromoDF.write.mode("overwrite").parquet(PLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH)
 resultPromoSupportPromoDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)
 
+# serviceInfoDF.write.mode("overwrite").parquet(SERVICEINFO_RESULT_PATH)
+
+# newProductChangeIncidentDF.write.mode("overwrite").parquet(NEW_PRODUCTCHANGEINCIDENTS_PATH)
 # save increase promo + products
+
 
 resultIncreasePromoDF = resultIncreasePromoDF.drop('#QCCount')
 resultIncreasePromoProductDF = resultIncreasePromoProductDF.drop('#QCCount')
@@ -818,9 +824,7 @@ resultIncreasePromoDF = resultIncreasePromoDF.persist()
 
 resultIncreasePromoProductDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH)
 resultIncreasePromoDF.write.mode("overwrite").parquet(PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH)
-# serviceInfoDF.write.mode("overwrite").parquet(SERVICEINFO_RESULT_PATH)
 
-# newProductChangeIncidentDF.write.mode("overwrite").parquet(NEW_PRODUCTCHANGEINCIDENTS_PATH)
 
 serviceInfoDF\
 .repartition(1)\
@@ -871,7 +875,7 @@ outputLogMessageDF = inputLogMessageDF\
   .union(titleLogMessageDF)\
   .union(logMessageDF)
 
-# increase logging  
+  
   
 
 sc.setCheckpointDir("tmp")
