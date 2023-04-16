@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-09-28_manual__2022-09-28T13%3A08%3A03.931229%2B00%3A00_", '
- '"ProcessDate": "2022-09-28", "Schema": "Jupiter", "HandlerId": '
- '"99b5b5ac-ce95-4b9f-ab64-1b4f347b8f8b"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T10%3A41%3A30.682977%2B00%3A00_", '
+ '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
+ '"cd1af820-17b8-4f46-9a2b-d7ad8fb270bb"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -113,6 +113,7 @@ BLOCKEDPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPr
 BLOCKEDINCREASEPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'
 BLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.CSV'
 
+
 CHANGESINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ChangesIncident/ChangesIncident.CSV'
 PRODUCTCHANGEINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ProductChangeIncident/ProductChangeIncident.CSV'
 
@@ -138,7 +139,7 @@ productChangeIncidentsDF = spark.read.csv(PRODUCTCHANGEINCIDENTS_PATH,sep="\u000
 assortmentMatrixDF = spark.read.csv(ASSORTMENTMATRIX_PATH,sep="\u0001",header=True,schema=schemas_map["AssortmentMatrix"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-increaseBaselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+increaseBaselineDF = spark.read.csv(INCREASEBASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
 productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductTree"])
@@ -148,6 +149,11 @@ cogsDF = spark.read.csv(COGS_PATH,sep="\u0001",header=True,schema=schemas_map["C
 cogsTnDF = spark.read.csv(COGSTN_PATH,sep="\u0001",header=True,schema=schemas_map["PlanCOGSTn"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 tiDF = spark.read.csv(TI_PATH,sep="\u0001",header=True,schema=schemas_map["TradeInvestment"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
+
+#test
+print(schemas_map["PriceList"])
+
+
 
 try:
 #   dbutils.fs.ls(INPUT_FILE_LOG_PATH)
@@ -280,6 +286,7 @@ priceListCiDF = priceListCiIdsDF\
   .join(priceListDF, 'Id', 'inner')\
   .select(\
            priceListDF.ClientTreeId
+          ,priceListDF.FuturePriceMarker 
           ,date_add(to_date(priceListDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')
           ,date_add(to_date(priceListDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')
          )
@@ -419,7 +426,7 @@ promoByBaselineCiDF = baselineCiDF\
   .where(promoSplittedByWeekDF.promoInOut == 'false')\
   .select(promoSplittedByWeekDF.promoId.alias('Id'), promoSplittedByWeekDF.promoNumber.alias('Number'))\
   .dropDuplicates()
-
+ 
 promoByIncreaseBaselineCiDF = increaseBaselineCiDF\
   .join(promoSplittedByWeekDF,
         [\
@@ -767,8 +774,6 @@ inoutPromoByProductCiDF = inoutPromoByProductCiDF\
 
 promoByProductCiDF = notInoutPromoByProductCiDF.union(inoutPromoByProductCiDF)
 
-#####*Result*
-
 titleMessage = '[INFO]: PROMO FILTERING'
 titleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)
 
@@ -858,7 +863,9 @@ promoNumbersByProductCiDF = promoNumbersByProductCiDF\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
 promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
+  .union(promoNumbersByIncreasePriceListCiDF)\
   .union(promoNumbersByPriceListCiDF)\
+  .union(promoNumbersByIncreaseBaselineCiDF)\
   .union(promoNumbersByBaselineCiDF)\
   .union(promoNumbersBySharesCiDF)\
   .union(promoNumbersByClientTreeCiDF)\
@@ -944,6 +951,7 @@ header=True,
 mode="overwrite",
 emptyValue=""
 )
+
 
 #resultChangesIncidentsDF.write.mode("overwrite").parquet(CHANGESINCIDENTS_OUTPUT_PATH)
 #resultProductChangeIncidentsDF.write.mode("overwrite").parquet(PRODUCTCHANGEINCIDENTS_OUTPUT_PATH)
