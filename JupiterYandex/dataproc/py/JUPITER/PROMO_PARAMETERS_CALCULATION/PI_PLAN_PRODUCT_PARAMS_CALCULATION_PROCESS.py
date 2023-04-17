@@ -40,7 +40,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .where(col('Row_Number') == 1).drop('Row_Number')
 
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).othwerwise(lit('true')))\
+      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).otherwise(lit('true')))\
       .withColumn('Price', col('calcPrice'))\
       .drop('calcPrice')
 
