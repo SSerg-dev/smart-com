@@ -39,8 +39,9 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('Row_Number', row_number().over(byPriceStartDate))\
       .where(col('Row_Number') == 1).drop('Row_Number')
 
+    
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).otherwise(lit('true')))\
+      .withColumn('IncreaseFound', when(col('calcPrice').isNull(),lit('false')).otherwise(lit('true')))\
       .withColumn('Price', col('calcPrice'))\
       .drop('calcPrice')
 
