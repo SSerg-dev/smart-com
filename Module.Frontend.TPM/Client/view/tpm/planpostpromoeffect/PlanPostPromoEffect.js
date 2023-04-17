@@ -85,6 +85,9 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
                 minWidth: 100
             },
             items: [{
+                text: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeObjectId'),
+                dataIndex: 'ClientTreeObjectId'
+            }, {
                 text: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeFullPathName'),
                 dataIndex: 'ClientTreeFullPathName',
                 minWidth: 200,

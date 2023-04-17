@@ -949,9 +949,17 @@ namespace Module.Persist.TPM
             builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
             builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.DurationRange, "DurationRanges");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DurationRange, "DurationRanges");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
+            
             builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
             builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
+            builder.EntitySet<DurationRange>("DurationRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<DiscountRange>("DiscountRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
             
             builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
             builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");
