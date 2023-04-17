@@ -43,7 +43,8 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .withColumn('IncreaseFound', when(col('calcPrice').isNull(),lit('false')).otherwise(lit('true')))\
       .withColumn('Price', col('calcPrice'))\
-      .drop('calcPrice')
+      .drop('calcPrice')\
+      .drop('priceStartDate')
 
     #Regular Price
     calcPlanPromoProductDF = calcPlanPromoProductDF\
@@ -64,7 +65,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .where(col('Row_Number') == 1).drop('Row_Number')
 
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .withColumn('Price', when(col('Price').isNull(),col('calcPrice')).othwerwise(col('Price')))\
+      .withColumn('Price', when(col('Price').isNull(),col('calcPrice')).otherwise(col('Price')))\
       .drop('calcPrice')
 
     #product price logging
