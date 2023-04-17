@@ -17,7 +17,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     sc = SparkContext.getOrCreate();
     spark = SparkSession(sc)
     
-    byPriceStartDate = (Window.partitionBy('PromoId', 'ProductId').orderBy(col("priceStartDate").desc()))
+    byPriceStartDate = (Window.partitionBy('PromoPriceIncreaseId', 'ProductId').orderBy(col("priceStartDate").desc()))
 
     # calcPlanPromoProductDF = calcPlanPromoProductDF.drop('Price')
     
