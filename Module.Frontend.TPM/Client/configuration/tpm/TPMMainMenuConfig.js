@@ -367,6 +367,16 @@
                 widget: 'increasebaseline'
             },
             {
+                text: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectItem'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectItem'),
+                glyph: 0xf127,
+                rsMode: false,
+                currentMode: true,
+                scale: 'medium',
+                //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
+                widget: 'planpostpromoeffect'
+            },
+            {
                 text: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 glyph: 0xf127,

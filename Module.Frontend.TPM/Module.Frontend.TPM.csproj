@@ -355,11 +355,16 @@
     <Content Include="Client\model\tpm\competitor\Competitor.js" />
     <Content Include="Client\model\tpm\competitor\DeletedCompetitor.js" />
     <Content Include="Client\model\tpm\competitor\HistoricalCompetitor.js" />
+    <Content Include="Client\model\tpm\discountrange\DiscountRange.js" />
+    <Content Include="Client\model\tpm\durationrange\DurationRange.js" />
     <Content Include="Client\model\tpm\eventtype\EventType.js" />
     <Content Include="Client\model\tpm\metricslivehistory\MetricsLiveHistory.js" />
     <Content Include="Client\model\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\model\tpm\plancogstn\PlanCOGSTn.js" />
+    <Content Include="Client\model\tpm\planpostpromoeffect\DeletedPlanPostPromoEffect.js" />
+    <Content Include="Client\model\tpm\planpostpromoeffect\HistoricalPlanPostPromoEffect.js" />
+    <Content Include="Client\model\tpm\planpostpromoeffect\PlanPostPromoEffect.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\model\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
@@ -425,6 +430,12 @@
     <Content Include="Client\view\tpm\plancogstn\ImportPlanCOGSTnParamForm.js" />
     <Content Include="Client\view\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\view\tpm\plancogstn\PlanCOGSTnEditor.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\DeletedPlanPostPromoEffect.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\DeletedPlanPostPromoEffectDetail.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\HistoricalPlanPostPromoEffect.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\HistoricalPlanPostPromoEffectDetail.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\PlanPostPromoEffect.js" />
+    <Content Include="Client\view\tpm\planpostpromoeffect\PlanPostPromoEffectEditor.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
@@ -498,6 +509,7 @@
     <Compile Include="Controllers\MetricsLiveHistoriesController.cs" />
     <Compile Include="Controllers\IncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\PlanPostPromoEffectsController.cs" />
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />

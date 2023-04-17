@@ -65,6 +65,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffectItem': 'Plan Post Promo Effect',
         'RATIShopper': 'RA TI Shopper',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
@@ -162,6 +163,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffect': 'Plan Post Promo Effect',
         'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'AddPromoType': 'Create Promo',
@@ -1748,6 +1750,19 @@
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
 
+    'PlanPostPromoEffect': {
+        'PlanPostPromoEffectW1': 'PlanPostPromoEffectW1',
+        'PlanPostPromoEffectW2': 'PlanPostPromoEffectW2',
+        'DiscountRangeName': 'Discount',
+        'DurationRangeName': 'Promo Duration',
+        'ClientTreeFullPathName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'BrandTechName': 'BrandTech',
+        'Size': 'Size'
+    },
+    'HistoricalPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseHistoryEntity'],
+    'DeletedPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseDeletedEntity'],
+    
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
