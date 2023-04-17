@@ -506,8 +506,9 @@ calcPromoPriceIncreaseDF = promoPriceIncreaseDF\
 calcIncreasePlanPromoProductDF = promoProductPriceIncreaseDF\
   .join(promoProductDF, promoProductPriceIncreaseDF.PromoProductId == promoProductDF.Id, 'inner')\
   .join(calcPromoPriceIncreaseDF, calcPromoPriceIncreaseDF.Id == promoProductDF.PromoId, 'inner')\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id, 'left')\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
-  .select(promoProductPriceIncreaseDF['*'],promoProductDF.ProductId)
+  .select(promoProductPriceIncreaseDF['*'],lightPromoDF['*'],promoProductDF.ProductId)
 
 calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
@@ -519,6 +520,14 @@ calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF\
            calcIncreasePlanPromoProductDF['*']
           ,productDF.UOM_PC2Case
           ,productDF.CaseVolume
+         )
+allCalcPlanPromoProductDF = allCalcPlanPromoProductDF\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcPlanPromoProductDF.PromoId, 'left')\
+  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\
+  .select(\
+           allCalcPlanPromoProductDF['*']
+          ,lightPromoDF['*']
+          ,promoStatusDF.SystemName.alias('promoStatusSystemName')
          )
 # print(calcPlanPromoProductDF.count())
 # print(calcPlanPromoDF.count())
@@ -656,7 +665,7 @@ calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = pl
 
 
 import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
-calcIncreasePlanPromoProductDF,calcIncreasePlanPromoDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcIncreasePlanPromoDF,allCalcIncreasePlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
+calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
 ####*Promo support calculation*
 
@@ -817,8 +826,8 @@ resultPromoSupportPromoDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMO
 # save increase promo + products
 
 
-resultIncreasePromoDF = resultIncreasePromoDF.drop('#QCCount')
-resultIncreasePromoProductDF = resultIncreasePromoProductDF.drop('#QCCount')
+resultIncreasePromoDF = calcPromoPriceIncreaseDF.drop('#QCCount')
+resultIncreasePromoProductDF = calcIncreasePlanPromoProductDF.drop('#QCCount')
 
 resultIncreasePromoDF = resultIncreasePromoDF.persist()
 
