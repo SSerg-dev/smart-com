@@ -21,6 +21,8 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
 
     # calcPlanPromoProductDF = calcPlanPromoProductDF.drop('Price')
     
+    #test
+    print('check print inside')
     #Increase Price
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .join(planParamsIncreasePriceListDF, 
@@ -171,6 +173,9 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
               planParamsBaselineDF['*']
              ,datesDF.MarsWeekFullName
              )
+    #test
+    print('check mars week')
+    print(calcPlanPromoProductDF.schema)
 
     calcRegularPlanPromoProductDF = calcPlanPromoProductDF\
       .where(col('IncreaseFound') == 'false')\
