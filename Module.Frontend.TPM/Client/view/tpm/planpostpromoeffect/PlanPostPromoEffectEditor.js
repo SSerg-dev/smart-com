@@ -106,7 +106,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 allowOnlyWhitespace: false,
                 store: {
                     type: 'simplestore',
-                    autoLoad: false,
+                    autoLoad: true,
                     model: 'App.model.tpm.discountrange.DiscountRange',
                     extendedFilter: {
                         xclass: 'App.ExtFilterContext',
@@ -131,7 +131,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 allowOnlyWhitespace: false,
                 store: {
                     type: 'simplestore',
-                    autoLoad: false,
+                    autoLoad: true,
                     model: 'App.model.tpm.durationrange.DurationRange',
                     extendedFilter: {
                         xclass: 'App.ExtFilterContext',

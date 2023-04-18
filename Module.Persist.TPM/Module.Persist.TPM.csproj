@@ -3507,6 +3507,10 @@
     <Compile Include="Migrations\202304171445320_Add_AP_PPE_Deleted.designer.cs">
       <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304181134363_Add_AP_Discount_Duration.cs" />
+    <Compile Include="Migrations\202304181134363_Add_AP_Discount_Duration.designer.cs">
+      <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6597,6 +6601,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304171445320_Add_AP_PPE_Deleted.resx">
       <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304181134363_Add_AP_Discount_Duration.resx">
+      <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

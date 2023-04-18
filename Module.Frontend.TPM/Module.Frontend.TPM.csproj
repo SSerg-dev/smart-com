@@ -487,6 +487,8 @@
     <Compile Include="Controllers\DeletedPlanPostPromoEffectsController.cs" />
     <Compile Include="Controllers\DeletedPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
+    <Compile Include="Controllers\DiscountRangesController.cs" />
+    <Compile Include="Controllers\DurationRangesController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedActualTradeInvestmentsController.cs" />
