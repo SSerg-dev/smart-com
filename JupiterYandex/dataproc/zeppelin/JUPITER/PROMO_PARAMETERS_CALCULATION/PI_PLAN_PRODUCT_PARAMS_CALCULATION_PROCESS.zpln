@@ -95,7 +95,7 @@
       "$$hashKey": "object:9837"
     }
   ],
-  "name": "PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS",
   "id": "2HY4995NN",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
@@ -107,6 +107,5 @@
     "looknfeel": "default",
     "personalizedMode": "false"
   },
-  "info": {},
-  "path": "/PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS"
+  "info": {}
 }

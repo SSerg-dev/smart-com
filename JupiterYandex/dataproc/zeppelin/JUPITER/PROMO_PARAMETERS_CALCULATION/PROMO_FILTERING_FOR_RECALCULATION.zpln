@@ -2264,7 +2264,7 @@
       "$$hashKey": "object:23756"
     }
   ],
-  "name": "PROMO_FILTERING_FOR_RECALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PROMO_FILTERING_FOR_RECALCULATION",
   "id": "2HYW9B2N9",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
@@ -2276,8 +2276,5 @@
     "looknfeel": "default",
     "personalizedMode": "false"
   },
-  "info": {
-    "isRunning": false
-  },
-  "path": "/JUPITER/PROMO_PARAMETERS_CALCULATION/PROMO_FILTERING_FOR_RECALCULATION"
+  "info": {}
 }
