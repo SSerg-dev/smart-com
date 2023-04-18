@@ -340,4 +340,7 @@
     'tpm.promoproductpriceincreasesview.PromoProductPriceIncreasesView',
 
     'tpm.metricslivehistory.MetricsLiveHistory',
+    'tpm.planpostpromoeffect.PlanPostPromoEffect',
+    'tpm.planpostpromoeffect.DeletedPlanPostPromoEffect',
+    'tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect'    
 ]);
