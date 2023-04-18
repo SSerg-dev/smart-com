@@ -529,6 +529,8 @@ allCalcPlanPromoProductDF = allCalcPlanPromoProductDF\
           ,lightPromoDF['*']
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
          )
+
+calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF
 # print(calcPlanPromoProductDF.count())
 # print(calcPlanPromoDF.count())
 
@@ -662,6 +664,8 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
 
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
 calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
+
+calcIncreasePlanPromoProductDF.show()
 
 
 import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
