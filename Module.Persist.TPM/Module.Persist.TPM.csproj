@@ -3499,6 +3499,14 @@
     <Compile Include="Migrations\202304121907331_Add_Actions_PPE.designer.cs">
       <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304171300357_Add_AP_PPE_Historical.cs" />
+    <Compile Include="Migrations\202304171300357_Add_AP_PPE_Historical.designer.cs">
+      <DependentUpon>202304171300357_Add_AP_PPE_Historical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304171445320_Add_AP_PPE_Deleted.cs" />
+    <Compile Include="Migrations\202304171445320_Add_AP_PPE_Deleted.designer.cs">
+      <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6583,6 +6591,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304121907331_Add_Actions_PPE.resx">
       <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304171300357_Add_AP_PPE_Historical.resx">
+      <DependentUpon>202304171300357_Add_AP_PPE_Historical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304171445320_Add_AP_PPE_Deleted.resx">
+      <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

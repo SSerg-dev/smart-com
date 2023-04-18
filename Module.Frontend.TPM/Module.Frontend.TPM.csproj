@@ -324,6 +324,9 @@
     <Content Include="Client\controller\tpm\plancogstn\DeletedPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\HistoricalPlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
+    <Content Include="Client\controller\tpm\planpostpromoeffect\DeletedPlanPostPromoEffect.js" />
+    <Content Include="Client\controller\tpm\planpostpromoeffect\HistoricalPlanPostPromoEffect.js" />
+    <Content Include="Client\controller\tpm\planpostpromoeffect\PlanPostPromoEffect.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\controller\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
@@ -481,6 +484,7 @@
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedIncreaseBaseLine.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedPlanPostPromoEffectsController.cs" />
     <Compile Include="Controllers\DeletedPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
@@ -503,6 +507,7 @@
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\HistoricalIncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\HistoricalPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\HistoricalPlanPostPromoEffectsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
     <Compile Include="Controllers\HistoricalPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
