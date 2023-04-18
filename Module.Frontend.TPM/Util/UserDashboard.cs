@@ -210,11 +210,10 @@ namespace Module.Frontend.TPM.Util
             var calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
             var nowDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //TimeCritical
-            var inExchangeCritical = promoes.Where(x => x.MasterPromoId != null & x.DispatchesStart < calculateDate).ToList();
-            var checkedIds = inExchangeCritical.Select(x => x.Id);
+            var inExchangeCritical = promoes.Where(x => x.MasterPromoId != null & x.DispatchesStart < calculateDate).Select(x => x.MasterPromoId).Distinct().ToList();
             var timeCritical = promoes
-                .Where(p => !checkedIds.Contains(p.Id) && (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration))
-                .Count() + checkedIds.Count();
+                .Where(p => !inExchangeCritical.Contains(p.Id) && (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration))
+                .Count() + inExchangeCritical.Count();
             //GAapproval
             calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
             int gaApproval = promoes.Where(p => p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
