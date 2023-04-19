@@ -201,7 +201,9 @@
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
         'MetricsLiveHistory':'Metrics Live History',
-        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction'
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction',
+        'DiscountRange': 'Discount Range',
+        'DurationRange': 'Duration Range'
     },
 
     'text': {
@@ -1762,6 +1764,20 @@
     },
     'HistoricalPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseHistoryEntity'],
     'DeletedPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseDeletedEntity'],
+
+    'DurationRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+
+    'DiscountRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
     
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',

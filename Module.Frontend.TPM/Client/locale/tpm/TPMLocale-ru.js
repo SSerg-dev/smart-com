@@ -169,6 +169,8 @@
         'Competitor': 'Competitor',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBradnTech': 'Competitor BrandTech',
+        'DiscountRange': 'Discount Range',
+        'DurationRange': 'Duration Range'
     },
 
     'text': {
@@ -1375,6 +1377,20 @@
     },
     'HistoricalPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseHistoryEntity'],
     'DeletedPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseDeletedEntity'],
+    
+    'DurationRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+
+    'DiscountRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
     
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',

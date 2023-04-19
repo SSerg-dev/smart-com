@@ -9,18 +9,37 @@ Ext.define('App.model.tpm.planpostpromoeffect.PlanPostPromoEffect', {
         { name: 'PlanPostPromoEffectW2', type: 'float', hidden: false, isDefault: true },
         { name: 'DiscountRangeId', hidden: true, useNull: false, isDefault: false },
         {
-            name: 'DiscountRangeName', type: 'string', mapping: 'DiscountRange.Name', isDefault: true
+            name: 'DiscountRangeName',
+            type: 'string',
+            mapping: 'DiscountRange.Name',
+            isDefault: true,
+            defaultFilterConfig: { valueField: 'Name' },
+            breezeEntityType: 'DiscountRange',
+            hidden: false
         },
         { name: 'DurationRangeId', hidden: true, useNull: false, isDefault: false },
         {
-            name: 'DurationRangeName', type: 'string', mapping: 'DurationRange.Name', isDefault: true
+            name: 'DurationRangeName',
+            type: 'string',
+            mapping: 'DurationRange.Name',
+            isDefault: true,
+            defaultFilterConfig: { valueField: 'Name' },
+            breezeEntityType: 'DurationRange',
+            hidden: false
         },
         { name: 'BrandTechId', hidden: true, useNull: true, isDefault: true },
-        { name: 'BrandTechName', type: 'string', mapping: 'BrandTech.BrandsegTechsub', defaultFilterConfig: { valueField: 'BrandsegTechsub' }, breezeEntityType: 'BrandTech', hidden: false, isDefault: true },
+        { 
+            name: 'BrandTechName', type: 'string',mapping: 'BrandTech.BrandsegTechsub',
+            defaultFilterConfig: { valueField: 'BrandsegTechsub' },
+            isDefault: true,
+            breezeEntityType: 'BrandTech',
+            hidden: false
+        },
         { name: 'ClientTreeId', hidden: true, isDefault: true },
         {
             name: 'ClientTreeFullPathName', type: 'string', mapping: 'ClientTree.FullPathName', tree: true,
-            defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false, isDefault: true
+            defaultFilterConfig: { valueField: 'FullPathName' }, breezeEntityType: 'ClientTree', hidden: false,
+            isDefault: true
         },
         {
             name: 'ClientTreeObjectId', type: 'int', mapping: 'ClientTree.ObjectId',

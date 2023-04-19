@@ -216,7 +216,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
             }]
         }, {
             xtype: 'textfield',
-            dataIndex: 'Size',
+            name: 'Size',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size')
             /*editable: false,
             displayField: 'Name',
@@ -242,11 +242,9 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
         }, {
             xtype: 'combobox',
             editable: false,
-            dataIndex: 'DiscountRangeId',
-            displayField: 'Name',
-            entityType: 'DiscountRange',
+            name: 'DiscountRangeId',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DiscountRangeName'),
-            queryMode: 'local',
+            queryMode: 'remote',
             valueField: 'Id',
             forceSelection: true,
             allowBlank: false,
@@ -267,11 +265,9 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
         }, {
             xtype: 'combobox',
             editable: false,
-            dataIndex: 'DurationRangeId',
-            displayField: 'Name',
-            entityType: 'DurationRange',
+            name: 'DurationRangeId',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DurationRangeName'),
-            queryMode: 'local',
+            queryMode: 'remote',
             valueField: 'Id',
             forceSelection: true,
             allowBlank: false,

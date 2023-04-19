@@ -88,8 +88,8 @@ namespace Module.Frontend.TPM.Controllers
         }
         
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<COGS> patch) {
-            var model = Context.Set<COGS>().Find(key);
+        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PlanPostPromoEffect> patch) {
+            var model = Context.Set<PlanPostPromoEffect>().Find(key);
             if (model == null) {
                 return NotFound();
             }
@@ -151,11 +151,34 @@ namespace Module.Frontend.TPM.Controllers
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
         public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PlanPostPromoEffect> patch) {
-            return NotFound();
+            try
+            {
+                var model = Context.Set<PlanPostPromoEffect>().Find(key);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                patch.Patch(model);
+                Context.SaveChanges();
+
+                return Updated(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EntityExists(key))
+                    return NotFound();
+                else
+                    throw;
+            }
+            catch (Exception e)
+            {
+                return GetErorrRequest(e);
+            }
         }
         
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<COGS> options) 
+        public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanPostPromoEffect> options) 
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -169,17 +192,17 @@ namespace Module.Frontend.TPM.Controllers
 
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(COGS), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(COGSsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(COGSsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanPostPromoEffect), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(PlanPostPromoEffect), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanPostPromoEffectsController), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanPostPromoEffectsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
                 LoopHandler handler = new LoopHandler()
                 {
                     Id = Guid.NewGuid(),
                     ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(COGS)} dictionary",
+                    Description = $"Export {nameof(PlanPostPromoEffect)} dictionary",
                     Name = "Module.Host.TPM.Handlers." + handlerName,
                     ExecutionPeriod = null,
                     CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
@@ -225,7 +248,21 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         private bool EntityExists(System.Guid key) {
-            return Context.Set<COGS>().Count(e => e.Id == key) > 0;
+            return Context.Set<PlanPostPromoEffect>().Count(e => e.Id == key) > 0;
+        }
+
+        public static IEnumerable<Column> GetExportSettings() {
+            IEnumerable<Column> columns = new List<Column>() {
+                new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
+                new Column() { Order = 4, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech", Quoting = false },
+                new Column() { Order = 5, Field = "Size", Header = "Size", Quoting = false },
+                new Column() { Order = 5, Field = "DiscountRange.Name", Header = "Discount", Quoting = false },
+                new Column() { Order = 5, Field = "DurationRange.Name", Header = "Promo Duration", Quoting = false },
+                new Column() { Order = 5, Field = "PlanPostPromoEffectW1", Header = "Plan Post Promo Effect W1", Quoting = false },
+                new Column() { Order = 5, Field = "PlanPostPromoEffectW2", Header = "Plan PostPromo Effect W2", Quoting = false }
+            };
+            return columns;
         }
         
         private ExceptionResult GetErorrRequest(Exception e) {
