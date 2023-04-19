@@ -423,6 +423,8 @@
     <Content Include="Client\view\tpm\competitorbrandtech\DeletedCompetitorBrandTechDetail.js" />
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTech.js" />
     <Content Include="Client\view\tpm\competitorbrandtech\HistoricalCompetitorBrandTechDetail.js" />
+    <Content Include="Client\view\tpm\discountrange\DiscountRange.js" />
+    <Content Include="Client\view\tpm\durationrange\DurationRange.js" />
     <Content Include="Client\view\tpm\eventtype\EventType.js" />
     <Content Include="Client\view\tpm\metricsdashboard\MetricsDashboardClientPeriodChooseWindow.js" />
     <Content Include="Client\view\tpm\metricslivehistory\MetricsLiveHistory.js" />
