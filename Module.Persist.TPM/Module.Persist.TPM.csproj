@@ -3511,6 +3511,10 @@
     <Compile Include="Migrations\202304181134363_Add_AP_Discount_Duration.designer.cs">
       <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304190535124_Empty_PPE_Merge.cs" />
+    <Compile Include="Migrations\202304190535124_Empty_PPE_Merge.designer.cs">
+      <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6604,6 +6608,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304181134363_Add_AP_Discount_Duration.resx">
       <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304190535124_Empty_PPE_Merge.resx">
+      <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
