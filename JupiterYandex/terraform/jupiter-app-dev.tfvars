@@ -9,7 +9,7 @@ dns-zone = "jupiter-app-dev"
 subnet-name = "jupiter-app-dev-subnet"
 subnet-cidr = ["172.20.1.0/24"]
 natgw-name = "jupiter-app-dev-natgw"
-rt-name = "jupiter-app-dev-rt-2"
+rt-name = "jupiter-app-dev-rt"
 
 registry-name = "jupiter-app-dev-registry"
 
