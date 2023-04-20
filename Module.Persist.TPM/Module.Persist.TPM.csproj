@@ -3600,6 +3600,7 @@
     <Compile Include="Model\History\HistoricalTechHighLevel.cs" />
     <Compile Include="Model\History\HistoricalTechnology.cs" />
     <Compile Include="Model\History\HistoricalVariety.cs" />
+    <Compile Include="Model\Import\ImportPPE.cs" />
     <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
