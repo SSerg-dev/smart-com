@@ -25,6 +25,17 @@ using System.Web;
 using Looper.Parameters;
 using Looper.Core;
 using Persist;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Core.Settings;
+using Frontend.Core.Extensions;
+using System.Collections.Specialized;
+using System.Net.Http.Headers;
+using System.IO;
+using Module.Persist.TPM.Model.Import;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -252,6 +263,202 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             return Content(HttpStatusCode.OK, "success");
+        }
+
+        [ClaimsAuthorize]
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                string importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
+                string fileName = await FileUtility.UploadFile(Request, importDir);
+
+                NameValueCollection form = HttpContext.Current.Request.Form;
+                CreateImportTask(fileName, "FullXLSXPPEUpdateImportHandler", form);
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StringContent("success = true");
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+                ImportResultModel resultmodel = new ImportResultModel();
+
+                HandlerData data = new HandlerData();
+                FileModel file = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
+                };
+
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPPE), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPPE).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportPPE), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(ImportCOGSTn).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(ImportCOGSTn).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
+                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
+                string templateFilePath = Path.Combine(templateDir, "Plan PPE template.xlsx");
+                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook twb = new XSSFWorkbook(templateStream);
+
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template.xlsx", "PlanPostPromoEffect");
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    string file = Path.GetFileName(filePath);
+
+                    DateTime dt = DateTime.Now;
+                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.IsBaseClient 
+                    && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+
+                    List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+                    List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ISheet clientsSheet = twb.GetSheet("Clients");
+                        ICreationHelper cH = twb.GetCreationHelper();
+
+                        int i = 0;
+                        foreach (var ct in clientsList)
+                        {
+                            IRow clientRow = clientsSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(ct.FullPathName);
+
+                            ICell idCell = clientRow.CreateCell(1);
+                            idCell.SetCellValue(ct.ObjectId);
+                            i++;
+                        }
+
+                        ISheet brandtechSheet = twb.GetSheet("Brandtech");
+                        i = 1;
+                        foreach (var bt in brandtechs)
+                        {
+                            IRow clientRow = brandtechSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(bt.BrandsegTechsub);
+                            i++;
+                        }
+
+                        ISheet productsSheet = twb.GetSheet("Products");
+                        i = 1;
+                        foreach (var pr in products)
+                        {
+                            IRow clientRow = productsSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(pr.ZREP);
+                            hcell.SetCellValue(pr.EAN_Case);
+                            hcell.SetCellValue(pr.EAN_PC);
+                            hcell.SetCellValue(pr.ProductEN);
+                            hcell.SetCellValue(pr.Brand);
+                            hcell.SetCellValue(pr.Brand_code);
+                            hcell.SetCellValue(pr.Technology);
+                            hcell.SetCellValue(pr.Tech_code);
+                            hcell.SetCellValue(pr.BrandTech);
+                            hcell.SetCellValue(pr.Segmen_code);
+                            hcell.SetCellValue(pr.BrandsegTech_code);
+                            hcell.SetCellValue(pr.Brandsegtech);
+                            hcell.SetCellValue(pr.BrandsegTechsub_code);
+                            hcell.SetCellValue(pr.BrandsegTechsub);
+                            hcell.SetCellValue(pr.SubBrand_code);
+                            hcell.SetCellValue(pr.SubBrand);
+                            hcell.SetCellValue(pr.BrandFlagAbbr);
+                            hcell.SetCellValue(pr.BrandFlag);
+                            hcell.SetCellValue(pr.SubmarkFlag);
+                            hcell.SetCellValue(pr.IngredientVariety);
+                            hcell.SetCellValue(pr.ProductCategory);
+                            hcell.SetCellValue(pr.ProductType);
+                            hcell.SetCellValue(pr.MarketSegment);
+                            hcell.SetCellValue(pr.SupplySegment);
+                            hcell.SetCellValue(pr.FunctionalVariety);
+                            hcell.SetCellValue(pr.Size);
+                            hcell.SetCellValue(pr.BrandEssence);
+                            hcell.SetCellValue(pr.PackType);
+                            hcell.SetCellValue(pr.GroupSize);
+                            hcell.SetCellValue(pr.TradedUnitFormat);
+                            hcell.SetCellValue(pr.ConsumerPackFormat);
+                            hcell.SetCellValue((double)pr.UOM_PC2Case);
+                            hcell.SetCellValue((double)pr.Division);
+                            hcell.SetCellValue(pr.UOM);
+                            hcell.SetCellValue((double)pr.NetWeight);
+                            hcell.SetCellValue((double)pr.CaseVolume);
+                            hcell.SetCellValue((double)pr.PCVolume);
+
+                            i++;
+                        }
+
+                        clientsSheet.AutoSizeColumn(0);
+                        clientsSheet.AutoSizeColumn(1);
+                        brandtechSheet.AutoSizeColumn(0);
+
+                        twb.Write(stream);
+                        stream.Close();
+                    }
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    return Content(HttpStatusCode.OK, file);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
         }
 
         private ExceptionResult GetErorrRequest(Exception e)
