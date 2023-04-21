@@ -37,9 +37,6 @@ Ext.define('App.view.tpm.durationrange.DurationRange', {
                 minWidth: 100
             },
             items: [{
-                text: l10n.ns('tpm', 'DurationRange').value('Id'),
-                dataIndex: 'Id'
-            }, {
                 text: l10n.ns('tpm', 'DurationRange').value('Name'),
                 dataIndex: 'Name'
             }, {
@@ -55,10 +52,6 @@ Ext.define('App.view.tpm.durationrange.DurationRange', {
         itemId: 'detailform',
         model: 'App.model.tpm.durationrange.DurationRange',
         items: [{
-            xtype: 'numberfield',
-            fieldLabel: l10n.ns('tpm', 'DurationRange').value('Id'),
-            name: 'Name',
-        }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'DurationRange').value('Name'),
             name: 'Name',

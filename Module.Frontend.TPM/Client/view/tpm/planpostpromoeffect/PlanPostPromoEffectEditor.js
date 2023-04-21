@@ -70,6 +70,12 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                         var brandtechValue = newValue ? field.record.get('BrandsegTechsub') : null;
     
                         brandtech.setValue(brandtechValue);
+                        /*var me = App.app.getController('tpm.promoproductcorrection.PromoProductCorrection');
+                        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
+                        var promoId = promoproductcorrectioneditor.down('[name=Number]');
+                        var productId = promoproductcorrectioneditor.down('[name=ZREP]');
+                        me.saveModel(promoId.getValue(), productId.getValue());
+                        */
                     }
                 },
                 store: {
@@ -89,23 +95,44 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                     to: 'BrandTechName'
                 }]
             }, {
-                xtype: 'textfield',
+                xtype: 'combobox',
+                editable: false,
                 name: 'Size',
-                fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size')
+                id: 'SizeComboBox',
+                fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size'),
+                valueField: 'size',
+                displayField: 'size',
+                queryMode: 'local',
+                selectOnFocus: true,
+                allowBlank: false,
+                allowOnlyWhitespace: false,
+                store: Ext.create('Ext.data.Store', {
+                    fields: ['size'],
+                    data: [
+                        { size: '10g' },
+                        { size: '800g' },
+                        { size: '300g' }
+                    ]
+                }),
+                mapping: [{
+                    from: 'size',
+                    to: 'size'
+                }]
             }, {
-                xtype: 'searchfield',
+                xtype: 'searchcombobox',
                 editable: false,
                 name: 'DiscountRangeId',
                 fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DiscountRangeName'),
                 selectorWidget: 'discountrange',
                 valueField: 'Id',
                 displayField: 'Name',
+                selectOnFocus: true,
                 entityType: 'DiscountRange',
                 allowBlank: false,
                 allowOnlyWhitespace: false,
                 store: {
                     type: 'simplestore',
-                    autoLoad: false,
+                    autoLoad: true,
                     model: 'App.model.tpm.discountrange.DiscountRange'
                 },
                 extendedFilter: {
@@ -121,19 +148,21 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                     to: 'DiscountRangeName'
                 }]
             }, {
-                xtype: 'searchfield',
+                xtype: 'searchcombobox',
+                itemId: 'duration-range',
                 editable: false,
                 name: 'DurationRangeId',
                 fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DurationRangeName'),
                 selectorWidget: 'durationrange',
                 valueField: 'Id',
                 displayField: 'Name',
+                selectOnFocus: true,
                 entityType: 'DurationRange',
                 allowBlank: false,
                 allowOnlyWhitespace: false,
                 store: {
                     type: 'simplestore',
-                    autoLoad: false,
+                    autoLoad: true,
                     model: 'App.model.tpm.durationrange.DurationRange'
                 },
                 extendedFilter: {
@@ -158,5 +187,14 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('PlanPostPromoEffectW2')
             }
         ]
+    },
+    
+    fillSizeStore: function(BrandTechСode) {
+        var comboSize = Ext.ComponentQuery.query('#SizeComboBox')[0];
+        var store = comboSize.getStore();
+        store.clearData();
+        /*store.add({size: '10g'});
+        store.add({size: '20g'});
+        store.add({size: '30g'});*/
     }
 });
