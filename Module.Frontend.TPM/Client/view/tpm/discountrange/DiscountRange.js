@@ -37,9 +37,6 @@ Ext.define('App.view.tpm.discountrange.DiscountRange', {
                 minWidth: 100
             },
             items: [{
-                text: l10n.ns('tpm', 'DiscountRange').value('Id'),
-                dataIndex: 'Id'
-            }, {
                 text: l10n.ns('tpm', 'DiscountRange').value('Name'),
                 dataIndex: 'Name'
             }, {
@@ -55,10 +52,6 @@ Ext.define('App.view.tpm.discountrange.DiscountRange', {
         itemId: 'detailform',
         model: 'App.model.tpm.discountrange.DiscountRange',
         items: [{
-            xtype: 'numberfield',
-            fieldLabel: l10n.ns('tpm', 'DiscountRange').value('Id'),
-            name: 'Name',
-        }, {
             xtype: 'textfield',
             fieldLabel: l10n.ns('tpm', 'DiscountRange').value('Name'),
             name: 'Name',
