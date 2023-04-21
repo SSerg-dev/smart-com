@@ -2036,6 +2036,7 @@
         'DemandCode': 'Demand Code',
         'PromoName': 'Promo Name',
         'PromoNameId': 'Promo Name Id',
+        'PromoNumber': 'Promo Number',
         'LocApollo': 'Loc',
         'TypeApollo': 'Type',
         'ModelApollo': 'Model',

@@ -3515,6 +3515,10 @@
     <Compile Include="Migrations\202304190535124_Empty_PPE_Merge.designer.cs">
       <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs" />
+    <Compile Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.designer.cs">
+      <DependentUpon>202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6612,6 +6616,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304190535124_Empty_PPE_Merge.resx">
       <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.resx">
+      <DependentUpon>202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
