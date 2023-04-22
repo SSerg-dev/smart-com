@@ -119,6 +119,14 @@ namespace Module.Frontend.TPM.Controllers
             var result = mapper.Map(model, proxy);
 
             Context.Set<PlanPostPromoEffect>().Add(result);
+            Context.Set<ChangesIncident>().Add(new ChangesIncident
+            {
+                Id = Guid.NewGuid(),
+                DirectoryName = nameof(PlanPostPromoEffect),
+                ItemId = result.Id.ToString(),
+                CreateDate = DateTimeOffset.Now,
+                Disabled = false
+            });
 
             try {
                 Context.SaveChanges();
@@ -231,7 +239,7 @@ namespace Module.Frontend.TPM.Controllers
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
                 NameValueCollection form = System.Web.HttpContext.Current.Request.Form;
-                CreateImportTask(fileName, "FullXLSXPlanPostPromoEffectUpdateImportHandler", form);
+                CreateImportTask(fileName, "FullXLSXPPEUpdateImportHandler", form);
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");

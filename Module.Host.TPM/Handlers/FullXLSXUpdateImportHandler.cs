@@ -68,7 +68,17 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXCOGSTnUpdateImportAction(settings, year, importDestination);
         }
     }
+    class FullXLSXPPEUpdateImportHandler : FullXLSXImportHandler
+    {
+        protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
+        {
+        }
 
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXPPEUpdateImportAction(settings);
+        }
+    }
     class FullXLSXRATIShopperUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)

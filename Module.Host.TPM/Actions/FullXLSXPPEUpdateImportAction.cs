@@ -36,9 +36,9 @@ namespace Module.Host.TPM.Actions
     /// <summary>
     /// Переопределение Action из ядра приложения
     /// </summary>
-    public class FullXLSPPEUpdateImportAction : BaseAction
+    public class FullXLSXPPEUpdateImportAction : BaseAction
     {
-        public FullXLSPPEUpdateImportAction(FullImportSettings settings)
+        public FullXLSXPPEUpdateImportAction(FullImportSettings settings)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -216,29 +216,37 @@ namespace Module.Host.TPM.Actions
                 IList<BrandTech> brandTeches = context.Set<BrandTech>().Where(z => !z.Disabled).ToList();
                 IList<Tuple<String, Guid?>> brandTechesTuples = brandTeches.Select(y => new Tuple<String, Guid?>(y.BrandsegTechsub, y.Id)).ToList();
 
+                var durations = context.Set<DurationRange>().ToList();
+                var discounts = context.Set<DiscountRange>().ToList();
+
+                var products = context.Set<Product>().Where(x => !x.Disabled).ToList();
+
                 //Присваивание ID
                 Parallel.ForEach(sourceRecords, item => {
                     int objId = ((ImportPPE)item).ClientTreeObjectId;
-                    //String btName = ((ImportPPE)item).BrandsegTechsub;
+                    String btName = ((ImportPPE)item).BrandsegTechsub;
                     if (existedexistedClientTreesIds.Contains(objId))
                     {
-                        var finden = existedClientTreesTuples.FirstOrDefault(y => y.Item2 == objId);
-                        if (finden != null)
+                        var found = existedClientTreesTuples.FirstOrDefault(y => y.Item2 == objId);
+                        if (found != null)
                         {
-                            ((ImportPPE)item).ClientTreeId = finden.Item1;
+                            ((ImportPPE)item).ClientTreeId = found.Item1;
                         }
                     }
-                    //var bt = brandTechesTuples.FirstOrDefault(y => y.Item1 == btName);
-                    //((ImportPPE)item).BrandTechId = bt == null ? null : bt.Item2;
+                    var bt = brandTechesTuples.FirstOrDefault(y => y.Item1 == btName);
+                    ((ImportPPE)item).BrandTechId = bt?.Item2;
+
+                    var durationName = ((ImportPPE)item).PromoDuration;
+                    var duration = durations.FirstOrDefault(x => x.Name == durationName);
+                    ((ImportPPE)item).DurationRangeId = duration?.Id;
+
+                    var discountName = ((ImportPPE)item).Discount;
+                    var discount = discounts.FirstOrDefault(x => x.Name == discountName);
+                    ((ImportPPE)item).DiscountRangeId = discount?.Id;
                 });
 
-                IList<Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>> existedCOGSsTimes =
-                    this.GetQuery(context).Where(x => !x.Disabled).Select(y => new Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>(y.ClientTreeId, y.BrandTechId, y.StartDate, y.EndDate)).ToList();
-
-                IList<Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>> importedCOGSsTimes =
-                    sourceRecords.Select(y => new Tuple<int, Guid?, DateTimeOffset?, DateTimeOffset?>(((ImportCOGSTn)y).ClientTreeId, ((ImportCOGSTn)y).BrandTechId, ((ImportCOGSTn)y).StartDate, ((ImportCOGSTn)y).EndDate)).ToList();
-
-                var importCOGSes = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
+                
+                var importPPEs = sourceRecords.Cast<ImportPPE>();
 
                 //Стандартные проверки
                 Parallel.ForEach(sourceRecords, item => {
@@ -260,7 +268,7 @@ namespace Module.Host.TPM.Actions
                             warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                         }
                     }
-                    else if (!IsFilterSuitable(rec, importCOGSes, existedexistedClientTreesIds, brandTechesTuples, context, out validationErrors))
+                    else if (!IsFilterSuitable(rec, importPPEs, existedexistedClientTreesIds, brandTechesTuples, products, context, out validationErrors))
                     {
                         HasErrors = true;
                         errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
@@ -289,14 +297,7 @@ namespace Module.Host.TPM.Actions
                 {
                     // Закончить импорт
                     IEnumerable<IEntity<Guid>> items = BeforeInsert(records, context).ToList();
-                    if (this.ImportDestination == "COGS/Tn")
-                    {
-                        resultRecordCount = InsertCOGSDataToDatabase(items, context);
-                    }
-                    else if (this.ImportDestination == "ActualCOGS/Tn")
-                    {
-                        resultRecordCount = InsertActualCOGSDataToDatabase(items, context);
-                    }
+                    resultRecordCount = InsertDataToDatabase(items, context);
                 }
                 if (!HasErrors)
                 {
@@ -367,58 +368,18 @@ namespace Module.Host.TPM.Actions
         protected ScriptGenerator _generator { get; set; }
 
         //Кастомная проверка
-        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IEnumerable<ImportCOGSTn> importCOGSes, IList<int> existedObjIds, IList<Tuple<String, Guid?>> brandTechesTuples, DatabaseContext context, out IList<string> errors)
+        protected virtual bool IsFilterSuitable(IEntity<Guid> rec, IEnumerable<ImportPPE> importPPEs, IList<int> existedObjIds, IList<Tuple<String, Guid?>> brandTechesTuples, IList<Product> products, DatabaseContext context, out IList<string> errors)
         {
             errors = new List<string>();
             bool isError = false;
 
-            ImportCOGSTn importObj = (ImportCOGSTn)rec;
+            ImportPPE importObj = (ImportPPE)rec;
             //Проверка по существующим активным ClientTree для пользователя
             if (!existedObjIds.Contains(importObj.ClientTreeObjectId))
             {
                 isError = true;
                 errors.Add(importObj.ClientTreeObjectId.ToString() + " not in user's active ClientTree list");
             }
-
-            //Проверка StartDate, EndDate
-            if (importObj.StartDate == null || importObj.EndDate == null)
-            {
-                isError = true;
-                errors.Add(" StartDate and EndDate must be fullfilled");
-            }
-            else
-            {
-
-                if (importObj.StartDate > importObj.EndDate)
-                {
-                    isError = true;
-                    errors.Add(" StartDate must be before EndDate");
-                }
-
-            }
-
-            if (importObj.StartDate.HasValue && importObj.StartDate.Value.Year != this.Year)
-            {
-                isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) Start Date year must be equal {this.Year}.");
-            }
-
-            if (importObj.EndDate.HasValue && importObj.EndDate.Value.Year != this.Year)
-            {
-                isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) End Date year must be equal {this.Year}.");
-            }
-
-            var intersectDatesCOGSes = importCOGSes.Where(x =>
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && importObj.StartDate >= x.StartDate && importObj.StartDate <= x.EndDate ||
-                importObj.ClientTreeObjectId == x.ClientTreeObjectId && importObj.BrandsegTechsub == x.BrandsegTechsub && importObj.EndDate >= x.StartDate && importObj.EndDate <= x.EndDate);
-
-            if (intersectDatesCOGSes.Count() > 1)
-            {
-                isError = true;
-                errors.Add($"({importObj.ClientTreeObjectId}, {importObj.BrandsegTechsub}) there can not be two COGS/Tn of client and BrandTech in some Time.");
-            }
-
             ////Проверка BrandTech
             if (!String.IsNullOrEmpty(importObj.BrandsegTechsub)
                 && !brandTechesTuples.Any(y => y.Item1 == importObj.BrandsegTechsub))
@@ -426,12 +387,32 @@ namespace Module.Host.TPM.Actions
                 isError = true;
                 errors.Add(importObj.BrandsegTechsub + " is not active BrandTech's Name");
             }
-
-            // Volume должно быть больше нуля
-            if (importObj.TonCost < 0)
+            if (importObj.DurationRangeId == null)
             {
                 isError = true;
-                errors.Add("Ton Cost must be more than 0");
+                errors.Add(importObj.PromoDuration +  " is not valid duration range");
+            }
+            if (importObj.DiscountRangeId == null)
+            {
+                isError = true;
+                errors.Add(importObj.DiscountRangeId + " is not valid discount range");
+            }
+            if (importObj.PlanPostPromoEffectW1 < 0)
+            {
+                isError = true;
+                errors.Add("Plan Post Promo Effect W1 must be more than 0");
+            }
+            if (importObj.PlanPostPromoEffectW2 < 0)
+            {
+                isError = true;
+                errors.Add("Plan Post Promo Effect W2 must be more than 0");
+            }
+
+            var sizes = products.Where(x => x.Brandsegtech == importObj.BrandsegTechsub).Select(x => x.Size).Distinct();
+            if (!sizes.Contains(importObj.Size))
+            {
+                isError = true;
+                errors.Add(importObj.Size + " is not valid size");
             }
 
             return !isError;
@@ -452,242 +433,79 @@ namespace Module.Host.TPM.Actions
 
         }
 
-        /// <summary>
-        /// Запись в базу аналогично изменению COGS/Tn из интерфейса через контекст
-        /// </summary>
-        /// <param name="sourceRecords"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected int InsertCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
-            IList<PlanCOGSTn> toCreate = new List<PlanCOGSTn>();
+            IList<PlanPostPromoEffect> toCreate = new List<PlanPostPromoEffect>();
             var query = GetQuery(context).ToList();
 
-            var COGSChangeIncidents = new List<PlanCOGSTn>();
+            var pPEChangeIncidents = new List<PlanPostPromoEffect>();
 
-            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-            var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
-            var notCheckPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.DispatchesStart.HasValue && x.DispatchesStart.Value.Year == this.Year)
-                .Select(x => new PromoSimpleCOGS
-                {
-                    PromoStatusName = x.PromoStatus.Name,
-                    Number = x.Number,
-                    DispatchesStart = x.DispatchesStart,
-                    DispatchesEnd = x.DispatchesEnd,
-                    ClientTreeId = x.ClientTree.Id,
-                    ClientTreeObjectId = x.ClientTreeId,
-                    BrandTechId = x.BrandTechId
-                })
-                .ToList()
-                .Where(x => !notCheckPromoStatuses.Contains(x.PromoStatusName));
-
-            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
-            var allCOGSForCurrentYear = context.Set<PlanCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
+            var importCOGS = sourceRecords.Cast<ImportPPE>();
             var clientTrees = context.Set<ClientTree>().ToList();
             var brandTeches = context.Set<BrandTech>().ToList();
 
-            foreach (var promo in promoes)
-            {
-                if (!importCOGS.Any(x => x.ClientTreeId == promo.ClientTreeId && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart))
-                {
-                    bool existCOGS = false;
-
-                    var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
-                    if (clientNode == null)
-                    {
-                        clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId).FirstOrDefault();
-                    }
-                    while (!existCOGS && clientNode != null && clientNode.Type != "root")
-                    {
-                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
-
-                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
-                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
-                                && x.StartDate <= promo.DispatchesStart
-                                && x.EndDate >= promo.DispatchesStart);
-                        if (!existCOGS)
-                        {
-                            existCOGS = importCOGS.Any(x => x.ClientTreeFullPath.Split(" > ".ToCharArray()).Last().Equals(clientNode.FullPathName.Split(" > ".ToCharArray()).Last())
-                               && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
-                               && x.StartDate <= promo.DispatchesStart
-                               && x.EndDate >= promo.DispatchesStart);
-                        }
-                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                        if (clientNode == null)
-                        {
-                            clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId).FirstOrDefault();
-                        }
-                    }
-
-                    if (!existCOGS)
-                    {
-                        HasErrors = true;
-                        Errors.Add($"Not found interval for promo number {promo.Number}.");
-                    }
-                }
-            }
-
             if (!HasErrors)
             {
-                foreach (var item in allCOGSForCurrentYear)
+                foreach (ImportPPE newRecord in sourceRecords)
                 {
-                    item.Disabled = true;
-                    item.DeletedDate = DateTimeOffset.Now;
-                }
-
-                foreach (ImportCOGSTn newRecord in sourceRecords)
-                {
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
-                    PlanCOGSTn toSave = new PlanCOGSTn()
+                    var bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
+                    var toSave = new PlanPostPromoEffect()
                     {
-                        StartDate = newRecord.StartDate,
-                        EndDate = newRecord.EndDate,
-                        TonCost = newRecord.TonCost,
                         ClientTreeId = newRecord.ClientTreeId,
-                        BrandTechId = bt != null ? (Guid?)bt.Id : null,
-                        Year = newRecord.StartDate.Value.Year
+                        BrandTechId = newRecord.BrandTechId.Value,
+                        Size = newRecord.Size,
+                        DurationRangeId = newRecord.DurationRangeId.Value,
+                        DiscountRangeId = newRecord.DiscountRangeId.Value,
+                        PlanPostPromoEffectW1 = newRecord.PlanPostPromoEffectW1,
+                        PlanPostPromoEffectW2 = newRecord.PlanPostPromoEffectW2
                     };
+                    var existPPE = context.Set<PlanPostPromoEffect>().FirstOrDefault(x => 
+                        x.ClientTreeId == toSave.ClientTreeId 
+                        && x.BrandTechId == toSave.BrandTechId
+                        && x.DurationRangeId == toSave.DurationRangeId
+                        && x.DiscountRangeId == toSave.DiscountRangeId
+                    );
+                    if (existPPE != null)
+                    {
+                        existPPE.Disabled = true;
+                        existPPE.DeletedDate = DateTimeOffset.Now;
+                    }
                     toCreate.Add(toSave);
-                    COGSChangeIncidents.Add(toSave);
+                    pPEChangeIncidents.Add(toSave);
                 }
 
-                foreach (IEnumerable<PlanCOGSTn> items in toCreate.Partition(100))
+                foreach (IEnumerable<PlanPostPromoEffect> items in toCreate.Partition(100))
                 {
-                    context.Set<PlanCOGSTn>().AddRange(items);
+                    context.Set<PlanPostPromoEffect>().AddRange(items);
                 }
 
                 // Необходимо выполнить перед созданием инцидентов.
                 context.SaveChanges();
 
-                foreach (var cogs in COGSChangeIncidents)
+                foreach (var ppe in pPEChangeIncidents)
                 {
-                    var currentCOGS = allCOGSForCurrentYear.FirstOrDefault(x => x.ClientTreeId == cogs.ClientTreeId && x.BrandTechId == cogs.BrandTechId && x.StartDate == cogs.StartDate && x.EndDate == cogs.EndDate && !x.Disabled);
-                    if (currentCOGS != null)
+                    context.Set<ChangesIncident>().Add(new ChangesIncident
                     {
-                        context.Set<ChangesIncident>().Add(new ChangesIncident
-                        {
-                            Id = Guid.NewGuid(),
-                            DirectoryName = nameof(PlanCOGSTn),
-                            ItemId = currentCOGS.Id.ToString(),
-                            CreateDate = DateTimeOffset.Now,
-                            Disabled = false
-                        });
-                    }
+                        Id = Guid.NewGuid(),
+                        DirectoryName = nameof(PlanPostPromoEffect),
+                        ItemId = ppe.Id.ToString(),
+                        CreateDate = DateTimeOffset.Now,
+                        Disabled = false
+                    });
                 }
             }
 
             context.SaveChanges();
             return sourceRecords.Count();
         }
-
-        /// <summary>
-        /// Запись в базу аналогично изменению ActualCOGS из интерфейса через контекст
-        /// </summary>
-        /// <param name="sourceRecords"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected int InsertActualCOGSDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
-        {
-            IList<ActualCOGSTn> toCreate = new List<ActualCOGSTn>();
-
-            var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-            var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished, Closed");
-            var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.DispatchesStart.HasValue && x.DispatchesStart.Value.Year == this.Year)
-                .Select(x => new PromoSimpleCOGS
-                {
-                    PromoStatusName = x.PromoStatus.Name,
-                    Number = x.Number,
-                    DispatchesStart = x.DispatchesStart,
-                    DispatchesEnd = x.DispatchesEnd,
-                    ClientTreeId = x.ClientTree.Id,
-                    ClientTreeObjectId = x.ClientTreeId,
-                    BrandTechId = x.BrandTechId
-                })
-                .ToList()
-                .Where(x => checkPromoStatuses.Contains(x.PromoStatusName));
-
-            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
-            var allActualCOGSForYear = context.Set<ActualCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
-            var clientTrees = context.Set<ClientTree>().ToList();
-            var brandTeches = context.Set<BrandTech>().ToList();
-
-            foreach (var promo in promoes)
-            {
-                if (!importCOGS.Any(x => x.ClientTreeId == promo.ClientTreeId && (x.BrandTechId == null || x.BrandTechId == promo.BrandTechId) && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart))
-                {
-                    bool existCOGS = false;
-
-                    var clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
-                    while (!existCOGS && clientNode != null && clientNode.Type != "root")
-                    {
-                        //промо может быть привязно к удаленному брендтеху(в более общем случае - к бредтеху с другим Id), поэтому сравнение приходится производить по Name, а не по Id
-                        var promoBrandTechName = brandTeches.Where(bt => bt.Id == promo.BrandTechId).Select(x => x.BrandsegTechsub).FirstOrDefault();
-                        var validBrandTeches = context.Set<BrandTech>().Where(x => x.BrandsegTechsub == promoBrandTechName);
-
-                        existCOGS = importCOGS.Any(x => x.ClientTreeId == clientNode.Id
-                                && (x.BrandTechId == null || validBrandTeches.Where(bt => bt.Id == x.BrandTechId).Any())
-                                && x.StartDate <= promo.DispatchesStart
-                                && x.EndDate >= promo.DispatchesStart);
-                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
-                    }
-
-                    if (!existCOGS)
-                    {
-                        HasErrors = true;
-                        Errors.Add($"Not found interval for promo number {promo.Number}.");
-                    }
-                }
-            }
-
-            if (!HasErrors)
-            {
-                foreach (var item in allActualCOGSForYear)
-                {
-                    item.Disabled = true;
-                    item.DeletedDate = DateTimeOffset.Now;
-                }
-
-                foreach (ImportCOGSTn newRecord in sourceRecords)
-                {
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
-                    ActualCOGSTn toSave = new ActualCOGSTn()
-                    {
-                        StartDate = newRecord.StartDate,
-                        EndDate = newRecord.EndDate,
-                        TonCost = newRecord.TonCost,
-                        ClientTreeId = newRecord.ClientTreeId,
-                        BrandTechId = bt != null ? (Guid?)bt.Id : null,
-                        Year = newRecord.StartDate.Value.Year
-                    };
-                    toCreate.Add(toSave);
-                }
-
-                foreach (IEnumerable<ActualCOGSTn> items in toCreate.Partition(100))
-                {
-                    context.Set<ActualCOGSTn>().AddRange(items);
-                }
-
-                //инциденты при импорте ActualCOGS/Tn не создаются
-            }
-
-            context.SaveChanges();
-            return sourceRecords.Count();
-        }
-
         protected virtual IEnumerable<IEntity<Guid>> BeforeInsert(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
             return records;
         }
 
-        private IEnumerable<PlanCOGSTn> GetQuery(DatabaseContext context)
+        private IEnumerable<PlanPostPromoEffect> GetQuery(DatabaseContext context)
         {
-            IQueryable<PlanCOGSTn> query = context.Set<PlanCOGSTn>().AsNoTracking();
+            var query = context.Set<PlanPostPromoEffect>().AsNoTracking();
             return query.ToList();
         }
     }
