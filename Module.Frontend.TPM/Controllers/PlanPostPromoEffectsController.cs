@@ -168,6 +168,16 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
+
+                Context.Set<ChangesIncident>().Add(new ChangesIncident
+                {
+                    Id = Guid.NewGuid(),
+                    DirectoryName = nameof(PlanPostPromoEffect),
+                    ItemId = model.Id.ToString(),
+                    CreateDate = DateTimeOffset.Now,
+                    Disabled = false
+                });
+
                 Context.SaveChanges();
 
                 return Updated(model);
@@ -327,52 +337,52 @@ namespace Module.Frontend.TPM.Controllers
                             i++;
                         }
 
-                        ISheet productsSheet = twb.GetSheet("Products");
-                        i = 1;
-                        foreach (var pr in products)
-                        {
-                            IRow clientRow = productsSheet.CreateRow(i);
-                            ICell hcell = clientRow.CreateCell(0);
-                            hcell.SetCellValue(pr.ZREP);
-                            hcell.SetCellValue(pr.EAN_Case);
-                            hcell.SetCellValue(pr.EAN_PC);
-                            hcell.SetCellValue(pr.ProductEN);
-                            hcell.SetCellValue(pr.Brand);
-                            hcell.SetCellValue(pr.Brand_code);
-                            hcell.SetCellValue(pr.Technology);
-                            hcell.SetCellValue(pr.Tech_code);
-                            hcell.SetCellValue(pr.BrandTech);
-                            hcell.SetCellValue(pr.Segmen_code);
-                            hcell.SetCellValue(pr.BrandsegTech_code);
-                            hcell.SetCellValue(pr.Brandsegtech);
-                            hcell.SetCellValue(pr.BrandsegTechsub_code);
-                            hcell.SetCellValue(pr.BrandsegTechsub);
-                            hcell.SetCellValue(pr.SubBrand_code);
-                            hcell.SetCellValue(pr.SubBrand);
-                            hcell.SetCellValue(pr.BrandFlagAbbr);
-                            hcell.SetCellValue(pr.BrandFlag);
-                            hcell.SetCellValue(pr.SubmarkFlag);
-                            hcell.SetCellValue(pr.IngredientVariety);
-                            hcell.SetCellValue(pr.ProductCategory);
-                            hcell.SetCellValue(pr.ProductType);
-                            hcell.SetCellValue(pr.MarketSegment);
-                            hcell.SetCellValue(pr.SupplySegment);
-                            hcell.SetCellValue(pr.FunctionalVariety);
-                            hcell.SetCellValue(pr.Size);
-                            hcell.SetCellValue(pr.BrandEssence);
-                            hcell.SetCellValue(pr.PackType);
-                            hcell.SetCellValue(pr.GroupSize);
-                            hcell.SetCellValue(pr.TradedUnitFormat);
-                            hcell.SetCellValue(pr.ConsumerPackFormat);
-                            hcell.SetCellValue((double)pr.UOM_PC2Case);
-                            hcell.SetCellValue((double)pr.Division);
-                            hcell.SetCellValue(pr.UOM);
-                            hcell.SetCellValue((double)pr.NetWeight);
-                            hcell.SetCellValue((double)pr.CaseVolume);
-                            hcell.SetCellValue((double)pr.PCVolume);
+                        //ISheet productsSheet = twb.GetSheet("Products");
+                        //i = 1;
+                        //foreach (var pr in products)
+                        //{
+                        //    IRow clientRow = productsSheet.CreateRow(i);
+                        //    ICell hcell = clientRow.CreateCell(0);
+                        //    hcell.SetCellValue(pr.ZREP);
+                        //    hcell.SetCellValue(pr.EAN_Case);
+                        //    hcell.SetCellValue(pr.EAN_PC);
+                        //    hcell.SetCellValue(pr.ProductEN);
+                        //    hcell.SetCellValue(pr.Brand);
+                        //    hcell.SetCellValue(pr.Brand_code);
+                        //    hcell.SetCellValue(pr.Technology);
+                        //    hcell.SetCellValue(pr.Tech_code);
+                        //    hcell.SetCellValue(pr.BrandTech);
+                        //    hcell.SetCellValue(pr.Segmen_code);
+                        //    hcell.SetCellValue(pr.BrandsegTech_code);
+                        //    hcell.SetCellValue(pr.Brandsegtech);
+                        //    hcell.SetCellValue(pr.BrandsegTechsub_code);
+                        //    hcell.SetCellValue(pr.BrandsegTechsub);
+                        //    hcell.SetCellValue(pr.SubBrand_code);
+                        //    hcell.SetCellValue(pr.SubBrand);
+                        //    hcell.SetCellValue(pr.BrandFlagAbbr);
+                        //    hcell.SetCellValue(pr.BrandFlag);
+                        //    hcell.SetCellValue(pr.SubmarkFlag);
+                        //    hcell.SetCellValue(pr.IngredientVariety);
+                        //    hcell.SetCellValue(pr.ProductCategory);
+                        //    hcell.SetCellValue(pr.ProductType);
+                        //    hcell.SetCellValue(pr.MarketSegment);
+                        //    hcell.SetCellValue(pr.SupplySegment);
+                        //    hcell.SetCellValue(pr.FunctionalVariety);
+                        //    hcell.SetCellValue(pr.Size);
+                        //    hcell.SetCellValue(pr.BrandEssence);
+                        //    hcell.SetCellValue(pr.PackType);
+                        //    hcell.SetCellValue(pr.GroupSize);
+                        //    hcell.SetCellValue(pr.TradedUnitFormat);
+                        //    hcell.SetCellValue(pr.ConsumerPackFormat);
+                        //    hcell.SetCellValue((double)pr.UOM_PC2Case.GetValueOrDefault());
+                        //    hcell.SetCellValue((double)pr.Division.GetValueOrDefault());
+                        //    hcell.SetCellValue(pr.UOM);
+                        //    hcell.SetCellValue((double)pr.NetWeight.GetValueOrDefault());
+                        //    hcell.SetCellValue((double)pr.CaseVolume.GetValueOrDefault());
+                        //    hcell.SetCellValue((double)pr.PCVolume.GetValueOrDefault());
 
-                            i++;
-                        }
+                        //    i++;
+                        //}
 
                         clientsSheet.AutoSizeColumn(0);
                         clientsSheet.AutoSizeColumn(1);

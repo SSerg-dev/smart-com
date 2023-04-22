@@ -29,6 +29,7 @@ namespace Module.Persist.TPM.Migrations
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'Patch', NULL, 1),
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'ExportXLSX', NULL, 1),
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'FullImportXLSX', NULL, 1)
+                       (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'DownloadTemplateXLSX', NULL, 1)
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='Administrator');
@@ -43,7 +44,8 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Delete' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Patch' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'DownloadTemplateXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='SupportAdministrator');
@@ -58,7 +60,8 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Delete' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Patch' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'DownloadTemplateXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='FunctionalExpert');
@@ -73,7 +76,8 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Delete' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Patch' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'DownloadTemplateXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='DemandPlanning');
@@ -88,7 +92,8 @@ namespace Module.Persist.TPM.Migrations
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Delete' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Patch' AND Resource = 'PlanPostPromoEffects')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'PlanPostPromoEffects')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects'))
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'FullImportXLSX' AND Resource = 'PlanPostPromoEffects')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'DownloadTemplateXLSX' AND Resource = 'PlanPostPromoEffects'))
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='KeyAccountManager');
