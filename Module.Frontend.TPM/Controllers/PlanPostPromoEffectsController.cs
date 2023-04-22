@@ -263,6 +263,51 @@ namespace Module.Frontend.TPM.Controllers
 
         private void CreateImportTask(string fileName, string importHandler, NameValueCollection paramForm)
         {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            using (DatabaseContext context = new DatabaseContext())
+            {
+                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+                ImportResultModel resultmodel = new ImportResultModel();
+
+                HandlerData data = new HandlerData();
+                FileModel file = new FileModel()
+                {
+                    LogicType = "Import",
+                    Name = Path.GetFileName(fileName),
+                    DisplayName = Path.GetFileName(fileName)
+                };
+
+                // параметры импорта
+                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPPE), data, visible: false, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPPE).Name, data, throwIfNotExists: false);
+                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportPPE), data, visible: false, throwIfNotExists: false);
+
+                LoopHandler handler = new LoopHandler()
+                {
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Загрузка импорта из файла " + typeof(ImportCOGSTn).Name,
+                    Name = "Module.Host.TPM.Handlers." + importHandler,
+                    ExecutionPeriod = null,
+                    RunGroup = typeof(ImportCOGSTn).Name,
+                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(data);
+                context.LoopHandlers.Add(handler);
+                context.SaveChanges();
+            }
         }
 
         private bool EntityExists(System.Guid key) {

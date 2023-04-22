@@ -98,7 +98,7 @@ namespace Module.Persist.TPM.Migrations
                (NEWID(), '0 – 7', 0, 7),
                (NEWID(), '8 – 14', 8, 14),
                (NEWID(), '15 – 21', 15, 21),
-               (NEWID(), '22 – 0', 22, 0)
+               (NEWID(), '22 and more', 22, 0)
             GO";
     }
 }
