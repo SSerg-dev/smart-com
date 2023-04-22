@@ -272,7 +272,125 @@ namespace Module.Frontend.TPM.Controllers
             };
             return columns;
         }
-        
+
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
+                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
+                string templateFilePath = Path.Combine(templateDir, "Plan PPE template.xlsx");
+                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook twb = new XSSFWorkbook(templateStream);
+
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template.xlsx", "PlanPostPromoEffect");
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    string file = Path.GetFileName(filePath);
+
+                    DateTime dt = DateTime.Now;
+                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.IsBaseClient
+                    && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+
+                    List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+                    List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ISheet clientsSheet = twb.GetSheet("Clients");
+                        ICreationHelper cH = twb.GetCreationHelper();
+
+                        int i = 0;
+                        foreach (var ct in clientsList)
+                        {
+                            IRow clientRow = clientsSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(ct.FullPathName);
+
+                            ICell idCell = clientRow.CreateCell(1);
+                            idCell.SetCellValue(ct.ObjectId);
+                            i++;
+                        }
+
+                        ISheet brandtechSheet = twb.GetSheet("Brandtech");
+                        i = 1;
+                        foreach (var bt in brandtechs)
+                        {
+                            IRow clientRow = brandtechSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(bt.BrandsegTechsub);
+                            i++;
+                        }
+
+                        ISheet productsSheet = twb.GetSheet("Products");
+                        i = 1;
+                        foreach (var pr in products)
+                        {
+                            IRow clientRow = productsSheet.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(pr.ZREP);
+                            hcell.SetCellValue(pr.EAN_Case);
+                            hcell.SetCellValue(pr.EAN_PC);
+                            hcell.SetCellValue(pr.ProductEN);
+                            hcell.SetCellValue(pr.Brand);
+                            hcell.SetCellValue(pr.Brand_code);
+                            hcell.SetCellValue(pr.Technology);
+                            hcell.SetCellValue(pr.Tech_code);
+                            hcell.SetCellValue(pr.BrandTech);
+                            hcell.SetCellValue(pr.Segmen_code);
+                            hcell.SetCellValue(pr.BrandsegTech_code);
+                            hcell.SetCellValue(pr.Brandsegtech);
+                            hcell.SetCellValue(pr.BrandsegTechsub_code);
+                            hcell.SetCellValue(pr.BrandsegTechsub);
+                            hcell.SetCellValue(pr.SubBrand_code);
+                            hcell.SetCellValue(pr.SubBrand);
+                            hcell.SetCellValue(pr.BrandFlagAbbr);
+                            hcell.SetCellValue(pr.BrandFlag);
+                            hcell.SetCellValue(pr.SubmarkFlag);
+                            hcell.SetCellValue(pr.IngredientVariety);
+                            hcell.SetCellValue(pr.ProductCategory);
+                            hcell.SetCellValue(pr.ProductType);
+                            hcell.SetCellValue(pr.MarketSegment);
+                            hcell.SetCellValue(pr.SupplySegment);
+                            hcell.SetCellValue(pr.FunctionalVariety);
+                            hcell.SetCellValue(pr.Size);
+                            hcell.SetCellValue(pr.BrandEssence);
+                            hcell.SetCellValue(pr.PackType);
+                            hcell.SetCellValue(pr.GroupSize);
+                            hcell.SetCellValue(pr.TradedUnitFormat);
+                            hcell.SetCellValue(pr.ConsumerPackFormat);
+                            hcell.SetCellValue((double)pr.UOM_PC2Case);
+                            hcell.SetCellValue((double)pr.Division);
+                            hcell.SetCellValue(pr.UOM);
+                            hcell.SetCellValue((double)pr.NetWeight);
+                            hcell.SetCellValue((double)pr.CaseVolume);
+                            hcell.SetCellValue((double)pr.PCVolume);
+
+                            i++;
+                        }
+
+                        clientsSheet.AutoSizeColumn(0);
+                        clientsSheet.AutoSizeColumn(1);
+                        brandtechSheet.AutoSizeColumn(0);
+
+                        twb.Write(stream);
+                        stream.Close();
+                    }
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    return Content(HttpStatusCode.OK, file);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
         private ExceptionResult GetErorrRequest(Exception e) {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;
