@@ -277,6 +277,7 @@ filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
 
 # promoProduct
 promoProductCols = promoProductDF.columns
+increasePromoProductCols = promoProductPriceIncreaseDF.columns
 allCalcPlanPromoProductDF = promoProductDF.where(col('Disabled') == 'False')
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
@@ -351,6 +352,14 @@ planParamsCorrectionDF = correctionDF\
   .where((col('Disabled') == '0'))\
   .select(\
            upper(col('PromoProductId')).alias('correctionPromoProductId')
+          ,col('PlanProductUpliftPercentCorrected').alias('correctionPlanProductUpliftPercentCorrected')
+         )
+
+# pi product correction
+planParamsIncreaseCorrectionDF = correctionPriceIncreaseDF\
+  .where((col('Disabled') == '0'))\
+  .select(\
+           upper(col('PromoProductPriceIncreaseId')).alias('correctionPromoProductPriceIncreaseId')
           ,col('PlanProductUpliftPercentCorrected').alias('correctionPlanProductUpliftPercentCorrected')
          )
 
@@ -667,9 +676,19 @@ calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = pl
 
 calcIncreasePlanPromoProductDF.show()
 
+calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
+  .join(calcPlanPromoDF, calcPromoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'inner')\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id)\
+  .select(\
+           calcPromoPriceIncreaseDF['*']
+          ,calcPlanPromoDF.Number
+          ,calcPlanPromoDF.promoClientPostPromoEffectW1
+          ,calcPlanPromoDF.promoClientPostPromoEffectW2
+         )
+
 
 import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
-calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
+calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols)
 
 ####*Promo support calculation*
 
