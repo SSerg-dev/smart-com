@@ -854,9 +854,30 @@ resultIncreasePromoProductDF = calcIncreasePlanPromoProductDF.drop('#QCCount')
 
 resultIncreasePromoDF = resultIncreasePromoDF.persist()
 
-resultIncreasePromoProductDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH)
-resultIncreasePromoDF.write.mode("overwrite").parquet(PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH)
+resultIncreasePromoProductDF.fillna(False,subset=['Disabled',
+'AverageMarker'])\
+.withColumn("Disabled",col("Disabled").cast(IntegerType()))\
+.withColumn("AverageMarker",col("AverageMarker").cast(IntegerType()))\
+.repartition(1)\
+.write.csv(PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH,
+sep="\u0001",
+header=True,
+mode="overwrite",
+emptyValue="",
+timestampFormat="yyyy-MM-dd HH:mm:ss"
+)
 
+resultIncreasePromoDF.fillna(False,subset=['Disabled'])\
+.repartition(1)\
+.write.csv(PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH,
+sep="\u0001",
+header=True,
+mode="overwrite",
+emptyValue="",
+timestampFormat="yyyy-MM-dd HH:mm:ss",
+escape="",
+quote="",
+)
 
 serviceInfoDF\
 .repartition(1)\
