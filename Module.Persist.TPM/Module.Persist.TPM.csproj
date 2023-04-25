@@ -3490,6 +3490,10 @@
     <Compile Include="Migrations\202304250502082_Fix_PromoPriceIncreaseROIReportView1.Designer.cs">
       <DependentUpon>202304250502082_Fix_PromoPriceIncreaseROIReportView1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304250520316_empty250420231.cs" />
+    <Compile Include="Migrations\202304250520316_empty250420231.designer.cs">
+      <DependentUpon>202304250520316_empty250420231.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6564,6 +6568,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304250502082_Fix_PromoPriceIncreaseROIReportView1.resx">
       <DependentUpon>202304250502082_Fix_PromoPriceIncreaseROIReportView1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304250520316_empty250420231.resx">
+      <DependentUpon>202304250520316_empty250420231.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             Sql(ViewMigrations.UpdatePromoROIReportViewString(defaultSchema));
-            Sql(ViewMigrations.UpdatePromoPriceIncreaseROIReportViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdatePromoPriceIncreaseROIReportViewString(defaultSchema));
         }
         
         public override void Down()
