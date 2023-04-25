@@ -957,11 +957,8 @@ namespace Module.Frontend.TPM.Util
                 throw new Exception(message);
             }
 
-            Promo proxy = context.Set<Promo>().Create<Promo>();
-            var configuration = new MapperConfiguration(cfg =>
-                cfg.CreateMap<Promo, Promo>().ReverseMap());
-            var mapper = configuration.CreateMapper();
-            Promo result = mapper.Map(model, proxy);
+            Promo proxy = new Promo();
+            Promo result = AutomapperProfiles.PromoCopy(model, proxy);
 
             if (result.CreatorId == null)
             {

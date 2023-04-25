@@ -1,0 +1,82 @@
+{
+  "fields": [
+    {
+      "metadata": {
+      },
+      "name": "Id",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "Disabled",
+      "nullable": true,
+      "type": "integer"
+    },
+    {
+      "metadata": {
+      },
+      "name": "DeletedDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanProductUpliftPercentCorrected",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "TempId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "UserId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "UserName",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "CreateDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "ChangeDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PromoProductPriceIncreaseId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "#QCCount",
+      "nullable": true,
+      "type": "integer"
+    }
+  ],
+  "type": "struct"
+}

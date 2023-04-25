@@ -417,11 +417,11 @@
             var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
                 !this.compareFilters(filter, onApprovalFilterDF) &&
                 !this.compareFilters(filter, onApprovalFilterCMM) &&
-                !this.compareFilters(filter, onApprovalGAFilterDP) &&
                 !this.compareFilters(filter, onApprovalGAFilterDF) &&
                 !isOnHold &&
                 !this.compareFilters(filter, onApprovalGAFilterGAM) ||
                 this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
+                this.compareFilters(filter, onApprovalGAFilterDP) && !isOnHold ||
                 this.compareFilters(filter, onApprovalGAFilterCMM);
 
             maButton.setDisabled(isDisabled);
