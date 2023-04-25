@@ -28,7 +28,7 @@ namespace Module.Persist.TPM.Migrations
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'Delete', NULL, 1),
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'Patch', NULL, 1),
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'ExportXLSX', NULL, 1),
-                       (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'FullImportXLSX', NULL, 1)
+                       (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'FullImportXLSX', NULL, 1),
                        (NEWID(), 0, NULL, 'PlanPostPromoEffects', 'DownloadTemplateXLSX', NULL, 1)
                 GO
 
