@@ -113,10 +113,10 @@ def create_child_dag_config(parameters:dict):
     return conf
 
 @task
-def disable_baseline(parameters:dict):
+def disable_increase_baseline(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[DisableBaseLine]""")
+    result = odbc_hook.run(sql=f"""exec [{schema}].[DisableIncreaseBaseLine]""")
     print(result)
 
     return result
@@ -125,7 +125,7 @@ def disable_baseline(parameters:dict):
 def update_baseline(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[UpdateBaseline]""")
+    result = odbc_hook.run(sql=f"""exec [{schema}].[UpdateIncreaseBaseline]""")
     print(result)
 
     return result
@@ -134,31 +134,31 @@ def update_baseline(parameters:dict):
 def add_new_baseline(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[AddNewBaseline]""")
+    result = odbc_hook.run(sql=f"""exec [{schema}].[AddNewIncreaseBaseline]""")
+    print(result)
+
+    return result
+    
+@task
+def enable_increase_baseline(parameters:dict):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    result = odbc_hook.run(sql=f"""exec [{schema}].[EnableIncreaseBaseLine]""")
     print(result)
 
     return result
 
 @task
-def enable_baseline(parameters:dict):
+def truncate_temp_increase_baseline(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [{schema}].[EnableBaseLine]""")
-    print(result)
-
-    return result
-
-@task
-def truncate_temp_baseline(parameters:dict):
-    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
-    schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""truncate table [{schema}].[TEMP_BASELINE]""")
+    result = odbc_hook.run(sql=f"""truncate table [{schema}].[TEMP_INCREASE_BASELINE]""")
     print(result)
 
     return result
 
 with DAG(
-    dag_id='jupiter_update_baseline',
+    dag_id='jupiter_update_increase_baseline',
     schedule_interval=None,
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
@@ -168,27 +168,28 @@ with DAG(
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
-    dis_baseline = disable_baseline(parameters)
+    dis_increase_baseline = disable_increase_baseline(parameters)
 
-    truncate_temp_baseline1 = truncate_temp_baseline(parameters)
+    truncate_temp_increase_baseline1 = truncate_temp_increase_baseline(parameters)
 
-    upload_baseline = BashOperator(task_id="upload_baseline",
+    upload_increase_baseline = BashOperator(task_id="upload_increase_baseline",
                                  do_xcom_push=True,
-                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',
-                                 params={'OUT_DIR':BASELINE_OUTPUT_DIR},  
+                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_INCREASE_BASELINE\" "1" ',
+                                 params={'OUT_DIR':INCREASE_BASELINE_OUTPUT_DIR},  
                                 )
 
     up_baseline=update_baseline(parameters)
+    
+    truncate_temp_increase_baseline2 = truncate_temp_increase_baseline(parameters)
 
-    truncate_temp_baseline2 = truncate_temp_baseline(parameters)
-
-    upload_new_baseline = BashOperator(task_id="upload_new_baseline",
+    upload_new_increase_baseline = BashOperator(task_id="upload_new_increase_baseline",
                                  do_xcom_push=True,
-                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',
-                                 params={'OUT_DIR':NEW_BASELINE_OUTPUT_DIR},  
+                                 bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_INCREASE_BASELINE\" "1" ',
+                                 params={'OUT_DIR':NEW_INCREASE_BASELINE_OUTPUT_DIR},  
                                 )
     
     add_new_bs=add_new_baseline(parameters)
-    enable_baseline = enable_baseline(parameters)
+
+    enable_increase_baseline = enable_increase_baseline(parameters)
         
-    dis_baseline >> truncate_temp_baseline1 >> upload_baseline >> up_baseline >> truncate_temp_baseline2 >> upload_new_baseline >> add_new_bs >> enable_baseline
+    dis_increase_baseline >> truncate_temp_increase_baseline1 >> upload_increase_baseline >> up_baseline >> truncate_temp_increase_baseline2 >> upload_new_increase_baseline >> add_new_bs >> enable_increase_baseline

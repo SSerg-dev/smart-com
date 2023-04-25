@@ -1,5 +1,5 @@
-####Notebook "PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS". 
-####*Calculate plan product parameters and plan promo baseline, incremental and LSV*.
+####Notebook "PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS". 
+####*Calculate plan price increase product parameters and plan promo baseline, incremental and LSV*.
 ###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*
 
 from pyspark.sql import SQLContext, DataFrame, Row, Window
@@ -17,7 +17,8 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     sc = SparkContext.getOrCreate();
     spark = SparkSession(sc)
     
-    byPriceStartDate = (Window.partitionBy('PromoId', 'ProductId').orderBy(col("priceStartDate").desc()))
+    
+    byPriceStartDate = (Window.partitionBy('PromoPriceIncreaseId', 'ProductId').orderBy(col("priceStartDate").desc()))
 
     # calcPlanPromoProductDF = calcPlanPromoProductDF.drop('Price')
     
@@ -39,10 +40,12 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('Row_Number', row_number().over(byPriceStartDate))\
       .where(col('Row_Number') == 1).drop('Row_Number')
 
-    calcPlanPromoProductDF = calcPlanPromoProductDF\\
-      .withColumn(col('IncreaseFound'), when(col('Price').isNull(),lit('false')).othwerwise(lit('true')))
+    
+    calcPlanPromoProductDF = calcPlanPromoProductDF\
+      .withColumn('IncreaseFound', when(col('calcPrice').isNull(),lit('false')).otherwise(lit('true')))\
       .withColumn('Price', col('calcPrice'))\
-      .drop('calcPrice')
+      .drop('calcPrice')\
+      .drop('priceStartDate')
 
     #Regular Price
     calcPlanPromoProductDF = calcPlanPromoProductDF\
@@ -63,7 +66,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .where(col('Row_Number') == 1).drop('Row_Number')
 
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .withColumn('Price', when(col('Price').isNull(),col('calcPrice')).othwerwise(col('Price')))\
+      .withColumn('Price', when(col('Price').isNull(),col('calcPrice')).otherwise(col('Price')))\
       .drop('calcPrice')
 
     #product price logging
@@ -161,12 +164,20 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .groupBy(cols)\
       .agg(count('*').cast(DecimalType(30,6)).alias('promoDaysInWeek'))
     #  ---
-
+    
+    
     # set product baseline
     planParamsBaselineDF = planParamsBaselineDF\
       .join(datesDF, planParamsBaselineDF.baselineStartDate == datesDF.OriginalDate, 'inner')\
       .select(\
               planParamsBaselineDF['*']
+             ,datesDF.MarsWeekFullName
+             )
+    
+    planParamsIncreaseBaselineDF = planParamsIncreaseBaselineDF\
+      .join(datesDF, planParamsIncreaseBaselineDF.baselineStartDate == datesDF.OriginalDate, 'inner')\
+      .select(\
+              planParamsIncreaseBaselineDF['*']
              ,datesDF.MarsWeekFullName
              )
 
@@ -240,23 +251,11 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     #####*Calculate plan product parameters*
     #??
     calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .join(planParamsCorrectionDF, planParamsCorrectionDF.PromoProductPriceIncreaseId == calcPlanPromoProductDF.Id, 'left')\ 
+      .join(planParamsCorrectionDF, planParamsCorrectionDF.correctionPromoProductPriceIncreaseId == calcPlanPromoProductDF.Id, 'left')\
       .select(\
                calcPlanPromoProductDF['*']
               ,when(planParamsCorrectionDF.correctionPlanProductUpliftPercentCorrected.isNull(), calcPlanPromoProductDF.PlanProductUpliftPercent)\
                     .otherwise(planParamsCorrectionDF.correctionPlanProductUpliftPercentCorrected).cast(DecimalType(30,6)).alias('productUpliftPercent')
-             )
-
-    calcPlanPromoProductDF = calcPlanPromoProductDF\
-      .join(planParamsIncrementalDF, 
-            [\
-              planParamsIncrementalDF.incrementalPromoId == calcPlanPromoProductDF.PromoId
-             ,planParamsIncrementalDF.incrementalProductId == calcPlanPromoProductDF.ProductId
-            ]
-            ,'left')\
-      .select(\
-               calcPlanPromoProductDF['*']
-              ,planParamsIncrementalDF.PlanPromoIncrementalCases.cast(DecimalType(30,6))
              )
 
     calcPlanPromoProductDF = calcPlanPromoProductDF\
@@ -322,6 +321,13 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     calcPlanPromoDF = calcPlanPromoDF\
       .join(planParDF, planParDF.promoNumber == calcPlanPromoDF.Number, 'inner')
 
+    @udf
+    def isNullCheck(value):
+      if value is None:
+        return 0
+      else:
+        return value
+        
     allCalcPlanPromoDF = allCalcPlanPromoDF\
       .join(calcPlanPromoDF, 'Id', 'left')\
       .select(\

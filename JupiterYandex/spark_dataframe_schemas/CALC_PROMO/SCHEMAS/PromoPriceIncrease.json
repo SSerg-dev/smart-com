@@ -1,61 +1,64 @@
 {
   "fields": [
     {
-      "metadata": {},
+      "metadata": {
+      },
       "name": "Id",
       "nullable": true,
       "type": "string"
     },
     {
-      "metadata": {},
+      "metadata": {
+      },
       "name": "Disabled",
       "nullable": true,
       "type": "integer"
     },
     {
-      "metadata": {},
+      "metadata": {
+      },
       "name": "DeletedDate",
       "nullable": true,
       "type": "timestamp"
     },
     {
-      "metadata": {},
-      "name": "StartDate",
-      "nullable": true,
-      "type": "timestamp"
-    },
-    {
-      "metadata": {},
-      "name": "EndDate",
-      "nullable": true,
-      "type": "timestamp"
-    },
-    {
-      "metadata": {},
-      "name": "ProductId",
-      "nullable": true,
-      "type": "string"
-    },
-    {
-      "metadata": {},
-      "name": "Price",
+      "metadata": {
+      },
+      "name": "PlanPromoUpliftPercent",
       "nullable": true,
       "type": "double"
     },
     {
-      "metadata": {},
-      "name": "ClientTreeId",
+      "metadata": {
+      },
+      "name": "PlanPromoBaselineLSV",
       "nullable": true,
-      "type": "integer"
+      "type": "double"
     },
     {
-      "metadata": {},
-      "name": "FuturePriceMarker",
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalLSV",
       "nullable": true,
-      "type": "integer"
+      "type": "double"
     },
     {
-      "metadata": {},
+      "metadata": {
+      },
+      "name": "PlanPromoLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoPostPromoEffectLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
       "name": "#QCCount",
       "nullable": true,
       "type": "integer"
