@@ -1270,14 +1270,13 @@
 					ON p.Id = ppi.Id
 				LEFT JOIN (
 					SELECT 
-						[PromoId],
+						[PromoPriceIncreaseId],
 						AVG(pppi.[PlanProductPCPrice]) AS PlanProductPCPriceAVG
 					FROM [DefaultSchemaSetting].[PromoProductPriceIncrease] pppi
-					JOIN [DefaultSchemaSetting].[PromoProduct] pp ON pp.Id = pppi.Id
 					WHERE pppi.[Disabled] = 0 AND pppi.[PlanProductPCPrice] > 0
-					GROUP BY [PromoId]
+					GROUP BY [PromoPriceIncreaseId]
 				) AS ppPCP
-					ON ppPCP.[PromoId] = p.[Id]
+					ON ppPCP.[PromoPriceIncreaseId] = p.[Id]
 			)
 
 			SELECT * FROM PromoROIReport WHERE IsPriceIncrease = 1
