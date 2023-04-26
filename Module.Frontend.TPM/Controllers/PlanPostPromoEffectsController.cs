@@ -37,6 +37,7 @@ using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Newtonsoft.Json;
+using Utility.FileWorker;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -465,7 +466,7 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
         }
-        private ExceptionResult GetErorrRequest(Exception e) {
+        private ExceptionResult GetErrorRequest(Exception e) {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;
 

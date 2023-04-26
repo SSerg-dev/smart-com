@@ -3539,6 +3539,10 @@
     <Compile Include="Migrations\202304260322035_Add_AP_GetBrandTechSizes.designer.cs">
       <DependentUpon>202304260322035_Add_AP_GetBrandTechSizes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304261444457_Empty260420231.cs" />
+    <Compile Include="Migrations\202304261444457_Empty260420231.designer.cs">
+      <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6654,6 +6658,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304260322035_Add_AP_GetBrandTechSizes.resx">
       <DependentUpon>202304260322035_Add_AP_GetBrandTechSizes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304261444457_Empty260420231.resx">
+      <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
