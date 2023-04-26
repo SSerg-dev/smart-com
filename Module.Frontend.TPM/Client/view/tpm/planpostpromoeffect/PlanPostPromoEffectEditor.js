@@ -63,6 +63,19 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                     afterrender: function (field) {
                         if (!field.value) {
                             field.value = null;
+                        } else {
+                            var planPostPromoEffectController = App.app.getController('tpm.planpostpromoeffect.PlanPostPromoEffect');
+                            planPostPromoEffectController.getBrandTechCodeById(field.value)
+                                .then(function (data) {
+                                    var result = Ext.JSON.decode(data.httpResponse.data.value);
+                                    if (result.success == true) {
+                                        result = Ext.JSON.decode(result.data);
+                                        planPostPromoEffectController.getBrandTechSizes(result.BrandTech_code);
+                                    }
+                                })
+                                .fail(function (data) {
+                                    App.Notify.pushError(data.message);
+                                });
                         }
                     },
                     change: function (field, newValue, oldValue) {
@@ -186,14 +199,5 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('PlanPostPromoEffectW2')
             }
         ]
-    },
-    
-    fillSizeStore: function(BrandTechСode) {
-        var comboSize = Ext.ComponentQuery.query('#SizeComboBox')[0];
-        var store = comboSize.getStore();
-        store.clearData();
-        /*store.add({size: '10g'});
-        store.add({size: '20g'});
-        store.add({size: '30g'});*/
     }
 });

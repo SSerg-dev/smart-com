@@ -107,5 +107,19 @@ Ext.define('App.controller.tpm.planpostpromoeffect.PlanPostPromoEffect', {
                 }
             });
         }
+    },
+    
+    getBrandTechCodeById: function(brandTechId) {
+        return breeze.EntityQuery
+            .from('BrandTeches')
+            .withParameters({
+                $actionName: 'GetBrandTechById',
+                $method: 'POST',
+                $data: {
+                    id: brandTechId.split(';')
+                }
+            })
+            .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
+            .execute();
     }
 });

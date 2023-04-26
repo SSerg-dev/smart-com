@@ -185,7 +185,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 //var brandTechSizes =  new List<string>() { "10g", "100g", "800g"};
                 IQueryable<string> brandTechSizes = Context.Set<Product>()
-                    .Where(x => x.BrandTech_code == brandTechCode)
+                    .Where(x => x.BrandsegTech_code == brandTechCode)
                     .Select(x => x.Size).Distinct();
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = brandTechSizes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
