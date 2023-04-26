@@ -22,7 +22,6 @@ terraform {
 
 provider "yandex" {
   cloud_id  = var.cloud_id
-  service_account_key_file = "authorized_key.json"
 }
 
 provider "helm" {
