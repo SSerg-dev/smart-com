@@ -13,6 +13,12 @@ stages:
   jobs:
   - job:
     steps:
+    - bash: |
+        yc config profile delete sa-terraform
+        yc config profile create sa-terraform
+        echo $(tfYcAuthKey) > authorized_key.json
+        yc config set service-account-key authorized_key.json
+        rm -f authorized_key.json
     - bash: mv .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Registry Config    
@@ -22,7 +28,7 @@ stages:
     - bash: terraform validate
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Validate
-    - bash: terraform plan -var-file=$(tfProjectName).tfvars -input=false -out deployment.tfplan
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Plan
 
@@ -33,8 +39,11 @@ stages:
   - job:
     steps:
     - bash: |
+        yc config profile delete sa-terraform
         yc config profile create sa-terraform
+        echo $(tfYcAuthKey) > authorized_key.json
         yc config set service-account-key authorized_key.json
+        rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
     - bash: mv .terraformrc ~/.terraformrc
@@ -46,12 +55,14 @@ stages:
     - bash: terraform validate
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Validate
-    - bash: terraform plan -var-file=$(tfProjectName).tfvars -input=false -out deployment.tfplan
-      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: Terraform Plan
-    - bash: terraform apply -input=false deployment.tfplan
-      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: Terraform Apply
+    # - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
+    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+    #   displayName: Terraform Apply
+    - bash: |
+        ls -la
+        rm -rf deployment*.tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/Deployment/yc-env-tf
+      displayName: Cleanup tfplans
 
 - stage: Destroy
   dependsOn: [Plan]
@@ -60,8 +71,11 @@ stages:
   - job:
     steps:
     - bash: |
+        yc config profile delete sa-terraform
         yc config profile create sa-terraform
+        echo $(tfYcAuthKey) > authorized_key.json
         yc config set service-account-key authorized_key.json
+        rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
     - bash: mv .terraformrc ~/.terraformrc
