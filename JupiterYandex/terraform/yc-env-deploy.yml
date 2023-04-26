@@ -19,7 +19,7 @@ stages:
         echo $(tfYcAuthKey) > authorized_key.json
         yc config set service-account-key authorized_key.json
         rm -f authorized_key.json
-      workingDirectory: $(System.DefaultWorkingDirectory)/Deployment/yc-env-tf
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config  
     - bash: mv .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
@@ -63,7 +63,7 @@ stages:
     - bash: |
         ls -la
         rm -rf deployment*.tfplan
-      workingDirectory: $(System.DefaultWorkingDirectory)/Deployment/yc-env-tf
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Cleanup tfplans
 
 - stage: Destroy
