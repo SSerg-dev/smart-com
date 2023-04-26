@@ -1,4 +1,4 @@
-Ext.define('App.view.tpm.planpostpromoeffect.Historical', {
+Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect', {
     extend: 'App.view.core.common.CombinedDirectoryPanel',
     alias: 'widget.historicalplanpostpromoeffect',
     title: l10n.ns('core', 'compositePanelTitles').value('historyPanelTitle'),
@@ -78,16 +78,16 @@ Ext.define('App.view.tpm.planpostpromoeffect.Historical', {
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCOGS').value('_User')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_User')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Role',
-            fieldLabel: l10n.ns('tpm', 'HistoricalCOGS').value('_Role')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_Role')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_EditDate',
             renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'),
-            fieldLabel: l10n.ns('tpm', 'HistoricalCOGS').value('_EditDate')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_EditDate')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Operation',
