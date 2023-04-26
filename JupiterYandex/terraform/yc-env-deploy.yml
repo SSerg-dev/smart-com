@@ -61,12 +61,12 @@ stages:
     - bash: terraform validate
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Validate
-    # - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Apply
+    - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Apply
     - bash: |
         ls -la
-        rm -rf deployment*.tfplan
+        # rm -rf deployment*.tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Cleanup tfplans
 
