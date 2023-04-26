@@ -1,6 +1,6 @@
-Ext.define('App.view.tpm.cogs.DeletedCOGSDetail', {
+Ext.define('App.view.tpm.planpostpromoeffect.DeletedPlanPostPromoEffectDetail', {
     extend: 'App.view.core.common.EditorDetailWindow',
-    alias: 'widget.deletedcogsdetail',
+    alias: 'widget.deletedplanpostpromoeffectdetail',
     width: 500,
     minWidth: 500,
     maxHeight: 600,
@@ -17,15 +17,15 @@ Ext.define('App.view.tpm.cogs.DeletedCOGSDetail', {
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeFullPathName',
-            fieldLabel: l10n.ns('tpm', 'COGS').value('ClientTreeFullPathName')
+            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeFullPathName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeObjectId',
-            fieldLabel: l10n.ns('tpm', 'COGS').value('ClientTreeObjectId')
+            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeObjectId')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandTechName',
-            fieldLabel: l10n.ns('tpm', 'COGS').value('BrandTechName')
+            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('BrandTechName')
         }, {
             text: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size'),
             dataIndex: 'Size'
