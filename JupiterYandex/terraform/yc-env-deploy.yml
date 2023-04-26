@@ -19,6 +19,8 @@ stages:
         echo $(tfYcAuthKey) > authorized_key.json
         yc config set service-account-key authorized_key.json
         rm -f authorized_key.json
+        KEY=$(git rev-parse --short HEAD)
+        echo $KEY
     - bash: mv .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Registry Config    
