@@ -805,7 +805,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             foreach (Promo promo in promoList)
             {
                 promoProductsList.AddRange(context.Set<PromoProduct>()
-                    .Include(g => g.PromoProductPriceIncreases)
                     .Where(x => x.PromoId == promo.Id && x.Disabled != true)
                     .ToList());
                 if (promo.ActualPromoUpliftPercent != null)
@@ -855,8 +854,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void CalculateRealPlanPromoUpliftPercentPI(ref List<Promo> promoList, PlanUplift planUplift, List<PromoProductPriceIncrease> currentPromoProducts, DatabaseContext context)
         {
             planUplift.CountedPlanUpliftPI = 0;
-            List<PromoProductPriceIncrease> promoProductsList = new List<PromoProductPriceIncrease>();
-            List<PromoProductPriceIncrease> promoProductsSubList = new List<PromoProductPriceIncrease>();
+            List<PromoProduct> promoProductsList = new List<PromoProduct>();
+            List<PromoProduct> promoProductsSubList = new List<PromoProduct>();
             double? factUpliftSum = 0;
             double? factProductUpliftPI = 0;
             double? summPlanIncrementalPI = 0;
@@ -865,9 +864,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             foreach (Promo promo in promoList)
             {
-                promoProductsList.AddRange(context.Set<PromoProductPriceIncrease>()
-                    .Include(g => g.ProductCorrectionPriceIncreases)
-                    .Where(x => x.PromoPriceIncreaseId == promo.Id && x.Disabled != true)
+                promoProductsList.AddRange(context.Set<PromoProduct>()
+                    .Where(x => x.PromoId == promo.Id && x.Disabled != true)
                     .ToList());
                 if (promo.ActualPromoUpliftPercent != null)
                 {
@@ -876,10 +874,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
             oldCountedPlanUplift = factUpliftSum / promoList.Count();
             var promoProductsIds = currentPromoProducts.Select(y => y.Id);
-            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = promoProductsList
-                .SelectMany(g => g.ProductCorrectionPriceIncreases)
-                .Where(x => !x.Disabled)
-                .ToList();
+            List<PromoProductCorrectionPriceIncrease> promoProductsCorrections = context.Set<PromoProductCorrectionPriceIncrease>().Where(x => promoProductsIds.Contains(x.PromoProductPriceIncreaseId) && x.TempId == null && x.Disabled != true).ToList();
             var promoProductsWithCorrectionIds = promoProductsCorrections.Select(y => y.Id);
             //Подбираем аплифт для каждого отдельного продукта
             foreach (PromoProductPriceIncrease promoProduct in currentPromoProducts)
