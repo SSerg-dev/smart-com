@@ -14,13 +14,13 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect', {
         editorModel: 'Core.form.EditorDetailWindowModel',
         store: {
             type: 'directorystore',
-            model: 'App.model.tpm.planpostpromoeffect.PlanPostPromoEffect',
+            model: 'App.model.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect',
             storeId: 'historicalplanpostpromoeffectstore',
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
                     xclass: 'App.ExtSelectionFilterModel',
-                    model: 'App.model.tpm.planpostpromoeffect.PlanPostPromoEffect',
+                    model: 'App.model.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect',
                     modelId: 'efselectionmodel'
                 }]
             },
@@ -60,7 +60,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect', {
             }, {
                 text: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_Operation'),
                 dataIndex: '_Operation',
-                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalCOGS', 'OperationType'),
+                renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalPlanPostPromoEffect', 'OperationType'),
                 filter: {
                     type: 'combo',
                     valueField: 'id',
@@ -74,7 +74,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect', {
     }, {
         xtype: 'editabledetailform',
         itemId: 'detailform',
-        model: 'App.model.tpm.cogs.HistoricalPlanPostPromoEffect',
+        model: 'App.model.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect',
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
