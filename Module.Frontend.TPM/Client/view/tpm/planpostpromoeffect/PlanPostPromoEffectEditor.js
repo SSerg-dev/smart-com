@@ -68,14 +68,13 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                     change: function (field, newValue, oldValue) {
                         var brandtech = field.up().down('[name=BrandTechId]');
                         var brandtechValue = newValue ? field.record.get('BrandsegTechsub') : null;
-    
                         brandtech.setValue(brandtechValue);
-                        /*var me = App.app.getController('tpm.promoproductcorrection.PromoProductCorrection');
-                        var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
-                        var promoId = promoproductcorrectioneditor.down('[name=Number]');
-                        var productId = promoproductcorrectioneditor.down('[name=ZREP]');
-                        me.saveModel(promoId.getValue(), productId.getValue());
-                        */
+
+                        var brandtechCode = newValue ? field.record.get('BrandTech_code') : null;
+                        if (brandtechCode != null) {
+                            var planPostPromoEffectController = App.app.getController('tpm.planpostpromoeffect.PlanPostPromoEffect');
+                            planPostPromoEffectController.getBrandTechSizes(brandtechCode);
+                        }
                     }
                 },
                 store: {

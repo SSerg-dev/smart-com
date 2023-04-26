@@ -89,5 +89,23 @@ Ext.define('App.controller.tpm.planpostpromoeffect.PlanPostPromoEffect', {
             var proxy = store.getProxy();
             proxy.extraParams.Id = this.getRecordId(selModel.getSelection()[0]);
         }
+    },
+
+    getBrandTechSizes: function(brandTechCode) {
+        var comboSize = Ext.ComponentQuery.query('#SizeComboBox')[0];
+        var store = comboSize.getStore();
+        store.clearData();
+
+        var params = {
+            brandTechCode: brandTechCode
+        }
+        if (params.brandTechCode) {
+            App.Util.makeRequestWithCallback('PlanPostPromoEffects', 'GetBrandTechSizes', params, function (data) {
+                var result = Ext.JSON.decode(data.httpResponse.data.value).data;
+                for (var i = 0; i < result.length; i++) {
+                    store.add({size: result[i]});
+                }
+            });
+        }
     }
 });

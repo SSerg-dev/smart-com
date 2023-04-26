@@ -36,7 +36,7 @@ using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Utility.FileWorker;
+using Newtonsoft.Json;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -123,7 +123,7 @@ namespace Module.Frontend.TPM.Controllers
             try {
                 Context.SaveChanges();
             } catch (Exception e) {
-                return GetErorrRequest(e);
+                return GetErrorRequest(e);
             }
 
             return Created(model);
@@ -173,10 +173,29 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return GetErorrRequest(e);
+                return GetErrorRequest(e);
             }
         }
-        
+
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetBrandTechSizes(string brandTechCode)
+        {
+            try
+            {
+                //var brandTechSizes =  new List<string>() { "10g", "100g", "800g"};
+                IQueryable<string> brandTechSizes = Context.Set<Product>()
+                    .Where(x => x.BrandTech_code == brandTechCode)
+                    .Select(x => x.Size).Distinct();
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = brandTechSizes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            }
+            catch (Exception e)
+            {
+                return GetErrorRequest(e);
+            }
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanPostPromoEffect> options) 
         {
@@ -265,7 +284,7 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         
-        private ExceptionResult GetErorrRequest(Exception e) {
+        private ExceptionResult GetErrorRequest(Exception e) {
             // обработка при создании дублирующей записи
             SqlException exc = e.GetBaseException() as SqlException;
 

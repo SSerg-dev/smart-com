@@ -955,6 +955,7 @@ namespace Module.Persist.TPM
             builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
             builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
             
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("GetBrandTechSizes");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
             builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
