@@ -22,6 +22,7 @@ terraform {
 
 provider "yandex" {
   cloud_id  = var.cloud_id
+  service_account_key_file = var.deploy-sa-authkey
 }
 
 provider "helm" {
