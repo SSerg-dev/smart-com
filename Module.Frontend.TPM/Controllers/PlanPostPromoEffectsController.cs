@@ -272,14 +272,14 @@ namespace Module.Frontend.TPM.Controllers
 
         public static IEnumerable<Column> GetExportSettings() {
             IEnumerable<Column> columns = new List<Column>() {
-                new Column() { Order = 2, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
-                new Column() { Order = 3, Field = "ClientTree.ObjectId", Header = "ClientId", Quoting = false },
-                new Column() { Order = 4, Field = "BrandTech.BrandsegTechsub", Header = "BrandTech", Quoting = false },
-                new Column() { Order = 5, Field = "Size", Header = "Size", Quoting = false },
-                new Column() { Order = 5, Field = "DiscountRange.Name", Header = "Discount", Quoting = false },
+                new Column() { Order = 0, Field = "ClientTree.ObjectId", Header = "Client Hierarchy Code", Quoting = false },
+                new Column() { Order = 1, Field = "ClientTree.FullPathName", Header = "Client", Quoting = false },
+                new Column() { Order = 2, Field = "BrandTech.BrandsegTechsub", Header = "Brand Tech", Quoting = false },
+                new Column() { Order = 3, Field = "Size", Header = "Size", Quoting = false },
+                new Column() { Order = 4, Field = "DiscountRange.Name", Header = "Discount", Quoting = false },
                 new Column() { Order = 5, Field = "DurationRange.Name", Header = "Promo Duration", Quoting = false },
-                new Column() { Order = 5, Field = "PlanPostPromoEffectW1", Header = "Plan Post Promo Effect W1", Quoting = false },
-                new Column() { Order = 5, Field = "PlanPostPromoEffectW2", Header = "Plan PostPromo Effect W2", Quoting = false }
+                new Column() { Order = 6, Field = "PlanPostPromoEffectW1", Header = "Plan Post Promo Effect W1", Quoting = false },
+                new Column() { Order = 7, Field = "PlanPostPromoEffectW2", Header = "Plan PostPromo Effect W2", Quoting = false }
             };
             return columns;
         }
