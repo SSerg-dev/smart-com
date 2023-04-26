@@ -381,7 +381,7 @@ namespace Module.Host.TPM.Actions
                 return isSuitable;
             }
             typedRec.EAN_PC = eanPc;
-            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && !x.Disabled);
+            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && x.Product.EAN_PC == typedRec.EAN_PC && !x.Disabled);
             if (promoProduct == null)
             {
                 errors.Add("PromoProduct not found");
