@@ -36,7 +36,7 @@ stages:
     - bash: |
         ls -la
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: Cleanup tfplans
+      displayName: ls
 
 - stage: Apply
   dependsOn: [Plan]
@@ -61,14 +61,17 @@ stages:
     - bash: terraform validate
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Validate
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Plan
     - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Apply
     - bash: |
         ls -la
-        # rm -rf deployment*.tfplan
+        rm -rf deployment*.tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: Cleanup tfplans
+      displayName: ls
 
 - stage: Destroy
   dependsOn: [Plan]
