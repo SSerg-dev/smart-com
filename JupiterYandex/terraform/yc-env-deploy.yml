@@ -33,6 +33,10 @@ stages:
     - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Plan
+    - bash: |
+        ls -la
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Cleanup tfplans
 
 - stage: Apply
   dependsOn: [Plan]
