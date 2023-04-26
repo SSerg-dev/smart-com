@@ -375,7 +375,7 @@ namespace Module.Host.TPM.Actions
                 errors.Add("No access to the client");
                 isSuitable = false;
             }
-            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && !x.Disabled);
+            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && x.Product.EAN_PC == typedRec.EanPcImport && !x.Disabled);
             if (promoProduct == null)
             {
                 errors.Add("PromoProduct not found");
