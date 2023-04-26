@@ -60,7 +60,7 @@ namespace Module.Host.TPM.Actions
             HasHeader = settings.HasHeader;
             this.RPAId = RPAId;
 
-            AllowPartialApply = true;
+            AllowPartialApply = false;
             logger = LogManager.GetCurrentClassLogger();
         }
 
