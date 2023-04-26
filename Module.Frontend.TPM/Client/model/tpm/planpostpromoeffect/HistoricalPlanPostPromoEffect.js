@@ -1,4 +1,4 @@
-Ext.define('App.model.tpm.cogs.HistoricalPlanPostPromoEffect', {
+Ext.define('App.model.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect', {
     extend: 'Ext.data.Model',
     idProperty: '_Id',
     breezeEntityType: 'PlanPostPromoEffect',

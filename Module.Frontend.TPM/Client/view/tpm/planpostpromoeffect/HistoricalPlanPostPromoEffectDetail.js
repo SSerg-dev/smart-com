@@ -11,11 +11,11 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffectDetail
         items: [{
             xtype: 'singlelinedisplayfield',
             name: '_User',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('_User')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_User')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_Role',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('_Role')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_Role')
         }, {
             xtype: 'singlelinedisplayfield',
             name: '_EditDate',
@@ -25,26 +25,26 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffectDetail
             xtype: 'singlelinedisplayfield',
             name: '_Operation',
             renderer: App.RenderHelper.getLocalizedRenderer('tpm.HistoricalPlanPostPromoEffect', 'OperationType'),
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('_Operation')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('_Operation')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeObjectId',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeObjectId')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('ClientTreeObjectId')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'ClientTreeFullPathName',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('ClientTreeFullPathName')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('ClientTreeFullPathName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'BrandTechName',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('BrandTechName')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('BrandTechName')
         }, {
             xtype: 'singlelinedisplayfield',
             name: 'Size',
             fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('Size')
         }, {
             xtype: 'singlelinedisplayfield',
-            text: l10n.ns('tpm', 'PlanPostPromoEffect').value('DiscountRangeName'),
+            text: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('DiscountRangeName'),
             name: 'DiscountRangeName'
         }, {
             xtype: 'singlelinedisplayfield',
@@ -53,11 +53,11 @@ Ext.define('App.view.tpm.planpostpromoeffect.HistoricalPlanPostPromoEffectDetail
         }, {
             xtype: 'numberfield',
             name: 'PlanPostPromoEffectW1',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('PlanPostPromoEffectW1')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('PlanPostPromoEffectW1')
         }, {
             xtype: 'numberfield',
             name: 'PlanPostPromoEffectW2',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('PlanPostPromoEffectW2')
+            fieldLabel: l10n.ns('tpm', 'HistoricalPlanPostPromoEffect').value('PlanPostPromoEffectW2')
         }]
     }
 });

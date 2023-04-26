@@ -1366,8 +1366,8 @@
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
 
     'PlanPostPromoEffect': {
-        'PlanPostPromoEffectW1': 'PlanPostPromoEffectW1',
-        'PlanPostPromoEffectW2': 'PlanPostPromoEffectW2',
+        'PlanPostPromoEffectW1': 'Plan Post Promo Effect W1',
+        'PlanPostPromoEffectW2': 'Plan PostPromo Effect W2',
         'DiscountRangeName': 'Discount',
         'DurationRangeName': 'Promo Duration',
         'ClientTreeFullPathName': 'Client',

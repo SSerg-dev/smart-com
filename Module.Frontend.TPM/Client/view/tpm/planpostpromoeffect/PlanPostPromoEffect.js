@@ -173,12 +173,12 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
         }, {
             xtype: 'searchfield',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('BrandTechName'),
-            name: 'BrandTechName',
+            name: 'BrandTechId',
             selectorWidget: 'brandtech',
-            valueField: 'Id',
-            displayField: 'BrandsegTechsub',
             allowBlank: true,
             allowOnlyWhitespace: true,
+            valueField: 'Id',
+            displayField: 'BrandsegTechsub',
             onTrigger2Click: function () {
                 var technology = this.up().down('[name=BrandTechName]');
 
@@ -194,8 +194,14 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
                 change: function (field, newValue, oldValue) {
                     var brandtech = field.up().down('[name=BrandTechName]');
                     var brandtechValue = newValue ? field.record.get('BrandTechId') : null;
+                    var brandtechCode = newValue ? field.record.get('BrandTech_code') : null;
 
                     brandtech.setValue(brandtechValue);
+
+                    if (brandtechCode != null) {
+                        var planPostPromoEffectController = App.app.getController('tpm.planpostpromoeffect.PlanPostPromoEffect');
+                        planPostPromoEffectController.getBrandTechSizes(brandtechCode);
+                    }
                 }
             },
             store: {
@@ -215,76 +221,88 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
                 to: 'BrandTechName'
             }]
         }, {
-            xtype: 'textfield',
+            xtype: 'combobox',
+            editable: false,
             name: 'Size',
-            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size')
-            /*editable: false,
-            displayField: 'Name',
-            entityType: 'RPASetting',
+            id: 'SizeComboBox',
+            fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('Size'),
+            valueField: 'size',
+            displayField: 'size',
             queryMode: 'local',
-            valueField: 'Id',
-            forceSelection: true,
+            selectOnFocus: true,
             allowBlank: false,
             allowOnlyWhitespace: false,
-            store: {
-                type: 'simplestore',
-                autoLoad: false,
-                model: 'App.model.core.rpasetting.RPASetting',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.core.rpasetting.RPASetting',
-                        modelId: 'efselectionmodel'
-                    }]
-                }
-            },*/
+            store: Ext.create('Ext.data.Store', {
+                fields: ['size'],
+                data: [
+                    { size: '10g' },
+                    { size: '800g' },
+                    { size: '300g' }
+                ]
+            }),
+            mapping: [{
+                from: 'size',
+                to: 'size'
+            }]
         }, {
-            xtype: 'combobox',
+            xtype: 'searchcombobox',
             editable: false,
             name: 'DiscountRangeId',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DiscountRangeName'),
-            queryMode: 'remote',
+            selectorWidget: 'discountrange',
             valueField: 'Id',
-            forceSelection: true,
+            displayField: 'Name',
+            selectOnFocus: true,
+            entityType: 'DiscountRange',
             allowBlank: false,
             allowOnlyWhitespace: false,
             store: {
                 type: 'simplestore',
-                autoLoad: false,
-                model: 'App.model.tpm.discountrange.DiscountRange',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.discountrange.DiscountRange',
-                        modelId: 'efselectionmodel'
-                    }]
-                }
-            }
+                autoLoad: true,
+                model: 'App.model.tpm.discountrange.DiscountRange'
+            },
+            extendedFilter: {
+                xclass: 'App.ExtFilterContext',
+                supportedModels: [{
+                    xclass: 'App.ExtSelectionFilterModel',
+                    model: 'App.model.tpm.discountrange.DiscountRange',
+                    modelId: 'efselectionmodel'
+                }]
+            },
+            mapping: [{
+                from: 'Name',
+                to: 'DiscountRangeName'
+            }]
         }, {
-            xtype: 'combobox',
+            xtype: 'searchcombobox',
+            itemId: 'duration-range',
             editable: false,
             name: 'DurationRangeId',
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('DurationRangeName'),
-            queryMode: 'remote',
+            selectorWidget: 'durationrange',
             valueField: 'Id',
-            forceSelection: true,
+            displayField: 'Name',
+            selectOnFocus: true,
+            entityType: 'DurationRange',
             allowBlank: false,
             allowOnlyWhitespace: false,
             store: {
                 type: 'simplestore',
-                autoLoad: false,
-                model: 'App.model.tpm.durationrange.DurationRange',
-                extendedFilter: {
-                    xclass: 'App.ExtFilterContext',
-                    supportedModels: [{
-                        xclass: 'App.ExtSelectionFilterModel',
-                        model: 'App.model.tpm.durationrange.DurationRange',
-                        modelId: 'efselectionmodel'
-                    }]
-                }
-            }
+                autoLoad: true,
+                model: 'App.model.tpm.durationrange.DurationRange'
+            },
+            extendedFilter: {
+                xclass: 'App.ExtFilterContext',
+                supportedModels: [{
+                    xclass: 'App.ExtSelectionFilterModel',
+                    model: 'App.model.tpm.durationrange.DurationRange',
+                    modelId: 'efselectionmodel'
+                }]
+            },
+            mapping: [{
+                from: 'Name',
+                to: 'DurationRangeName'
+            }]
         }, {
             xtype: 'numberfield',
             name: 'PlanPostPromoEffectW1',
