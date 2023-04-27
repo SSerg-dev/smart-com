@@ -26,8 +26,8 @@ stages:
   - job: Apply
     variables:
       AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
-    pool:
-      name: SMARTCOM_UBDS05
+    # pool:
+    #   name: SMARTCOM_UBDS05
       # demands: Agent.Name -equals $(AgentName)   
     steps:
     - bash: |
