@@ -28,7 +28,8 @@ stages:
   jobs:
   - job: Apply
     variables:
-      AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
+      #bad AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
+      AgentName: $[ dependencies.Plan.outputs['PlanJob.passOutput.AgentName'] ]
     # pool:
       # name: SMARTCOM_UBDS05
       # demands: Agent.Name -equals $(AgentName)   
