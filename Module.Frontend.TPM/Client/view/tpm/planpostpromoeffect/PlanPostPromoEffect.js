@@ -175,8 +175,8 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffect', {
             fieldLabel: l10n.ns('tpm', 'PlanPostPromoEffect').value('BrandTechName'),
             name: 'BrandTechId',
             selectorWidget: 'brandtech',
-            allowBlank: true,
-            allowOnlyWhitespace: true,
+            allowBlank: false,
+            allowOnlyWhitespace: false,
             valueField: 'Id',
             displayField: 'BrandsegTechsub',
             onTrigger2Click: function () {
