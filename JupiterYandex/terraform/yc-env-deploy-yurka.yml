@@ -34,7 +34,8 @@ stages:
       AgentName2: $(AgentName)
     pool:
       name: SMARTCOM_UBDS05
-      demands: Agent.Name -equals $(AgentName2)   
+      # demands: Agent.Name -equals $(AgentName2)   
+      demands: Agent.Name -equals "svv-ubds05-a02"   
     steps:
     - bash: |
         echo "Agent Name: $(AgentName)"
