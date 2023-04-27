@@ -9,7 +9,7 @@ trigger:
     - develop
 
 variables:
-  AgentName1: $(Agent.Name)
+  AgentName: $(Agent.Name)
 
 stages:
 - stage: Plan
@@ -18,8 +18,9 @@ stages:
     steps:
 
     - bash: |
-        echo "Agent Name: $(Agent.Name)"
-        echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(Agent.Name)"
+        echo "Agent Name: $(AgentName)"
+        # echo "Agent Name: $(Agent.Name)"
+        # echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(Agent.Name)"
       name: passOutput
 
 - stage: Apply
@@ -29,12 +30,12 @@ stages:
   - job: Apply
     variables:
       #bad AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
-      AgentName: $[ dependencies.Plan.outputs['PlanJob.passOutput.AgentName'] ]
-    # pool:
-      # name: SMARTCOM_UBDS05
-      # demands: Agent.Name -equals $(AgentName)   
+      # AgentName: $[ dependencies.Plan.outputs['PlanJob.passOutput.AgentName'] ]
+    pool:
+      name: SMARTCOM_UBDS05
+      demands: Agent.Name -equals $(AgentName)   
     steps:
     - bash: |
         echo $(AgentName)
-        echo $(AgentName1)
+        # echo $(AgentName1)
 
