@@ -27,8 +27,8 @@ stages:
   # condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
   jobs:
   - job: Apply
-    # variables:
-      # AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
+    variables:
+      AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
     # pool:
       # name: SMARTCOM_UBDS05
       # demands: Agent.Name -equals $(AgentName)   
