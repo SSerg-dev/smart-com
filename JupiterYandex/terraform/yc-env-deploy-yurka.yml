@@ -33,7 +33,7 @@ stages:
       # AgentName: $[ dependencies.Plan.outputs['PlanJob.passOutput.AgentName'] ]
     pool:
       name: SMARTCOM_UBDS05
-      demands: Agent.Name -equals $(AgentName)   
+      # demands: Agent.Name -equals $(AgentName)   
     steps:
     - bash: |
         echo $(AgentName)
