@@ -36,7 +36,8 @@ stages:
       name: SMARTCOM_UBDS05
       # demands: Agent.Name -equals $(AgentName2)   
       demands:
-      - agent.name -equals svv-ubds05-a02
+      #ok - agent.name -equals svv-ubds05-a02
+      - agent.name -equals $(AgentName2)
     steps:
     - bash: |
         echo "Agent Name: $(AgentName)"
