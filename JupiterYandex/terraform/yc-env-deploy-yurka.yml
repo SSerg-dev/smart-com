@@ -11,7 +11,7 @@ trigger:
 stages:
 - stage: Plan
   jobs:
-  - job: Plan
+  - job: PlanJob
     steps:
 
     - bash: |
@@ -25,7 +25,8 @@ stages:
   jobs:
   - job: Apply
     variables:
-      AgentName: $[ dependencies.Plan.outputs['passOutput.AgentName'] ]  
+      # AgentName: $[ dependencies.Plan.outputs['passOutput.AgentName'] ]  
+      AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]  
     pool:
       name: SMARTCOM_UBDS05
       demands: Agent.Name -equals $(AgentName)   
