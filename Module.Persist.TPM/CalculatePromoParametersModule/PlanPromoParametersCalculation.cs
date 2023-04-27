@@ -189,7 +189,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             promo.PromoPriceIncrease.PlanPromoNetBaseTI = promo.PromoPriceIncrease.PlanPromoNetLSV * TIBasePercent / 100;
                             promo.PromoPriceIncrease.PlanPromoBaselineBaseTI = promo.PromoPriceIncrease.PlanPromoBaselineLSV * TIBasePercent / 100;
-                            promo.PromoPriceIncrease.PlanPromoNSV = (promo.PromoPriceIncrease.PlanPromoLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoBaseTI ?? 0);
+                            promo.PromoPriceIncrease.PlanPromoNSV = (promo.PromoPriceIncrease.PlanPromoLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoBaseTI ?? 0);
                             promo.PromoPriceIncrease.PlanPromoIncrementalNSV = (promo.PromoPriceIncrease.PlanPromoIncrementalLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoIncrementalBaseTI ?? 0);
                             promo.PromoPriceIncrease.PlanPromoNetIncrementalNSV = (promo.PromoPriceIncrease.PlanPromoNetIncrementalLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoNetIncrementalBaseTI ?? 0);
                             promo.PromoPriceIncrease.PlanPromoNetIncrementalMAC = (promo.PromoPriceIncrease.PlanPromoNetIncrementalNSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoNetIncrementalCOGS ?? 0);
@@ -215,7 +215,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         {
                             promo.PromoPriceIncrease.PlanPromoNetBaseTI = 0;
                             promo.PromoPriceIncrease.PlanPromoBaselineBaseTI = 0;
-                            promo.PromoPriceIncrease.PlanPromoNSV = (promo.PromoPriceIncrease.PlanPromoLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoBaseTI ?? 0);
+                            promo.PromoPriceIncrease.PlanPromoNSV = (promo.PromoPriceIncrease.PlanPromoLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoBaseTI ?? 0);
                             promo.PromoPriceIncrease.PlanPromoIncrementalNSV = (promo.PromoPriceIncrease.PlanPromoIncrementalLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoIncrementalBaseTI ?? 0);
                             promo.PromoPriceIncrease.PlanPromoNetIncrementalNSV = (promo.PromoPriceIncrease.PlanPromoNetIncrementalLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoNetIncrementalBaseTI ?? 0);
                             double? sumPlanPromoIncrementalCasePI = context.Set<PromoProductPriceIncrease>().Include(g => g.PromoProduct).Where(x => x.PromoPriceIncreaseId == promoId && !x.Disabled).Sum(x => x.PlanProductIncrementalCaseQty * x.PromoProduct.Product.CaseVolume);
