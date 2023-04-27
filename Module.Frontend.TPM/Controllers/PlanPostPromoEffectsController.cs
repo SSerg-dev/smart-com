@@ -183,7 +183,6 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                //var brandTechSizes =  new List<string>() { "10g", "100g", "800g"};
                 IQueryable<string> brandTechSizes = Context.Set<Product>()
                     .Where(x => x.BrandsegTech_code == brandTechCode)
                     .Select(x => x.Size).Distinct();
