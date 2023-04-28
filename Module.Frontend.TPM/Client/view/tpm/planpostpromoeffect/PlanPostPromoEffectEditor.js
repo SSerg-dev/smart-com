@@ -61,9 +61,14 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 },
                 listeners: {
                     afterrender: function (field) {
+                        var comboSize = Ext.ComponentQuery.query('#SizeComboBox')[0];
                         if (!field.value) {
                             field.value = null;
+
+                            comboSize.setDisabled(true);
                         } else {
+                            comboSize.setDisabled(false);
+                            
                             var planPostPromoEffectController = App.app.getController('tpm.planpostpromoeffect.PlanPostPromoEffect');
                             planPostPromoEffectController.getBrandTechCodeById(field.value)
                                 .then(function (data) {
@@ -82,6 +87,13 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                         var brandtech = field.up().down('[name=BrandTechId]');
                         var brandtechValue = newValue ? field.record.get('BrandsegTechsub') : null;
                         brandtech.setValue(brandtechValue);
+                        
+                        var comboSize = Ext.ComponentQuery.query('#SizeComboBox')[0];
+                        comboSize.setDisabled(Ext.isEmpty(brandtechValue));
+                        
+                        if (Ext.isEmpty(newValue)) {
+                            comboSize.clearValue();
+                        }
 
                         var brandtechCode = newValue ? field.record.get('BrandTech_code') : null;
                         if (brandtechCode != null) {
@@ -119,12 +131,7 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 allowBlank: false,
                 allowOnlyWhitespace: false,
                 store: Ext.create('Ext.data.Store', {
-                    fields: ['size'],
-                    data: [
-                        { size: '10g' },
-                        { size: '800g' },
-                        { size: '300g' }
-                    ]
+                    fields: ['size']
                 }),
                 mapping: [{
                     from: 'size',
@@ -145,7 +152,14 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 store: {
                     type: 'simplestore',
                     autoLoad: true,
-                    model: 'App.model.tpm.discountrange.DiscountRange'
+                    model: 'App.model.tpm.discountrange.DiscountRange',
+                    sorters: [{
+                        property: 'MinValue',
+                        direction: 'ASC'
+                    }, {
+                        property: 'MaxValue',
+                        direction: 'ASC'
+                    }]
                 },
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',
@@ -175,7 +189,14 @@ Ext.define('App.view.tpm.planpostpromoeffect.PlanPostPromoEffectEditor', {
                 store: {
                     type: 'simplestore',
                     autoLoad: true,
-                    model: 'App.model.tpm.durationrange.DurationRange'
+                    model: 'App.model.tpm.durationrange.DurationRange',
+                    sorters: [{
+                        property: 'MinValue',
+                        direction: 'ASC'
+                    }, {
+                        property: 'MaxValue',
+                        direction: 'ASC'
+                    }]
                 },
                 extendedFilter: {
                     xclass: 'App.ExtFilterContext',
