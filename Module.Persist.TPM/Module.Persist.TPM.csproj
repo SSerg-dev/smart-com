@@ -3543,6 +3543,10 @@
     <Compile Include="Migrations\202304261444457_Empty260420231.designer.cs">
       <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.cs" />
+    <Compile Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.designer.cs">
+      <DependentUpon>202304280758313_Add_AP_PPE_CustomMarketingMan.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6661,6 +6665,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304261444457_Empty260420231.resx">
       <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.resx">
+      <DependentUpon>202304280758313_Add_AP_PPE_CustomMarketingMan.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
