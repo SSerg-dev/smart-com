@@ -384,8 +384,12 @@ namespace Module.Frontend.TPM.Controllers
                     List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.IsBaseClient
                     && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
 
-                    List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
-                    List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+                    var brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+                    var brandTechSizes = Context.Set<Product>()
+                        .Where(x => !x.Disabled && !String.IsNullOrEmpty(x.BrandsegTechsub))
+                        .GroupBy(x => x.BrandsegTechsub)
+                        .Select(x => new BrandTechSize { BrandTech=x.Key, Sizes=x.Select(y => y.Size).Distinct().ToList() })
+                        .ToList();
 
                     using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                     {
@@ -414,6 +418,20 @@ namespace Module.Frontend.TPM.Controllers
                             i++;
                         }
 
+                        i = 2;
+                        ISheet sizesSheet = twb.GetSheet("Sizes");
+                        foreach (var btSize in brandTechSizes)
+                        {
+                            foreach (var size in btSize.Sizes)
+                            {
+                                IRow sizeRow = sizesSheet.CreateRow(i);
+                                ICell btCell = sizeRow.CreateCell(0);
+                                btCell.SetCellValue(btSize.BrandTech);
+                                ICell sizeCell = sizeRow.CreateCell(1);
+                                sizeCell.SetCellValue(size);
+                                i++;
+                            }
+                        }
                         //ISheet productsSheet = twb.GetSheet("Products");
                         //i = 1;
                         //foreach (var pr in products)
@@ -464,6 +482,9 @@ namespace Module.Frontend.TPM.Controllers
                         clientsSheet.AutoSizeColumn(0);
                         clientsSheet.AutoSizeColumn(1);
                         brandtechSheet.AutoSizeColumn(0);
+                        
+                        sizesSheet.AutoSizeColumn(0);
+                        sizesSheet.AutoSizeColumn(1);
 
                         twb.Write(stream);
                         stream.Close();
@@ -487,6 +508,12 @@ namespace Module.Frontend.TPM.Controllers
             } else {
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
+        }
+
+        private class BrandTechSize
+        {
+            public string BrandTech { get; set; }
+            public List<string> Sizes { get; set; }
         }
     }
 }
