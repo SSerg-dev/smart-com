@@ -119,7 +119,20 @@ namespace Module.Frontend.TPM.Controllers
             var mapper = configuration.CreateMapper();
             var result = mapper.Map(model, proxy);
 
-            Context.Set<PlanPostPromoEffect>().Add(result);
+            var existModel = Context.Set<PlanPostPromoEffect>().FirstOrDefault(n => n.ClientTreeId == model.ClientTreeId &&
+                                                                          n.BrandTechId == model.BrandTechId &&
+                                                                          n.Size == model.Size &&
+                                                                          n.DiscountRangeId == model.DiscountRangeId &&
+                                                                          n.DurationRangeId == model.DurationRangeId);
+            if (existModel == null)
+            {
+                Context.Set<PlanPostPromoEffect>().Add(result);
+            }
+            else
+            {
+                existModel.PlanPostPromoEffectW1 = model.PlanPostPromoEffectW1;
+                existModel.PlanPostPromoEffectW2 = model.PlanPostPromoEffectW2;
+            }
             Context.Set<ChangesIncident>().Add(new ChangesIncident
             {
                 Id = Guid.NewGuid(),
