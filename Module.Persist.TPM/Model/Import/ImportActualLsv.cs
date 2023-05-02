@@ -124,19 +124,19 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoLSVSO { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 29)]
-        [Display(Name = "Plan Post Promo Effect W1, %")]
+        [Display(Name = "Plan Post Promo Effect LSV W1")]
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 30)]
-        [Display(Name = "Actual Post Promo Effect W1")]
+        [Display(Name = "Actual Post Promo Effect LSV W1")]
         public double? ActualPromoPostPromoEffectLSVW1 { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 31)]
-        [Display(Name = "Plan Post Promo Effect W2, %")]
+        [Display(Name = "Plan Post Promo Effect LSV W2")]
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 32)]
-        [Display(Name = "Actual Post Promo Effect W2, %")]
+        [Display(Name = "Actual Post Promo Effect LSV W2")]
         public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
 
         [ImportCSVColumn(ColumnNumber = 33)]
