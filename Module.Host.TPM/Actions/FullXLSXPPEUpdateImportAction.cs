@@ -1,6 +1,7 @@
 ﻿using Core.Data;
 using Core.Dependency;
 using Core.Extensions;
+using Core.History;
 using Core.Settings;
 using DocumentFormat.OpenXml;
 using Interfaces.Implementation.Action;
@@ -440,6 +441,8 @@ namespace Module.Host.TPM.Actions
 
             var pPEChangeIncidents = new List<PlanPostPromoEffect>();
 
+            var toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
+
             var importCOGS = sourceRecords.Cast<ImportPPE>();
             var clientTrees = context.Set<ClientTree>().ToList();
             var brandTeches = context.Set<BrandTech>().ToList();
@@ -471,6 +474,7 @@ namespace Module.Host.TPM.Actions
                         existPPE.DeletedDate = DateTimeOffset.Now;
                     }
                     toCreate.Add(toSave);
+                    toHisCreate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(null, toSave));
                     pPEChangeIncidents.Add(toSave);
                 }
 
@@ -478,7 +482,8 @@ namespace Module.Host.TPM.Actions
                 {
                     context.Set<PlanPostPromoEffect>().AddRange(items);
                 }
-
+                
+                context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
                 // Необходимо выполнить перед созданием инцидентов.
                 context.SaveChanges();
 
