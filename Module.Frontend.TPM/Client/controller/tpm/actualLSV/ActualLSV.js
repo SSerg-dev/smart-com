@@ -138,6 +138,7 @@
     },
 
     startEditRecord: function (model, grid) {
+        debugger;
         this.editor = grid.editorModel.createEditor({ title: l10n.ns('core').value('updateWindowTitle') });
         this.editor.grid = grid;
         if (this.editor.down('#edit') && this.editor.down('#close')) {
@@ -181,6 +182,13 @@
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
         }
+        else {
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
+
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
+        }
 
         this.editor.afterWindowShow(this.editor, false);
         this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
@@ -190,6 +198,7 @@
     },
 
     onEditButtonClick: function (button) {
+        debugger;
         this.editor.down('#ok').setVisible(true);
         this.editor.down('#canceledit').setVisible(true);
         this.editor.down('#edit').setVisible(false);
@@ -222,6 +231,13 @@
         }
 
         if (this.editor.model.data.IsOnInvoice === 'Yes') {
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
+
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
+        }
+        else {
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
 
