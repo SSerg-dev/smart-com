@@ -7921,7 +7921,7 @@
       "$$hashKey": "object:4868317"
     }
   ],
-  "name": "PLAN_PARAMETERS_CALCULATION",
+  "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION",
   "id": "2HWJU5EXK",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
@@ -7935,6 +7935,5 @@
   },
   "info": {
     "isRunning": false
-  },
-  "path": "/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION"
+  }
 }
