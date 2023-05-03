@@ -114,8 +114,6 @@ namespace Module.Host.TPM.Actions {
                         oldRecord.ActualPromoLSV = record.ActualPromoLSV;
                         oldRecord.ActualPromoLSVSI = record.ActualPromoLSVSI;
                         oldRecord.ActualPromoLSVSO = record.ActualPromoLSVSO;
-                        oldRecord.ActualPromoPostPromoEffectLSVW1 = record.ActualPromoPostPromoEffectLSVW1;
-                        oldRecord.ActualPromoPostPromoEffectLSVW2 = record.ActualPromoPostPromoEffectLSVW2;
                         toUpdate.Add(oldRecord);
                     }
                     else
@@ -125,7 +123,7 @@ namespace Module.Host.TPM.Actions {
                 }
             }
 
-            String formatStrRegularPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoLSVSI={2}, ActualPromoLSVSO={3}, ActualPromoPostPromoEffectLSVW1={4}, ActualPromoPostPromoEffectLSVW2={5} WHERE Id='{6}' \n";
+            String formatStrRegularPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET ActualPromoBaselineLSV={0}, ActualPromoLSV={1}, ActualPromoLSVSI={2}, ActualPromoLSVSO={3} WHERE Id='{4}' \n";
             String formatStrInOutPromo = "UPDATE [DefaultSchemaSetting].[Promo] SET ActualPromoLSV={0}, ActualPromoLSVSI={1}, ActualPromoLSVSO={2} WHERE Id='{3}' \n";
 
             foreach (IEnumerable<Promo> items in toUpdate.Partition(10000))
@@ -141,8 +139,6 @@ namespace Module.Host.TPM.Actions {
                         p.ActualPromoLSV.HasValue ? p.ActualPromoLSV.Value.ToString() : "NULL",
                         p.ActualPromoLSVSI.HasValue ? p.ActualPromoLSVSI.Value.ToString() : "NULL",
                         p.ActualPromoLSVSO.HasValue ? p.ActualPromoLSVSO.Value.ToString() : "NULL",
-                        p.ActualPromoPostPromoEffectLSVW1.HasValue ? p.ActualPromoPostPromoEffectLSVW1.Value.ToString() : "NULL",
-                        p.ActualPromoPostPromoEffectLSVW2.HasValue ? p.ActualPromoPostPromoEffectLSVW2.Value.ToString() : "NULL",
                         p.Id);
                     }
                     else
