@@ -387,16 +387,6 @@
                 widget: 'planincrementalreport'
             },
             {
-                text: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectReport'),
-                tooltip: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectReport'),
-                glyph: 0xf127,
-                rsMode: false,
-                currentMode: true,
-                scale: 'medium',
-                roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
-                widget: 'planpostpromoeffectreport'
-            },
-            {
                 text: l10n.ns('tpm', 'mainmenu').value('IncrementalPromo'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('IncrementalPromo'),
                 glyph: 0xf127,
