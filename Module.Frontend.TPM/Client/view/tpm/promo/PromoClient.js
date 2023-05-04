@@ -188,18 +188,6 @@
                     width: '100%',
                     labelWidth: 160,
                     fieldLabel: l10n.ns('tpm', 'ClientTree').value('OutletCount')
-                }, {
-                    xtype: 'singlelinedisplayfield',
-                    name: 'PromoClientPPEW1',
-                    width: '100%',
-                    labelWidth: 160,
-                    fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW1')
-                }, {
-                    xtype: 'singlelinedisplayfield',
-                    name: 'PromoClientPPEW2',
-                    width: '100%',
-                    labelWidth: 160,
-                    fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW2')
                 }]
             }, {
                 xtype: 'container',
@@ -247,8 +235,6 @@
             this.down('[name=PromoClientRetailType]').setValue(clientTreeRecord.RetailTypeName);
             this.down('[name=PromoClientObjectId]').setValue(clientTreeRecord.ObjectId);
             //this.down('[name=PromoClientOutletCount]').setValue(record.data.PromoClientName);
-            this.down('[name=PromoClientPPEW1]').setValue(clientTreeRecord.PostPromoEffectW1);
-            this.down('[name=PromoClientPPEW2]').setValue(clientTreeRecord.PostPromoEffectW2);
 
             var promoeditorcustom = this.up('promoeditorcustom');
             var radioOFFInvoice = this.down('[id=OffInvoice]');
@@ -325,8 +311,6 @@
             this.down('[name=PromoClientRetailType]').setValue(null);
             this.down('[name=PromoClientObjectId]').setValue(null);
             //this.down('[name=PromoClientOutletCount]').setValue(record.data.PromoClientName);
-            this.down('[name=PromoClientPPEW1]').setValue(null);
-            this.down('[name=PromoClientPPEW2]').setValue(null);
         }
 
         chooseBtn.fireEvent('resize', chooseBtn); // для обновления отрисовки кнопки
