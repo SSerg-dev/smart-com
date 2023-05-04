@@ -1252,6 +1252,8 @@
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectW1': 'Plan Post Promo Effect W1, %',
+        'PlanProductPostPromoEffectW2': 'Plan Post Promo Effect W2, %',
         'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
