@@ -209,9 +209,9 @@ namespace Module.Host.TPM.Handlers
 
                 if (promo.IsOnInvoice)
                 {
+                    promo.ActualPromoPostPromoEffectLSV = (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0);
                     promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW1 / promo.PlanPromoPostPromoEffectLSV);
                     promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW2 / promo.PlanPromoPostPromoEffectLSV);
-                    promo.ActualPromoPostPromoEffectLSV = (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0);
                 }
                 else
                 {
