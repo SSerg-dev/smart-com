@@ -19,9 +19,8 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTimeOffset? ModifiedDate { get; set; }
         public double? PlanProductUpliftPercentCorrected { get; set; }
-
-        [StringLength(128)]
         [Index("Unique_PromoProductsCorrection", 4, IsUnique = true)]
+        [StringLength(128)]
         public string TempId { get; set; }
 
         public Guid? UserId { get; set; }

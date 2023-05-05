@@ -389,6 +389,26 @@ namespace Module.Host.TPM.Handlers
         }
     }
 
+    class FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler : FullXLSXImportHandler
+    {
+        private Guid userId;
+        private Guid handlerId;
+        private TPMmode tPMmode;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            tPMmode = HandlerDataHelper.GetIncomingArgument<TPMmode>("TPMmode", info.Data, throwIfNotExists: false);
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseAction(settings, userId, handlerId, tPMmode);
+        }
+    }
+
     class FullXLSXUpdateImportPromoProductsUpliftHandler : FullXLSXImportHandler
     {
         /// <summary>
@@ -411,6 +431,27 @@ namespace Module.Host.TPM.Handlers
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
             return new FullXLSXUpdateImportPromoProductsUpliftAction(settings, promoId, userId, TempId, TPMmode);
+        }
+    }
+
+    class FullXLSXUpdateImportPromoProductsPriceIncreaseUpliftHandler : FullXLSXImportHandler
+    {
+        /// <summary>
+        /// Id промо для которого загружаются ProductUplift-ы
+        /// </summary>
+        private Guid promoId;
+        private Guid userId;
+
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            promoId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("PromoId", info.Data, false);
+            userId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data, false);
+            base.Action(info, data);
+        }
+
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXUpdateImportPromoProductPriceIncreasesUpliftAction(settings, promoId, userId);
         }
     }
 

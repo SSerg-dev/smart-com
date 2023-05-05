@@ -205,17 +205,18 @@ namespace Module.Frontend.TPM.Util
         }
         public static string GetGAManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
-            IQueryable<PromoGridView> promoGridView = GetConstraintedQueryPromo(authorizationManager, Context);
-            IQueryable<Promo> promos = Context.Set<Promo>().Where(g => promoGridView.Select(f => f.Id).Contains(g.Id));
+            var promoIds = GetConstraintedQueryPromo(authorizationManager, Context).Select(f => f.Id).ToList();
+            IQueryable<Promo> promoes = Context.Set<Promo>().Where(g => promoIds.Contains(g.Id));
             var calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
             var nowDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //TimeCritical
-            var timeCritical = promos
-                .Where(p => (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration) || (p.Promoes.Any(f => f.DispatchesStart < calculateDate)))
-                .Count();
+            var inExchangeCritical = promoes.Where(x => x.MasterPromoId != null & x.DispatchesStart < calculateDate).Select(x => x.MasterPromoId).Distinct().ToList();
+            var timeCritical = promoes
+                .Where(p => !inExchangeCritical.Contains(p.Id) && (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration))
+                .Count() + inExchangeCritical.Count();
             //GAapproval
             calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            int gaApproval = promos.Where(p => p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
+            int gaApproval = promoes.Where(p => p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
             return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, GaApproval = gaApproval });
         }
     }

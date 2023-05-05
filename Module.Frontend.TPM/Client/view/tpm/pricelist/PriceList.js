@@ -130,6 +130,19 @@
                 renderer: function (value) {
                     return value.toFixed(2);
                 },
+            }, {
+                text: l10n.ns('tpm', 'PriceList').value('FuturePriceMarker'),
+                dataIndex: 'FuturePriceMarker',
+                xtype: 'booleancolumn',
+                trueText: 'Yes',
+                falseText: 'No',
+                filter: {
+                    type: 'bool',
+                    store: [
+                        [false, 'No'],
+                        [true, 'Yes']
+                    ]
+                }
             }]
         }
     }, {

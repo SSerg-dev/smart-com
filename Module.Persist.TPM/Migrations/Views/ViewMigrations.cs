@@ -53,7 +53,7 @@
 								 ELSE ''  
 							  END), 
 							  '') as WorkflowStep,
-							  pr.InvoiceNumber
+							  pr.InvoiceNumber, pr.IsPriceIncrease
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
@@ -862,6 +862,7 @@
 					p.[ActualPromoVolume],
 					p.[ActualPromoIncrementalVolume],
 					p.[ActualPromoNetIncrementalVolume],
+					p.[IsApolloExport],
 					p.[Disabled],
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
@@ -970,6 +971,580 @@
 		GO
 		";
 
+		public static string UpdatePromoPriceIncreaseROIReportViewString(string defaultSchema)
+		{
+			return UpdatePromoPriceIncreaseROIReportViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+		}
+		private static string UpdatePromoPriceIncreaseROIReportViewSqlString = @"
+			IF EXISTS(SELECT 'view exists' FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = N'PromoPriceIncreaseROIReportView'AND TABLE_SCHEMA = 'DefaultSchemaSetting')
+				BEGIN
+					DROP VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView]
+				END
+			GO
+
+			CREATE   VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView] AS
+			WITH
+				CheckPromoStatuses
+			AS
+			(
+				SELECT
+					[value] AS [Status]
+				FROM STRING_SPLIT(ISNULL(
+				(
+					SELECT
+						s.[Value]
+					FROM [DefaultSchemaSetting].[Setting] s
+					WHERE s.[Name] = 'ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST'
+				), 'Finished,Closed'), ',')  
+			),
+				PreviousYearsPromoId
+			AS
+			(
+				SELECT
+					p.[Id]
+				FROM [DefaultSchemaSetting].[Promo] p
+				INNER JOIN [DefaultSchemaSetting].[PromoStatus] ps 
+					ON ps.[Id] = p.[PromoStatusId]
+				WHERE
+					p.[Disabled] = 0
+					AND p.[StartDate] IS NOT NULL AND YEAR(p.[StartDate]) <> YEAR(GETDATE())
+					AND ps.[Name] IN (SELECT * FROM CheckPromoStatuses)
+			),
+				PromoROIReport
+			AS
+			(
+				SELECT 
+					p.[ClientTreeKeyId],
+					p.[BaseClientTreeId],
+					p.[BaseClientTreeIds],
+					p.[NeedRecountUplift],
+					p.[LastApprovedDate],
+					p.[Name],
+					p.[ClientHierarchy],
+					p.[ProductHierarchy],
+					p.[LastChangedDate],
+					p.[LastChangedDateDemand],
+					p.[LastChangedDateFinance],
+					p.[DispatchesStart],
+					p.[DispatchesEnd],
+					p.[DispatchDuration],
+					p.[Mechanic],
+					p.[MechanicIA],
+					p.[MarsStartDate],
+					p.[MarsEndDate],
+					p.[MarsDispatchesStart],
+					p.[MarsDispatchesEnd],
+					p.[BudgetYear],
+					p.[OtherEventName],
+					p.[CalendarPriority],
+					ppi.[PlanPromoPostPromoEffectLSVW1],
+					ppi.[PlanPromoPostPromoEffectLSVW2],
+					p.[ActualPromoPostPromoEffectLSVW1],
+					p.[ActualPromoPostPromoEffectLSVW2],
+					p.[IsAutomaticallyApproved],
+					p.[IsCMManagerApproved],
+					p.[IsGAManagerApproved],
+					p.[IsDemandPlanningApproved],
+					p.[IsDemandFinanceApproved],
+					'' AS [ProductTreeObjectIds],
+					p.[Calculating],
+					p.[BlockInformation],
+					p.[Id],
+					p.[Number],
+					p.[ClientTreeId],
+					p.[ProductSubrangesList],
+					p.[MarsMechanicDiscount],
+					p.[MechanicComment],
+					p.[StartDate],
+					p.[EndDate],
+					p.[PromoDuration],
+					p.[InOut],
+					p.[IsGrowthAcceleration],
+					p.[TPMmode],
+					p.[PlanInstoreMechanicDiscount],
+					p.[PlanInStoreShelfPrice],
+					ppi.[PlanPromoBaselineLSV],
+					ppi.[PlanPromoIncrementalLSV],
+					ppi.[PlanPromoLSV],
+					ppi.[PlanPromoUpliftPercent],
+					ppi.[PlanPromoTIShopper],
+					p.[PlanPromoTIMarketing],
+					p.[PlanPromoXSites],
+					p.[PlanPromoCatalogue],
+					p.[PlanPromoPOSMInClient],
+					p.[PlanPromoBranding],
+					p.[PlanPromoBTL],
+					p.[PlanPromoCostProduction],
+					p.[PlanPromoCostProdXSites],
+					p.[PlanPromoCostProdCatalogue],
+					p.[PlanPromoCostProdPOSMInClient],
+					ppi.[PlanPromoCost],
+					ppi.[PlanPromoIncrementalBaseTI],
+					ppi.[PlanPromoNetIncrementalBaseTI],
+					ppi.[PlanPromoIncrementalCOGS],
+					ppi.[PlanPromoNetIncrementalCOGS],
+					ppi.[PlanPromoTotalCost],
+					ppi.[PlanPromoPostPromoEffectLSV],
+					ppi.[PlanPromoNetIncrementalLSV],
+					ppi.[PlanPromoNetLSV],
+					ppi.[PlanPromoBaselineBaseTI],
+					ppi.[PlanPromoBaseTI],
+					ppi.[PlanPromoNetBaseTI],
+					ppi.[PlanPromoNSV],
+					ppi.[PlanPromoNetNSV],
+					ppi.[PlanPromoIncrementalNSV],
+					ppi.[PlanPromoNetIncrementalNSV],
+					ppi.[PlanPromoIncrementalMAC],
+					ppi.[PlanPromoNetIncrementalMAC],
+					ppi.[PlanPromoIncrementalEarnings],
+					ppi.[PlanPromoNetIncrementalEarnings],
+					ppi.[PlanPromoROIPercent],
+					ppi.[PlanPromoNetROIPercent],
+					ppi.[PlanPromoNetUpliftPercent],
+					p.[ActualInStoreDiscount],
+					p.[ActualInStoreShelfPrice],
+					p.[InvoiceNumber],
+					p.[ActualPromoBaselineLSV],
+					p.[ActualPromoIncrementalLSV],
+					p.[ActualPromoLSVByCompensation],
+					p.[ActualPromoLSV],
+					p.[ActualPromoUpliftPercent],
+					p.[ActualPromoNetUpliftPercent],
+					p.[ActualPromoTIShopper],
+					p.[ActualPromoTIMarketing],
+					p.[ActualPromoXSites],
+					p.[ActualPromoCatalogue],
+					p.[ActualPromoPOSMInClient],
+					p.[ActualPromoBranding],
+					p.[ActualPromoBTL],
+					p.[ActualPromoCostProduction],
+					p.[ActualPromoCostProdXSites],
+					p.[ActualPromoCostProdCatalogue],
+					p.[ActualPromoCostProdPOSMInClient],
+					p.[ActualPromoCost],
+					p.[ActualPromoIncrementalBaseTI],
+					p.[ActualPromoNetIncrementalBaseTI],
+					p.[ActualPromoIncrementalCOGS],
+					p.[ActualPromoNetIncrementalCOGS],
+					p.[ActualPromoTotalCost],
+					p.[ActualPromoPostPromoEffectLSV],
+					p.[ActualPromoNetIncrementalLSV],
+					p.[ActualPromoNetLSV],
+					p.[ActualPromoIncrementalNSV],
+					p.[ActualPromoNetIncrementalNSV],
+					p.[ActualPromoBaselineBaseTI],
+					p.[ActualPromoBaseTI],
+					p.[ActualPromoNetBaseTI],
+					p.[ActualPromoNSV],
+					p.[ActualPromoNetNSV],
+					p.[ActualPromoIncrementalMAC],
+					p.[ActualPromoNetIncrementalMAC],
+					p.[ActualPromoIncrementalEarnings],
+					p.[ActualPromoNetIncrementalEarnings],
+					p.[ActualPromoROIPercent],
+					p.[ActualPromoNetROIPercent],
+					p.[SumInvoice],
+					p.[ActualAddTIMarketing],
+					p.[PlanAddTIMarketingApproved],
+					p.[ActualAddTIShopper],
+					ppi.[PlanAddTIShopperApproved],
+					ppi.[PlanAddTIShopperCalculated],
+					ppi.[PlanPromoIncrementalMACLSV],
+					ppi.[PlanPromoNetIncrementalMACLSV],
+					p.[ActualPromoIncrementalMACLSV],
+					p.[ActualPromoNetIncrementalMACLSV],
+					ppi.[PlanPromoIncrementalEarningsLSV],
+					ppi.[PlanPromoNetIncrementalEarningsLSV],
+					p.[ActualPromoIncrementalEarningsLSV],
+					p.[ActualPromoNetIncrementalEarningsLSV],
+					ppi.[PlanPromoROIPercentLSV],
+					ppi.[PlanPromoNetROIPercentLSV],
+					p.[ActualPromoROIPercentLSV],
+					p.[ActualPromoNetROIPercentLSV],
+					ppi.[PlanPromoIncrementalCOGSTn],
+					ppi.[PlanPromoNetIncrementalCOGSTn],
+					p.[ActualPromoIncrementalCOGSTn],
+					p.[ActualPromoNetIncrementalCOGSTn],
+					ppi.[PlanPromoBaselineVolume],
+					ppi.[PlanPromoIncrementalVolume],
+					ppi.[PlanPromoNetIncrementalVolume],
+					p.[ActualPromoVolume],
+					p.[ActualPromoIncrementalVolume],
+					p.[ActualPromoNetIncrementalVolume],
+					p.[Disabled],
+					p.[IsPriceIncrease],
+					p.[IsApolloExport],
+					ct.[Name]						AS [ClientName],
+					e.[Name]						AS [EventName],
+					ps.[Name]						AS [PromoStatusName],
+					inM.[Name]						AS [PlanInstoreMechanicName],
+					inMT.[Name]						AS [PlanInstoreMechanicTypeName],
+					ppPCP.[PlanProductPCPriceAVG]	AS [PCPrice],
+					m.[Name]						AS [MarsMechanicName],
+					mt.[Name]						AS [MarsMechanicTypeName],
+					aM.[Name]						AS [ActualInStoreMechanicName],
+					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
+					pt.[Name]						AS [PromoTypesName],
+				
+					TRIM((SELECT TOP(1) 
+						[value] 
+					FROM STRING_SPLIT(p.[ClientHierarchy]
+					, '>')))									    AS [Client1LevelName],
+
+					TRIM((SELECT TOP(1) 
+						T.*  
+					FROM (
+						SELECT TOP(2) 
+							[value] 
+						FROM STRING_SPLIT(p.[ClientHierarchy], '>')
+						) AS T
+					ORDER BY T.[value] ASC))						AS [Client2LevelName],
+
+					CASE WHEN b.[Name] IS NULL OR b.[Name] = ''
+						THEN btB.[Name]
+						ELSE b.[Name]
+					END												AS [BrandName],
+					CASE WHEN t.[Name] IS NULL OR t.[Name] = ''
+						THEN btT.[Name]
+						ELSE t.[Name]
+					END												AS [TechnologyName],
+					CASE WHEN t.[SubBrand] IS NULL OR t.[SubBrand] = ''
+						THEN btT.[SubBrand]
+						ELSE t.[SubBrand]
+					END												AS [SubName],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualTIBasePercent]
+						ELSE p.[PlanTIBasePercent]
+					END									AS [TIBasePercent],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualCOGSPercent]
+						ELSE p.[PlanCOGSPercent]
+					END									AS [COGSPercent],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualCOGSTn]
+						ELSE p.[PlanCOGSTn]
+					END									AS [COGSTn]
+				FROM [DefaultSchemaSetting].[Promo] p
+				INNER JOIN [DefaultSchemaSetting].[ClientTree] ct 
+					ON ct.[Id] = p.[ClientTreeKeyId]
+				INNER JOIN [DefaultSchemaSetting].[PromoStatus] ps
+					ON ps.[Id] = p.[PromoStatusId]
+				INNER JOIN [DefaultSchemaSetting].[PromoTypes] pt
+					ON pt.[Id] = p.[PromoTypesId]
+
+				LEFT JOIN [DefaultSchemaSetting].[Brand] b
+					ON b.[Id] = p.[BrandId]
+				LEFT JOIN [DefaultSchemaSetting].[Technology] t
+					ON t.[Id] = p.[TechnologyId]
+
+				LEFT JOIN [DefaultSchemaSetting].[BrandTech] bt
+					ON bt.[Id] = p.[BrandTechId]
+				LEFT JOIN [DefaultSchemaSetting].[Brand] btB
+					ON btB.[Id] = bt.[BrandId]
+				LEFT JOIN [DefaultSchemaSetting].[Technology] btT
+					ON btT.[Id] = bt.[TechnologyId]
+
+				LEFT JOIN [DefaultSchemaSetting].[Event] e
+					ON e.[Id] = p.[EventId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] inM
+					ON inM.[Id] = p.[PlanInstoreMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] inMT
+					ON inMT.[Id] = p.[PlanInstoreMechanicTypeId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] m
+					ON m.[Id] = p.[MarsMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] mt
+					ON mt.[Id] = p.[MarsMechanicTypeId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] aM
+					ON aM.[Id] = p.[ActualInStoreMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] aMT
+					ON aMT.[Id] = p.[ActualInStoreMechanicTypeId]
+				LEFT JOIN [DefaultSchemaSetting].[PromoPriceIncrease] ppi
+					ON p.Id = ppi.Id
+				LEFT JOIN (
+					SELECT 
+						[PromoPriceIncreaseId],
+						AVG(pppi.[PlanProductPCPrice]) AS PlanProductPCPriceAVG
+					FROM [DefaultSchemaSetting].[PromoProductPriceIncrease] pppi
+					WHERE pppi.[Disabled] = 0 AND pppi.[PlanProductPCPrice] > 0
+					GROUP BY [PromoPriceIncreaseId]
+				) AS ppPCP
+					ON ppPCP.[PromoPriceIncreaseId] = p.[Id]
+			)
+
+			SELECT * FROM PromoROIReport WHERE IsPriceIncrease = 1
+			UNION
+				
+				SELECT 
+					p.[ClientTreeKeyId],
+					p.[BaseClientTreeId],
+					p.[BaseClientTreeIds],
+					p.[NeedRecountUplift],
+					p.[LastApprovedDate],
+					p.[Name],
+					p.[ClientHierarchy],
+					p.[ProductHierarchy],
+					p.[LastChangedDate],
+					p.[LastChangedDateDemand],
+					p.[LastChangedDateFinance],
+					p.[DispatchesStart],
+					p.[DispatchesEnd],
+					p.[DispatchDuration],
+					p.[Mechanic],
+					p.[MechanicIA],
+					p.[MarsStartDate],
+					p.[MarsEndDate],
+					p.[MarsDispatchesStart],
+					p.[MarsDispatchesEnd],
+					p.[BudgetYear],
+					p.[OtherEventName],
+					p.[CalendarPriority],
+					p.[PlanPromoPostPromoEffectLSVW1],
+					p.[PlanPromoPostPromoEffectLSVW2],
+					p.[ActualPromoPostPromoEffectLSVW1],
+					p.[ActualPromoPostPromoEffectLSVW2],
+					p.[IsAutomaticallyApproved],
+					p.[IsCMManagerApproved],
+					p.[IsGAManagerApproved],
+					p.[IsDemandPlanningApproved],
+					p.[IsDemandFinanceApproved],
+					'' AS [ProductTreeObjectIds],
+					p.[Calculating],
+					p.[BlockInformation],
+					p.[Id],
+					p.[Number],
+					p.[ClientTreeId],
+					p.[ProductSubrangesList],
+					p.[MarsMechanicDiscount],
+					p.[MechanicComment],
+					p.[StartDate],
+					p.[EndDate],
+					p.[PromoDuration],
+					p.[InOut],
+					p.[IsGrowthAcceleration],
+					p.[TPMmode],
+					p.[PlanInstoreMechanicDiscount],
+					p.[PlanInStoreShelfPrice],
+					p.[PlanPromoBaselineLSV],
+					p.[PlanPromoIncrementalLSV],
+					p.[PlanPromoLSV],
+					p.[PlanPromoUpliftPercent],
+					p.[PlanPromoTIShopper],
+					p.[PlanPromoTIMarketing],
+					p.[PlanPromoXSites],
+					p.[PlanPromoCatalogue],
+					p.[PlanPromoPOSMInClient],
+					p.[PlanPromoBranding],
+					p.[PlanPromoBTL],
+					p.[PlanPromoCostProduction],
+					p.[PlanPromoCostProdXSites],
+					p.[PlanPromoCostProdCatalogue],
+					p.[PlanPromoCostProdPOSMInClient],
+					p.[PlanPromoCost],
+					p.[PlanPromoIncrementalBaseTI],
+					p.[PlanPromoNetIncrementalBaseTI],
+					p.[PlanPromoIncrementalCOGS],
+					p.[PlanPromoNetIncrementalCOGS],
+					p.[PlanPromoTotalCost],
+					p.[PlanPromoPostPromoEffectLSV],
+					p.[PlanPromoNetIncrementalLSV],
+					p.[PlanPromoNetLSV],
+					p.[PlanPromoBaselineBaseTI],
+					p.[PlanPromoBaseTI],
+					p.[PlanPromoNetBaseTI],
+					p.[PlanPromoNSV],
+					p.[PlanPromoNetNSV],
+					p.[PlanPromoIncrementalNSV],
+					p.[PlanPromoNetIncrementalNSV],
+					p.[PlanPromoIncrementalMAC],
+					p.[PlanPromoNetIncrementalMAC],
+					p.[PlanPromoIncrementalEarnings],
+					p.[PlanPromoNetIncrementalEarnings],
+					p.[PlanPromoROIPercent],
+					p.[PlanPromoNetROIPercent],
+					p.[PlanPromoNetUpliftPercent],
+					p.[ActualInStoreDiscount],
+					p.[ActualInStoreShelfPrice],
+					p.[InvoiceNumber],
+					p.[ActualPromoBaselineLSV],
+					p.[ActualPromoIncrementalLSV],
+					p.[ActualPromoLSVByCompensation],
+					p.[ActualPromoLSV],
+					p.[ActualPromoUpliftPercent],
+					p.[ActualPromoNetUpliftPercent],
+					p.[ActualPromoTIShopper],
+					p.[ActualPromoTIMarketing],
+					p.[ActualPromoXSites],
+					p.[ActualPromoCatalogue],
+					p.[ActualPromoPOSMInClient],
+					p.[ActualPromoBranding],
+					p.[ActualPromoBTL],
+					p.[ActualPromoCostProduction],
+					p.[ActualPromoCostProdXSites],
+					p.[ActualPromoCostProdCatalogue],
+					p.[ActualPromoCostProdPOSMInClient],
+					p.[ActualPromoCost],
+					p.[ActualPromoIncrementalBaseTI],
+					p.[ActualPromoNetIncrementalBaseTI],
+					p.[ActualPromoIncrementalCOGS],
+					p.[ActualPromoNetIncrementalCOGS],
+					p.[ActualPromoTotalCost],
+					p.[ActualPromoPostPromoEffectLSV],
+					p.[ActualPromoNetIncrementalLSV],
+					p.[ActualPromoNetLSV],
+					p.[ActualPromoIncrementalNSV],
+					p.[ActualPromoNetIncrementalNSV],
+					p.[ActualPromoBaselineBaseTI],
+					p.[ActualPromoBaseTI],
+					p.[ActualPromoNetBaseTI],
+					p.[ActualPromoNSV],
+					p.[ActualPromoNetNSV],
+					p.[ActualPromoIncrementalMAC],
+					p.[ActualPromoNetIncrementalMAC],
+					p.[ActualPromoIncrementalEarnings],
+					p.[ActualPromoNetIncrementalEarnings],
+					p.[ActualPromoROIPercent],
+					p.[ActualPromoNetROIPercent],
+					p.[SumInvoice],
+					p.[ActualAddTIMarketing],
+					p.[PlanAddTIMarketingApproved],
+					p.[ActualAddTIShopper],
+					p.[PlanAddTIShopperApproved],
+					p.[PlanAddTIShopperCalculated],
+					p.[PlanPromoIncrementalMACLSV],
+					p.[PlanPromoNetIncrementalMACLSV],
+					p.[ActualPromoIncrementalMACLSV],
+					p.[ActualPromoNetIncrementalMACLSV],
+					p.[PlanPromoIncrementalEarningsLSV],
+					p.[PlanPromoNetIncrementalEarningsLSV],
+					p.[ActualPromoIncrementalEarningsLSV],
+					p.[ActualPromoNetIncrementalEarningsLSV],
+					p.[PlanPromoROIPercentLSV],
+					p.[PlanPromoNetROIPercentLSV],
+					p.[ActualPromoROIPercentLSV],
+					p.[ActualPromoNetROIPercentLSV],
+					p.[PlanPromoIncrementalCOGSTn],
+					p.[PlanPromoNetIncrementalCOGSTn],
+					p.[ActualPromoIncrementalCOGSTn],
+					p.[ActualPromoNetIncrementalCOGSTn],
+					p.[PlanPromoBaselineVolume],
+					p.[PlanPromoIncrementalVolume],
+					p.[PlanPromoNetIncrementalVolume],
+					p.[ActualPromoVolume],
+					p.[ActualPromoIncrementalVolume],
+					p.[ActualPromoNetIncrementalVolume],
+					p.[Disabled],
+					p.[IsPriceIncrease],
+					p.[IsApolloExport],
+					ct.[Name]						AS [ClientName],
+					e.[Name]						AS [EventName],
+					ps.[Name]						AS [PromoStatusName],
+					inM.[Name]						AS [PlanInstoreMechanicName],
+					inMT.[Name]						AS [PlanInstoreMechanicTypeName],
+					ppPCP.[PlanProductPCPriceAVG]	AS [PCPrice],
+					m.[Name]						AS [MarsMechanicName],
+					mt.[Name]						AS [MarsMechanicTypeName],
+					aM.[Name]						AS [ActualInStoreMechanicName],
+					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
+					pt.[Name]						AS [PromoTypesName],
+				
+					TRIM((SELECT TOP(1) 
+						[value] 
+					FROM STRING_SPLIT(p.[ClientHierarchy]
+					, '>')))									    AS [Client1LevelName],
+
+					TRIM((SELECT TOP(1) 
+						T.*  
+					FROM (
+						SELECT TOP(2) 
+							[value] 
+						FROM STRING_SPLIT(p.[ClientHierarchy], '>')
+						) AS T
+					ORDER BY T.[value] ASC))						AS [Client2LevelName],
+
+					CASE WHEN b.[Name] IS NULL OR b.[Name] = ''
+						THEN btB.[Name]
+						ELSE b.[Name]
+					END												AS [BrandName],
+					CASE WHEN t.[Name] IS NULL OR t.[Name] = ''
+						THEN btT.[Name]
+						ELSE t.[Name]
+					END												AS [TechnologyName],
+					CASE WHEN t.[SubBrand] IS NULL OR t.[SubBrand] = ''
+						THEN btT.[SubBrand]
+						ELSE t.[SubBrand]
+					END												AS [SubName],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualTIBasePercent]
+						ELSE p.[PlanTIBasePercent]
+					END									AS [TIBasePercent],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualCOGSPercent]
+						ELSE p.[PlanCOGSPercent]
+					END									AS [COGSPercent],
+
+					CASE WHEN p.[Id] IN (SELECT * FROM PreviousYearsPromoId)
+						THEN p.[ActualCOGSTn]
+						ELSE p.[PlanCOGSTn]
+					END									AS [COGSTn]
+				FROM [DefaultSchemaSetting].[Promo] p
+				INNER JOIN [DefaultSchemaSetting].[ClientTree] ct 
+					ON ct.[Id] = p.[ClientTreeKeyId]
+				INNER JOIN [DefaultSchemaSetting].[PromoStatus] ps
+					ON ps.[Id] = p.[PromoStatusId]
+				INNER JOIN [DefaultSchemaSetting].[PromoTypes] pt
+					ON pt.[Id] = p.[PromoTypesId]
+
+				LEFT JOIN [DefaultSchemaSetting].[Brand] b
+					ON b.[Id] = p.[BrandId]
+				LEFT JOIN [DefaultSchemaSetting].[Technology] t
+					ON t.[Id] = p.[TechnologyId]
+
+				LEFT JOIN [DefaultSchemaSetting].[BrandTech] bt
+					ON bt.[Id] = p.[BrandTechId]
+				LEFT JOIN [DefaultSchemaSetting].[Brand] btB
+					ON btB.[Id] = bt.[BrandId]
+				LEFT JOIN [DefaultSchemaSetting].[Technology] btT
+					ON btT.[Id] = bt.[TechnologyId]
+
+				LEFT JOIN [DefaultSchemaSetting].[Event] e
+					ON e.[Id] = p.[EventId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] inM
+					ON inM.[Id] = p.[PlanInstoreMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] inMT
+					ON inMT.[Id] = p.[PlanInstoreMechanicTypeId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] m
+					ON m.[Id] = p.[MarsMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] mt
+					ON mt.[Id] = p.[MarsMechanicTypeId]
+		
+				LEFT JOIN [DefaultSchemaSetting].[Mechanic] aM
+					ON aM.[Id] = p.[ActualInStoreMechanicId]
+				LEFT JOIN [DefaultSchemaSetting].[MechanicType] aMT
+					ON aMT.[Id] = p.[ActualInStoreMechanicTypeId]
+
+				LEFT JOIN (
+					SELECT 
+						[PromoId],
+						AVG([PlanProductPCPrice]) AS PlanProductPCPriceAVG
+					FROM [DefaultSchemaSetting].[PromoProduct]
+					WHERE [Disabled] = 0 AND [PlanProductPCPrice] > 0
+					GROUP BY [PromoId]
+				) AS ppPCP
+					ON ppPCP.[PromoId] = p.[Id]
+
+			WHERE IsPriceIncrease = 0
+			GO
+		";
 		public static string UpdatePromoProductCorrectionViewString(string defaultSchema)
 		{
 			return UpdatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
@@ -1019,6 +1594,62 @@
                 [DefaultSchemaSetting].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
 		
 		GO
+		";
+
+		public static string UpdatePromoProductCorrectionPriceIncreaseViewString(string defaultSchema)
+		{
+			return UpdatePromoProductCorrectionPriceIncreaseViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+		}
+		private static string UpdatePromoProductCorrectionPriceIncreaseViewSqlString = @"
+			IF EXISTS(SELECT 'view exists' FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = N'PromoProductCorrectionPriceIncreaseView'AND TABLE_SCHEMA = 'DefaultSchemaSetting')
+				BEGIN
+					DROP VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
+				END
+			GO
+				CREATE VIEW [DefaultSchemaSetting].[PromoProductCorrectionPriceIncreaseView]
+			AS
+			SELECT
+				ppcpi.Id AS Id,
+				pr.Number AS Number,
+				pr.ClientHierarchy AS ClientHierarchy,
+				btech.BrandsegTechsub AS BrandTechName,
+				pr.ProductSubrangesList AS ProductSubrangesList,
+				mech.Name AS MarsMechanicName,
+				ev.Name AS EventName,
+				ps.SystemName AS PromoStatusSystemName,
+				pr.MarsStartDate AS MarsStartDate,
+				pr.MarsEndDate AS MarsEndDate,
+				pppi.PlanProductBaselineLSV AS PlanProductBaselineLSV,
+				pppi.PlanProductIncrementalLSV AS PlanProductIncrementalLSV,
+				pppi.PlanProductLSV AS PlanProductLSV,
+				pppi.ZREP AS ZREP,
+				ppcpi.PlanProductUpliftPercentCorrected AS PlanProductUpliftPercentCorrected,
+				ppcpi.CreateDate AS CreateDate,
+				ppcpi.ChangeDate AS ChangeDate,
+				ppcpi.UserName AS UserName,
+				ppcpi.Disabled AS Disabled,
+				pr.ClientTreeId AS ClientTreeId,
+				pp.Id AS PromoProductId,
+				ppcpi.UserId as UserId,
+				ppcpi.TempId AS TempId,
+				ps.Name AS PromoStatusName,
+				pr.IsGrowthAcceleration AS IsGrowthAcceleration,
+				pr.IsInExchange AS IsInExchange,
+				pr.DispatchesStart AS PromoDispatchStartDate,
+				pr.IsPriceIncrease AS IsPriceIncrease
+
+			FROM 
+				[DefaultSchemaSetting].PromoProductCorrectionPriceIncrease AS ppcpi INNER JOIN
+                [DefaultSchemaSetting].PromoProductPriceIncrease AS pppi ON ppcpi.PromoProductPriceIncreaseId = pppi.Id INNER JOIN
+				[DefaultSchemaSetting].PromoProduct AS pp ON pp.Id = pppi.PromoProductId INNER JOIN
+                [DefaultSchemaSetting].PromoPriceIncrease AS prpi ON pppi.PromoPriceIncreaseId = prpi.Id INNER JOIN
+				[DefaultSchemaSetting].Promo AS pr ON pr.Id = prpi.Id INNER JOIN
+                [DefaultSchemaSetting].PromoStatus AS ps ON pr.PromoStatusId = ps.Id INNER JOIN
+                [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id INNER JOIN
+                [DefaultSchemaSetting].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
+                [DefaultSchemaSetting].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
+                [DefaultSchemaSetting].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
+			GO
 		";
 
 		public static string UpdateClientDashboardViewString(string defaultSchema)
@@ -1440,28 +2071,28 @@
 			return UpdateClientDashboardRSViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdateClientDashboardRSViewSqlString = @"
-					CREATE VIEW [Jupiter].[ClientDashboardRSView] AS
+					CREATE VIEW [DefaultSchemaSetting].[ClientDashboardRSView] AS
 			WITH
 				Years
 			AS
 				(SELECT [BudgetYear] AS [Year]
-				FROM [Jupiter].[Promo] (NOLOCK)
+				FROM [DefaultSchemaSetting].[Promo] (NOLOCK)
 				GROUP BY [BudgetYear]),
 	
 				YEEF
 			AS
 				-- TODO: remove distinct
 				(SELECT DISTINCT MIN(YEE_LSV) AS YEE_LSV, MIN(DMR_PLAN_LSV) AS PlanLSV, MIN(YTD_LSV) AS YTD_LSV, G_HIERARCHY_ID, BRAND_SEG_TECH_CODE, YEAR 
-					FROM [Jupiter].[YEAR_END_ESTIMATE_FDM]  (NOLOCK)
+					FROM [DefaultSchemaSetting].[YEAR_END_ESTIMATE_FDM]  (NOLOCK)
 					GROUP BY G_HIERARCHY_ID, BRAND_SEG_TECH_CODE, YEAR),
 	
 				Shares
 			AS
 				(SELECT [ClientTreeId], [BrandTechId], [Share], [ParentClientTreeDemandCode]
-				FROM [Jupiter].[ClientTreeBrandTech]
-				WHERE [Jupiter].[ClientTreeBrandTech].[Disabled] = 0
-					AND [Jupiter].[ClientTreeBrandTech].[ParentClientTreeDemandCode] 
-								IN (SELECT DemandCode FROM [Jupiter].[ClientTree] 
+				FROM [DefaultSchemaSetting].[ClientTreeBrandTech]
+				WHERE [DefaultSchemaSetting].[ClientTreeBrandTech].[Disabled] = 0
+					AND [DefaultSchemaSetting].[ClientTreeBrandTech].[ParentClientTreeDemandCode] 
+								IN (SELECT DemandCode FROM [DefaultSchemaSetting].[ClientTree] 
 								WHERE [GHierarchyCode] IS NOT NULL AND [GHierarchyCode] != '')),
 
 				CrossJoinBrandTechClientTree
@@ -1471,15 +2102,15 @@
 					CT.[Name] AS CTName, CT.ObjectId AS ObjectId, CT.Id AS CTId, CT.[FullPathName] AS ClientHierarchy,
 					Y.[Year],
 					YEE.YEE_LSV AS YEE_LSV, YEE.PlanLSV AS PlanLSV, YEE.YTD_LSV AS YTD_LSV
-				FROM [Jupiter].[BrandTech] (NOLOCK)
-				CROSS JOIN [Jupiter].[ClientTree] AS CT (NOLOCK)
+				FROM [DefaultSchemaSetting].[BrandTech] (NOLOCK)
+				CROSS JOIN [DefaultSchemaSetting].[ClientTree] AS CT (NOLOCK)
 				CROSS JOIN Years AS Y (NOLOCK)
 				LEFT JOIN YEEF AS YEE (NOLOCK) ON YEE.YEAR = Y.[Year]
 					AND YEE.BRAND_SEG_TECH_CODE = [BrandsegTechsub_code]
-					AND YEE.G_HIERARCHY_ID LIKE [Jupiter].[ClientDashboardGetParentGHierarchyCode](CT.ObjectId)
+					AND YEE.G_HIERARCHY_ID LIKE [DefaultSchemaSetting].[ClientDashboardGetParentGHierarchyCode](CT.ObjectId)
 				WHERE 
 					CT.EndDate IS NULL AND CT.IsBaseClient = 1
-					AND [Jupiter].[BrandTech].[Disabled] = 0),
+					AND [DefaultSchemaSetting].[BrandTech].[Disabled] = 0),
 
 				PromoFilter
 			AS
@@ -1516,8 +2147,8 @@
 				CS.SystemName,
 				ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) AS row_number
 
-				FROM [Jupiter].[Promo] AS pr (NOLOCK)
-				LEFT JOIN [Jupiter].[PromoStatus] AS CS (NOLOCK) ON CS.Id = pr.PromoStatusId
+				FROM [DefaultSchemaSetting].[Promo] AS pr (NOLOCK)
+				LEFT JOIN [DefaultSchemaSetting].[PromoStatus] AS CS (NOLOCK) ON CS.Id = pr.PromoStatusId
 
 				WHERE pr.Disabled = 0 AND CS.SystemName IN ('Started', 'Approved', 'Closed', 'Finished', 'Planned')
 				) query
@@ -1616,7 +2247,7 @@
 						SUM(CASE WHEN (nps.EndDate < CAST(GETDATE() AS DATE)) AND (nps.ActualCostTE IS NULL OR nps.ActualCostTE = 0) 
 								THEN nps.PlanCostTE ELSE 0 END) AS PlanCostTEYTD,
 						SUM(CASE WHEN nps.ActualCostTE IS NULL OR nps.ActualCostTE = 0 THEN nps.PlanCostTE ELSE 0 END) AS PlanCostTEYEE
-					FROM [Jupiter].[NonPromoSupport] AS nps (NOLOCK)
+					FROM [DefaultSchemaSetting].[NonPromoSupport] AS nps (NOLOCK)
 					WHERE nps.[Disabled] = 0
 					GROUP BY nps.ClientTreeId, YEAR(nps.StartDate))
 
@@ -1625,15 +2256,15 @@
 				-- TODO: replace with join
 				MIN(BTCT.BTName) AS BrandsegTechsubName, 
 				-- TODO: replace with join
-				(SELECT MIN([LogoFileName]) FROM [Jupiter].[ProductTree] WHERE [Jupiter].[ProductTree].BrandId = MIN(BTCT.BrandId)) AS LogoFileName,
+				(SELECT MIN([LogoFileName]) FROM [DefaultSchemaSetting].[ProductTree] WHERE [DefaultSchemaSetting].[ProductTree].BrandId = MIN(BTCT.BrandId)) AS LogoFileName,
 				CASE WHEN (SUM(pp.promoDays) IS NULL) THEN 0
 					ELSE ROUND(SUM(pp.promoDays)/7, 0) END AS PromoWeeks,
-				CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0)
+				CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0)
 						AND (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSVFinished)) != 0 AND (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSVFinished)) IS NOT NULL 
-					THEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSVFinished))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) ELSE 0 END AS VodYTD,
+					THEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSVFinished))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) ELSE 0 END AS VodYTD,
 				CASE WHEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV)) != 0 AND (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV)) IS NOT NULL 
-						AND [Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
-					THEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) ELSE 0 END AS VodYEE,
+						AND [DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+					THEN (SUM(pp.ActualPromoLSV) + SUM(pp.PlanPromoLSV))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) ELSE 0 END AS VodYEE,
 				CASE WHEN (SUM(pp.ActualPromoLSV) IS NULL) THEN 0 ELSE SUM(pp.ActualPromoLSV) END AS ActualPromoLSV,
 				CASE WHEN (SUM(pp.PlanPromoLSV) IS NULL) THEN 0 ELSE SUM(pp.PlanPromoLSV) END AS PlanPromoLSV,
 				CASE WHEN (SUM(pp.ActualPromoCost) + SUM(pp.PlanPromoCostFinished) IS NULL) 
@@ -1654,18 +2285,18 @@
 				CASE WHEN (SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished) END AS ShopperTiYTD,
 					-- YTD / YTD with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
 						AND (SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished)) != 0 
 						AND (SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished)) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
+					THEN ((SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopperFinished))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
 					ELSE 0 END) AS ShopperTiYTDPercent,
 					-- Sum of Actual (closed) + Sum of Plan (approved & planned & started & finished)
 				CASE WHEN (SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper) END AS ShopperTiYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper) != 0 AND SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
+					THEN ((SUM(pp.ActualPromoTIShopper) + SUM(pp.PlanPromoTIShopper))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
 					ELSE 0 END) AS ShopperTiYEEPercent,
 				/* Marketing TI */ 
 					-- From ClientDashboard
@@ -1679,11 +2310,11 @@
 					+ CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) IS NULL) 
 						THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) END) AS MarketingTiYTD,
 					-- (Promo TI cost YTD + Non promo TI cost YTD) / YTD with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0)
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0)
 					THEN (CASE WHEN (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished) IS NULL) 
 							THEN 0 ELSE SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished) END
 						+ CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) IS NULL) 
-							THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) END) / [Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) * 100
+							THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) END) / [DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) * 100
 					ELSE 0 END) AS MarketingTiYTDPercent,
 					-- Promo TI cost YEE + Non promo TI cost YEE
 				(CASE WHEN (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) IS NULL) 
@@ -1691,11 +2322,11 @@
 					+ CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) IS NULL) 
 						THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) END) AS MarketingTiYEE,
 					-- (Promo TI cost YEE + Non promo TI cost YEE) / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0)
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0)
 					THEN (CASE WHEN (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) IS NULL) 
 							THEN 0 ELSE SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) END
 						+ CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) IS NULL) 
-							THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) END) / [Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) * 100
+							THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) END) / [DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) * 100
 					ELSE 0 END) AS MarketingTiYEEPercent,
 				/* Promo TI Cost*/
 					-- From ClientDashboard
@@ -1708,19 +2339,19 @@
 				CASE WHEN (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished) END AS PromoTiCostYTD,
 					-- YTD / YTD with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
 						AND (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished)) != 0 
 						AND (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished)) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
+					THEN ((SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketingFinished))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
 					ELSE 0 END) AS PromoTiCostYTDPercent,
 					-- Sum of Actual (closed) + Sum of Plan (approved & planned & started & finished)
 				CASE WHEN (SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) END AS PromoTiCostYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) != 0 
 						AND SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
+					THEN ((SUM(pp.ActualPromoTIMarketing) + SUM(pp.PlanPromoTIMarketing))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
 					ELSE 0 END) AS PromoTiCostYEEPercent,
 				/* Non Promo TI Cost */
 					-- From ClientDashboard
@@ -1733,19 +2364,19 @@
 				CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) IS NULL) 
 					THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD) END AS NonPromoTiCostYTD,
 					-- YTD / YTD with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0  
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0  
 						AND (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD)) != 0 
 						AND (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD)) IS NOT NULL) 
-					THEN ((MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
+					THEN ((MAX(np.ActualCostTE) + MAX(np.PlanCostTEYTD))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
 					ELSE 0 END) AS NonPromoTiCostYTDPercent,
 					-- Sum of Actual + Sum of Plan (Actual = 0/null) (rules are observed in NonPromo select)
 				CASE WHEN (MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) IS NULL) 
 					THEN 0 ELSE MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) END AS NonPromoTiCostYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) != 0 
 						AND MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE) IS NOT NULL) 
-					THEN ((MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
+					THEN ((MAX(np.ActualCostTE) + MAX(np.PlanCostTEYEE))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
 					ELSE 0 END) AS NonPromoTiCostYEEPercent,
 				/* Production */
 					-- Plan / PlanLSV
@@ -1757,19 +2388,19 @@
 				CASE WHEN (SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished) IS NULL) THEN 0 
 					ELSE SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished) END AS ProductionYTD,
 					-- YTD / YTD with Share * 100
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0
 							AND (SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished)) != 0 
 							AND (SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished)) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) * 100)
+					THEN ((SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProductionFinished))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) * 100)
 					ELSE 0 END) AS ProductionYTDPercent,
 					-- YTD + Sum of Plan (approved & planned & started)
 				CASE WHEN (SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) END AS ProductionYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) != 0 
 						AND SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
+					THEN ((SUM(pp.ActualPromoCostProduction) + SUM(pp.PlanPromoCostProduction))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
 					ELSE 0 END) AS ProductionYEEPercent,
 				/* Branding */
 					-- Plan / PlanLSV
@@ -1781,18 +2412,18 @@
 				CASE WHEN ((SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished)) IS NULL) 
 					THEN 0 ELSE (SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished)) END AS BrandingYTD,
 					-- YTD / YTD with Share * 100
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0
 						AND (SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished)) != 0 
 						AND (SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished)) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
+					THEN ((SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBrandingFinished))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
 					ELSE 0 END) AS BrandingYTDPercent,
 					-- YTD + Sum of Plan (approved & planned & started)
 				CASE WHEN (SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding) END AS BrandingYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding) != 0 AND SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding))/([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
+					THEN ((SUM(pp.ActualPromoBranding) + SUM(pp.PlanPromoBranding))/([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)))) * 100
 					ELSE 0 END) AS BrandingYEEPercent,
 				/* BTL */
 					-- Plan / PlanLSV
@@ -1804,19 +2435,19 @@
 				CASE WHEN ((SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished)) IS NULL) 
 					THEN 0 ELSE (SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished)) END AS BTLYTD,
 					-- YTD / YTD with Share * 100
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) != 0 
 						AND (SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished)) != 0
 						AND (SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished)) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
+					THEN ((SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTLFinished))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share))) * 100
 					ELSE 0 END) AS BTLYTDPercent,
 					-- YTD + Sum of Plan (approved & planned & started)
 				CASE WHEN (SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL) IS NULL) 
 					THEN 0 ELSE SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL) END AS BTLYEE,
 					-- YEE / YEE with Share
-				(CASE WHEN ([Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
+				(CASE WHEN ([DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) != 0
 						AND SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL) != 0 
 						AND SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL) IS NOT NULL) 
-					THEN ((SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL))/[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) * 100)
+					THEN ((SUM(pp.ActualPromoBTL) + SUM(pp.PlanPromoBTL))/[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) * 100)
 					ELSE 0 END) AS BTLYEEPercent,
 				/* ROI */
 					-- From ClientDashboard
@@ -1845,9 +2476,9 @@
 					-- From ClientDashboard
 				CASE WHEN (MAX(CD.PlanLSV) IS NULL) THEN 0 ELSE MAX(CD.PlanLSV) END AS LSVPlan,
 					-- YTD with Share
-				[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) AS LSVYTD,
+				[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YTD_LSV), MAX(SHARES.Share)) AS LSVYTD,
 					-- YEE with Share
-				[Jupiter].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) AS LSVYEE,
+				[DefaultSchemaSetting].[ClientDashboardGetYTDwithShare](MAX(BTCT.YEE_LSV), MAX(SHARES.Share)) AS LSVYEE,
 				/* Incremental NSV */
 					-- From ClientDashboard
 				CASE WHEN (MAX(CD.IncrementalNSVPlan) IS NULL) THEN 0 ELSE MAX(CD.IncrementalNSVPlan) END AS IncrementalNSVPlan,
@@ -1868,12 +2499,42 @@
 					THEN 0 ELSE SUM(pp.ActualPromoNSV)+SUM(pp.PlanPromoNSV) END AS PromoNSVYEE		
 			FROM CrossJoinBrandTechClientTree AS BTCT (NOLOCK)
 			LEFT JOIN PromoParams AS pp (NOLOCK) ON BTCT.BTId = pp.BrandTechId AND BTCT.ObjectId = pp.ClientTreeId AND BTCT.YEAR = pp.YEAR
-			LEFT JOIN [Jupiter].[ClientDashboard] AS CD (NOLOCK) ON CD.ClientTreeId = BTCT.ObjectId AND CD.BrandTechId = BTCT.BTId AND CD.Year = BTCT.[Year]
+			LEFT JOIN [DefaultSchemaSetting].[ClientDashboard] AS CD (NOLOCK) ON CD.ClientTreeId = BTCT.ObjectId AND CD.BrandTechId = BTCT.BTId AND CD.Year = BTCT.[Year]
 			LEFT JOIN NonPromo AS np (NOLOCK) ON BTCT.CTId = np.ClientTreeKeyId AND BTCT.[Year] = np.Year
 			LEFT JOIN Shares AS SHARES (NOLOCK) ON BTCT.CTId = SHARES.ClientTreeId AND 
 				SHARES.[BrandTechId] = BTCT.BTId
 			GROUP BY BTCT.ObjectId, BTCT.BTId, BTCT.[Year]
 		GO
+		";
+
+		public static string UpdatePromoProductPriceIncreasesViewString(string defaultSchema)
+		{
+			return UpdatePromoProductPriceIncreasesViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+		}
+		private static string UpdatePromoProductPriceIncreasesViewSqlString = @"
+					CREATE VIEW [DefaultSchemaSetting].[PromoProductPriceIncreasesView] AS 
+                    SELECT 
+		                pp.[Id]
+                        , pp.[ZREP]
+                        , pp.[ProductEN]
+                        , pp.[PlanProductBaselineLSV]
+		                , PlanProductUpliftPercent = 
+			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [PromoProductPriceIncreaseId] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL, 
+			                (SELECT TOP(1) [PlanProductUpliftPercentCorrected] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [PromoProductPriceIncreaseId] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL ORDER BY [ChangeDate] DESC), 
+			                pp.[PlanProductUpliftPercent])
+                        , pp.[PlanProductIncrementalLSV]
+                        , pp.[PlanProductLSV]
+                        , pp.[PlanProductBaselineCaseQty]
+                        , pp.[PlanProductIncrementalCaseQty]
+                        , pp.[PlanProductCaseQty]
+                        , pp.[AverageMarker]
+                        , IsCorrection = 
+			                IIF((SELECT TOP(1) [Id] FROM [DefaultSchemaSetting].[PromoProductCorrectionPriceIncrease] WHERE [Id] = pp.[Id] and [Disabled] = 0 and [TempId] IS NULL) IS NOT NULL,
+			                CONVERT(bit, 1),
+			                CONVERT(bit, 0))
+                    FROM [DefaultSchemaSetting].[PromoProductPriceIncrease] pp
+                    WHERE pp.[Disabled] = 0
+			GO
 		";
 	}
 }

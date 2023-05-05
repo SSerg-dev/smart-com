@@ -262,7 +262,7 @@ namespace Module.Host.TPM.Actions
                                 warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
                             }
                         }
-                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts))
+                        else if (!IsFilterSuitable(item, convertedSourceRecords, out validationErrors, filterPromoProducts, context))
                         {
                             HasErrors = true;
                             errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
@@ -373,11 +373,11 @@ namespace Module.Host.TPM.Actions
 
         protected ScriptGenerator _generator { get; set; }
 
-        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProduct> promoProducts)
+        protected virtual bool IsFilterSuitable(ImportPromoProductsCorrection item, IEnumerable<ImportPromoProductsCorrection> importedPromoProductCorrections, out IList<string> errors, List<PromoProduct> promoProducts, DatabaseContext context)
         {
             errors = new List<string>();
             var promoProduct = promoProducts.Where(x => x.ZREP == item.ProductZREP && x.Promo.Number == item.PromoNumber).FirstOrDefault();
-
+            
             var importedPromoProductCorrectionGroup = importedPromoProductCorrections.GroupBy(x => new { x.PromoNumber, x.ProductZREP }).FirstOrDefault(x => x.Key.PromoNumber == item.PromoNumber && x.Key.ProductZREP == item.ProductZREP);
             if (importedPromoProductCorrectionGroup.Count() > 1)
             {
@@ -393,7 +393,7 @@ namespace Module.Host.TPM.Actions
             {
                 errors.Add($"No product with ZREP: {item.ProductZREP} found in Promo: {item.PromoNumber}");
                 return false;
-            }
+            }            
             else
             {
                 return true;

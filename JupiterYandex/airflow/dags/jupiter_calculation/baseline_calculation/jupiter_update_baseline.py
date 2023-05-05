@@ -44,7 +44,9 @@ CSV_SEPARATOR = '\u0001'
 TAGS=["jupiter", "baseline", "dev"]
 BASELINE_ENTITY_NAME='BaseLine'
 BASELINE_OUTPUT_DIR='BaseLine.CSV/*.csv'
+INCREASE_BASELINE_OUTPUT_DIR='IncreaseBaseLine.CSV/*.csv'
 NEW_BASELINE_OUTPUT_DIR='NewBaseLine.CSV/*.csv'
+NEW_INCREASE_BASELINE_OUTPUT_DIR='NewIncreaseBaseLine.CSV/*.csv'
 
 def separator_convert_hex_to_string(sep):
     sep_map = {'0x01':'\x01'}
@@ -167,14 +169,19 @@ with DAG(
 # Get dag parameters from vault    
     parameters = get_parameters()
     dis_baseline = disable_baseline(parameters)
+
     truncate_temp_baseline1 = truncate_temp_baseline(parameters)
+
     upload_baseline = BashOperator(task_id="upload_baseline",
                                  do_xcom_push=True,
                                  bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',
                                  params={'OUT_DIR':BASELINE_OUTPUT_DIR},  
                                 )
+
     up_baseline=update_baseline(parameters)
+
     truncate_temp_baseline2 = truncate_temp_baseline(parameters)
+
     upload_new_baseline = BashOperator(task_id="upload_new_baseline",
                                  do_xcom_push=True,
                                  bash_command='/utils/bcp_import.sh {{ti.xcom_pull(task_ids="get_parameters",key="BaseLineOutputPath")}}{{params.OUT_DIR}} {{ti.xcom_pull(task_ids="get_parameters",key="BcpImportParameters")}} \"{{ti.xcom_pull(task_ids="get_parameters",key="Schema")}}.TEMP_BASELINE\" "1" ',

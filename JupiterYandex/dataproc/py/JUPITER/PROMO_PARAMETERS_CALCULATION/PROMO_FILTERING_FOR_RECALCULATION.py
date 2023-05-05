@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2022-09-28_manual__2022-09-28T13%3A08%3A03.931229%2B00%3A00_", '
- '"ProcessDate": "2022-09-28", "Schema": "Jupiter", "HandlerId": '
- '"99b5b5ac-ce95-4b9f-ab64-1b4f347b8f8b"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T10%3A41%3A30.682977%2B00%3A00_", '
+ '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
+ '"cd1af820-17b8-4f46-9a2b-d7ad8fb270bb"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -97,6 +97,7 @@ DATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'
 ASSORTMENTMATRIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'
 PRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'
 BASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'
+INCREASEBASELINE_PATH = DIRECTORY + 'JUPITER/IncreaseBaseLine'
 SHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'
 CLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'
 PRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'
@@ -108,6 +109,10 @@ CORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'
 
 BLOCKEDPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'
 BLOCKEDPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.CSV'
+
+BLOCKEDINCREASEPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'
+BLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.CSV'
+
 
 CHANGESINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ChangesIncident/ChangesIncident.CSV'
 PRODUCTCHANGEINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ProductChangeIncident/ProductChangeIncident.CSV'
@@ -134,6 +139,7 @@ productChangeIncidentsDF = spark.read.csv(PRODUCTCHANGEINCIDENTS_PATH,sep="\u000
 assortmentMatrixDF = spark.read.csv(ASSORTMENTMATRIX_PATH,sep="\u0001",header=True,schema=schemas_map["AssortmentMatrix"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+increaseBaselineDF = spark.read.csv(INCREASEBASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
 productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductTree"])
@@ -143,6 +149,11 @@ cogsDF = spark.read.csv(COGS_PATH,sep="\u0001",header=True,schema=schemas_map["C
 cogsTnDF = spark.read.csv(COGSTN_PATH,sep="\u0001",header=True,schema=schemas_map["PlanCOGSTn"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 tiDF = spark.read.csv(TI_PATH,sep="\u0001",header=True,schema=schemas_map["TradeInvestment"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
+
+#test
+print(schemas_map["PriceList"])
+
+
 
 try:
 #   dbutils.fs.ls(INPUT_FILE_LOG_PATH)
@@ -206,6 +217,7 @@ processChangesIncidentsDF = changesIncidentsDF\
 assortmentMatrixCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'AssortmentMatrix').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 priceListCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PriceList').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 baselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'BaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))
+increaseBaselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'IncreaseBaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 sharesCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTreeBrandTech').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 clientTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 productTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ProductTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))
@@ -223,6 +235,7 @@ print('total incidents count:', activeChangesIncidentsDF.count())
 print('assortmentMatrix incidents count:', assortmentMatrixCiIdsDF.count())
 print('priceList incidents count:', priceListCiIdsDF.count())
 print('baseline incidents count:', baselineCiIdsDF.count())
+print('increase baseline incidents count:', increaseBaselineCiIdsDF.count())
 print('shares incidents count:', sharesCiIdsDF.count())
 print('clientTree incidents count:', clientTreeCiIdsDF.count())
 print('productTree incidents count:', productTreeCiIdsDF.count())
@@ -273,11 +286,25 @@ priceListCiDF = priceListCiIdsDF\
   .join(priceListDF, 'Id', 'inner')\
   .select(\
            priceListDF.ClientTreeId
+          ,priceListDF.FuturePriceMarker 
           ,date_add(to_date(priceListDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')
           ,date_add(to_date(priceListDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')
          )
 
 promoByPriceListCiDF = priceListCiDF\
+  .where(priceListCiDF.FuturePriceMarker == 'false')\
+  .join(promoFilterDF,
+        [\
+          priceListCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId
+         ,priceListCiDF.StartDate <= promoFilterDF.DispatchesStart
+         ,priceListCiDF.EndDate >= promoFilterDF.DispatchesStart
+        ]\
+        ,'inner')\
+  .select(promoFilterDF.Id, promoFilterDF.Number)\
+  .dropDuplicates()
+
+promoByIncreasePriceListCiDF = priceListCiDF\
+  .where(priceListCiDF.FuturePriceMarker == 'true')\
   .join(promoFilterDF,
         [\
           priceListCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId
@@ -312,10 +339,27 @@ baselineCiDF = baselineCiIdsDF\
           ,date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')
          )
 
+increaseBaselineCiDF = increaseBaselineCiIdsDF\
+  .join(increaseBaselineDF, 'Id', 'inner')\
+  .select(\
+           increaseBaselineDF.ProductId
+          ,increaseBaselineDF.DemandCode
+          ,date_add(to_date(increaseBaselineDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')
+         )
+
+#baselineCiDF = baselineCiDF.union(increaseBaselineCiDF)
+
 baselineCiDF = baselineCiDF\
   .join(datesDF, datesDF.OriginalDate == baselineCiDF.StartDate, 'inner')\
   .select(\
           baselineCiDF['*']
+         ,datesDF.MarsWeekFullName
+         )
+
+increaseBaselineCiDF = increaseBaselineCiDF\
+  .join(datesDF, datesDF.OriginalDate == increaseBaselineCiDF.StartDate, 'inner')\
+  .select(\
+          increaseBaselineCiDF['*']
          ,datesDF.MarsWeekFullName
          )
 
@@ -378,6 +422,17 @@ promoByBaselineCiDF = baselineCiDF\
           promoSplittedByWeekDF.productDemandCode == baselineCiDF.DemandCode
          ,promoSplittedByWeekDF.ProductId == baselineCiDF.ProductId
          ,promoSplittedByWeekDF.MarsWeekFullName == baselineCiDF.MarsWeekFullName
+        ])\
+  .where(promoSplittedByWeekDF.promoInOut == 'false')\
+  .select(promoSplittedByWeekDF.promoId.alias('Id'), promoSplittedByWeekDF.promoNumber.alias('Number'))\
+  .dropDuplicates()
+ 
+promoByIncreaseBaselineCiDF = increaseBaselineCiDF\
+  .join(promoSplittedByWeekDF,
+        [\
+          promoSplittedByWeekDF.productDemandCode == increaseBaselineCiDF.DemandCode
+         ,promoSplittedByWeekDF.ProductId == increaseBaselineCiDF.ProductId
+         ,promoSplittedByWeekDF.MarsWeekFullName == increaseBaselineCiDF.MarsWeekFullName
         ])\
   .where(promoSplittedByWeekDF.promoInOut == 'false')\
   .select(promoSplittedByWeekDF.promoId.alias('Id'), promoSplittedByWeekDF.promoNumber.alias('Number'))\
@@ -719,8 +774,6 @@ inoutPromoByProductCiDF = inoutPromoByProductCiDF\
 
 promoByProductCiDF = notInoutPromoByProductCiDF.union(inoutPromoByProductCiDF)
 
-#####*Result*
-
 titleMessage = '[INFO]: PROMO FILTERING'
 titleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)
 
@@ -734,8 +787,18 @@ promoNumbersByPriceListCiDF = promoNumbersByPriceListCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
+promoNumbersByIncreasePriceListCiDF = promoByIncreasePriceListCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Pricelist incidents: '))
+promoNumbersByIncreasePriceListCiDF = promoNumbersByIncreasePriceListCiDF\
+  .groupBy('Title')\
+  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
+
 promoNumbersByBaselineCiDF = promoByBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Baseline incidents: '))
 promoNumbersByBaselineCiDF = promoNumbersByBaselineCiDF\
+  .groupBy('Title')\
+  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
+  
+promoNumbersByIncreaseBaselineCiDF = promoByIncreaseBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Baseline incidents: '))
+promoNumbersByIncreaseBaselineCiDF = promoNumbersByIncreaseBaselineCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
@@ -800,7 +863,9 @@ promoNumbersByProductCiDF = promoNumbersByProductCiDF\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
 promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
+  .union(promoNumbersByIncreasePriceListCiDF)\
   .union(promoNumbersByPriceListCiDF)\
+  .union(promoNumbersByIncreaseBaselineCiDF)\
   .union(promoNumbersByBaselineCiDF)\
   .union(promoNumbersBySharesCiDF)\
   .union(promoNumbersByClientTreeCiDF)\
@@ -839,11 +904,20 @@ promoByCiDF = promoByAssortmentMatrixCiDF\
   .union(promoByActualTiCiDF)\
   .union(promoByProductCiDF)
 
+increasePromoByCiDF = promoByIncreaseBaselineCiDF\
+  .union(promoByIncreasePriceListCiDF)
+
 blockedPromoDF = promoByCiDF\
   .select(col('Id').alias('PromoId'))\
   .withColumn('HandlerId', lit(handlerId))
 
 blockedPromoDF = blockedPromoDF.dropDuplicates()
+
+blockedIncreasePromoDF = increasePromoByCiDF\
+  .select(col('Id').alias('PromoId'))\
+  .withColumn('HandlerId', lit(handlerId))
+
+blockedIncreasePromoDF = blockedIncreasePromoDF.dropDuplicates()
 
 activeChangesIncidentsDF = activeChangesIncidentsDF\
   .withColumn('Disabled', lit(True))\
@@ -867,6 +941,17 @@ header=True,
 mode="overwrite",
 emptyValue=""
 )
+
+blockedIncreasePromoDF.write.mode("overwrite").parquet(BLOCKEDINCREASEPROMO_OUTPUT_PATH)
+blockedIncreasePromoDF\
+.repartition(1)\
+.write.csv(BLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV,
+sep="\u0001",
+header=True,
+mode="overwrite",
+emptyValue=""
+)
+
 
 #resultChangesIncidentsDF.write.mode("overwrite").parquet(CHANGESINCIDENTS_OUTPUT_PATH)
 #resultProductChangeIncidentsDF.write.mode("overwrite").parquet(PRODUCTCHANGEINCIDENTS_OUTPUT_PATH)

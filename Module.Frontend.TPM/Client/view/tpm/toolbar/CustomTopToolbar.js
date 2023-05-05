@@ -67,6 +67,16 @@
         },
         {
             xtype: 'button',
+            itemId: 'btn_promoIsPriceIncrease',
+            glyph: 0xfbf4,
+            cls: 'in-out-promo-header-button custom-top-panel-item',
+            text: 'Price Increase',
+            height: 20,
+            hidden: true,
+            disabled: true
+        },
+        {
+            xtype: 'button',
             itemId: 'btn_promoOnHold',
             glyph: 0xfbd3,
             cls: 'in-out-promo-header-button custom-top-panel-item',

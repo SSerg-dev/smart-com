@@ -320,7 +320,15 @@
                 rsMode: true,
                 currentMode: true,
                 widget: 'promoproductcorrection'
-            }
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+                glyph: 0xf619,
+                rsMode: false,
+                currentMode: true,
+                widget: 'promoproductcorrectionpriceincrease'
+            },
         ]
     },
     {
@@ -347,6 +355,16 @@
                 scale: 'medium',
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
                 widget: 'baseline'
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('IncreaseBaseLineItem'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('IncreaseBaseLineItem'),
+                glyph: 0xf127,
+                rsMode: false,
+                currentMode: true,
+                scale: 'medium',
+                //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
+                widget: 'increasebaseline'
             },
             {
                 text: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
@@ -614,6 +632,15 @@
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
                 widget: 'promoroireport'
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('PromoPriceIncreaseROIReport'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('PromoPriceIncreaseROIReport'),
+                glyph: 0xf215,
+                rsMode: true,
+                currentMode: true,
+                //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
+                widget: 'promopriceincreaseroireport'
             },
             {
                 text: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),

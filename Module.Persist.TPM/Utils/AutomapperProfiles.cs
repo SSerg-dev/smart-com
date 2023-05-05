@@ -58,6 +58,8 @@ namespace Module.Persist.TPM.Utils
                 cfg.CreateMap<Mechanic, Mechanic>()
                     .ForMember(pTo => pTo.NoneNegoes, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoTypes, opt => opt.Ignore());
+                cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
             });
             return config;
         }

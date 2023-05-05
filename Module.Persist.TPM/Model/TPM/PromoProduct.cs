@@ -244,6 +244,7 @@ namespace Module.Persist.TPM.Model.TPM
         public virtual PromoProduct2Plu Plu { get; set; } //view
 
         public ICollection<PromoProductsCorrection> PromoProductsCorrections { get; set; }
+        public ICollection<PromoProductPriceIncrease> PromoProductPriceIncreases { get; set; }
 
         public object Clone()
         {

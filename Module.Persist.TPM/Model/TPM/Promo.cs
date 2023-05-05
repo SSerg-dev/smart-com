@@ -48,6 +48,7 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(400)]
         public string BaseClientTreeIds { get; set; }
         public bool? NeedRecountUplift { get; set; }
+        public bool NeedRecountUpliftPI { get; set; }
 
         public DateTimeOffset? LastApprovedDate { get; set; }
 
@@ -105,6 +106,9 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoUpliftPercent { get; set; }
         public double? PlanPromoIncrementalLSV { get; set; }
         public double? PlanPromoLSV { get; set; }
+
+        public double? PlanPromoUpliftPercentPI { get; set; }
+        public bool IsPriceIncrease { get; set; }
 
         public double? PlanPromoPostPromoEffectLSVW1 { get; set; }
         public double? PlanPromoPostPromoEffectLSVW2 { get; set; }
@@ -338,6 +342,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("RollingScenario")]
         public Guid? RollingScenarioId { get; set; }
         public RollingScenario RollingScenario { get; set; }
+        public PromoPriceIncrease PromoPriceIncrease { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
         public ICollection<PromoProduct> PromoProducts { get; set; }
@@ -353,89 +358,6 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<PromoCancelledIncident> PromoCancelledIncidents { get; set; }
         public ICollection<PromoApprovedIncident> PromoApprovedIncidents { get; set; }
         public ICollection<CurrentDayIncremental> CurrentDayIncrementals { get; set; }
-
-        /// <summary>
-        /// Copy Constructor
-        /// </summary>
-        /// <param name="promoToCopy"></param>
-        //public Promo(Promo promoToCopy)
-        //{
-        //    Name = promoToCopy.Name;
-        //    Number = promoToCopy.Number;
-        //    ClientHierarchy = promoToCopy.ClientHierarchy;
-        //    ClientTreeId = promoToCopy.ClientTreeId;
-        //    PromoStatus = promoToCopy.PromoStatus;
-        //    BrandTech = promoToCopy.BrandTech;
-        //    MarsMechanic = promoToCopy.MarsMechanic;
-        //    MarsMechanicId = promoToCopy.MarsMechanicId;
-        //    MarsMechanicTypeId = promoToCopy.MarsMechanicTypeId;
-        //    MarsMechanicDiscount = promoToCopy.MarsMechanicDiscount;
-        //    PlanInstoreMechanic = promoToCopy.PlanInstoreMechanic;
-        //    PlanInstoreMechanicId = promoToCopy.PlanInstoreMechanicId;
-        //    PlanInstoreMechanicTypeId = promoToCopy.PlanInstoreMechanicTypeId;
-        //    PlanInstoreMechanicDiscount = promoToCopy.PlanInstoreMechanicDiscount;
-        //    StartDate = promoToCopy.StartDate;
-        //    EndDate = promoToCopy.EndDate;
-        //    DispatchesStart = promoToCopy.DispatchesStart;
-        //    DispatchesEnd = promoToCopy.DispatchesEnd;
-        //    BudgetYear = promoToCopy.BudgetYear;
-        //    PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
-        //    PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
-        //    ProductHierarchy = promoToCopy.ProductHierarchy;
-        //    PromoStatusId = promoToCopy.PromoStatusId;
-        //    NeedRecountUplift = promoToCopy.NeedRecountUplift;
-        //    InOut = promoToCopy.InOut;
-        //    InOutProductIds = promoToCopy.InOutProductIds;
-        //    InOutExcludeAssortmentMatrixProductsButtonPressed = promoToCopy.InOutExcludeAssortmentMatrixProductsButtonPressed;
-        //    IsDemandPlanningApproved = promoToCopy.IsDemandPlanningApproved;
-        //    IsDemandFinanceApproved = promoToCopy.IsDemandFinanceApproved;
-        //    IsCMManagerApproved = promoToCopy.IsCMManagerApproved;
-        //    ActualPromoUpliftPercent = promoToCopy.ActualPromoUpliftPercent;
-        //    ActualPromoIncrementalBaseTI = promoToCopy.ActualPromoIncrementalBaseTI;
-        //    ActualPromoIncrementalCOGS = promoToCopy.ActualPromoIncrementalCOGS;
-        //    ActualPromoIncrementalEarnings = promoToCopy.ActualPromoIncrementalEarnings;
-        //    ActualPromoIncrementalLSV = promoToCopy.ActualPromoIncrementalLSV;
-        //    ActualPromoIncrementalMAC = promoToCopy.ActualPromoIncrementalMAC;
-        //    ActualPromoIncrementalMACLSV = promoToCopy.ActualPromoIncrementalMACLSV;
-        //    ActualPromoIncrementalNSV = promoToCopy.ActualPromoIncrementalNSV;
-        //    ActualPromoLSV = promoToCopy.ActualPromoLSV;
-        //    ActualPromoLSVSI = promoToCopy.ActualPromoLSVSI;
-        //    ActualPromoLSVSO = promoToCopy.ActualPromoLSVSO;
-        //    ActualPromoLSVByCompensation = promoToCopy.ActualPromoLSVByCompensation;
-        //    PlanPromoUpliftPercent = promoToCopy.PlanPromoUpliftPercent;
-        //    PlanPromoIncrementalBaseTI = promoToCopy.PlanPromoIncrementalBaseTI;
-        //    PlanPromoIncrementalCOGS = promoToCopy.PlanPromoIncrementalCOGS;
-        //    PlanPromoIncrementalEarnings = promoToCopy.PlanPromoIncrementalEarnings;
-        //    PlanPromoIncrementalLSV = promoToCopy.PlanPromoIncrementalLSV;
-        //    PlanPromoIncrementalMAC = promoToCopy.PlanPromoIncrementalMAC;
-        //    PlanPromoIncrementalMACLSV = promoToCopy.PlanPromoIncrementalMACLSV;
-        //    PlanPromoIncrementalNSV = promoToCopy.PlanPromoIncrementalNSV;
-        //    ActualAddTIMarketing = promoToCopy.ActualAddTIMarketing;
-        //    PlanAddTIMarketingApproved = promoToCopy.PlanAddTIMarketingApproved;
-        //    ActualAddTIShopper = promoToCopy.ActualAddTIShopper;
-        //    PlanAddTIShopperApproved = promoToCopy.PlanAddTIShopperApproved;
-        //    PlanAddTIShopperCalculated = promoToCopy.PlanAddTIShopperCalculated;
-        //    PlanPromoLSV = promoToCopy.PlanPromoLSV;
-        //    EventId = promoToCopy.EventId;
-        //    CalendarPriority = promoToCopy.CalendarPriority;
-        //    RegularExcludedProductIds = promoToCopy.RegularExcludedProductIds;
-        //    IsGrowthAcceleration = promoToCopy.IsGrowthAcceleration;
-        //    PromoTypesId = promoToCopy.PromoTypesId;
-        //    PlanTIBasePercent = promoToCopy.PlanTIBasePercent;
-        //    ActualTIBasePercent = promoToCopy.ActualTIBasePercent;
-        //    PlanCOGSPercent = promoToCopy.PlanCOGSPercent;
-        //    ActualCOGSPercent = promoToCopy.ActualCOGSPercent;
-        //    PlanCOGSTn = promoToCopy.PlanCOGSTn;
-        //    ActualCOGSTn = promoToCopy.ActualCOGSTn;
-        //    IsOnInvoice = promoToCopy.IsOnInvoice;
-        //    IsApolloExport = promoToCopy.IsApolloExport;
-        //    ManualInputSumInvoice = promoToCopy.ManualInputSumInvoice;
-        //    IsInExchange = promoToCopy.IsInExchange;
-        //    MasterPromoId = promoToCopy.MasterPromoId;
-        //    TPMmode = promoToCopy.TPMmode;
-        //}
-
-        //public Promo() { }
 
         private void GetCalculationStatus()
         {

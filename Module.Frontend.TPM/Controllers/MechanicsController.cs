@@ -191,7 +191,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
 
@@ -351,7 +351,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
     }

@@ -3,6 +3,7 @@ using Core.Settings;
 using Looper.Core;
 using Module.Frontend.TPM.Controllers;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
@@ -78,12 +79,13 @@ namespace Module.Host.TPM.Handlers
                 {
                     var activePromo = context.Set<Promo>().Where(x => !x.Disabled);
                     var promoIdsToRecalculate = promoesToRecalculate.Select(y => y.Id);
+                    var promoOldStatuses = promoesToRecalculate.Select(g => new { g.Id, g.PromoStatusId });
                     var query = activePromo.Where(x => promoIdsToRecalculate.Contains(x.Id));
                     var promoesList = query.ToList();
 
                     if (promoesList.Count > 0)
                     {
-                        foreach(var promo in promoesList)
+                        foreach (var promo in promoesList)
                         {
                             handlerLogger.Write(true, String.Format("Calculating promo: №{0}", promo.Number), "Message");
                             handlerLogger.Write(true, "");
@@ -125,11 +127,11 @@ namespace Module.Host.TPM.Handlers
 
                                 string upliftMessage;
 
-                                double? planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, false, new Guid());
+                                PlanUplift planPromoUpliftPercent = PlanPromoUpliftCalculation.FindPlanPromoUplift(promoId, context, out upliftMessage, false, new Guid());
 
-                                if (planPromoUpliftPercent != -1)
+                                if (planPromoUpliftPercent.CountedPlanUplift != -1)
                                 {
-                                    logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent);
+                                    logLine = String.Format("{0}: {1}", upliftMessage, planPromoUpliftPercent.CountedPlanUplift);
                                     handlerLogger.Write(true, logLine, "Message");
                                 }
                                 else
@@ -207,7 +209,11 @@ namespace Module.Host.TPM.Handlers
                                 logLine = String.Format("Plan parameters don't recalculate for promo in statuses: {0}", promoStatusesNotPlanRecalculateSetting);
                                 handlerLogger.Write(true, logLine, "Warning");
                             }
-                           
+                            // return status
+                            if (promoOldStatuses.Select(g=>g.Id).Contains(promo.Id))
+                            {
+                                promo.PromoStatusId = promoOldStatuses.FirstOrDefault(g => g.Id == promo.Id).PromoStatusId;                                
+                            }
                             //promo.Calculating = false;
                             context.SaveChanges();
                         }

@@ -326,6 +326,12 @@
     <Content Include="Client\controller\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\controller\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\controller\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\controller\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\controller\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\controller\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesView.js" />
+    <Content Include="Client\controller\tpm\promopriceincreaseroireport\PromoPriceIncreaseROIReport.js" />
     <Content Include="Client\controller\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\controller\tpm\ratishopper\RATIShopper.js" />
     <Content Include="Client\controller\tpm\ratishopper\DeletedRATIShopper.js" />
@@ -356,8 +362,15 @@
     <Content Include="Client\model\tpm\plancogstn\PlanCOGSTn.js" />
     <Content Include="Client\model\tpm\pludictionary\HistoricalPLUDictionary.js" />
     <Content Include="Client\model\tpm\pludictionary\PLUDictionary.js" />
+    <Content Include="Client\model\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
     <Content Include="Client\model\tpm\promoproduct2plu\PromoProduct2Plu.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\model\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncreaseView.js" />
     <Content Include="Client\model\tpm\promoproductcorrection\PromoProductCorrectionView.js" />
+    <Content Include="Client\model\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesView.js" />
+    <Content Include="Client\model\tpm\promopriceincreaseroireport\PromoPriceIncreaseROIReport.js" />
     <Content Include="Client\model\tpm\promosupportpromo\PromoSupportPromoWithPromoId.js" />
     <Content Include="Client\model\tpm\promo\PromoRSView.js" />
     <Content Include="Client\model\tpm\ratishopper\RATIShopper.js" />
@@ -416,7 +429,19 @@
     <Content Include="Client\view\tpm\pludictionary\HistoricalPLUDictionaryDetail.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionary.js" />
     <Content Include="Client\view\tpm\pludictionary\PLUDictionaryEditor.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPIEditor.js" />
+    <Content Include="Client\view\tpm\promoactivitydetailsinfo\PromoActivityDetailsInfoPI.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\DeletedPromoProductCorrectionPriceIncreaseDetail.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\HistoricalPromoProductCorrectionPriceIncreaseDetail.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncrease.js" />
+    <Content Include="Client\view\tpm\promoproductcorrectionpriceincrease\PromoProductCorrectionPriceIncreaseEditor.js" />
     <Content Include="Client\view\tpm\promoproductcorrection\PromoProductCorrectionViewEditor.js" />
+    <Content Include="Client\view\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesView.js" />
+    <Content Include="Client\view\tpm\promoproductpriceincreasesview\PromoProductPriceIncreasesViewEditor.js" />
+    <Content Include="Client\view\tpm\promopriceincreaseroireport\PromoPriceIncreaseROIReport.js" />
+    <Content Include="Client\view\tpm\promopriceincreaseroireport\PromoPriceIncreaseROIReportEditor.js" />
     <Content Include="Client\view\tpm\promo\ApproveClosePromoWindow.js" />
     <Content Include="Client\view\tpm\promo\PromoMechanicAddPromoes.js" />
     <Content Include="Client\view\tpm\ratishopper\RATIShopper.js" />
@@ -443,7 +468,9 @@
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedIncreaseBaseLine.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\EventTypesController.cs" />
     <Compile Include="Controllers\HistoricalActualCOGSTnsController.cs" />
@@ -463,16 +490,24 @@
     <Compile Include="Controllers\HistoricalClientDashboardsController.cs" />
     <Compile Include="Controllers\HistoricalClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\HistoricalCoefficientSI2SOsController.cs" />
+    <Compile Include="Controllers\HistoricalIncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\HistoricalPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
+    <Compile Include="Controllers\HistoricalPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
     <Compile Include="Controllers\MetricsLiveHistoriesController.cs" />
+    <Compile Include="Controllers\IncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
     <Compile Include="Controllers\PLUDictionaryController.cs" />
     <Compile Include="Controllers\PreviousDayIncrementalsController.cs" />
     <Compile Include="Controllers\PriceListsController.cs" />
     <Compile Include="Controllers\CompetitorBrandTechsController.cs" />
+    <Compile Include="Controllers\PromoProductCorrectionPriceIncreasesController.cs" />
+    <Compile Include="Controllers\PromoProductCorrectionPriceIncreaseViewsController.cs" />
     <Compile Include="Controllers\PromoProductCorrectionViewsController.cs" />
+    <Compile Include="Controllers\PromoProductPriceIncreasesController.cs" />
+    <Compile Include="Controllers\PromoProductPriceIncreaseViewsController.cs" />
+    <Compile Include="Controllers\PromoPriceIncreaseROIReportsController.cs" />
     <Compile Include="Controllers\PromoRSViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
@@ -484,6 +519,7 @@
     <Compile Include="FunctionalHelpers\RSPeriod\RSPeriodHelper.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
+    <Compile Include="Util\GetExceptionMessage.cs" />
     <Compile Include="Util\IQueryableExtensions.cs" />
     <Compile Include="Util\NoGuidGeneratingScriptGenerator.cs" />
     <Compile Include="Util\RoundingHelper.cs" />
@@ -1744,7 +1780,6 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

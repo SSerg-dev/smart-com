@@ -152,6 +152,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public ICollection<AssortmentMatrix> AssortmentMatrices { get; set; }
         public ICollection<BaseLine> BaseLines { get; set; }
+        public ICollection<IncreaseBaseLine> IncreaseBaseLines { get; set; }
         public ICollection<IncrementalPromo> IncrementalPromoes { get; set; }
         public ICollection<PreviousDayIncremental> PreviousDayIncrementals { get; set; }
         public ICollection<PriceList> PriceLists { get; set; }

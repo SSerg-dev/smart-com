@@ -81,6 +81,7 @@ def get_parameters(**kwargs):
     print(azure_conn)	
     
     dst_dir = f'{raw_path}/SOURCES/BASELINE_ANAPLAN/'
+    dst_incr_dir = f'{raw_path}/SOURCES/INCREASE_BASELINE_ANAPLAN/'
     
     bcp_parameters =  base64.b64encode(('-S {} -d {} -U {} -P {}'.format(db_conn.host, db_conn.schema, db_conn.login,db_conn.password)).encode()).decode()
     parent_handler_id = dag_run.conf.get('parent_handler_id')
@@ -88,6 +89,9 @@ def get_parameters(**kwargs):
     
     interface_dst_path = f'{raw_path}/SOURCES/BASELINE/'
     interface_raw_path = f'{raw_path}/SOURCES/BASELINE_ANAPLAN/'
+    
+    interface_dst_incr_path = f'{raw_path}/SOURCES/INCREASE_BASELINE/'
+    interface_raw_incr_path = f'{raw_path}/SOURCES/INCREASE_BASELINE_ANAPLAN/'
        
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,
@@ -109,7 +113,10 @@ def get_parameters(**kwargs):
                   "HandlerId":handler_id,
                   "InterfaceDstPath":interface_dst_path,
                   "InterfaceRawPath":interface_raw_path,
+                  "InterfaceDstIncreasePath":interface_dst_incr_path,
+                  "InterfaceRawIncreasePath":interface_raw_incr_path,
                   "DstDir":dst_dir,
+                  "DstIncrDir":dst_incr_dir
                    }
     print(parameters)
     return parameters
@@ -118,7 +125,6 @@ def get_parameters(**kwargs):
 def create_child_dag_config(parameters:dict):
     conf={"parent_run_id":parameters["ParentRunId"],"parent_process_date":parameters["ProcessDate"],"schema":parameters["Schema"]}
     return conf
-
 
 @task
 def get_intermediate_file_metadata(parameters:dict):
@@ -146,15 +152,50 @@ def create_file_info(parameters:dict, entity):
     
     return {"File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
 
+@task
+def get_incr_intermediate_file_metadata(parameters:dict):
+    hdfs_hook = WebHDFSHook(HDFS_CONNECTION_NAME)
+    conn = hdfs_hook.get_conn()
+    src_path=parameters["InterfaceRawIncreasePath"]
+    files = conn.list(src_path)
+    
+    entity = None
+    filtered = [x for x in files if ".csv" in x]
+    for file in filtered:
+       entity = {'File':file,'SrcPath':f'{src_path}{file}'}
+    
+    return entity
+
+@task(multiple_outputs=True)
+def create_incr_file_info(parameters:dict, entity):
+    interface_dst_path=parameters["InterfaceDstIncreasePath"]
+    src_path=entity["SrcPath"]
+    current_process_date = pendulum.now()
+    file_name=os.path.splitext(entity["File"])[0] + current_process_date.strftime("_%Y%m%d_%H%M%S.dat")
+    dst_path=f'{interface_dst_path}{file_name}'
+    copy_command = f'hadoop dfs -cp -f {src_path} {dst_path}'
+    
+    
+    return {"File":entity["File"].replace(".csv",".dat"), "ProcessDate":current_process_date.isoformat(), "CopyCommand":copy_command}
+
 @task(trigger_rule=TriggerRule.ALL_SUCCESS)
 def add_filebuffer_sp(parameters:dict, entity):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
-    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
+    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @InterfaceName = 'BASELINE_APOLLO' ,@FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
     print(result)
 
     return result
-	
+
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def add_filebuffer_incr_sp(parameters:dict, entity):
+    odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
+    schema = parameters["Schema"]
+    result = odbc_hook.run(sql=f"""exec [Jupiter].[AddFileBuffer] @InterfaceName = 'INCREASE_BASELINE_APOLLO' ,@FileName = ? ,@ProcessDate = ?,  @HandlerId = ? """, parameters=(entity["File"],entity["ProcessDate"], parameters["HandlerId"]))
+    print(result)
+
+    return result
+		
 @task
 def generate_azure_copy_script(parameters:dict, entity):
     src_path = entity['SrcPath']
@@ -168,9 +209,10 @@ def generate_azure_copy_script(parameters:dict, entity):
 def generate_entity_list(parameters:dict):
     raw_path=parameters['RawPath']
     dst_dir=parameters['DstDir'] 
+    dst_incr_dir=parameters['DstIncrDir'] 
     entities = [
-              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE/BASELINE_0.csv','DstPath':dst_dir},
-
+              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE_WO_PRICING/BASELINE_WO_PRICING_0.csv','DstPath':dst_dir},
+              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_DEMAND_PLANNING_DM/ANAPLAN/EXPORT/BASELINE/BASELINE_0.csv','DstPath':dst_incr_dir},
              ]
     return entities	
 
@@ -198,5 +240,13 @@ with DAG(
                                               )
     add_filebuffer_sp = add_filebuffer_sp(parameters=parameters, entity=file_info)
     
-    copy_remote_to_intermediate >> get_intermediate_file_metadata >> file_info >> copy_file_to_target_folder >> add_filebuffer_sp
+    get_intermediate_file_metadata_incr = get_incr_intermediate_file_metadata(parameters)
+    file_info_incr = create_incr_file_info(parameters=parameters, entity=get_intermediate_file_metadata_incr)
+    copy_file_to_target_folder_incr = BashOperator(task_id="copy_file_to_target_folder_incr",
+                                       do_xcom_push=True,
+                                      bash_command=file_info_incr["CopyCommand"],
+                                              )
+    add_filebuffer_incr_sp = add_filebuffer_incr_sp(parameters=parameters, entity=file_info_incr)
+    
+    copy_remote_to_intermediate >> get_intermediate_file_metadata >> file_info >> copy_file_to_target_folder >> add_filebuffer_sp >> get_intermediate_file_metadata_incr >> file_info_incr >> copy_file_to_target_folder_incr >> add_filebuffer_incr_sp
 

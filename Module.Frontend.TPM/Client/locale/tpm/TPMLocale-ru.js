@@ -160,6 +160,7 @@
         'ClientDashboard': 'Client Dashboard',
         'Dashboard': 'Dashboard',
         'ClientKPIdata': 'Client KPI Data',
+        'ClientKPIdataRS': 'Client KPI Data RS',
         'NonPromoLinked': "Non-Promo Linked",
         'PriceList': 'Price list',
         'CoefficientSI2SO': 'Coefficient SI->SO',
@@ -2155,6 +2156,7 @@
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
         'Price': 'Price',
+        "FuturePriceMarker": 'Future Price Marker'
     },
 
     'CoefficientSI2SO': {

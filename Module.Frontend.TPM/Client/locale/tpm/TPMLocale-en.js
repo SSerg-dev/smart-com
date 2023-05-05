@@ -53,6 +53,7 @@
         'PromoProductCorection': 'Promo product correction',
         'PreviousDayIncremental': 'Previous Day Incremental',
         'BaseLineItem': 'Base Line',
+        'IncreaseBaseLineItem': 'Increase Base Line',
         'ClientTreeBrandTech': 'Clients Share',
         'PromoSupport': 'Support',
         'NonPromoSupport': 'Non-Promo Support',
@@ -75,7 +76,7 @@
         'RATIShopper': 'RA TI Shopper',
         'AssortmentMatrix': 'Assortment matrix',
         'PLUDictionary': 'PLU dictionary',
-        'PromoROIReport': 'Promo ROI Report',
+        'PromoPriceIncreaseROIReport': 'ROI Report Future Price',
         'IncrementalPromo': 'Incremental Promo',
         'BTL': 'BTL',
         'ActualLSV': 'Actual LSV',
@@ -93,6 +94,7 @@
         'Competitor': 'Competitors list',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBrandTech': 'Competitor BrandTech',
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction',
     },
 
     'compositePanelTitles': {
@@ -147,6 +149,7 @@
         'RetailType': 'Retail type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
+        'IncreaseBaseLine': 'Increase Base Line',
         'ClientTreeBrandTech': 'Clients shares',
         'PromoSupport': 'PromoSupport',
         'NonPromoSupport': 'Non-promo Support',
@@ -170,6 +173,7 @@
         'PlanPostPromoEffectReportWeek': 'Plan Post Promo Effect Report',
         'PromoCalculatingWindow': 'Calculating Log',
         'PromoROIReport': 'Promo ROI Report',
+        'PromoPriceIncreaseROIReport': 'ROI Report Future Price',
         'PromoBudgetsDetailsWindow': 'Budgets Details',
         'PromoActivityDetailsWindow': 'Activity Details',
         'PromoFinanceDetailsWindow': 'Finance Details',
@@ -194,8 +198,8 @@
         'RSmode': 'RS',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
-        'RSmode': 'RS',
-        'MetricsLiveHistory':'Metrics Live History'
+        'MetricsLiveHistory':'Metrics Live History',
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction'
     },
 
     'text': {
@@ -842,6 +846,7 @@
         'ROIHeader': 'ROIHeader',
         'UpliftHeader': 'UpliftHeader',
         'Confirm Approval': 'Do you really want to approve the PROMO form?',
+        'ConfirmSendForApproval': 'Do you really want send promoes for Approval?',
         'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
         'FailToSelectStatus': 'You can not select current status.',
         'Reason': 'Reason',
@@ -896,6 +901,7 @@
         'ChangeStateOnlyButtonText': 'Dependent on me',
         'MassApprovalButtonText': 'Mass Approve',
         'InvoiceFilterOnButtonText': 'Invoice waiting filter',
+        'MassSendForApprovalButtonText': 'Mass send for approval',
         'ChangeResponsible': 'Change Responsible',
         'CreateCollapsed': 'Create<br>Promo',
         'CreateInOutCollapsed': 'Create<br>Promo<br>InOut',
@@ -932,8 +938,8 @@
         'ActualPromoNSV': 'Actual Promo NSV',
         'GrowthAcceleration': 'GA',
         'IsGrowthAcceleration': 'Growth acceleration',
-        'ApolloExport': 'Apollo export',
-        'IsApolloExport': 'Apollo export',
+        'ApolloExport': 'Anaplan Export',
+        'IsApolloExport': 'Anaplan Export',
         'GAInExcnange': 'GA InExchange',
         'IsInExchange': 'InExchange',
         'WorkflowStep': 'Workflow Step',
@@ -983,7 +989,8 @@
         'LinkedPromoes': 'Linked Promoes',
         'MasterPromoNumber': 'Master Promo Number',
 
-        'TPMmode': 'Indicator'
+        'TPMmode': 'Indicator',
+        'IsPriceIncrease': 'PriceIncrease',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -1613,6 +1620,22 @@
         'SumInvoiceProduct': 'Sum In Invoice Product'
     },
 
+    'PromoProductPriceIncreasesView': {
+        'ZREP': 'ZREP',
+        'ProductEN': 'ProductEN',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductIncrementalCaseQty': 'Plan Product Incremental Case Qty',
+        'PlanProductCaseQty': 'Plan Product Case Qty',
+        'AverageMarker': 'Average Marker',
+        'IsCorrection': 'Is Correction',
+        'SavePromoMessage': 'Save promo to create new corrections',
+        'SumInvoiceProduct': 'Sum In Invoice Product'
+    },
+
     'BaseLine': {
         'ProductZREP': 'ZREP',
         'ClientTreeDemandCode': 'Client Demand code',
@@ -1633,6 +1656,25 @@
     },
     'HistoricalBaseLine': ['.tpm.BaseLine', '.core.BaseHistoryEntity'],
     'DeletedBaseLine': ['.tpm.BaseLine', '.core.BaseDeletedEntity'],
+
+    'IncreaseBaseLine': {
+        'ProductZREP': 'ZREP',
+        'ClientTreeDemandCode': 'Client Demand code',
+        'DemandCode': 'Demand code',
+        'StartDate': 'Start date',
+        'InputBaselineQTY': 'Input Baseline QTY',
+        'SellInBaselineQTY': 'Sell In Baseline QTY',
+        'SellOutBaselineQTY': 'Sell Out Baseline QTY',
+        'Type': 'Type',
+        'importParam': {
+            'startDate': 'Start date',
+            'endDate': 'End date',
+            'clearTable': 'Clear table'
+        }
+    },
+
+    'HistoricalIncreaseBaseLine': ['.tpm.IncreaseBaseLine', '.core.BaseHistoryEntity'],
+    'DeletedIncreaseBaseLine': ['.tpm.IncreaseBaseLine', '.core.BaseDeletedEntity'],
 
     'ChangeHistoryWindow': {
         'ChangeHistoryTitle': 'Change history',
@@ -2235,8 +2277,11 @@
         'ActualPromoVolume': 'Actual Promo Volume',
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
-        'TPMmode': 'Indicator'
+        'TPMmode': 'Indicator',
+        'IsPriceIncrease': 'Price Increase',
+        'IsApolloExport': 'Anaplan Export'
     },
+    'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 
     'PromoActivity': {
         'UpdateActuals': 'Upload Actuals',
@@ -2246,6 +2291,7 @@
         'ActualInStoreDiscount': 'Actual Instore Mechanic Discount',
         'ActualInStore': 'Actual Discount In Store',
         'Plan': 'Plan',
+        'PlanPriceIncrease': 'Plan Price Increase',
         'Actuals': 'Actuals',
         'ExportAllPromoProducts': 'Export All Promo Products',
         'triggerfieldOnlyNumbers': 'Only number allowed',
@@ -2564,6 +2610,29 @@
     'DeletedPromoProductCorrection': ['.tpm.PromoProductCorrection', '.core.BaseDeletedEntity'],
 
     'PromoProductCorrectionView': {
+        'ZREP': 'ZREP',
+        'Number': 'Promo ID',
+        'BrandTechName': 'BrandTech',
+        'ClientHierarchy': 'Client',
+        'EventName': 'Event',
+        'MarsMechanicName': 'Mars Mechanic',
+        'MarsStartDate': 'Mars Start date',
+        'MarsEndDate': 'Mars End date',
+        'PromoStatusSystemName': 'Promo Status',
+        'ProductSubrangesList': 'Subranges',
+        'PlanProductBaselineLSV': 'Plan Product Baseline LSV',
+        'PlanProductIncrementalLSV': 'Plan Product Incremental LSV',
+        'PlanProductLSV': 'Plan Product LSV',
+        'PlanProductUpliftPercentCorrected': 'Plan Product Uplift Percent Corrected',
+        'CreateDate': 'Create Date',
+        'ChangeDate': 'Last Change Date',
+        'UserName': 'User Name',
+        'GreaterThanZero': 'Uplift must be greater than zero',
+        'ExportCorrections': 'Export correction to XLSX',
+        'TPMmode': 'Indicator'
+    },
+
+    'PromoProductCorrectionPriceIncreaseView': {
         'ZREP': 'ZREP',
         'Number': 'Promo ID',
         'BrandTechName': 'BrandTech',
@@ -2930,6 +2999,7 @@
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
         'Price': 'Price',
+        'FuturePriceMarker': 'Future Price Marker'
     },
 
     'CoefficientSI2SO': {

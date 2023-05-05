@@ -60,14 +60,15 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-01-19_scheduled__2023-01-18T22%3A30%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-01-19", "Schema": "Jupiter", "HandlerId": '
- '"218e123f-c88f-4962-88f9-8d1acf0e5951"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T12%3A33%3A06.749342%2B00%3A00_", '
+ '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
+ '"946668af-13b9-426a-a943-266c4cec5ae9"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
  sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py")
  sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py")
+ sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py")
  sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PROMO_PARAMS_CALCULATION_PROCESS.py")
  sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS.py") 
  sc.addPyFile("hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py") 
@@ -99,17 +100,21 @@ schema = es.input_params.get("Schema")
 DIRECTORY = SETTING_RAW_DIR + '/SOURCES/'
 
 PROMO_PATH = DIRECTORY + 'JUPITER/Promo'
+PROMO_PRICEINCREASE_PATH = DIRECTORY + 'JUPITER/PromoPriceIncrease'
 PROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'
 PROMOPRODUCT_PATH = DIRECTORY + 'JUPITER/PromoProduct'
+PROMOPRODUCT_PRICEINCREASE_PATH = DIRECTORY + 'JUPITER/PromoProductPriceIncrease'
 PRODUCT_PATH = DIRECTORY + 'JUPITER/Product'
 PRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'
 PROMOPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/PromoProductTree'
 PRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'
 BASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'
+INCREASEBASELINE_PATH = DIRECTORY + 'JUPITER/IncreaseBaseLine'
 SHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'
 CLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'
 CLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'
 DATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'
+CORRECTION_PRICEINCREASE_PATH = DIRECTORY + 'JUPITER/PromoProductCorrectionPriceIncrease'
 CORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'
 INCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'
 PROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'
@@ -128,10 +133,13 @@ SERVICEINFO_PATH = DIRECTORY + 'JUPITER/ServiceInfo'
 RATISHOPPER_PATH = DIRECTORY + 'JUPITER/RATIShopper'
 
 FILTERED_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'
+FILTERED_INCREASE_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'
 
 PLAN_PROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/Promo/Promo.parquet'
 PLAN_PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/PromoProduct.parquet'
 PLAN_PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_PROCESS_DIR + '/PromoSupportPromo/PromoSupportPromo.parquet'
+PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/PromoProduct/PromoProductPriceIncrease.CSV'
+PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/Promo/PromoPriceIncrease.CSV'
 NEW_PROMOPRODUCT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/NewPromoProduct.CSV'
 SERVICEINFO_RESULT_PATH = SETTING_OUTPUT_DIR + '/ServiceInfo/ServiceInfo.CSV'
 NEW_PRODUCTCHANGEINCIDENTS_PATH = SETTING_OUTPUT_DIR + '/ProductChangeIncident/NewProductChangeIncident.CSV'
@@ -178,21 +186,25 @@ promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map[
 .withColumn("IsSplittable",col("IsSplittable").cast(BooleanType()))\
 .withColumn("IsInExchange",col("IsInExchange").cast(BooleanType()))\
 .withColumn("IsGAManagerApproved",col("IsGAManagerApproved").cast(BooleanType()))
+promoPriceIncreaseDF = spark.read.csv(PROMO_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=schemas_map["PromoStatus"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 promoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProduct"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
 .withColumn("AverageMarker",col("AverageMarker").cast(BooleanType()))
+promoProductPriceIncreaseDF = spark.read.csv(PROMOPRODUCT_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 productDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProductDF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 allProduct01DF = spark.read.csv(PRODUCT_PATH,sep="\u0001",header=True,schema=schemas_map["Product"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductTree"])
 promoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductTree"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+baselineIncreaseDF = spark.read.csv(INCREASEBASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"]).withColumn("DemandCode", when(col("DemandCode")=="\0",lit(None)).otherwise(col("DemandCode")))
 clientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeHierarchyView"])
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+correctionPriceIncreaseDF = spark.read.csv(CORRECTION_PRICEINCREASE_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductCorrectionPriceIncrease"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 btlDF = spark.read.csv(BTL_PATH,sep="\u0001",header=True,schema=schemas_map["BTL"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 btlPromoDF = spark.read.csv(BTLPROMO_PATH,sep="\u0001",header=True,schema=schemas_map["BTLPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 incrementalDF = spark.read.csv(INCREMENTAL_PATH,sep="\u0001",header=True,schema=schemas_map["IncrementalPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
@@ -209,8 +221,10 @@ serviceInfoDF = spark.read.csv(SERVICEINFO_PATH,sep="\u0001",header=True,schema=
 ratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep="\u0001",header=True,schema=schemas_map["RATIShopper"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 
 filteredPromoDF = spark.read.format("parquet").load(FILTERED_PROMO_PATH)
+filteredIncreasePromoDF = spark.read.format("parquet").load(FILTERED_INCREASE_PROMO_PATH)
 
 print(filteredPromoDF.count())
+print(filteredIncreasePromoDF.count())
 
 try:
  inputLogMessageDF = spark.read.format("csv").option("delimiter","\u0001").option("header","true").load(INPUT_FILE_LOG_PATH)
@@ -234,6 +248,9 @@ priceListDF = priceListDF\
 
 baselineDF = baselineDF\
   .withColumn('StartDate', date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1))
+  
+baselineIncreaseDF = baselineIncreaseDF\
+  .withColumn('StartDate', date_add(to_date(baselineIncreaseDF.StartDate, 'yyyy-MM-dd'), 1))
 
 assortmentMatrixDF = assortmentMatrixDF\
   .withColumn('StartDate', date_add(to_date(assortmentMatrixDF.StartDate, 'yyyy-MM-dd'), 1))\
@@ -255,10 +272,12 @@ cogsTnDF = cogsTnDF\
 ####*Prepare dataframes for calculation*
 
 filteredPromoDF = filteredPromoDF.dropDuplicates()
+filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
 # print('filtered promo count:', filteredPromoDF.count())
 
 # promoProduct
 promoProductCols = promoProductDF.columns
+increasePromoProductCols = promoProductPriceIncreaseDF.columns
 allCalcPlanPromoProductDF = promoProductDF.where(col('Disabled') == 'False')
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
@@ -291,6 +310,18 @@ planParamsPriceListDF = priceListDF\
           ,col('ClientTreeId').alias('priceClientTreeId')
          )
 
+# future priceList 
+planParamsFuturePriceListDF = priceListDF\
+  .where(col('Disabled') == 'False')\
+  .where(col('FuturePriceMarker') == 'True')\
+  .select(\
+           col('StartDate').alias('priceStartDate')
+          ,col('EndDate').alias('priceEndDate')
+          ,col('ProductId').alias('priceProductId')
+          ,col('Price').cast(DecimalType(30,6))
+          ,col('ClientTreeId').alias('priceClientTreeId')
+         )
+         
 # baseline
 planParamsBaselineDF = baselineDF\
   .where(col('Disabled') == 'False')\
@@ -300,7 +331,18 @@ planParamsBaselineDF = baselineDF\
           ,col('StartDate').alias('baselineStartDate')\
           ,col('SellInBaselineQTY').cast(DecimalType(30,6))\
           ,col('SellOutBaselineQTY').cast(DecimalType(30,6))\
-  )
+         )
+
+# increase baseline
+planParamsBaselineIncreaseDF = baselineIncreaseDF\
+  .where(col('Disabled') == 'False')\
+  .select(\
+           col('ProductId').alias('baselineProductId')
+          ,col('DemandCode').alias('baselineDemandCode')
+          ,col('StartDate').alias('baselineStartDate')\
+          ,col('SellInBaselineQTY').cast(DecimalType(30,6))\
+          ,col('SellOutBaselineQTY').cast(DecimalType(30,6))\
+         )
 
 # shares
 planParamsSharesDF = sharesDF.where(col('Disabled') == 'False').drop('Disabled')
@@ -310,6 +352,14 @@ planParamsCorrectionDF = correctionDF\
   .where((col('Disabled') == '0'))\
   .select(\
            upper(col('PromoProductId')).alias('correctionPromoProductId')
+          ,col('PlanProductUpliftPercentCorrected').alias('correctionPlanProductUpliftPercentCorrected')
+         )
+
+# pi product correction
+planParamsIncreaseCorrectionDF = correctionPriceIncreaseDF\
+  .where((col('Disabled') == '0'))\
+  .select(\
+           upper(col('PromoProductPriceIncreaseId')).alias('correctionPromoProductPriceIncreaseId')
           ,col('PlanProductUpliftPercentCorrected').alias('correctionPlanProductUpliftPercentCorrected')
          )
 
@@ -451,6 +501,45 @@ calcPlanPromoDF = calcPlanPromoDF\
           ,lightPromoDF.promoClientPostPromoEffectW2
          )
 
+print(filteredIncreasePromoDF.schema)
+
+#increase
+calcPromoPriceIncreaseDF = promoPriceIncreaseDF\
+  .join(filteredIncreasePromoDF, promoPriceIncreaseDF.Id == filteredIncreasePromoDF.PromoId, 'left')\
+  .join(calcPlanPromoDF, promoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'left')\
+  .select(\
+           promoPriceIncreaseDF['*']
+          ,calcPlanPromoDF.promoStatusSystemName
+         )
+
+calcIncreasePlanPromoProductDF = promoProductPriceIncreaseDF\
+  .join(promoProductDF, promoProductPriceIncreaseDF.PromoProductId == promoProductDF.Id, 'inner')\
+  .join(calcPromoPriceIncreaseDF, calcPromoPriceIncreaseDF.Id == promoProductDF.PromoId, 'inner')\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id, 'left')\
+  .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
+  .select(promoProductPriceIncreaseDF['*'],lightPromoDF['*'],promoProductDF.ProductId)
+
+calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
+  .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
+  .drop('promoStatusSystemName')
+
+calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF\
+  .join(productDF, productDF.Id == calcIncreasePlanPromoProductDF.ProductId, 'left')\
+  .select(\
+           calcIncreasePlanPromoProductDF['*']
+          ,productDF.UOM_PC2Case
+          ,productDF.CaseVolume
+         )
+allCalcPlanPromoProductDF = allCalcPlanPromoProductDF\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcPlanPromoProductDF.PromoId, 'left')\
+  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\
+  .select(\
+           allCalcPlanPromoProductDF['*']
+          ,lightPromoDF['*']
+          ,promoStatusDF.SystemName.alias('promoStatusSystemName')
+         )
+
+calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF
 # print(calcPlanPromoProductDF.count())
 # print(calcPlanPromoDF.count())
 
@@ -585,6 +674,22 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
 calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
+calcIncreasePlanPromoProductDF.show()
+
+calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
+  .join(calcPlanPromoDF, calcPromoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'inner')\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id)\
+  .select(\
+           calcPromoPriceIncreaseDF['*']
+          ,calcPlanPromoDF.Number
+          ,calcPlanPromoDF.promoClientPostPromoEffectW1
+          ,calcPlanPromoDF.promoClientPostPromoEffectW2
+         )
+
+
+import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
+calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols)
+
 ####*Promo support calculation*
 
 @udf
@@ -695,6 +800,7 @@ resultPromoDF = allCalcPlanPromoDF.union(disabledPromoDF)
 resultPromoDF = resultPromoDF.drop('#QCCount')
 # ---
 
+
 # promosuportpromo
 resultPromoSupportPromoDF = allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)
 # ---
@@ -740,6 +846,38 @@ resultPromoSupportPromoDF.coalesce(6).write.mode("overwrite").parquet(PLAN_PROMO
 # serviceInfoDF.write.mode("overwrite").parquet(SERVICEINFO_RESULT_PATH)
 
 # newProductChangeIncidentDF.write.mode("overwrite").parquet(NEW_PRODUCTCHANGEINCIDENTS_PATH)
+# save increase promo + products
+
+
+resultIncreasePromoDF = calcPromoPriceIncreaseDF.drop('#QCCount')
+resultIncreasePromoProductDF = calcIncreasePlanPromoProductDF.drop('#QCCount')
+
+resultIncreasePromoDF = resultIncreasePromoDF.persist()
+
+resultIncreasePromoProductDF.fillna(False,subset=['Disabled',
+'AverageMarker'])\
+.withColumn("Disabled",col("Disabled").cast(IntegerType()))\
+.withColumn("AverageMarker",col("AverageMarker").cast(IntegerType()))\
+.repartition(1)\
+.write.csv(PLAN_PROMOPRODUCT_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH,
+sep="\u0001",
+header=True,
+mode="overwrite",
+emptyValue="",
+timestampFormat="yyyy-MM-dd HH:mm:ss"
+)
+
+resultIncreasePromoDF.fillna(False,subset=['Disabled'])\
+.repartition(1)\
+.write.csv(PLAN_PROMO_PRICEINCREASE_PARAMETERS_CALCULATION_RESULT_PATH,
+sep="\u0001",
+header=True,
+mode="overwrite",
+emptyValue="",
+timestampFormat="yyyy-MM-dd HH:mm:ss",
+escape="",
+quote="",
+)
 
 serviceInfoDF\
 .repartition(1)\

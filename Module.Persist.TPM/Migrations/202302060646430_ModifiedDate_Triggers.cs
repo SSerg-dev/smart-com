@@ -94,7 +94,7 @@ namespace Module.Persist.TPM.Migrations
 
         private string SqlString = @"
         
-            ALTER TRIGGER [DefaultSchemaSetting].[NoneNego_Update_Trigger]
+            CREATE OR ALTER TRIGGER [DefaultSchemaSetting].[NoneNego_Update_Trigger]
             ON [DefaultSchemaSetting].[NoneNego]
             AFTER INSERT, UPDATE AS
               UPDATE [DefaultSchemaSetting].[NoneNego]
@@ -102,7 +102,7 @@ namespace Module.Persist.TPM.Migrations
               WHERE Id IN (SELECT DISTINCT Id FROM Inserted)
             GO
 
-            ALTER TRIGGER [DefaultSchemaSetting].[AssortmentMatrix_ChangesIncident_Insert_Update_Trigger]
+            CREATE OR ALTER TRIGGER [DefaultSchemaSetting].[AssortmentMatrix_ChangesIncident_Insert_Update_Trigger]
 	            ON [DefaultSchemaSetting].[AssortmentMatrix]
 	            AFTER INSERT, UPDATE
 	            AS
@@ -113,7 +113,7 @@ namespace Module.Persist.TPM.Migrations
                     WHERE Id IN (SELECT DISTINCT Id FROM Inserted)
             GO
 
-            ALTER TRIGGER [DefaultSchemaSetting].[ClientTreeDemandCode_Update_Trigger]
+            CREATE OR ALTER TRIGGER [DefaultSchemaSetting].[ClientTreeDemandCode_Update_Trigger]
             ON [DefaultSchemaSetting].[ClientTree]
             AFTER INSERT, UPDATE AS
               UPDATE [DefaultSchemaSetting].ClientTree

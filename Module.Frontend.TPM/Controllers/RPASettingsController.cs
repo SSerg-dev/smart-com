@@ -3,6 +3,7 @@ using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Newtonsoft.Json;
 using Persist.Model;
@@ -41,7 +42,7 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<RPASetting> resultQuery = query.ToList()
                  .Where(x => JsonConvert.DeserializeObject<RPAEventJsonField>(x.Json).roles.Contains(role))
                  .AsQueryable();
-            
+
             return resultQuery;
         }
 
@@ -111,7 +112,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-                return InternalServerError(e.InnerException);
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
     }

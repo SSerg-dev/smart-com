@@ -3,13 +3,25 @@ using Core.Security;
 using UserInfoCore = Core.Security.Models.UserInfo;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
-using Module.Persist.TPM.Model.TPM;
-using Persist.Model;
+using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
 using Microsoft.Azure.Management.DataFactory;
 using Microsoft.Azure.Management.DataFactory.Models;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
+using Module.Frontend.TPM.Model;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
+using Persist;
+using Persist.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,81 +33,66 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
-using Core.Settings;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Rest;
-using Newtonsoft.Json;
-using Module.Persist.TPM.Utils;
-using Frontend.Core.Extensions.Export;
-using Module.Frontend.TPM.Model;
-using Persist;
-using Looper.Core;
-using Looper.Parameters;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+using Utility;
 using Utility.Azure;
 using Column = Frontend.Core.Extensions.Export.Column;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Utility;
-using Module.Persist.TPM.Model.DTO;
 using Core.Security.Models;
-using Module.Persist.TPM.Model.Import;
+using Core.Settings;
 
 namespace Module.Frontend.TPM.Controllers
 {
-	public class RPAsController : EFContextController
-	{
-		private readonly IAuthorizationManager authorizationManager;
-		private Core.Security.Models.UserInfo user;
-		private string role;
-		private Guid roleId;
-		private IList<Constraint> constraints;
-		private static object locker = new object();
-		public RPAsController(IAuthorizationManager authorizationManager)
-		{
-			this.authorizationManager = authorizationManager;
-			this.user = authorizationManager.GetCurrentUser();
-			this.role = authorizationManager.GetCurrentRoleName();
-			this.roleId = this.user.Roles.ToList().Find(role => role.SystemName == this.role).Id.Value;
-		}
+    public class RPAsController : EFContextController
+    {
+        private readonly IAuthorizationManager authorizationManager;
+        private Core.Security.Models.UserInfo user;
+        private string role;
+        private Guid roleId;
+        private IList<Constraint> constraints;
+        private static object locker = new object();
+        public RPAsController(IAuthorizationManager authorizationManager)
+        {
+            this.authorizationManager = authorizationManager;
+            this.user = authorizationManager.GetCurrentUser();
+            this.role = authorizationManager.GetCurrentRoleName();
+            this.roleId = this.user.Roles.ToList().Find(role => role.SystemName == this.role).Id.Value;
+        }
 
-		protected IQueryable<RPA> GetConstraintedQuery()
-		{
+        protected IQueryable<RPA> GetConstraintedQuery()
+        {
 
-			this.constraints = this.user.Id.HasValue ? Context.Constraints
-				.Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
-				.ToList() : new List<Constraint>();
-			IQueryable<RPA> query = Context.Set<RPA>();
+            this.constraints = this.user.Id.HasValue ? Context.Constraints
+                .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                .ToList() : new List<Constraint>();
+            IQueryable<RPA> query = Context.Set<RPA>();
 
-			return query;
-		}
+            return query;
+        }
 
-		[ClaimsAuthorize]
-		[EnableQuery(MaxNodeCount = int.MaxValue)]
-		public SingleResult<RPA> GetRPA([FromODataUri] System.Guid key)
-		{
-			return SingleResult.Create<RPA>(GetConstraintedQuery());
-		}
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public SingleResult<RPA> GetRPA([FromODataUri] System.Guid key)
+        {
+            return SingleResult.Create<RPA>(GetConstraintedQuery());
+        }
 
-		[ClaimsAuthorize]
-		[EnableQuery(MaxNodeCount = int.MaxValue)]
-		public IQueryable<RPA> GetRPAs()
-		{
-			return GetConstraintedQuery();
-		}
+        [ClaimsAuthorize]
+        [EnableQuery(MaxNodeCount = int.MaxValue)]
+        public IQueryable<RPA> GetRPAs()
+        {
+            return GetConstraintedQuery();
+        }
 
-		[ClaimsAuthorize]
-		[HttpPost]
-		public IQueryable<RPA> GetFilteredData(ODataQueryOptions<RPA> options)
-		{
-			var query = GetConstraintedQuery();
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IQueryable<RPA> GetFilteredData(ODataQueryOptions<RPA> options)
+        {
+            var query = GetConstraintedQuery();
 
-			var querySettings = new ODataQuerySettings
-			{
-				EnsureStableOrdering = false,
-				HandleNullPropagation = HandleNullPropagationOption.False
-			};
+            var querySettings = new ODataQuerySettings
+            {
+                EnsureStableOrdering = false,
+                HandleNullPropagation = HandleNullPropagationOption.False
+            };
 
 			var optionsPost = new ODataQueryOptionsPost<RPA>(options.Context, Request, HttpContext.Current.Request);
 			return optionsPost.ApplyTo(query, querySettings) as IQueryable<RPA>;
@@ -127,15 +124,15 @@ namespace Module.Frontend.TPM.Controllers
             {
 				int maxFileByteLength = 25000000;
 
-				if (!Request.Content.IsMimeMultipartContent())
-				{
-					throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-				}
+                if (!Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
 
-				if (Request.Content.Headers.ContentLength > maxFileByteLength)
-				{
-					throw new FileLoadException("The file size must be less than 25mb.");
-				}
+                if (Request.Content.Headers.ContentLength > maxFileByteLength)
+                {
+                    throw new FileLoadException("The file size must be less than 25mb.");
+                }
 
 				//Save file
 				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");		
@@ -178,20 +175,20 @@ namespace Module.Frontend.TPM.Controllers
 
 		private void CreateRPAEventImportTask(string fileName, Guid rpaId)
         {
-			string importHandler = "FullXLSXRPAEventImportHandler";
+            string importHandler = "FullXLSXRPAEventImportHandler";
 
             Core.Security.Models.UserInfo user = authorizationManager.GetCurrentUser();
-			Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-			RoleInfo role = authorizationManager.GetCurrentRole();
-			Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-			HandlerData data = new HandlerData();
-			FileModel file = new FileModel()
-			{
-				LogicType = "Import",
-				Name = Path.GetFileName(fileName),
-				DisplayName = Path.GetFileName(fileName)
-			};
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
+            {
+                LogicType = "Import",
+                Name = Path.GetFileName(fileName),
+                DisplayName = Path.GetFileName(fileName)
+            };
 
 			HandlerDataHelper.SaveIncomingArgument("File", file, data, visible: false, throwIfNotExists: false);
 			HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
@@ -426,77 +423,77 @@ namespace Module.Frontend.TPM.Controllers
 			}
 		}
 
-		[ClaimsAuthorize]
-		public IHttpActionResult DownloadTemplateXLSX()
-		{
-			try
-			{
-				var currentRequest = HttpContext.Current.Request;
-				var handlerId = JsonConvert.DeserializeObject<string>(currentRequest.Params.Get("handlerId"));
-				Guid testId = Guid.Parse(handlerId);
-				RPASetting setting = Context.Set<RPASetting>()
-					.First(s => s.Id == testId);
-				var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
-				var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
-				XLSXExporter exporter = new XLSXExporter(columns);
-				string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-				string filename = string.Format("{0}Template_{1}.xlsx", "RPA", DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
-				if (!Directory.Exists(exportDir))
-				{
-					Directory.CreateDirectory(exportDir);
-				}
-				string filePath = Path.Combine(exportDir, filename);
-				exporter.Export(Enumerable.Empty<RPA>(), filePath);
-				string file = Path.GetFileName(filePath);
-				return Content(HttpStatusCode.OK, file);
-			}
-			catch (Exception e)
-			{
-				return Content(HttpStatusCode.InternalServerError, e.Message);
-			}
+        [ClaimsAuthorize]
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
+                var currentRequest = HttpContext.Current.Request;
+                var handlerId = JsonConvert.DeserializeObject<string>(currentRequest.Params.Get("handlerId"));
+                Guid testId = Guid.Parse(handlerId);
+                RPASetting setting = Context.Set<RPASetting>()
+                    .First(s => s.Id == testId);
+                var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
+                var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
+                XLSXExporter exporter = new XLSXExporter(columns);
+                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                string filename = string.Format("{0}Template_{1}.xlsx", "RPA", DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
+                if (!Directory.Exists(exportDir))
+                {
+                    Directory.CreateDirectory(exportDir);
+                }
+                string filePath = Path.Combine(exportDir, filename);
+                exporter.Export(Enumerable.Empty<RPA>(), filePath);
+                string file = Path.GetFileName(filePath);
+                return Content(HttpStatusCode.OK, file);
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
 
-		}
+        }
 
-		[ClaimsAuthorize]
-		[HttpGet]
-		[Route("odata/RPAs/DownloadFile")]
-		public HttpResponseMessage DownloadFile(string fileName)
-		{
-			try
-			{
-				string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-				string type = Core.Settings.AppSettingsManager.GetSetting("HANDLER_LOG_TYPE", "File");
-				HttpResponseMessage result;
-				switch (type)
-				{
-					case "File":
-						{
-							result = FileUtility.DownloadFile(directory, fileName);
-							break;
-						}
-					case "Azure":
-						{
-							result = FileUtility.DownloadFileAzure(directory, fileName);
-							break;
-						}
-					default:
-						{
-							result = FileUtility.DownloadFile(directory, fileName);
-							break;
-						}
-				}
-				return result;
-			}
-			catch (Exception)
-			{
-				return new HttpResponseMessage(HttpStatusCode.Accepted);
-			}
-		}
+        [ClaimsAuthorize]
+        [HttpGet]
+        [Route("odata/RPAs/DownloadFile")]
+        public HttpResponseMessage DownloadFile(string fileName)
+        {
+            try
+            {
+                string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
+                string type = Core.Settings.AppSettingsManager.GetSetting("HANDLER_LOG_TYPE", "File");
+                HttpResponseMessage result;
+                switch (type)
+                {
+                    case "File":
+                        {
+                            result = FileUtility.DownloadFile(directory, fileName);
+                            break;
+                        }
+                    case "Azure":
+                        {
+                            result = FileUtility.DownloadFileAzure(directory, fileName);
+                            break;
+                        }
+                    default:
+                        {
+                            result = FileUtility.DownloadFile(directory, fileName);
+                            break;
+                        }
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                return new HttpResponseMessage(HttpStatusCode.Accepted);
+            }
+        }
 
-		private ExceptionResult GetErorrRequest(Exception e)
-		{
-			return InternalServerError(e);
-		}
+        private ExceptionResult GetErorrRequest(Exception e)
+        {
+            return InternalServerError(GetExceptionMessage.GetInnerException(e));
+        }
 
-	}
+    }
 }
