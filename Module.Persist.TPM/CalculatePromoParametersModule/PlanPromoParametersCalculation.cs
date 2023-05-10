@@ -104,7 +104,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                                     promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW1 = promo.PromoPriceIncrease.PlanPromoBaselineVolume * clientTree.PostPromoEffectW1 / 100;
                                     promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW2 = promo.PromoPriceIncrease.PlanPromoBaselineVolume * clientTree.PostPromoEffectW2 / 100;
-                                    promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
+                                    promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolume = promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW1 + promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW2;
                                 }
                             }
 
