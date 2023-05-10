@@ -13,7 +13,7 @@ import datetime, time
 import os
 import json
 
-def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceListDF,planParamsBaselineDF,planParamsIncreaseBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols):
+def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceListDF,planParamsBaselineDF,planParamsIncreaseBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols,clientTreeDF,tiDF,ratiShopperDF,promoCols,brandTechDF):
     sc = SparkContext.getOrCreate();
     spark = SparkSession(sc)
     
@@ -249,7 +249,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     #  ---
 
     #####*Calculate plan product parameters*
-    #??
+    
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .join(planParamsCorrectionDF, planParamsCorrectionDF.correctionPromoProductPriceIncreaseId == calcPlanPromoProductDF.Id, 'left')\
       .select(\
@@ -348,10 +348,53 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
                                               .cast(DecimalType(30,6)))\
       .withColumn('PlanPromoBaselineVolume', when(calcPlanPromoDF.calcPlanProductBaselineVolume.isNull(), allCalcPlanPromoDF.PlanPromoBaselineVolume)\
                                              .otherwise(calcPlanPromoDF.calcPlanProductBaselineVolume).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoIncrementalVolume', (col('PlanPromoBaselineVolume') * col('PlanPromoUpliftPercent') / 100).cast(DecimalType(30,6)))\
       .drop('calcPlanPromoIncrementalLSV','calcPlanPromoBaselineLSV','calcPlanPromoLSV','calcPlanProductBaselineVolume')
-      
+    
+    
+    #activeClientTreeList = clientTreeDF.where(col('EndDate').isNull()).collect()
+#
+    #tiClientNullBtDF = tiDF\
+    #  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\
+    #  .select(\
+    #           tiDF.StartDate.alias('tiStartDate')
+    #          ,tiDF.EndDate.alias('tiEndDate')
+    #          ,tiDF.SizePercent
+    #          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')
+    #         )\
+    #  .withColumn('tibtName', lit(None).cast(StringType()))
+#
+    #tiClientNotNullBtDF = tiDF\
+    #  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\
+    #  .join(brandTechDF, brandTechDF.Id == tiDF.BrandTechId, 'inner')\
+    #  .select(\
+    #           tiDF.StartDate.alias('tiStartDate')
+    #          ,tiDF.EndDate.alias('tiEndDate')
+    #          ,tiDF.SizePercent
+    #          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')
+    #          ,brandTechDF.BrandsegTechsub.alias('tibtName')
+    #         )
+#
+    #tiClientList = tiClientNullBtDF.union(tiClientNotNullBtDF).collect()
+#
+    #ratiShopperList = ratiShopperDF.collect()
+#
+    #import COGS_TI_CALCULATION as cc
+#
+    #import RA_TI_SHOPPER_CALCULATION as ra
+#
+    #calcPlanPromoDF = calcPlanPromoDF\
+    #  .withColumn('calcTiPercent', lit(cc.getTiPercent(activeClientTreeList,tiClientList)(col('ClientTreeId'), col('promoBrandTechName'), col('StartDate'))))\
+    #  .withColumn('calcRaTiShopperPercent', lit(ra.getRaTiShopperPercent(activeClientTreeList,ratiShopperList)(col('ClientTreeKeyId'), col('BudgetYear'))))
+    #  
+    #
+    #calcPlanPromoDF = calcPlanPromoDF\
+    #  .withColumn('PlanTIBasePercent', when(~col('calcTiPercent').isin(*cc.logText), col('calcTiPercent')).otherwise(col('PlanTIBasePercent')))\
+    #  .withColumn('RATIShopperPercent', when(~col('calcRaTiShopperPercent').isin(*ra.raLogText), col('calcRaTiShopperPercent')).otherwise(0))
+    #
+    #
+    
     allCalcPlanPromoDF = allCalcPlanPromoDF\
+      .withColumn('PlanPromoTIShopper', (col('PlanPromoLSV') * col('MarsMechanicDiscount') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoCost', (isNullCheck(col('PlanPromoTIShopper')) + isNullCheck(col('PlanPromoTIMarketing')) + isNullCheck(col('PlanPromoBranding'))\
                                   + isNullCheck(col('PlanPromoBTL')) + isNullCheck(col('PlanPromoCostProduction'))).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoIncrementalBaseTI', (col('PlanPromoIncrementalLSV') * col('PlanTIBasePercent') / 100).cast(DecimalType(30,6)))\
@@ -410,6 +453,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
 
     # newPromoProductDF = calcPlanPromoProductDF.where(col('Action') == 'Added').select(promoProductCols)
     calcPlanPromoProductDF = calcPlanPromoProductDF.select(promoProductCols)
-    print('Plan product parameters calculation completed!')
+    calcPlanPromoDF = calcPlanPromoDF.select(promoCols)
+    print('PI Plan product parameters calculation completed!')
     
     return calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF
