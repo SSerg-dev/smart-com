@@ -202,8 +202,8 @@ namespace Module.Host.TPM.Handlers
 
                 foreach (PromoProduct promoProduct in promoProducts)
                 {
-                    promoProduct.ActualProductPostPromoEffectLSVW1 = (promo.PlanPromoPostPromoEffectLSVW1 ?? 0) * (promoProduct.ActualProductBaselineLSV ?? 0);
-                    promoProduct.ActualProductPostPromoEffectLSVW2 = (promo.PlanPromoPostPromoEffectLSVW2 ?? 0) * (promoProduct.ActualProductBaselineLSV ?? 0);
+                    promoProduct.ActualProductPostPromoEffectLSVW1 = promoProduct.PlanProductPostPromoEffectW1 * (promoProduct.ActualProductBaselineLSV ?? 0);
+                    promoProduct.ActualProductPostPromoEffectLSVW2 = promoProduct.PlanProductPostPromoEffectW2 * (promoProduct.ActualProductBaselineLSV ?? 0);
                     promoProduct.ActualProductPostPromoEffectLSV = promoProduct.ActualProductPostPromoEffectLSVW1 + promoProduct.ActualProductPostPromoEffectLSVW2;
                 }
 
