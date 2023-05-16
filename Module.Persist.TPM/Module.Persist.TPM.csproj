@@ -3447,6 +3447,10 @@
     <Compile Include="Migrations\202304160714421_BTL_Increment.Designer.cs">
       <DependentUpon>202304160714421_BTL_Increment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305160847345_Empty_After_Merge.cs" />
+    <Compile Include="Migrations\202305160847345_Empty_After_Merge.Designer.cs">
+      <DependentUpon>202305160847345_Empty_After_Merge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6488,6 +6492,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304160714421_BTL_Increment.resx">
       <DependentUpon>202304160714421_BTL_Increment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305160847345_Empty_After_Merge.resx">
+      <DependentUpon>202305160847345_Empty_After_Merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
