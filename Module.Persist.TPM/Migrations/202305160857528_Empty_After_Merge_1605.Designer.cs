@@ -7,13 +7,13 @@ namespace Module.Persist.TPM.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Empty_After_Merge : IMigrationMetadata
+    public sealed partial class Empty_After_Merge_1605 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Empty_After_Merge));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Empty_After_Merge_1605));
         
         string IMigrationMetadata.Id
         {
-            get { return "202305160847345_Empty_After_Merge"; }
+            get { return "202305160857528_Empty_After_Merge_1605"; }
         }
         
         string IMigrationMetadata.Source
