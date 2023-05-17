@@ -40,7 +40,7 @@
         glyph: 0xfa1c,
         rsMode: true,
         currentMode: true,
-        roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'],
+        roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager'],
         widget: 'userdashboard'
     },
     {

@@ -9,11 +9,11 @@ terraform {
   }
   backend "s3" {
     endpoint   = "storage.yandexcloud.net"
-    # bucket     = "smartcom-env-tf-bucket"
-    # region     = "ru-central1-b"
-    # key        = "tfstate/jupiter-app-dev.tfstate"
-    # access_key = "YCAJEnCKO2cIWZdGuKcp52l6M"
-    # secret_key = "YCMD_CQ5NvuQmY-WDvBlB1G7c2zeJKo8FPGfvoEF"
+    # bucket     = ""
+    # region     = ""
+    # key        = ""
+    # access_key = ""
+    # secret_key = ""
     skip_region_validation      = true
     skip_credentials_validation = true
   }
@@ -22,7 +22,7 @@ terraform {
 
 provider "yandex" {
   cloud_id  = var.cloud_id
-  service_account_key_file = "authorized_key.json"
+  service_account_key_file = var.deploy-sa-authkey
 }
 
 provider "helm" {
