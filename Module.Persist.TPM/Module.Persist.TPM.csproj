@@ -3502,6 +3502,10 @@
     <Compile Include="Migrations\202304250520316_empty250420231.designer.cs">
       <DependentUpon>202304250520316_empty250420231.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305170921255_Empty_ML_Dev_Merge.cs" />
+    <Compile Include="Migrations\202305170921255_Empty_ML_Dev_Merge.designer.cs">
+      <DependentUpon>202305170921255_Empty_ML_Dev_Merge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6585,6 +6589,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304250520316_empty250420231.resx">
       <DependentUpon>202304250520316_empty250420231.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305170921255_Empty_ML_Dev_Merge.resx">
+      <DependentUpon>202305170921255_Empty_ML_Dev_Merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
