@@ -264,7 +264,6 @@
     getAndSaveFormData: function () {
         var form = this.editor.down('editorform').getForm();
         record = form.getRecord();
-        debugger;
         //if (!form.isValid()) {
         //    return;
         //}

@@ -745,7 +745,7 @@
         cls: 'promo-action-button',
         hidden: true,
         isPromoAction: true,
-        roles: ['CMManager', 'DemandPlanning', 'DemandFinance', 'GAManager'],
+        roles: ['CMManager', 'DemandPlanning', 'GAManager'],
         statuses: ['OnApproval'],
         statusId: null,
         statusName: null,

@@ -213,35 +213,10 @@ namespace Module.Persist.TPM.PromoStateControl
                                 }
                                 break;
 
-                            case "DemandFinance":
+                            case "GAManager":
                                 if (promoModel.IsCMManagerApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue)
                                 {
-                                    promoModel.IsDemandFinanceApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value;
-                                    next = promoModel.IsGAManagerApproved.HasValue && promoModel.IsGAManagerApproved.Value;
-                                    if (!promoModel.IsGrowthAcceleration && !promoModel.IsInExchange)
-                                        next = promoModel.IsDemandFinanceApproved ?? false;
-                                    if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)
-                                    {
-
-                                        foreach (var incident in oldIncidents)
-                                        {
-                                            incident.ProcessDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                                        }
-                                        _stateContext.dbContext.Set<PromoOnApprovalIncident>().Add(new PromoOnApprovalIncident()
-                                        {
-                                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                                            PromoId = promoModel.Id,
-                                            Promo = promoModel,
-                                            ApprovingRole = "GAManager"
-                                        });
-                                    }
-                                }
-                                break;
-
-                            case "GAManager":
-                                if (promoModel.IsCMManagerApproved.HasValue && promoModel.IsDemandPlanningApproved.HasValue && promoModel.IsDemandFinanceApproved.HasValue)
-                                {
-                                    promoModel.IsGAManagerApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value && promoModel.IsDemandFinanceApproved.Value;
+                                    promoModel.IsGAManagerApproved = promoModel.IsCMManagerApproved.Value && promoModel.IsDemandPlanningApproved.Value;
                                     next = promoModel.IsGAManagerApproved.Value;
 
                                     if (promoModel.IsGrowthAcceleration || promoModel.IsInExchange)

@@ -27,18 +27,12 @@
 							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
 							  CASE   
 								 WHEN ((pr.IsCMManagerApproved = 0 OR pr.IsCMManagerApproved is NULL)
-									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Customer Marketing Manager'  
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)) THEN 'Customer Marketing Manager'  
 								 WHEN (pr.IsCMManagerApproved = 1
-									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Planning'  
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)) THEN 'Demand Planning'
 								 WHEN (pr.IsCMManagerApproved = 1
-									AND pr.IsDemandPlanningApproved = 1
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Finance'  
-								 WHEN (pr.IsCMManagerApproved = 1
-									AND pr.IsDemandPlanningApproved = 1
-									AND pr.IsDemandFinanceApproved = 1) THEN 'Growth Acceleration Manager'  
-								 ELSE ''  
+									AND pr.IsDemandPlanningApproved = 1) THEN 'Growth Acceleration Manager'  
+								 ELSE ''
 							  END,
 							  CASE   
 								 WHEN (pr.IsCMManagerApproved = 1

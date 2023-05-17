@@ -3551,6 +3551,10 @@
     <Compile Include="Migrations\202304280910520_Add_ActualProductPostPromoEffectLSVW12.designer.cs">
       <DependentUpon>202304280910520_Add_ActualProductPostPromoEffectLSVW12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305161028273_RemoveDF_PromoGridView.cs" />
+    <Compile Include="Migrations\202305161028273_RemoveDF_PromoGridView.designer.cs">
+      <DependentUpon>202305161028273_RemoveDF_PromoGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6675,6 +6679,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202304280910520_Add_ActualProductPostPromoEffectLSVW12.resx">
       <DependentUpon>202304280910520_Add_ActualProductPostPromoEffectLSVW12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305161028273_RemoveDF_PromoGridView.resx">
+      <DependentUpon>202305161028273_RemoveDF_PromoGridView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -96,10 +96,6 @@
 											onApprovalState = 'DemandPlanningGA';
 										if (promo.IsCMManagerApproved === true
 											&& promo.IsDemandPlanningApproved === true
-											&& (promo.IsDemandFinanceApproved === false || promo.IsDemandFinanceApproved === null))
-											onApprovalState = 'DemandFinanceGA';
-										if (promo.IsCMManagerApproved === true
-											&& promo.IsDemandPlanningApproved === true
 											&& promo.IsDemandFinanceApproved === true)
 											onApprovalState = 'GAManagerGA';
 									}

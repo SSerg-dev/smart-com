@@ -138,7 +138,6 @@
     },
 
     startEditRecord: function (model, grid) {
-        debugger;
         this.editor = grid.editorModel.createEditor({ title: l10n.ns('core').value('updateWindowTitle') });
         this.editor.grid = grid;
         if (this.editor.down('#edit') && this.editor.down('#close')) {
@@ -198,7 +197,6 @@
     },
 
     onEditButtonClick: function (button) {
-        debugger;
         this.editor.down('#ok').setVisible(true);
         this.editor.down('#canceledit').setVisible(true);
         this.editor.down('#edit').setVisible(false);

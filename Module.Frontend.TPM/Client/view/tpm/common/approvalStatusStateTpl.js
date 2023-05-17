@@ -212,20 +212,6 @@
 			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Planning</b></div>',
 		'</div>',
 
-		/* DF */
-		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("DemandFinanceGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
-			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "DemandFinanceGA")]}</div>',
-			'<div class="approval-status-state-onapproval-boxLine" style="{[this.getStatusColor(values.statusColors, "OnApproval")]}">',
-				'<b style="overflow:hidden;">On Approval</b>',
-				'<div class="approval-status-state-onapproval-arrow">',
-					'<svg height="10" width="10">',
-						'<polygon points="2.5,0 7.5,5 2.5,10" fill="#829cb8" stroke-width="0" />',
-					'</svg>',
-				'</div >',
-			'</div> ',
-			'<div id="onapproval-discription" class="approval-status-state-onapproval-boxDiscription" style="{[this.getOnApprovalDiscriptionBoxStyle(values.currentWidthRatio, values.currentHeightRatio)]}"><b>Demand Finance</b></div>',
-		'</div>',
-
 		/* GAM */
 		'<div class="approval-status-state-onapproval-box" style="{[this.getOnApprovalBoxStyle("GAManagerGA", values.currentWidthRatio, values.currentHeightRatio, true)]}">',
 			'<div class="approval-status-state-boxDate">{[this.getOnApprovalDate(values.statusHistory, values.status, "GAManagerGA")]}</div>',
@@ -324,15 +310,11 @@
 							break;
 						case 'GAManagerGA':
 							top += 260 * currentHeightRatio - 14;
-							left += 3 * boxWidth + 10 * 3;
+							left += 2 * boxWidth + 10 * 2;
 							break;
 						case 'DemandPlanningGA':
 							top += 260 * currentHeightRatio - 14;
 							left += boxWidth + 10;
-							break;
-						case 'DemandFinanceGA':
-							top += 260 * currentHeightRatio - 14;
-							left += 2 * boxWidth + 10 * 2;
 							break;
 						default:
 							break;
@@ -376,16 +358,12 @@
 						break;
 					case 'GAManagerGA':
 						top += 260 * currentHeightRatio - 14;
-						left += 3 * boxOffset;
+						left += 2 * boxOffset;
 						break;
 					case 'DemandPlanningGA':
 						top += 260 * currentHeightRatio - 14;
 						left += boxOffset;
 						//left += boxWidth - 130;
-						break;
-					case 'DemandFinanceGA':
-						top += 260 * currentHeightRatio - 14;
-						left += 2 * boxOffset;
 						break;
 				}
 				return 'left:' + left + 'px; top:' + top + 'px; width:' + boxWidth + 'px; height:' + boxHeight + 'px;';
@@ -587,18 +565,6 @@
 						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
 						for (var i = 0; i < statusHistory.length; i++) {
 							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Demand Planning') {
-								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
-								break;
-							}
-						}
-						return date;
-					}
-					//DF
-					if (boxRole === 'DemandFinanceGA'
-						&& promo.IsDemandFinanceApproved
-						&& statusesBeforeOnApproval.indexOf(currentStatus) == -1) {
-						for (var i = 0; i < statusHistory.length; i++) {
-							if (statusHistory[i].StatusName == "On Approval" && statusHistory[i].RoleName == 'Demand Finance') {
 								date = Ext.util.Format.date(statusHistory[i].Date, 'd.m.Y H:i');
 								break;
 							}

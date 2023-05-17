@@ -94,7 +94,6 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool isAvailable = true;
             bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
-            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             bool IsGAManagerApproved = promo.IsGAManagerApproved ?? false;
             if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
                 if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
@@ -120,11 +119,8 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                         case "DemandPlanning":
                             isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
                             break;
-                        case "DemandFinance":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
-                            break;
                         case "GAManager":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && IsDemandFinanceApproved && !IsGAManagerApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsGAManagerApproved;
                             break;
                     }
             }
@@ -140,7 +136,6 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool isAvailable = true;
             bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
-            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             bool IsGAManagerApproved = promo.IsGAManagerApproved ?? false;
             if (promo.PromoStatusSystemName == StateNames.ON_APPROVAL) {
                 if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
@@ -167,10 +162,10 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                             isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
                             break;
                         case "DemandFinance":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved;
                             break;
                         case "GAManager":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && IsDemandFinanceApproved && !IsGAManagerApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsGAManagerApproved;
                             break;
                     }
             }
