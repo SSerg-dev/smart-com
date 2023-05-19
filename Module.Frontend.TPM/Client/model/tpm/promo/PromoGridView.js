@@ -104,7 +104,8 @@
         { name: 'InvoiceNumber', type: 'string', hidden: false, isDefault: true },
         { name: 'IsPriceIncrease', type: 'boolean', hidden: false, isDefault: true },
         { name: 'MLPromoId', type: 'string', hidden: true, isDefault: true },
-        { name: 'IsOnHold', type: 'boolean', hidden: true, isDefault: false }
+        { name: 'IsOnHold', type: 'boolean', hidden: true, isDefault: false },
+        { name: 'IsChildGAMCritical', type: 'boolean', hidden: true, isDefault: false }
     ],
     proxy: {
         type: 'breeze',

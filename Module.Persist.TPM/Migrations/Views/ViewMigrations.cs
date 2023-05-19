@@ -10,9 +10,16 @@
             return SqlString.Replace("DefaultSchemaSetting", defaultSchema); ;
         }
         private static readonly string SqlString = @" 
-             ALTER VIEW [DefaultSchemaSetting].[PromoGridView]
+             ALTER VIEW [DefaultSchemaSetting].[PromoGridView] AS
+			 WITH
+				CriticalChildDay
+			AS
+			(
+				SELECT DATEADD(day, 16, GETDATE()) as Criticalday
+			),
+			PromoGridViewS
                 AS
-            SELECT pr.Id, pr.Name, pr.Number, pr.Disabled, pr.Mechanic, pr.CreatorId, pr.MechanicIA, pr.ClientTreeId, pr.ClientHierarchy, pr.MarsMechanicDiscount, pr.IsDemandFinanceApproved, pr.IsDemandPlanningApproved, pr.IsCMManagerApproved, pr.IsGAManagerApproved,
+            (SELECT pr.Id, pr.Name, pr.Number, pr.Disabled, pr.Mechanic, pr.CreatorId, pr.MechanicIA, pr.ClientTreeId, pr.ClientHierarchy, pr.MarsMechanicDiscount, pr.IsDemandFinanceApproved, pr.IsDemandPlanningApproved, pr.IsCMManagerApproved, pr.IsGAManagerApproved,
                               pr.PlanInstoreMechanicDiscount, pr.EndDate, pr.StartDate, pr.DispatchesEnd, pr.DispatchesStart, pr.MarsEndDate, pr.MarsStartDate, pr.MarsDispatchesEnd, pr.MarsDispatchesStart, pr.BudgetYear, bnd.Name AS BrandName, 
                               bt.BrandsegTechsub AS BrandTechName, ev.Name AS PromoEventName, ps.Name AS PromoStatusName, ps.Color AS PromoStatusColor, mmc.Name AS MarsMechanicName, mmt.Name AS MarsMechanicTypeName, 
                               pim.Name AS PlanInstoreMechanicName, ps.SystemName AS PromoStatusSystemName, pimt.Name AS PlanInstoreMechanicTypeName, pr.PlanPromoTIShopper, pr.PlanPromoTIMarketing, pr.PlanPromoXSites, pr.PlanPromoCatalogue, 
@@ -32,7 +39,7 @@
 									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)) THEN 'Demand Planning'
 								 WHEN (pr.IsCMManagerApproved = 1
 									AND pr.IsDemandPlanningApproved = 1) THEN 'Growth Acceleration Manager'  
-								 ELSE ''
+								 ELSE ''  
 							  END,
 							  CASE   
 								 WHEN (pr.IsCMManagerApproved = 1
@@ -47,6 +54,12 @@
 								 ELSE ''  
 							  END), 
 							  '') as WorkflowStep,
+							  IIF(ps.SystemName = 'OnApproval', 
+							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
+							  (SELECT CAST(CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS BIT)
+							  FROM DefaultSchemaSetting.Promo
+							  WHERE MasterPromoId = pr.Id AND DispatchesStart < (Select Criticalday From CriticalChildDay) AND Disabled = 0), CAST(0 AS BIT)), 
+							  CAST(0 AS BIT)) as IsChildGAMCritical,
 							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
@@ -57,7 +70,11 @@
                               DefaultSchemaSetting.Mechanic AS pim ON pr.PlanInstoreMechanicId = pim.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS pimt ON pr.PlanInstoreMechanicTypeId = pimt.Id LEFT OUTER JOIN
-                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id
+                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id)
+
+							  Select * FROM PromoGridViewS
+            
+			GO
             ";
 
         public static string GetPromoViewString(string defaultSchema)

@@ -786,15 +786,6 @@
                     property: "DispatchesStart", operation: "LessThan", value: date
                 },
                 {
-                    property: "IsCMManagerApproved", operation: "Equals", value: true
-                },
-                {
-                    property: "IsDemandPlanningApproved", operation: "Equals", value: true
-                },
-                {
-                    property: "IsDemandFinanceApproved", operation: "Equals", value: true
-                },
-                {
                     operator: "or",
                     rules: [
                         {
@@ -806,15 +797,7 @@
                     ]
                 },
                 {
-                    operator: "or",
-                    rules: [
-                        {
-                            property: "IsGAManagerApproved", operation: "Equals", value: null
-                        },
-                        {
-                            property: "IsGAManagerApproved", operation: "Equals", value: false
-                        }
-                    ]
+                    property: "WorkflowStep", operation: "Equals", value: 'Growth Acceleration Manager'
                 }
             ]
         };

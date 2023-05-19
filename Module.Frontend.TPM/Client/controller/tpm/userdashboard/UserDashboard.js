@@ -322,7 +322,7 @@
     getOnApporvalDemandPlanning: function () {
 
         var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
-        
+
         var filter = promoHelperController.getOnApprovalFilterDP();
         var widget = 'promo';
         var text = "On approval";
@@ -744,21 +744,25 @@
 
         date = Ext.Date.add(date, Ext.Date.HOUR, 48);
         var filter = {
-            operator: "and",
-            rules: [{
-                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            },
-            {
-                property: "DispatchesStart", operation: "LessThan", value: date
-            }, {
-                operator: "or",
-                rules: [{
-                    property: "IsGAManagerApproved", operation: "Equals", value: null
+            operator: "or",
+            rules: [
+                {
+                    operator: "and",
+                    rules: [
+                        {
+                            property: "PromoStatusName", operation: "Equals", value: 'On Approval'
+                        },
+                        {
+                            property: "DispatchesStart", operation: "LessThan", value: date
+                        },
+                        {
+                            property: "WorkflowStep", operation: "Equals", value: 'Growth Acceleration Manager'
+                        }
+                    ],
                 },
                 {
-                    property: "IsGAManagerApproved", operation: "Equals", value: false
-                }]
-            }
+                    property: "IsChildGAMCritical", operation: "Equals", value: true
+                }
             ]
         };
 

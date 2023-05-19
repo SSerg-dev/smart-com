@@ -83,9 +83,9 @@ namespace Module.Frontend.TPM.Util
             var promo = GetConstraintedQueryPromo(authorizationManager, Context);
             var promoSupport = GetConstraintedQueryPromoSupport(authorizationManager, Context);
             var nonPromoSupport = GetConstraintedQueryNonPromoSupport(authorizationManager, Context);
-            var calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
-            var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
-            var nowDateMinusDay = nowDate.AddDays(-1);
+            DateTimeOffset calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
+            DateTimeOffset nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset nowDateMinusDay = nowDate.AddDays(-1);
             //timecritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("Draft(published)") && p.StartDate < calculateDate) ||
             (p.PromoStatusName.Equals("On Approval") && p.DispatchesStart < calculateDate) ||
@@ -108,7 +108,7 @@ namespace Module.Frontend.TPM.Util
                 p.ActualPromoLSVByCompensation != null && p.ActualPromoLSVByCompensation != 0)))
                 .Count();
             //PromoTICost 
-            var dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
+            DateTimeOffset dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
             var promoTICost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
             //NonPromoTICost
             var nonPromoTICost = nonPromoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
@@ -118,8 +118,8 @@ namespace Module.Frontend.TPM.Util
         public static string GetDemandPlanningCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
             var promo = GetConstraintedQueryPromo(authorizationManager, Context);
-            var calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7d);
-            var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7d);
+            DateTimeOffset nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //timecritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && (p.IsDemandPlanningApproved == false || p.IsDemandPlanningApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //OnApporval
@@ -147,9 +147,9 @@ namespace Module.Frontend.TPM.Util
             var promo = GetConstraintedQueryPromo(authorizationManager, Context);
             var promoSupport = GetConstraintedQueryPromoSupport(authorizationManager, Context);
             var nonPromoSupport = GetConstraintedQueryNonPromoSupport(authorizationManager, Context);
-            var calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
-            var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
-            var nowDateMinusDay = nowDate.AddDays(-1);
+            DateTimeOffset calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
+            DateTimeOffset nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset nowDateMinusDay = nowDate.AddDays(-1);
             //TimeCritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsDemandFinanceApproved == false || p.IsDemandFinanceApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
@@ -160,7 +160,7 @@ namespace Module.Frontend.TPM.Util
             //ActualShopperTI
             var actualShopperTI = promo.Where(p => (p.PromoStatusName.Equals("Finished") && (p.ActualPromoTIShopper == 0 || p.ActualPromoTIShopper == null))).Count();
             //PromoTICost
-            var dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
+            DateTimeOffset dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
             var promoTICost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
             //NonPromoTICost
             var nonPromoTICost = nonPromoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
@@ -179,8 +179,8 @@ namespace Module.Frontend.TPM.Util
         {
             var promo = GetConstraintedQueryPromo(authorizationManager, Context);
             var nonPromoSupport = GetConstraintedQueryNonPromoSupport(authorizationManager, Context);
-            var calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
-            var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset calculateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
+            DateTimeOffset nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
             //TimeCritical
             var timeCritical = promo.Where(p => (p.PromoStatusName.Equals("On Approval") && (p.IsCMManagerApproved == false || p.IsCMManagerApproved == null) && p.DispatchesStart < calculateDate)).Count();
             //NeedsMyApproval
@@ -193,10 +193,10 @@ namespace Module.Frontend.TPM.Util
         {
             var promoSupport = GetConstraintedQueryPromoSupport(authorizationManager, Context);
             var promoBTLSupport = GetBTLConstraintedQuery(authorizationManager, Context);
-            var nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
-            var nowDateMinusDay = nowDate.AddDays(-1);
+            DateTimeOffset nowDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset nowDateMinusDay = nowDate.AddDays(-1);
             //ProductionCost
-            var dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
+            DateTimeOffset dayEnd = new DateTime(nowDateMinusDay.Year, nowDateMinusDay.Month, nowDateMinusDay.Day, 23, 59, 59);
             var productionCost = promoSupport.Where(p => (p.ActualCostTE == 0 || p.ActualCostTE == null) && p.EndDate <= dayEnd).Count();
             //BTLCost 
             var bTLCost = promoBTLSupport.Where(p => (p.ActualBTLTotal == 0 || p.ActualBTLTotal == null) && p.EndDate <= dayEnd).Count();
@@ -205,19 +205,27 @@ namespace Module.Frontend.TPM.Util
         }
         public static string GetGAManagerCount(IAuthorizationManager authorizationManager, DatabaseContext Context)
         {
-            var promoIds = GetConstraintedQueryPromo(authorizationManager, Context).Select(f => f.Id).ToList();
+            IQueryable<Guid> promoIds = GetConstraintedQueryPromo(authorizationManager, Context).Select(f => f.Id);
             IQueryable<Promo> promoes = Context.Set<Promo>().Where(g => promoIds.Contains(g.Id));
-            var calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddHours(48d);
-            var nowDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault();
+            DateTimeOffset MasterDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(2);
+            DateTimeOffset ChildDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(16);
             //TimeCritical
-            var inExchangeCritical = promoes.Where(x => x.MasterPromoId != null & x.DispatchesStart < calculateDate).Select(x => x.MasterPromoId).Distinct().ToList();
-            var timeCritical = promoes
-                .Where(p => !inExchangeCritical.Contains(p.Id) && (p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate) && (p.IsInExchange || p.IsGrowthAcceleration))
-                .Count() + inExchangeCritical.Count();
+            List<Guid> masterCritical = promoes.Where(p => p.PromoStatus.Name.Equals("On Approval") &&
+                (p.IsInExchange || p.IsGrowthAcceleration) &&
+                (p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null)) &&
+                p.DispatchesStart < MasterDate)
+                .Select(x => x.Id)
+                .ToList();
+            List<Guid> childCritical = promoes.Where(x => x.MasterPromoId != null & x.DispatchesStart < ChildDate).Select(x => (Guid)x.MasterPromoId).Distinct().ToList();
+            List<Guid> unionCritical = masterCritical.Union(childCritical).ToList();
             //GAapproval
-            calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
-            int gaApproval = promoes.Where(p => p.PromoStatus.Name.Equals("On Approval") && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null) && p.DispatchesStart < calculateDate && (p.IsInExchange || p.IsGrowthAcceleration)).Count();
-            return JsonConvert.SerializeObject(new { TimeCritical = timeCritical, GaApproval = gaApproval });
+            DateTimeOffset calculateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow).GetValueOrDefault().AddDays(7 * 9);
+            int gaApproval = promoes.Where(p => p.PromoStatus.Name.Equals("On Approval") &&
+                (p.IsInExchange || p.IsGrowthAcceleration) &&
+                (p.IsCMManagerApproved == true && p.IsDemandPlanningApproved == true && (p.IsGAManagerApproved == false || p.IsGAManagerApproved == null)) &&
+                p.DispatchesStart < calculateDate)
+                .Count();
+            return JsonConvert.SerializeObject(new { TimeCritical = unionCritical.Count, GaApproval = gaApproval });
         }
     }
 }
