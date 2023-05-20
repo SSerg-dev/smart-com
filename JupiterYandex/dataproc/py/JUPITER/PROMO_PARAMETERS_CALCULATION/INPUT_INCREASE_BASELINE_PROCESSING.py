@@ -94,14 +94,14 @@ baselineSchema = StructType([
     StructField("Id",StringType(),True),
 StructField("Disabled",BooleanType(),True),
 StructField("DeletedDate",TimestampType(),True),
-StructField("StartDate",DateType(),True),
-StructField("Type",IntegerType(),True),
 StructField("ProductId",StringType(),True),
-StructField("LastModifiedDate",TimestampType(),True),
 StructField("DemandCode",StringType(),True),
+StructField("StartDate",DateType(),True),
 StructField("InputBaselineQTY",DoubleType(),True),
 StructField("SellInBaselineQTY",DoubleType(),True),
 StructField("SellOutBaselineQTY",DoubleType(),True),
+StructField("Type",IntegerType(),True),
+StructField("LastModifiedDate",TimestampType(),True),
 StructField("NeedProcessing",BooleanType(),True),
 StructField("$QCCount",IntegerType(),True)])
 
