@@ -320,7 +320,7 @@ updatedBaselineDF=updatedBaselineDF\
 
 
 updatedBaselineDF\
-.select("Id","Disabled","DeletedDate","StartDate","Type""ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing","$QCCount")\
+.select("Id","Disabled","DeletedDate","StartDate","Type","ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing")\
 .repartition(1)\
 .write.csv(OUTPUT_UPDATEDBASELINE_PATH,
 sep="\u0001",
@@ -331,7 +331,7 @@ timestampFormat="yyyy-MM-dd HH:mm:ss"
 )
 
 newBaselineDF\
-.select("Id","Disabled","DeletedDate","StartDate","Type""ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing","$QCCount")\
+.select("Id","Disabled","DeletedDate","StartDate","Type","ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing")\
 .repartition(1)\
 .write.csv(OUTPUT_NEWBASELINE_PATH,
 sep="\u0001",
