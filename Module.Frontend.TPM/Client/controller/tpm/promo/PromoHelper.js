@@ -910,20 +910,20 @@
         var params = this.getParamsForMassApprove();
         if (params.end >= 0) {
             if (!params.store.data.hasRange(params.start, params.end)) {
-                params.store.on('guaranteedrange', this.onFullLoadedStore, this);
+                params.store.on('guaranteedrange', this.onSendForApprovalFullLoadedStore, this);
                 //Заставляем догрузить недостающие записи
                 params.store.getRange(params.start, params.end);
             } else {
-                this.onFullLoadedStore();
+                this.onSendForApprovalFullLoadedStore();
             }
         } else {
             window.setLoading(false);
             App.Notify.pushError("There is no promo to send for approval!");
         }
     },
-    onFullLoadedStore: function () {
+    onSendForApprovalFullLoadedStore: function () {
         var params = this.getParamsForMassApprove();
-        params.store.removeListener('guaranteedrange', this.onFullLoadedStore, this);
+        params.store.removeListener('guaranteedrange', this.onSendForApprovalFullLoadedStore, this);
         var records = params.store.getRange(params.start, params.end);
         var promoNumbers = "";
         records.forEach(function (el) {
