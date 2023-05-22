@@ -56,7 +56,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (!promoProduct.Price.HasValue || (promoProduct.Price.HasValue && promoProduct.Price.Value == 0))
                         {
-                            var priceLists = context.Set<PriceList>().Where(x => !x.Disabled && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart && x.ClientTreeId == promo.ClientTreeKeyId);
+                            var priceLists = context.Set<PriceList>().Where(x => !x.Disabled && !x.FuturePriceMarker && x.StartDate <= promo.DispatchesStart && x.EndDate >= promo.DispatchesStart && x.ClientTreeId == promo.ClientTreeKeyId);
                             var priceList = priceLists.Where(x => x.ProductId == promoProduct.ProductId).OrderByDescending(x => x.StartDate).FirstOrDefault();
                             var incrementalPromo = context.Set<IncrementalPromo>().Where(x => !x.Disabled && x.PromoId == promo.Id
                                                                                   && x.ProductId == promoProduct.ProductId).FirstOrDefault();
