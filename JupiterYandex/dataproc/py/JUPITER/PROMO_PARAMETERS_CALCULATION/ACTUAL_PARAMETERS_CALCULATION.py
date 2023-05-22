@@ -284,6 +284,7 @@ disabledPromoDF = promoDF.join(allCalcActualPromoIdsDF, 'Id', 'left_anti').selec
 # priceList
 actualParamsPriceListDF = priceListDF\
   .where(col('Disabled') == 'False')\
+  .where(col('FuturePriceMarker') == 'False')\
   .select(\
            to_date(col('StartDate'), 'yyyy-MM-dd').alias('priceStartDate')
           ,to_date(col('EndDate'), 'yyyy-MM-dd').alias('priceEndDate')

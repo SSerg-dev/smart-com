@@ -303,6 +303,7 @@ disabledPromoDF = promoDF.join(allCalcPlanPromoIdsDF, 'Id', 'left_anti').select(
 # priceList
 planParamsPriceListDF = priceListDF\
   .where(col('Disabled') == 'False')\
+  .where(col('FuturePriceMarker') == 'False')\
   .select(\
            col('StartDate').alias('priceStartDate')
           ,col('EndDate').alias('priceEndDate')
