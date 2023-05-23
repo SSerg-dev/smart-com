@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-01-23_manual__2023-01-23T09%3A46%3A57.141854%2B00%3A00_", '
- '"ProcessDate": "2023-01-23", "Schema": "Jupiter", "HandlerId": '
- '"6c143ff4-3d0f-4181-a4ce-ce20b9265a31"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-09", "Schema": "Jupiter", "HandlerId": '
+ '"f18a98f9-3b2e-449a-ba96-e247d63d5b7c"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -155,7 +155,7 @@ promoDF = spark.read.format("parquet").load(PROMO_PATH)
 promoSupportPromoDF = spark.read.format("parquet").load(PROMOSUPPORTPROMO_PATH)
 promoProductDF = spark.read.format("parquet").load(PROMOPRODUCT_PATH)
 
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=schemas_map["PromoStatus"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 inputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\

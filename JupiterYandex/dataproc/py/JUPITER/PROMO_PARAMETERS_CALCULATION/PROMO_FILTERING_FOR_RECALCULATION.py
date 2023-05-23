@@ -137,7 +137,7 @@ promoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep="\u0001",header=Tr
 changesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep="\u0001",header=True,schema=schemas_map["ChangesIncident"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 productChangeIncidentsDF = spark.read.csv(PRODUCTCHANGEINCIDENTS_PATH,sep="\u0001",header=True,schema=schemas_map["ProductChangeIncident"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 assortmentMatrixDF = spark.read.csv(ASSORTMENTMATRIX_PATH,sep="\u0001",header=True,schema=schemas_map["AssortmentMatrix"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 baselineDF = spark.read.csv(BASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 increaseBaselineDF = spark.read.csv(INCREASEBASELINE_PATH,sep="\u0001",header=True,schema=schemas_map["BaseLine"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTreeBrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
