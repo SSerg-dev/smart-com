@@ -24,6 +24,10 @@
             cls: 'promo-support-type-client-tree-search-field',
             fieldLabel: l10n.ns('tpm', 'PromoSupport').value('ClientTreeFullPathName'),
             selectorWidget: 'clienttree',
+            selectorWidgetConfig: {
+                needLoadTree: true,
+                needBaseClients: true
+            },
             valueField: 'Id',
             displayField: 'FullPathName',
             labelSeparator: '',
