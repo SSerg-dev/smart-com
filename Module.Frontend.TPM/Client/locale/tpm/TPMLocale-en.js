@@ -2414,11 +2414,11 @@
         'BTL': 'BTL',
         'Finance': 'Finance',
 
-        'IncrementalNSV': 'Incremental NSV',
-        'IncrementalLSV': 'Incremental LSV',
-        'PromoNSV': 'Promo NSV',
-        'Earnings': 'Earnings',
-        'ROI': 'ROI',
+        'IncrementalNSV': 'Net Incremental NSV',
+        'IncrementalLSV': 'Net Incremental LSV',
+        'PromoNSV': 'Promo Net NSV',
+        'Earnings': 'Net Earnings',
+        'ROI': 'Net ROI',
 
         'Plan': 'Plan',
         'Actual': 'Actual',
