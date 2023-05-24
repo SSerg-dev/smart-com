@@ -219,8 +219,6 @@
         { name: 'PromoClientDemandCode', type: 'string', mapping: 'ClientTree.DemandCode', defaultFilterConfig: { valueField: 'DemandCode' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
         { name: 'PromoClientIsBaseClient', type: 'string', mapping: 'ClientTree.IsBaseClient', defaultFilterConfig: { valueField: 'IsBaseClient' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
         { name: 'PromoClientRetailTypeName', type: 'string', mapping: 'ClientTree.RetailTypeName', defaultFilterConfig: { valueField: 'RetailTypeName' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
-        { name: 'PromoClientPPEW1', type: 'string', mapping: 'ClientTree.PostPromoEffectW1', defaultFilterConfig: { valueField: 'PostPromoEffectW1' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
-        { name: 'PromoClientPPEW2', type: 'string', mapping: 'ClientTree.PostPromoEffectW2', defaultFilterConfig: { valueField: 'PostPromoEffectW2' }, /*breezeEntityType: 'ClientTree',*/ hidden: false, isDefault: false },
 
         // привет ExtJS, Odata и Breeze за удобную работу с моделями
         // на самом деле это объект в формате JSON

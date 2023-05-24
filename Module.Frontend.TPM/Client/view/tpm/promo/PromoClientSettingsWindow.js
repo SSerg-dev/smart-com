@@ -217,8 +217,6 @@
         this.down('[name=IsBaseClient]').setValue(record.IsBaseClient);
         this.down('[name=RetailTypeName]').setValue(record.RetailTypeName);
         this.down('[name=DistrMarkUp]').setValue(record.DistrMarkUp);
-        this.down('[name=PostPromoEffectW1]').setValue(record.PostPromoEffectW1);
-        this.down('[name=PostPromoEffectW2]').setValue(record.PostPromoEffectW2);
 
         this.down('[name=IsBeforeStart]').setValue(record.IsBeforeStart);
         this.down('[name=DaysStart]').setValue(record.DaysStart);

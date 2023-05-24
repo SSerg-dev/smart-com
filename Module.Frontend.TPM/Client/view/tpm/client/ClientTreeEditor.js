@@ -176,26 +176,6 @@
         }, {
             xtype: 'dispatchdate',
             itemId: 'dispatchClientTreeEditor'
-        }, {
-            xtype: 'numberfield',
-            fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW1'),
-            name: 'PostPromoEffectW1',
-            allowBlank: true,
-            allowDecimals: true,
-            allowOnlyWhitespace: true,
-            allowExponential: false,
-            maxValue: 100000,
-            minValue: -100000,
-        }, {
-            xtype: 'numberfield',
-            fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW2'),
-            name: 'PostPromoEffectW2',
-            allowBlank: true,
-            allowDecimals: true,
-            allowOnlyWhitespace: true,
-            allowExponential: false,
-            maxValue: 100000,
-            minValue: -100000,
         }]
     }
 });
