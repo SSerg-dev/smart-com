@@ -14,7 +14,7 @@ stages:
   - job:
     steps:
     - bash: |
-        echo "Agent Name: $(AgentName)"
+        echo "Agent Name: $(Agent.Name)"
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -47,7 +47,7 @@ stages:
   - job:
     steps:
     - bash: |
-        echo "Agent Name: $(AgentName)"
+        echo "Agent Name: $(Agent.Name)"
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -81,7 +81,7 @@ stages:
       # demands: Agent.Name -equals $(AgentName2)   
       demands:
       #ok - agent.name -equals svv-ubds05-a02
-      - agent.name -equals $(AgentName)
+      - agent.name -equals $(Agent.Name)
 
 - stage: Destroy
   dependsOn: [Plan]
