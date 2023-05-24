@@ -12,9 +12,9 @@ resource "helm_release" "s3-storageClass" {
   namespace        = "airflow"
   create_namespace = true
   name             = "csi-s3"
-  #repository       = "https://github.com/yandex-cloud/k8s-csi-s3"
-  #chart            = "csi-s3"
-  chart            = "./s3/deploy/helm"
+  chart            = "csi-s3"
+  repository       = "oci://cr.yandex/yc-marketplace/yandex-cloud/csi-s3"
+  version          = "0.31.8"
   wait             = true
   depends_on = [
     yandex_kubernetes_node_group.k8s-nodes,

@@ -2,6 +2,10 @@ variable "cloud_id" {
     description = "Cloud ID"
 }
 
+variable "deploy-sa-authkey" {
+    description = "YC Authorized key"
+}
+
 variable "folder" {
     description = "YC Folder name"
 }

@@ -120,7 +120,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                                 promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW1 = sumPlanProductPostPromoEffectVolumeW1PI;
                                 promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW2 = sumPlanProductPostPromoEffectVolumeW2PI;
-                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolume = promo.PlanPromoPostPromoEffectVolumeW1 + promo.PlanPromoPostPromoEffectVolumeW2;
+                                promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolume = promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW1 + promo.PromoPriceIncrease.PlanPromoPostPromoEffectVolumeW2;
                             }
                         }
 

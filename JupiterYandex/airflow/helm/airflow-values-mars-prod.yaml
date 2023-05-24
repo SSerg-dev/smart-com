@@ -8,7 +8,7 @@ images:
     pullPolicy: IfNotPresent
     # pullPolicy: Always
     repository: cr.yandex/crprq8b1pf7g7nji0jpl/yac-cr-prd-tpm-jupiter-00001
-    tag: airflow-jupiter-prod
+    tag: airflow-jupiter-prod-v1.0.0
 loadExamples: false
 rbac.create: true
 redis.enabled: false

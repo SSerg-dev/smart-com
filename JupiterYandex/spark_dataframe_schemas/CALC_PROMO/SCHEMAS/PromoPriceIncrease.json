@@ -59,6 +59,293 @@
     {
       "metadata": {
       },
+      "name": "PlanPromoPostPromoEffectLSVW1",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoPostPromoEffectLSVW2",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoPostPromoEffectVolumeW1",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoPostPromoEffectVolumeW2",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoPostPromoEffectVolume",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoBaselineVolume",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoTIShopper",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoCost",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalCOGS",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoBaseTI",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalBaseTI",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoTotalCost",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalBaseTI",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalCOGS",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetBaseTI",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoBaselineBaseTI",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalNSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalNSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalMAC",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalVolume",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalVolume",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetNSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalCOGSTn",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalCOGSTn",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalMAC",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalEarnings",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalEarnings",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoROIPercent",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetROIPercent",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalMACLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalMACLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoIncrementalEarningsLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetIncrementalEarningsLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoROIPercentLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetROIPercentLSV",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanAddTIShopperCalculated",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanAddTIShopperApproved",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNetUpliftPercent",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
       "name": "#QCCount",
       "nullable": true,
       "type": "integer"

@@ -70,12 +70,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     .Where(x => x.PromoId == promoId)
                     .ToList();
                 var incrementalPromoes = context.Set<IncrementalPromo>().Where(x => x.PromoId == promoId).ToList();
-                var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled);
+                var promoProductsNotDisabled = promoProducts.Where(x => !x.Disabled).ToList();
 
-                if (promo.PromoPriceIncrease.PromoProductPriceIncreases == null)
+                if (promoProductsNotDisabled.Count > 0)
                 {
-                    FillPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList());
-                }                
+                    if (promo.PromoPriceIncrease.PromoProductPriceIncreases == null || promo.PromoPriceIncrease.PromoProductPriceIncreases.Count == 0)
+                    {
+                        FillPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList());
+                    }
+                }
 
                 foreach (PromoProduct promoProduct in promoProductsNotDisabled)
                 {
@@ -84,6 +87,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (changedProducts.Contains(promoProduct.ZREP) && createIncidents)
                         {
                             deletedZREPs.Add(promoProduct.ZREP);
+                        }
+                        // удаляем старый promoProduct если есть из базы
+                        if (promoProducts.Where(g => g.Disabled).Any(g => g.ZREP == promoProduct.ZREP))
+                        {
+                            PromoProduct promoProductDelete = promoProducts.FirstOrDefault(g => g.Disabled && g.ZREP == promoProduct.ZREP);
+                            context.Set<PromoProduct>().Remove(promoProductDelete);
                         }
                         promoProduct.Disabled = true;
                         promoProduct.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
@@ -95,6 +104,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (!resultProductList.Any(x => x.ZREP == promoProduct.ZREP))
                         {
                             PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.ZREP == promoProduct.ZREP && !g.Disabled);
+                            // удаляем старый promoProductPriceIncrease если есть из базы
+                            if (promo.PromoPriceIncrease.PromoProductPriceIncreases.Where(g => g.Disabled).Any(g => g.ZREP == promoProductPriceIncrease.ZREP))
+                            {
+                                PromoProductPriceIncrease promoProductPIDelete = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.Disabled && g.ZREP == promoProductPriceIncrease.ZREP);
+                                context.Set<PromoProductPriceIncrease>().Remove(promoProductPIDelete);
+                            }
                             promoProductPriceIncrease.Disabled = true;
                             promoProductPriceIncrease.DeletedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
                         }
@@ -106,30 +121,26 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     foreach (Product product in resultProductList)
                     {
-                        //product.PromoProducts = new List<PromoProduct>();
-                        //product.IncrementalPromoes = new List<IncrementalPromo>();
+                        if (changedProducts.Contains(product.ZREP) && createIncidents)
+                        {
+                            addedZREPs.Add(product.ZREP);
+                        }
                         PromoProduct promoProduct = promoProducts.FirstOrDefault(x => x.ZREP == product.ZREP);
                         if (promoProduct != null && promoProduct.Disabled)
                         {
-                            if (changedProducts.Contains(product.ZREP) && createIncidents)
+                            if (!promoProducts.Where(g => !g.Disabled).Any(g => g.ZREP == promoProduct.ZREP))
                             {
-                                addedZREPs.Add(product.ZREP);
-                            }
-
-                            promoProduct.Disabled = false;
-                            promoProduct.DeletedDate = null;
-                            needReturnToOnApprovalStatus = true;
-                            // PriceIncrease
-                            PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
-                            promoProductPriceIncrease.Disabled = false;
-                            promoProductPriceIncrease.DeletedDate = null;
+                                promoProduct.Disabled = false;
+                                promoProduct.DeletedDate = null;
+                                needReturnToOnApprovalStatus = true;
+                                // PriceIncrease
+                                PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
+                                promoProductPriceIncrease.Disabled = false;
+                                promoProductPriceIncrease.DeletedDate = null;
+                            }                            
                         }
                         else if (promoProduct == null)
                         {
-                            if (changedProducts.Contains(product.ZREP) && createIncidents)
-                            {
-                                addedZREPs.Add(product.ZREP);
-                            }
                             var newPromoProduct = new PromoProduct
                             {
                                 PromoId = promoId,
