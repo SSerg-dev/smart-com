@@ -14,6 +14,8 @@ stages:
   - job:
     steps:
     - bash: |
+        echo "Agent Name: $(AgentName)"
+    - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
         echo $(tfYcAuthKey) > authorized_key.json
@@ -45,6 +47,8 @@ stages:
   - job:
     steps:
     - bash: |
+        echo "Agent Name: $(AgentName)"
+    - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
         echo $(tfYcAuthKey) > authorized_key.json
@@ -72,6 +76,12 @@ stages:
         rm -rf deployment*.tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: ls
+    pool:
+      name: SMARTCOM_UBDS05
+      # demands: Agent.Name -equals $(AgentName2)   
+      demands:
+      #ok - agent.name -equals svv-ubds05-a02
+      - agent.name -equals $(AgentName)
 
 - stage: Destroy
   dependsOn: [Plan]
