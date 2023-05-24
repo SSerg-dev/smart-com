@@ -47,10 +47,10 @@ stages:
 - stage: Apply
   dependsOn: [Plan]
   condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
-  variables:
-    AgentName2: $(AgentName)
   jobs:
   - job:
+    variables:
+      AgentName2: $(AgentName) 
     steps:
     - bash: |
         echo "Agent Name: $(Agent.Name)"
