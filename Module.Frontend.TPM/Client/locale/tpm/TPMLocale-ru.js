@@ -1012,8 +1012,6 @@
         'GHierarchyCode': 'G-Hierarchy code',
         'DemandCode': 'Demand Code',
         'IsBaseClient': 'Base client',
-        'PostPromoEffectW1': 'Post Promo Effect W1',
-        'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
         'FullPathName': 'Full PathName'
     },

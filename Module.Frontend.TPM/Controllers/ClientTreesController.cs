@@ -1173,8 +1173,6 @@ namespace Module.Frontend.TPM.Controllers
         public bool? IsBeforeEnd { get; set; }
         public int? DaysEnd { get; set; }
         public bool? IsDaysEnd { get; set; }
-        public double? PostPromoEffectW1 { get; set; }
-        public double? PostPromoEffectW2 { get; set; }
         public double? DistrMarkUp { get; set; }
         public string SFAClientCode { get; set; }
         public double? DeviationCoefficient { get; set; }
