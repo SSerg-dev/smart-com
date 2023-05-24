@@ -3559,6 +3559,10 @@
     <Compile Include="Migrations\202305181258459_Add_IsChildGAMCritical.designer.cs">
       <DependentUpon>202305181258459_Add_IsChildGAMCritical.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305240725265_EmptyM24052023.cs" />
+    <Compile Include="Migrations\202305240725265_EmptyM24052023.designer.cs">
+      <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6689,6 +6693,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305181258459_Add_IsChildGAMCritical.resx">
       <DependentUpon>202305181258459_Add_IsChildGAMCritical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305240725265_EmptyM24052023.resx">
+      <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
