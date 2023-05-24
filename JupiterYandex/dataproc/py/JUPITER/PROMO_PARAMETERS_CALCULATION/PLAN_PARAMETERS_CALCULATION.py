@@ -60,9 +60,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-05-08_scheduled__2023-05-06T21%3A20%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-05-08", "Schema": "Jupiter", "HandlerId": '
- '"4b0ce3be-fe07-4284-9bc4-8344f8da03fa"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-05-22_scheduled__2023-05-21T21%3A20%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-05-22", "Schema": "Jupiter", "HandlerId": '
+ '"cf12e425-5dd6-4130-9bc6-20e115c75c22"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -164,7 +164,7 @@ INPUT_FILE_LOG_PATH = es.SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'
 SCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'
 schemas_map = sp.getSchemasMap(SCHEMAS_DIR)
 
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
 .withColumn("IsLSVBased",col("IsLSVBased").cast(BooleanType()))\
@@ -303,6 +303,7 @@ disabledPromoDF = promoDF.join(allCalcPlanPromoIdsDF, 'Id', 'left_anti').select(
 # priceList
 planParamsPriceListDF = priceListDF\
   .where(col('Disabled') == 'False')\
+  .where(col('FuturePriceMarker') == 'False')\
   .select(\
            col('StartDate').alias('priceStartDate')
           ,col('EndDate').alias('priceEndDate')
@@ -310,6 +311,7 @@ planParamsPriceListDF = priceListDF\
           ,col('Price').cast(DecimalType(30,6))
           ,col('ClientTreeId').alias('priceClientTreeId')
          )
+         
 
 # future priceList 
 planParamsFuturePriceListDF = priceListDF\

@@ -50,6 +50,12 @@
     },
     {
       "metadata": {},
+      "name": "ModifiedDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {},
       "name": "FuturePriceMarker",
       "nullable": true,
       "type": "integer"
