@@ -94,14 +94,14 @@ baselineSchema = StructType([
     StructField("Id",StringType(),True),
 StructField("Disabled",BooleanType(),True),
 StructField("DeletedDate",TimestampType(),True),
-StructField("StartDate",DateType(),True),
-StructField("Type",IntegerType(),True),
 StructField("ProductId",StringType(),True),
-StructField("LastModifiedDate",TimestampType(),True),
 StructField("DemandCode",StringType(),True),
+StructField("StartDate",DateType(),True),
 StructField("InputBaselineQTY",DoubleType(),True),
 StructField("SellInBaselineQTY",DoubleType(),True),
 StructField("SellOutBaselineQTY",DoubleType(),True),
+StructField("Type",IntegerType(),True),
+StructField("LastModifiedDate",TimestampType(),True),
 StructField("NeedProcessing",BooleanType(),True),
 StructField("$QCCount",IntegerType(),True)])
 
@@ -320,6 +320,7 @@ updatedBaselineDF=updatedBaselineDF\
 
 
 updatedBaselineDF\
+.select("Id","Disabled","DeletedDate","StartDate","Type","ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing")\
 .repartition(1)\
 .write.csv(OUTPUT_UPDATEDBASELINE_PATH,
 sep="\u0001",
@@ -330,6 +331,7 @@ timestampFormat="yyyy-MM-dd HH:mm:ss"
 )
 
 newBaselineDF\
+.select("Id","Disabled","DeletedDate","StartDate","Type","ProductId","LastModifiedDate","DemandCode","InputBaselineQTY","SellInBaselineQTY","SellOutBaselineQTY","NeedProcessing")\
 .repartition(1)\
 .write.csv(OUTPUT_NEWBASELINE_PATH,
 sep="\u0001",

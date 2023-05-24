@@ -182,7 +182,7 @@ with DAG(
     
     trigger_jupiter_update_baseline = TriggerDagRunOperator(
         task_id="trigger_jupiter_update_baseline",
-        trigger_dag_id="jupiter_update_baseline",  
+        trigger_dag_id="jupiter_update_increase_baseline",  
         conf='{{ti.xcom_pull(task_ids="create_child_dag_config")}}',
         wait_for_completion = True,
     )

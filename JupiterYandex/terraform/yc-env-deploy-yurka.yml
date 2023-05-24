@@ -1,0 +1,45 @@
+name: $(tfProjectName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger:
+ paths:
+   include:
+     - 'JupiterYandex/terraform/*'
+ branches:
+   include:
+    - develop
+
+variables:
+  AgentName: $(Agent.Name)
+
+stages:
+- stage: Plan
+  jobs:
+  - job: PlanJob
+    steps:
+
+    - bash: |
+        echo "Agent Name: $(AgentName)"
+        # echo "Agent Name: $(Agent.Name)"
+        # echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(Agent.Name)"
+      name: passOutput
+
+- stage: Apply
+  dependsOn: [Plan]
+  # condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
+  jobs:
+  - job: Apply
+    variables:
+      #bad AgentName: $[ stageDependencies.Plan.PlanJob.outputs['passOutput.AgentName'] ]
+      # AgentName: $[ dependencies.Plan.outputs['PlanJob.passOutput.AgentName'] ]
+      AgentName2: $(AgentName)
+    pool:
+      name: SMARTCOM_UBDS05
+      # demands: Agent.Name -equals $(AgentName2)   
+      demands:
+      #ok - agent.name -equals svv-ubds05-a02
+      - agent.name -equals $(AgentName2)
+    steps:
+    - bash: |
+        echo "Agent Name: $(AgentName)"
+        echo "Agent Name 2: $(AgentName2)"
+

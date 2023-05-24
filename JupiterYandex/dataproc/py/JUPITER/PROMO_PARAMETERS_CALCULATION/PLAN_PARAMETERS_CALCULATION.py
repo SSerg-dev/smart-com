@@ -60,9 +60,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T12%3A33%3A06.749342%2B00%3A00_", '
- '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
- '"946668af-13b9-426a-a943-266c4cec5ae9"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-05-22_scheduled__2023-05-21T21%3A20%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-05-22", "Schema": "Jupiter", "HandlerId": '
+ '"cf12e425-5dd6-4130-9bc6-20e115c75c22"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -164,7 +164,7 @@ INPUT_FILE_LOG_PATH = es.SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'
 SCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'
 schemas_map = sp.getSchemasMap(SCHEMAS_DIR)
 
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
 .withColumn("IsLSVBased",col("IsLSVBased").cast(BooleanType()))\
@@ -278,6 +278,7 @@ filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
 # promoProduct
 promoProductCols = promoProductDF.columns
 increasePromoProductCols = promoProductPriceIncreaseDF.columns
+increasePromoCols = promoPriceIncreaseDF.columns
 allCalcPlanPromoProductDF = promoProductDF.where(col('Disabled') == 'False')
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
@@ -302,6 +303,7 @@ disabledPromoDF = promoDF.join(allCalcPlanPromoIdsDF, 'Id', 'left_anti').select(
 # priceList
 planParamsPriceListDF = priceListDF\
   .where(col('Disabled') == 'False')\
+  .where(col('FuturePriceMarker') == 'False')\
   .select(\
            col('StartDate').alias('priceStartDate')
           ,col('EndDate').alias('priceEndDate')
@@ -309,6 +311,7 @@ planParamsPriceListDF = priceListDF\
           ,col('Price').cast(DecimalType(30,6))
           ,col('ClientTreeId').alias('priceClientTreeId')
          )
+         
 
 # future priceList 
 planParamsFuturePriceListDF = priceListDF\
@@ -674,22 +677,6 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
 calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
 
-calcIncreasePlanPromoProductDF.show()
-
-calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
-  .join(calcPlanPromoDF, calcPromoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'inner')\
-  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id)\
-  .select(\
-           calcPromoPriceIncreaseDF['*']
-          ,calcPlanPromoDF.Number
-          ,calcPlanPromoDF.promoClientPostPromoEffectW1
-          ,calcPlanPromoDF.promoClientPostPromoEffectW2
-         )
-
-
-import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
-calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols)
-
 ####*Promo support calculation*
 
 @udf
@@ -774,6 +761,41 @@ calcPlanPromoDF = calcPlanPromoDF\
 
 import PLAN_PROMO_PARAMS_CALCULATION_PROCESS as plan_promo_params_calculation_process
 calcPlanPromoDF,logCOGS,logTI= plan_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanPromoDF,promoDF)
+
+
+
+
+calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
+  .join(calcPlanPromoDF, calcPromoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'inner')\
+  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id)\
+  .select(\
+           calcPromoPriceIncreaseDF['*']
+          ,calcPlanPromoDF.Number
+          ,calcPlanPromoDF.promoClientPostPromoEffectW1
+          ,calcPlanPromoDF.promoClientPostPromoEffectW2
+          ,calcPlanPromoDF.ClientTreeKeyId
+          ,calcPlanPromoDF.ClientTreeId
+          ,calcPlanPromoDF.StartDate
+          ,calcPlanPromoDF.DispatchesStart
+          ,calcPlanPromoDF.BudgetYear
+          ,calcPlanPromoDF.PlanPromoTIMarketing
+          ,calcPlanPromoDF.PlanPromoBranding
+          ,calcPlanPromoDF.PlanPromoBTL
+          ,calcPlanPromoDF.PlanPromoCostProduction
+          ,calcPlanPromoDF.PlanCOGSTn
+          ,calcPlanPromoDF.PlanCOGSPercent
+          ,calcPlanPromoDF.promoBrandTechName
+          ,calcPlanPromoDF.MarsMechanicDiscount
+          ,calcPlanPromoDF.PlanTIBasePercent
+          ,calcPlanPromoDF.RATIShopperPercent
+          ,calcPlanPromoDF.LastApprovedDate
+         )
+
+print(calcPlanPromoDF.schema)
+
+
+import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
+calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols,clientTreeDF,tiDF,ratiShopperDF,increasePromoCols,brandTechDF)
 
 ####*Result*
 
