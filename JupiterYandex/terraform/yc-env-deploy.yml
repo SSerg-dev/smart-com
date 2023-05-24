@@ -8,13 +8,17 @@ trigger:
    include:
     - develop
 
+variables:
+  AgentName: $(Agent.Name)
+
 stages:
 - stage: Plan
   jobs:
   - job:
     steps:
     - bash: |
-        echo "Agent Name: $(Agent.Name)"
+        echo "Agent Name: $(AgentName)"
+      displayName: Agent Name
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -43,11 +47,14 @@ stages:
 - stage: Apply
   dependsOn: [Plan]
   condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
+  variables:
+    AgentName2: $(AgentName)
   jobs:
   - job:
     steps:
     - bash: |
         echo "Agent Name: $(Agent.Name)"
+        echo "Agent Name 2: $(AgentName2)"
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -78,10 +85,8 @@ stages:
       displayName: ls
     pool:
       name: SMARTCOM_UBDS05
-      # demands: Agent.Name -equals $(AgentName2)   
       demands:
-      #ok - agent.name -equals svv-ubds05-a02
-      - agent.name -equals $(Agent.Name)
+      - agent.name -equals $(Agent.Name2)
 
 - stage: Destroy
   dependsOn: [Plan]
