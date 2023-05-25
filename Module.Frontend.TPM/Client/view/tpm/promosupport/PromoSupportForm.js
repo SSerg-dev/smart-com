@@ -109,8 +109,9 @@
                         margin: '0 5 0 5',
                         xtype: 'textfield',
                         name: 'InvoiceNumber',
-                        regex: /^[0-9]*[0-9]$/,
+                        regex: /^([0-9a-zA-ZА-Яа-я]{4,}([,][ ]?))*[0-9a-zA-ZА-Яа-я]{4,}$/,
                         regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
+                        maxLength: 50
                     }]
                 }]
             }, {
