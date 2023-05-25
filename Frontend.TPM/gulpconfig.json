@@ -55,7 +55,7 @@
     "../Frontend.TPM/Client/ext/ext-all-debug.js",
     "../Module.Frontend.TPM/Sch/sch-all-debug.js",
     "../Module.Frontend.TPM/Sch/Notification.js",
-    "Scripts/jquery.signalR-2.4.1.min.js"
+    "Scripts/jquery.signalR-2.4.3.min.js"
   ],
   "appFiles": [
     "../Frontend.TPM/Client/ext/locale/ext-lang-TPM-en.js",
