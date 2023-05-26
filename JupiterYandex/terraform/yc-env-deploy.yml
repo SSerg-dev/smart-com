@@ -18,32 +18,29 @@ stages:
   - job:
     steps:
     - bash: |
+        yc config profile delete sa-terraform
+        yc config profile create sa-terraform
+        echo $(tfYcAuthKey) > authorized_key.json
+        yc config set service-account-key authorized_key.json
+        rm -f authorized_key.json
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: YC Cli Config  
+    - bash: mv .terraformrc ~/.terraformrc
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Registry Config    
+    - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Init
+    - bash: terraform validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Validate
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Plan
+    - bash: |
         ls -la
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: ls
-    # - bash: |
-    #     yc config profile delete sa-terraform
-    #     yc config profile create sa-terraform
-    #     echo $(tfYcAuthKey) > authorized_key.json
-    #     yc config set service-account-key authorized_key.json
-    #     rm -f authorized_key.json
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: YC Cli Config  
-    # - bash: mv .terraformrc ~/.terraformrc
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Registry Config    
-    # - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Init
-    # - bash: terraform validate
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Validate
-    # - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Plan
-    # - bash: |
-    #     ls -la
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: ls
     pool:
       name: $(PoolName)
       demands:
@@ -57,32 +54,31 @@ stages:
     steps:
     - bash: |
         ls -la
-        # rm -rf deployment*.tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: ls
-    # - bash: |
-    #     yc config profile delete sa-terraform
-    #     yc config profile create sa-terraform
-    #     echo $(tfYcAuthKey) > authorized_key.json
-    #     yc config set service-account-key authorized_key.json
-    #     rm -f authorized_key.json
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: YC Cli Config   
-    # - bash: mv .terraformrc ~/.terraformrc
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Config    
-    # - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Init
-    # - bash: terraform validate
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Validate
-    # - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Plan
-    # - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
-    #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-    #   displayName: Terraform Apply
+    - bash: |
+        yc config profile delete sa-terraform
+        yc config profile create sa-terraform
+        echo $(tfYcAuthKey) > authorized_key.json
+        yc config set service-account-key authorized_key.json
+        rm -f authorized_key.json
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: YC Cli Config   
+    - bash: mv .terraformrc ~/.terraformrc
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Config    
+    - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Init
+    - bash: terraform validate
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Validate
+    - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Plan
+    - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
+      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
+      displayName: Terraform Apply
     pool:
       name: $(PoolName)
       demands:
