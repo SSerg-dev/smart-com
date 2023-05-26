@@ -3575,6 +3575,10 @@
     <Compile Include="Migrations\202305240725265_EmptyM24052023.designer.cs">
       <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.cs" />
+    <Compile Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.designer.cs">
+      <DependentUpon>202305261316088_RemoveAP_DF_GetCanChangeState.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6719,6 +6723,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305240725265_EmptyM24052023.resx">
       <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.resx">
+      <DependentUpon>202305261316088_RemoveAP_DF_GetCanChangeState.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

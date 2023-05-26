@@ -406,18 +406,14 @@
             var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
 
             var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
-            var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
             var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
             var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
-            var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
             var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
             var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
             var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
 
             var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
-                !this.compareFilters(filter, onApprovalFilterDF) &&
                 !this.compareFilters(filter, onApprovalFilterCMM) &&
-                !this.compareFilters(filter, onApprovalGAFilterDF) &&
                 !isOnHold &&
                 !this.compareFilters(filter, onApprovalGAFilterGAM) ||
                 this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||

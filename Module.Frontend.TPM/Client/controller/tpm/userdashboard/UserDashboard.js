@@ -448,60 +448,7 @@
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
     //--DemandFinance--
-    getTimeCriticalDemandFinance: function () {
-        var date = new Date();
-        date.setHours(date.getHours() + (date.getTimezoneOffset() / 60) + 3);
 
-        date = Ext.Date.add(date, Ext.Date.HOUR, 48);
-        var filter = {
-            operator: "and",
-            rules: [{
-                property: "PromoStatusName", operation: "Equals", value: 'On Approval'
-            },
-            {
-                property: "DispatchesStart", operation: "LessThan", value: date
-            }, {
-                property: "IsCMManagerApproved", operation: "Equals", value: true
-            }, {
-                property: "IsDemandPlanningApproved", operation: "Equals", value: true
-            },
-            {
-                operator: "or",
-                rules: [{
-                    property: "IsDemandFinanceApproved", operation: "Equals", value: null
-                },
-                {
-                    property: "IsDemandFinanceApproved", operation: "Equals", value: false
-                }]
-            },
-            ]
-        };
-
-        var widget = 'promo';
-        var text = "Time Critical";
-        var panel = 'panel1';
-        var style = {
-            styleStandart: 'panel-time-critical-standart',
-            styleZero: 'panel-time-critical-zero'
-        }
-        var image = 'time_critical.png';
-        var color = '#e1312c';
-        var buttonColor = '#feeded';
-        return { filter: filter, widget: widget, text: text, panel: panel, style: style, image: image, color: color, buttonColor: buttonColor };
-    },
-    //Needs my approval
-    getNeedsMyApprovalDemandFinance: function () {
-        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
-
-        var filter = promoHelperController.getOnApprovalFilterDF();
-        var widget = 'promo';
-        var text = "On approval";
-        var panel = 'panel1';
-        var image = 'workflow.png';
-        var color = '#00009b';
-        var buttonColor = '#eef2fc';
-        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
-    },
     //Actual Shopper TI 
     getActualShopperTIDemandFinance: function () {
 
@@ -554,7 +501,7 @@
         }
         var widget = 'associatedpromosupport';
         var text = "Promo TI cost";
-        var panel = 'panel2';
+        var panel = 'panel1';
         var image = 'closed.png';
         var color = '#00dabe';
         var buttonColor = '#e6fcf9';
@@ -587,7 +534,7 @@
         }
         var widget = 'associatednonpromosupport';
         var text = "Non-promo TI cost";
-        var panel = 'panel2';
+        var panel = 'panel1';
         var image = 'closed.png';
         var color = '#00dabe';
         var buttonColor = '#e6fcf9';
@@ -858,18 +805,6 @@
         var image = 'closed.png';
         var color = '#00dabe';
         var buttonColor = '#e6fcf9';
-        return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
-    },
-    getGaInExchangeApprovalDemandFinance: function () {
-        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
-
-        var filter = promoHelperController.getOnApprovalGAFilterDF();
-        var widget = 'promo';
-        var text = "GA On approval";
-        var panel = 'panel1';
-        var image = 'workflow.png';
-        var color = '#00009b';
-        var buttonColor = '#eef2fc';
         return { filter: filter, widget: widget, text: text, panel: panel, image: image, color: color, buttonColor: buttonColor };
     },
     getGaInExchangeApprovalDemandPlanning: function () {
