@@ -52,6 +52,7 @@ stages:
   jobs:
   - job:
     steps:
+    - checkout: none
     - bash: |
         ls -la
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
@@ -90,7 +91,6 @@ stages:
   jobs:
   - job:
     steps:
-    - checkout: none
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
