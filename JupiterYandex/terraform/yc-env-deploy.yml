@@ -8,8 +8,9 @@ trigger:
    include:
     - develop
 
-# variables:
-#   AgentName: $(Agent.Name)
+variables:
+  AgentName: $(Agent.Name)
+
 
 stages:
 - stage: Plan
