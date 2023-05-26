@@ -18,6 +18,7 @@ stages:
     steps:
     - bash: |
         echo "Agent Name: $(AgentName)"
+        echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(Agent.Name)"
       displayName: Agent Name
     - bash: |
         yc config profile delete sa-terraform
