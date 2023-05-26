@@ -9,8 +9,7 @@ trigger:
     - develop
 
 variables:
-  AgentName: $(Agent.Name)
-
+  AgentName: svv-ubds05-a02
 
 stages:
 - stage: Plan
@@ -48,7 +47,7 @@ stages:
     pool:
       name: SMARTCOM_UBDS05
       demands:
-      - agent.name -equals svv-ubds05-a02
+      - agent.name -equals $(AgentName)
 
 - stage: Apply
   dependsOn: [Plan]
@@ -58,9 +57,9 @@ stages:
     # variables:
     #   AgentName2: $(AgentName) 
     steps:
-    - bash: |
-        echo "Agent Name: $(Agent.Name)"
-        # echo "Agent Name 2: $(AgentName2)"
+    # - bash: |
+    #     echo "Agent Name: $(Agent.Name)"
+    #     # echo "Agent Name 2: $(AgentName2)"
     - bash: |
         ls -la
         # rm -rf deployment*.tfplan
@@ -92,7 +91,7 @@ stages:
     pool:
       name: SMARTCOM_UBDS05
       demands:
-      - agent.name -equals svv-ubds05-a02
+      - agent.name -equals $(AgentName)
 
 - stage: Destroy
   dependsOn: [Plan]
