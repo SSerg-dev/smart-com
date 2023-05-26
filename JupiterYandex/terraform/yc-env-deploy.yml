@@ -88,7 +88,7 @@ stages:
     pool:
       name: SMARTCOM_UBDS05
       demands:
-      - agent.name -equals $(AgentName)
+      - agent.name -equals svv-ubds05-a01
 
 - stage: Destroy
   dependsOn: [Plan]
