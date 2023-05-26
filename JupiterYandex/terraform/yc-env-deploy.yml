@@ -25,7 +25,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config  
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Registry Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
@@ -65,7 +65,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
@@ -99,7 +99,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
