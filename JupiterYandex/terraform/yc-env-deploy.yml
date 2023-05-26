@@ -45,6 +45,10 @@ stages:
     #     ls -la
     #   workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
     #   displayName: ls
+    pool:
+      name: SMARTCOM_UBDS05
+      demands:
+      - agent.name -equals svv-ubds05-a02
 
 - stage: Apply
   dependsOn: [Plan]
@@ -88,7 +92,7 @@ stages:
     pool:
       name: SMARTCOM_UBDS05
       demands:
-      - agent.name -equals svv-ubds05-a01
+      - agent.name -equals svv-ubds05-a02
 
 - stage: Destroy
   dependsOn: [Plan]
