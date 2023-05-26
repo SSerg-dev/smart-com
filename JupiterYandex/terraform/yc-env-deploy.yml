@@ -90,6 +90,7 @@ stages:
   jobs:
   - job:
     steps:
+    - checkout: none
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
