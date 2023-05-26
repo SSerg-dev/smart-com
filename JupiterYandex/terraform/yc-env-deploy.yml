@@ -18,7 +18,7 @@ stages:
   - job:
     steps:
     - bash: |
-        echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(Agent.Name)"
+        echo "##vso[task.setvariable variable=AgentName;isoutput=true]$(AgentName)"
         echo "Agent Name: $(AgentName)"
       displayName: Agent Name
     # - bash: |
