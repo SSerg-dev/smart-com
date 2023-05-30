@@ -9,16 +9,14 @@ trigger:
     - develop
 
 variables:
-  AgentName: $(Agent.Name)
+  AgentName: svv-ubds05-a02
+  PoolName: SMARTCOM_UBDS05
 
 stages:
 - stage: Plan
   jobs:
   - job:
     steps:
-    - bash: |
-        echo "Agent Name: $(AgentName)"
-      displayName: Agent Name
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -27,7 +25,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config  
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Registry Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
@@ -39,27 +37,18 @@ stages:
     - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Plan
-    - bash: |
-        ls -la
-      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: ls
+    pool:
+      name: $(PoolName)
+      demands:
+      - agent.name -equals $(AgentName)
 
 - stage: Apply
   dependsOn: [Plan]
   condition: and(succeeded('Plan'), eq(variables['tfDestroyEnvironment'], false))
-  variables:
-    AgentName2: $(AgentName)
   jobs:
   - job:
     steps:
-    - bash: |
-        echo "Agent Name: $(Agent.Name)"
-        echo "Agent Name 2: $(AgentName2)"
-    - bash: |
-        ls -la
-        rm -rf deployment*.tfplan
-      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: ls
+    - checkout: none
     - bash: |
         yc config profile delete sa-terraform
         yc config profile create sa-terraform
@@ -68,7 +57,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
@@ -77,16 +66,13 @@ stages:
     - bash: terraform validate
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Validate
-    - bash: terraform plan -var-file=$(tfProjectName).tfvars -var=deploy-sa-authkey=$(tfYcAuthKey) -input=false -out deployment-$(git rev-parse --short HEAD).tfplan
-      workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
-      displayName: Terraform Plan
     - bash: terraform apply -input=false deployment-$(git rev-parse --short HEAD).tfplan
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Apply
     pool:
-      name: SMARTCOM_UBDS05
+      name: $(PoolName)
       demands:
-      - agent.name -equals $(AgentName2)
+      - agent.name -equals $(AgentName)
 
 - stage: Destroy
   dependsOn: [Plan]
@@ -102,7 +88,7 @@ stages:
         rm -f authorized_key.json
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: YC Cli Config   
-    - bash: mv .terraformrc ~/.terraformrc
+    - bash: cp .terraformrc ~/.terraformrc
       workingDirectory: $(System.DefaultWorkingDirectory)/JupiterYandex/terraform
       displayName: Terraform Config    
     - bash: terraform init -reconfigure -backend-config="key=tfstate/$(tfProjectName).tfstate" -backend-config="bucket=$(tfBackendBucketName)" -backend-config="region=$(tfBackendBucketRegion)" -backend-config="access_key=$(tfBackendBucketAccessKey)" -backend-config="secret_key=$(tfBackendBucketSecretKey)"
