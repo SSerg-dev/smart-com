@@ -25,16 +25,18 @@ resource "yandex_mdb_kafka_cluster" "kafka" {
     day  = "SUN"
     hour = "1"
   }
-  user {
-    name     = var.kafka.user
-    password = var.kafka.pass
-    # permission {
-    #   topic_name = "ENBL_IN"
-    #   role = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
-    }
-#     permission {
-#       topic_name = "YRLAM_IN"
-#       role = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
-#     }
-#   }
+}
+
+resource "yandex_mdb_kafka_user" user_events {
+  cluster_id = yandex_mdb_kafka_cluster.kafka.id
+  name       = var.kafka.user
+  password   = var.kafka.pass
+  # permission {
+  #   topic_name = "ENBL_IN"
+  #   role       = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
+  # }
+  # permission {
+  #   topic_name = "YRLAM_IN"
+  #   role       = ["ACCESS_ROLE_CONSUMER", "ACCESS_ROLE_PRODUCER"]
+  # }
 }
