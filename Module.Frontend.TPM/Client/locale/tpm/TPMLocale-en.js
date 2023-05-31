@@ -1314,6 +1314,7 @@
         'PONumber': 'PO Number',
         'PONumberRegex': 'Only numbers',
         'InvoiceNumberRegex': 'Only numbers',
+        'InvoiceNumberMaxLengthText': 'No spaces. Max {0} symbols',
         'AttachFileName': 'Attach File Name',
         'Name': 'Name',
         'InvoiceNumber': 'Invoice Number',

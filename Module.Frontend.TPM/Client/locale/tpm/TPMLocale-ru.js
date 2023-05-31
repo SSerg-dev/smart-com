@@ -1120,6 +1120,7 @@
         'PONumberRegex': 'Only numbers',
         'InvoiceNumber': 'Invoice Number',
         'InvoiceNumberRegex': 'Only numbers',
+        'InvoiceNumberMaxLengthText': 'No spaces. Max {0} symbols',
         'OffAllocation': 'Off allocation by LSV',
     },
     'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],

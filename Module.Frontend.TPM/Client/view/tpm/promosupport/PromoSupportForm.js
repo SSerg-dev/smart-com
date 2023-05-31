@@ -109,9 +109,13 @@
                         margin: '0 5 0 5',
                         xtype: 'textfield',
                         name: 'InvoiceNumber',
-                        regex: /^([0-9a-zA-ZА-Яа-я]{4,}([,][ ]?))*[0-9a-zA-ZА-Яа-я]{4,}$/,
-                        regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
-                        maxLength: 50
+                        listeners: {
+                            blur: function() {
+                                this.setValue(this.getValue().trim());
+                            }
+                        },
+                        maxLength: 50,
+                        maxLengthText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberMaxLengthText')
                     }]
                 }]
             }, {
