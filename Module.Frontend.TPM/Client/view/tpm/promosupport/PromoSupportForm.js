@@ -114,8 +114,8 @@
                                 this.setValue(this.getValue().trim());
                             }
                         },
-                        maxLength: 50,
-                        maxLengthText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberMaxLengthText')
+                        regex: /^[^\s]{1,50}$/,
+                        regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberMaxLengthText')
                     }]
                 }]
             }, {
