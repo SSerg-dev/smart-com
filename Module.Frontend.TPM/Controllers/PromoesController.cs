@@ -828,7 +828,7 @@ namespace Module.Frontend.TPM.Controllers
                         model.SumInvoice = null;
                     }
                     PromoHelper.CalculateSumInvoiceProduct(Context, model);
-                    CreateTaskCalculateActual(model.Id);
+                    CreateTaskCalculateActual(model.Id, safe: true);
                 }
                 if (model.IsInExchange == false && promoCopy.IsInExchange == true)
                 {
@@ -2153,7 +2153,7 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
         /// </summary>
         /// <param name="promoId">ID промо</param>
-        private void CreateTaskCalculateActual(Guid promoId)
+        private void CreateTaskCalculateActual(Guid promoId, bool safe)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
@@ -2166,7 +2166,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
 
-            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Actual, data, Context, promoId);
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Actual, data, Context, promoId, safe);
 
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
