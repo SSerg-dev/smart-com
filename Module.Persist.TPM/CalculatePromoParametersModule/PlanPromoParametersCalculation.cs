@@ -320,7 +320,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 {
                                     promo.PromoPriceIncrease.PlanAddTIShopperApproved = promo.PromoPriceIncrease.PlanPromoTIShopper - promo.PromoPriceIncrease.PlanPromoNetIncrementalLSV * (RATIShopperPercent ?? 0) / 100;
                                 }
-                                promo.PromoPriceIncrease.PlanPromoNetUpliftPercent = promo.PromoPriceIncrease.PlanPromoBaselineLSV != 0 ? promo.PromoPriceIncrease.PlanPromoNetIncrementalLSV / promo.PlanPromoBaselineLSV * 100 : 0;
+                                promo.PromoPriceIncrease.PlanPromoNetUpliftPercent = promo.PromoPriceIncrease.PlanPromoBaselineLSV != 0 ? promo.PromoPriceIncrease.PlanPromoNetIncrementalLSV / promo.PromoPriceIncrease.PlanPromoBaselineLSV * 100 : 0;
                             }
                             if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
                             {
