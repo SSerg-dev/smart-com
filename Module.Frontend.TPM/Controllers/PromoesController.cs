@@ -720,7 +720,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 if (ChangePromo.EventId != null)
                 {
-                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key);
+                    var btlPromo = Context.Set<BTLPromo>().FirstOrDefault(x => x.PromoId == key && !x.Disabled);
                     if (btlPromo != null)
                     {
                         btlPromo.Disabled = true;
