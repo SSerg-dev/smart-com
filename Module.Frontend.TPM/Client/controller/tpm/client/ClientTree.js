@@ -258,6 +258,8 @@
             baseClientChBox.suspendEvents();
             baseClientChBox.setValue(true);
             baseClientChBox.resumeEvents();
+            
+            baseClientChBox.setDisabled(true);
 
             if (tree.needLoadTree) {
                 store.load();
@@ -801,7 +803,9 @@
         var toolbar = grid.up('clienttree').down('customtoptreetoolbar');
 
         toolbar.down('#clientsSearchTrigger').setDisabled(false);
-        toolbar.down('#baseClientsCheckbox').setDisabled(false);
+        if (!tree.needBaseClients) {
+            toolbar.down('#baseClientsCheckbox').setDisabled(false);
+        }
     },
 
     onClientTreeEditorAfterRender: function (clientTreeEditor) {
