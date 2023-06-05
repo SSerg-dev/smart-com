@@ -90,7 +90,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<BrandTech> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<BrandTech> patch)
         {
             var model = Context.Set<BrandTech>().Find(key);
             if (model == null)
@@ -100,10 +100,10 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -121,7 +121,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(BrandTech model)
+        public async Task<IHttpActionResult> Post(BrandTech model)
         {
             if (!ModelState.IsValid)
             {
@@ -138,10 +138,10 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                 }
             }
             catch (Exception e)
@@ -154,14 +154,14 @@ namespace Module.Frontend.TPM.Controllers
                 result.BrandsegTechsub_code
             };
 
-            CreateCoefficientSI2SOHandler(brtc, null, 1);
+            await CreateCoefficientSI2SOHandler(brtc, null, 1);
 
             return Created(result);
         }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<BrandTech> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<BrandTech> patch)
         {
             try
             {
@@ -173,11 +173,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.Patch(model);
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
-                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                 }
 
                 return Updated(model);
@@ -196,7 +196,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -209,11 +209,11 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
-                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                 }
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -233,39 +233,36 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание задачи на добавление новых записей коэффицициентов
         /// </summary>
         /// <param name="promo"></param>
-        private void CreateCoefficientSI2SOHandler(List<string> brandTechCode, string demandCode, double cValue)
+        private async Task CreateCoefficientSI2SOHandler(List<string> brandTechCode, string demandCode, double cValue)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Adding new records for coefficients SI/SO",
-                    Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    RunGroup = "CreateCoefficientSI2SO",
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Adding new records for coefficients SI/SO",
+                Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                RunGroup = "CreateCoefficientSI2SO",
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         public static IEnumerable<Column> GetExportSettings()
@@ -281,15 +278,14 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<BrandTech> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<BrandTech> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
-            {
+
                 HandlerData data = new HandlerData();
                 string handlerName = "ExportHandler";
 
@@ -316,11 +312,10 @@ namespace Module.Frontend.TPM.Controllers
                     RoleId = roleId
                 };
                 handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Context.LoopHandlers.Add(handler);
+                await Context.SaveChangesAsync();
 
-            return Content(HttpStatusCode.OK, "success");
+                return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
@@ -336,7 +331,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateBrandTechHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateBrandTechHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -350,53 +345,50 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportBrandTech), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportBrandTech).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(BrandTech), data, visible: false, throwIfNotExists: false);
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportBrandTech), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportBrandTech).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(BrandTech), data, visible: false, throwIfNotExists: false);
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportBrandTech).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                RunGroup = typeof(ImportBrandTech).Name,
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
 
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportBrandTech).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    RunGroup = typeof(ImportBrandTech).Name,
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
@@ -447,7 +439,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (brandTech != null)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech, new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore }) }));
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = JsonConvert.SerializeObject(brandTech, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }) }));
                 }
                 else
                 {

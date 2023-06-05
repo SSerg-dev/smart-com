@@ -1,31 +1,23 @@
 ﻿using AutoMapper;
 using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
-using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
-using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -92,7 +84,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<BTL> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<BTL> patch)
         {
             var model = Context.Set<BTL>().Find(key);
             if (model == null)
@@ -102,7 +94,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -119,7 +111,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(BTL model)
+        public async Task<IHttpActionResult> Post(BTL model)
         {
             if (!ModelState.IsValid)
             {
@@ -134,7 +126,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -146,7 +138,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<BTL> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<BTL> patch)
         {
 
             try
@@ -162,7 +154,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 CalculateBTLBudgetsCreateTask(key.ToString());
                 return Updated(model);
             }
@@ -184,7 +176,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -213,7 +205,7 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception("Cannot be deleted due to closed promo"));
 
                 CalculateBTLBudgetsCreateTask(model.Id.ToString(), promoIdsToRecalculate);
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -241,44 +233,42 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<BTL> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<BTL> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(BTL), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(BTLsController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(BTLsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(BTL), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(BTLsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(BTLsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(BTL)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(BTL)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -365,7 +355,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 List<Event> events = await Context.Set<Event>()
                     .AsNoTracking()
-                    .Include(g=>g.BTLs)
+                    .Include(g => g.BTLs)
                     .Where(g => !g.Disabled && g.EventType.National && (g.MarketSegment == marketSegment || string.IsNullOrEmpty(g.MarketSegment)) && !g.EventType.Disabled)
                     .ToListAsync();
                 //events = events.Where(g => g.BTLs.Any(f => (eventBTL.DurationDateStart <= f.StartDate && eventBTL.DurationDateEnd > f.StartDate) || (eventBTL.DurationDateStart >= f.StartDate && eventBTL.DurationDateStart > f.EndDate))).ToList();

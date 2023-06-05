@@ -86,7 +86,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Technology> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<Technology> patch)
         {
             var model = Context.Set<Technology>().Find(key);
             if (model == null)
@@ -96,7 +96,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -113,7 +113,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(Technology model)
+        public async Task<IHttpActionResult> Post(Technology model)
         {
             if (!ModelState.IsValid)
             {
@@ -129,7 +129,7 @@ namespace Module.Frontend.TPM.Controllers
             model.SubBrand_code = String.IsNullOrWhiteSpace(model.SubBrand_code) ? null : model.SubBrand_code;
             model.SubBrand = String.IsNullOrWhiteSpace(model.SubBrand) ? null : model.SubBrand;
 
-            if (Context.Set<Technology>().Any(t=>t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code && !t.Disabled))
+            if (Context.Set<Technology>().Any(t => t.Tech_code == model.Tech_code && t.SubBrand_code == model.SubBrand_code && !t.Disabled))
             {
                 var errorText = !String.IsNullOrEmpty(model.SubBrand_code) ?
                     $"Technology with tech_code {model.Tech_code} and sub_code {model.SubBrand_code} already exists"
@@ -142,7 +142,8 @@ namespace Module.Frontend.TPM.Controllers
                 var errorText = $"Sub Brand required";
                 ModelState.AddModelError("Error", errorText);
                 return BadRequest(ModelState);
-            }else if (String.IsNullOrEmpty(model.SubBrand_code) && !String.IsNullOrEmpty(model.SubBrand))
+            }
+            else if (String.IsNullOrEmpty(model.SubBrand_code) && !String.IsNullOrEmpty(model.SubBrand))
             {
                 var errorText = $"Please, insert Sub Brand Code or delete Sub Brand";
                 ModelState.AddModelError("Error", errorText);
@@ -152,12 +153,12 @@ namespace Module.Frontend.TPM.Controllers
             var configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<Technology, Technology>().ReverseMap());
             var mapper = configuration.CreateMapper();
-            var result = mapper.Map(model, proxy); 
+            var result = mapper.Map(model, proxy);
             Context.Set<Technology>().Add(result);
 
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -169,7 +170,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Technology> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<Technology> patch)
         {
             try
             {
@@ -198,12 +199,12 @@ namespace Module.Frontend.TPM.Controllers
                     newName = String.Format("{0} {1}", model.Name, model.SubBrand);
 
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
-                Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, key));
+                await PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, key);
                 UpdateProductTrees(model.Id, newName);
                 //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
-                Task.Run(() => UpdateProducts(model, oldTC, oldTN, oldSC));
+                await UpdateProductsAsync(model, oldTC, oldTN, oldSC);
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 return Updated(model);
             }
             catch (DbUpdateConcurrencyException)
@@ -224,7 +225,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -236,7 +237,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -279,46 +280,44 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<Technology> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<Technology> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(TechnologyExport), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(TechnologiesController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(TechnologiesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            string query = results.ToTraceQuery().Replace("[Extent1].[IsSplittable] AS [IsSplittable]", "IIF ([Extent1].[IsSplittable] = 1, '+', '-') AS [Splittable]");
+            query = query.Replace("[Project1].[IsSplittable] AS [IsSplittable]", "[Project1].[Splittable] AS [Splittable]");
+            HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(TechnologyExport), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(TechnologiesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(TechnologiesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                string query = results.ToTraceQuery().Replace("[Extent1].[IsSplittable] AS [IsSplittable]", "IIF ([Extent1].[IsSplittable] = 1, '+', '-') AS [Splittable]");
-                query = query.Replace("[Project1].[IsSplittable] AS [IsSplittable]", "[Project1].[Splittable] AS [Splittable]");
-                HandlerDataHelper.SaveIncomingArgument("SqlString", query, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(Technology)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(Technology)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -336,7 +335,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateTechnologyHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateTechnologyHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -350,53 +349,50 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportTechnology), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportTechnology).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Technology), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportTechnology), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportTechnology).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Technology), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportTechnology).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(ImportTechnology).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportTechnology).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(ImportTechnology).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
@@ -448,7 +444,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        public static void UpdateProducts(Technology model, string oldTC, string oldTN, string oldSC)
+        public static async Task UpdateProductsAsync(Technology model, string oldTC, string oldTN, string oldSC)
         {
             using (DatabaseContext context = new DatabaseContext())
             {
@@ -461,7 +457,7 @@ namespace Module.Frontend.TPM.Controllers
                     newProduct.Patch(product);
                 }
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 

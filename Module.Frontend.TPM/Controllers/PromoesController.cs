@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Data;
-using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -129,7 +128,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<Promo> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] Guid key, Delta<Promo> patch)
         {
             var model = Context.Set<Promo>().Find(key);
             if (model == null)
@@ -147,7 +146,7 @@ namespace Module.Frontend.TPM.Controllers
                 //Установка полей по дереву ClientTree
                 PromoHelper.SetPromoByClientTree(model, Context);
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -164,7 +163,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(Promo model)
+        public async Task<IHttpActionResult> Post(Promo model)
         {
             try
             {
@@ -230,11 +229,11 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             return promo;
-        }              
+        }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<Promo> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] Guid key, Delta<Promo> patch)
         {
             try
             {
@@ -258,7 +257,7 @@ namespace Module.Frontend.TPM.Controllers
                     model.PromoStatusId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == StateNames.DRAFT_PUBLISHED && !s.Disabled).Id;
                     model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
                     SplitSubranges(model, true);
-                    DeletePromo(key);
+                    await DeletePromo(key);
                     return Updated(model);
                 }
                 var isSubrangeChanged = false;
@@ -282,7 +281,7 @@ namespace Module.Frontend.TPM.Controllers
                         if (promoRS != null)
                         {
                             Context.Set<Promo>().Remove(promoRS);
-                            Context.SaveChanges();
+                            await Context.SaveChangesAsync();
                             patch.Patch(model);
                             RSmodeHelper.EditToPromoRS(Context, model);
                         }
@@ -419,7 +418,7 @@ namespace Module.Frontend.TPM.Controllers
                     // если approved переводим в cancelled дочерние
                     if (statusName.ToLower() == "approved" && userRole != "SupportAdministrator")
                     {
-                        DeleteChildPromoes(model.Id, user, out string childmessage);
+                        string childmessage = await DeleteChildPromoes(model.Id, user);
                         if (!string.IsNullOrEmpty(childmessage))
                         {
                             return InternalServerError(new Exception(childmessage));
@@ -721,7 +720,7 @@ namespace Module.Frontend.TPM.Controllers
                         childpromo.MasterPromoId = null;
                     }
                 }
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 if (!needToCreateDemandIncident)
                 {
@@ -784,78 +783,75 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult MassApprove()
+        public async Task<IHttpActionResult> MassApprove()
         {
             var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "MassApproveHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "MassApproveHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Mass promo approving",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Mass promo approving",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult SendForApproval()
+        public async Task<IHttpActionResult> SendForApproval()
         {
             var promoNumbers = Request.Content.ReadAsStringAsync().Result;
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "MassSendForApprovalHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "MassSendForApprovalHandler";
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Mass promo send for approval",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("promoNumbers", promoNumbers, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Mass promo send for approval",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
 
@@ -960,7 +956,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
         {
             try
             {
@@ -1013,7 +1009,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     childpromo.MasterPromoId = null;
                 }
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
@@ -1081,7 +1077,7 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = e.Message }));
             }
         }
-        private void DeletePromo(Guid key)
+        private async Task DeletePromo(Guid key)
         {
             try
             {
@@ -1128,7 +1124,7 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserId = (Guid)user.Id;
                     promoProductsCorrection.UserName = user.Login;
                 }
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 PromoHelper.WritePromoDemandChangeIncident(Context, model, true);
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
@@ -1155,7 +1151,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult ChangeStatus(Guid id, Guid promoNewStatusId)
+        public async Task<IHttpActionResult> ChangeStatus(Guid id, Guid promoNewStatusId)
         {
             // При запросе минуя Odata транзакция не ведется
             using (var transaction = Context.Database.BeginTransaction())
@@ -1166,7 +1162,7 @@ namespace Module.Frontend.TPM.Controllers
                     patch.TrySetPropertyValue("PromoStatusId", promoNewStatusId);
 
                     // если возвращается Update, то всё прошло без ошибок
-                    var result = Patch(id, patch);
+                    var result = await Patch(id, patch);
                     if (result is System.Web.Http.OData.Results.UpdatedODataResult<Promo>)
                     {
                         transaction.Commit();
@@ -1174,8 +1170,7 @@ namespace Module.Frontend.TPM.Controllers
                     }
                     else
                     {
-                        ExceptionResult exc = result as ExceptionResult;
-                        if (exc != null)
+                        if (result is ExceptionResult exc)
                             throw exc.Exception;
                         else
                             throw new Exception("Unknown Error");
@@ -1198,7 +1193,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult DeclinePromo([FromODataUri] Guid rejectPromoId, [FromODataUri] Guid rejectReasonId, [FromODataUri] string rejectComment)
+        public async Task<IHttpActionResult> DeclinePromo([FromODataUri] Guid rejectPromoId, [FromODataUri] Guid rejectReasonId, [FromODataUri] string rejectComment)
         {
             // При запросе минуя Odata транзакция не ведется
             using (var transaction = Context.Database.BeginTransaction())
@@ -1232,7 +1227,7 @@ namespace Module.Frontend.TPM.Controllers
                     // Для сохранения корректного значения после Patch
                     promo.DeviationCoefficient *= 100;
                     // если возвращается Update, то всё прошло без ошибок
-                    var result = Patch(promo.Id, patch);
+                    var result = await Patch(promo.Id, patch);
                     if (result is System.Web.Http.OData.Results.UpdatedODataResult<Promo>)
                     {
                         UserInfo user = authorizationManager.GetCurrentUser();
@@ -1252,7 +1247,7 @@ namespace Module.Frontend.TPM.Controllers
                             PromoId = rejectPromoId
                         });
 
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                         transaction.Commit();
 
                         var jsonPromo = JsonConvert.SerializeObject(new { success = true, data = promo }, Formatting.Indented, new JsonSerializerSettings
@@ -1341,44 +1336,42 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<Promo> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<Promo> options)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Promo), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Promo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(Promo)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(Promo)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -1391,7 +1384,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data)
+        public async Task<IHttpActionResult> ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data)
         {
             try
             {
@@ -1418,26 +1411,23 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     HandlerDataHelper.SaveIncomingArgument("year", (int)data["year"], handlerData, visible: false, throwIfNotExists: false);
                 }
-                using (DatabaseContext context = new DatabaseContext())
+                LoopHandler handler = new LoopHandler()
                 {
-                    LoopHandler handler = new LoopHandler()
-                    {
-                        Id = Guid.NewGuid(),
-                        ConfigurationName = "PROCESSING",
-                        Description = "Scheduler Export",
-                        Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
-                        ExecutionPeriod = null,
-                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        LastExecutionDate = null,
-                        NextExecutionDate = null,
-                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                        UserId = userId,
-                        RoleId = roleId
-                    };
-                    handler.SetParameterData(handlerData);
-                    context.LoopHandlers.Add(handler);
-                    context.SaveChanges();
-                }
+                    Id = Guid.NewGuid(),
+                    ConfigurationName = "PROCESSING",
+                    Description = "Scheduler Export",
+                    Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+                handler.SetParameterData(handlerData);
+                Context.LoopHandlers.Add(handler);
+                await Context.SaveChangesAsync();
                 return Content<string>(HttpStatusCode.OK, "Export task successfully created");
             }
             catch (Exception e)
@@ -1499,7 +1489,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateImportHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -1511,7 +1501,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
-        }        
+        }
 
         /// <summary>
         /// Чтение лога задачи 
@@ -1653,53 +1643,50 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { LogHasErrors = false }));
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromo), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromo).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Promo), data, visible: false, throwIfNotExists: false);
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromo).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Promo), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportPromo).Name,
-                    //Name = "ProcessingHost.Handlers.Import." + importHandler,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    RunGroup = typeof(ImportPromo).Name,
-                    ExecutionPeriod = null,
-                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportPromo).Name,
+                //Name = "ProcessingHost.Handlers.Import." + importHandler,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                RunGroup = typeof(ImportPromo).Name,
+                ExecutionPeriod = null,
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -1729,15 +1716,14 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание отложенной задачи для расчета планового аплифта
         /// </summary>
         /// <param name="promo"></param>
-        private void UpdateUplift(Promo promo)
+        private async Task UpdateUplift(Promo promo)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
-            {
+
                 HandlerData data = new HandlerData();
                 HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
                 HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
@@ -1759,10 +1745,9 @@ namespace Module.Frontend.TPM.Controllers
                     RoleId = roleId
                 };
                 handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
+                Context.LoopHandlers.Add(handler);
+                await Context.SaveChangesAsync();
             }
-        }
 
         private IEnumerable<Column> GetPromoROIExportSettings()
         {
@@ -2076,9 +2061,9 @@ namespace Module.Frontend.TPM.Controllers
                 tempCorrection.Disabled = true;
             }
         }
-        private void DeleteChildPromoes(Guid modelId, UserInfo user, out string childmessage)
+        private async Task<string> DeleteChildPromoes(Guid modelId, UserInfo user)
         {
-            childmessage = string.Empty;
+            string childmessage = string.Empty;
             var ChildPromoes = Context.Set<Promo>().Where(p => p.MasterPromoId == modelId && !p.Disabled).ToList();
             var statuses = Context.Set<PromoStatus>().ToList();
             var DeletedId = statuses.FirstOrDefault(s => s.SystemName == "Deleted" && !s.Disabled).Id;
@@ -2123,7 +2108,7 @@ namespace Module.Frontend.TPM.Controllers
                             {
                                 childpromo.MasterPromoId = null;
                             }
-                            Context.SaveChanges();
+                            await Context.SaveChangesAsync();
 
                             PromoHelper.WritePromoDemandChangeIncident(Context, ChildPromo, true);
                             PromoCalculateHelper.RecalculateBudgets(ChildPromo, user, Context);
@@ -2137,11 +2122,12 @@ namespace Module.Frontend.TPM.Controllers
                         }
                         else
                         {
-                            return;
+                            return string.Empty;
                         }
                     }
                 }
             }
+            return childmessage;
         }
 
         /// <summary>

@@ -1,35 +1,23 @@
-﻿using AutoMapper;
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions.Export;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
+using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.IO;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Core.Settings;
-using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
-using System.Web;
-using Module.Frontend.TPM.Util;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -86,19 +74,19 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<BudgetSubItemClientTree> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<BudgetSubItemClientTree> patch)
         {
             var model = Context.Set<BudgetSubItemClientTree>().Find(key);
             if (model == null)
             {
                 return NotFound();
             }
-            
+
             patch.Put(model);
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -117,7 +105,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Post(System.Guid selectedSubItemId)
+        public async Task<IHttpActionResult> Post(System.Guid selectedSubItemId)
         {
             try
             {
@@ -156,7 +144,7 @@ namespace Module.Frontend.TPM.Controllers
                     Context.Set<BudgetSubItemClientTree>().Add(budgetSubItemClientTree);
                 }
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)
@@ -167,8 +155,8 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<BudgetSubItemClientTree> patch)
-        {            
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<BudgetSubItemClientTree> patch)
+        {
             try
             {
                 Context.Set<BudgetSubItemClientTree>().AsNoTracking();
@@ -179,7 +167,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -197,11 +185,11 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -210,8 +198,8 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                string deleteScript = String.Format("DELETE FROM [DefaultSchemaSetting].BudgetSubItemClientTree WHERE Id = '{0}';", model.Id.ToString());
-                Context.ExecuteSqlCommand(deleteScript);
+                Context.Set<BudgetSubItemClientTree>().Remove(model);
+                await Context.SaveChangesAsync();
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -219,7 +207,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
-        }        
+        }
 
         private bool EntityExists(System.Guid key)
         {

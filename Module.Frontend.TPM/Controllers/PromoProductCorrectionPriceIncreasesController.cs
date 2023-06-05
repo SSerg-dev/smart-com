@@ -8,12 +8,9 @@ using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
@@ -58,7 +55,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProductCorrectionPriceIncrease model)
+        public async Task<IHttpActionResult> Post(PromoProductCorrectionPriceIncrease model)
         {
             if (!ModelState.IsValid)
             {
@@ -92,11 +89,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), item);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)
@@ -115,11 +112,11 @@ namespace Module.Frontend.TPM.Controllers
                 Context.Set<PromoProductCorrectionPriceIncrease>().Add(model);
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)

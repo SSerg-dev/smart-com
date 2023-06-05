@@ -1,40 +1,39 @@
-﻿using AutoMapper;
-using Core.Data;
-using Core.Security;
+﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Utils;
-using Module.Persist.TPM.Model.DTO;
-using Looper.Core;
-using Looper.Parameters;
-using Persist;
-using System.Linq.Expressions;
-using Module.Frontend.TPM.Util;
-using System.Web;
-using System.Web.Http.OData.Extensions;
-using Module.Persist.TPM.Model.Interfaces;
 
-namespace Module.Frontend.TPM.Controllers {
-    public class PromoViewsController : EFContextController {
+namespace Module.Frontend.TPM.Controllers
+{
+    public class PromoViewsController : EFContextController
+    {
         private readonly IAuthorizationManager authorizationManager;
 
-        public PromoViewsController(IAuthorizationManager authorizationManager) {
+        public PromoViewsController(IAuthorizationManager authorizationManager)
+        {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<PromoView> GetConstraintedQuery(TPMmode tPMmode = TPMmode.Current) {
+        protected IQueryable<PromoView> GetConstraintedQuery(TPMmode tPMmode = TPMmode.Current)
+        {
             PerformanceLogger logger = new PerformanceLogger();
             logger.Start();
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -48,26 +47,29 @@ namespace Module.Frontend.TPM.Controllers {
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, tPMmode, filters);
 
             // Не администраторы не смотрят чужие черновики
-            if (role != "Administrator" && role != "SupportAdministrator") {
+            if (role != "Administrator" && role != "SupportAdministrator")
+            {
                 query = query.Where(e => e.PromoStatusSystemName != "Draft" || e.CreatorId == user.Id);
             }
 
             var statusesForExcluding = new List<string>() { "Deleted" };
             query = query.Where(x => !statusesForExcluding.Contains(x.PromoStatusSystemName));
-           
+
             logger.Stop();
             return query;
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<PromoView> GetPromoView([FromODataUri] Guid key) {
+        public SingleResult<PromoView> GetPromoView([FromODataUri] Guid key)
+        {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IQueryable<PromoView> GetPromoViews(TPMmode tPMmode = TPMmode.Current) {
+        public IQueryable<PromoView> GetPromoViews(TPMmode tPMmode = TPMmode.Current)
+        {
             return GetConstraintedQuery(tPMmode);
         }
 
@@ -88,7 +90,8 @@ namespace Module.Frontend.TPM.Controllers {
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<PromoView>;
         }
 
-        private bool EntityExists(Guid key) {
+        private bool EntityExists(Guid key)
+        {
             return Context.Set<PromoView>().Count(e => e.Id == key) > 0;
         }
 
@@ -100,7 +103,7 @@ namespace Module.Frontend.TPM.Controllers {
         /// <returns></returns>
         // [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data)
+        public async Task<IHttpActionResult> ExportSchedule(ODataQueryOptions<Promo> options, ODataActionParameters data)
         {
             try
             {
@@ -138,28 +141,25 @@ namespace Module.Frontend.TPM.Controllers {
                 {
                     HandlerDataHelper.SaveIncomingArgument("year", (int)data["year"], handlerData, visible: false, throwIfNotExists: false);
                 }
-                using (DatabaseContext context = new DatabaseContext())
+                LoopHandler handler = new LoopHandler()
                 {
-                    LoopHandler handler = new LoopHandler()
-                    {
-                        //Status = Looper.Consts.StatusName.IN_PROGRESS,
-                        Id = handlerId,
-                        ConfigurationName = "PROCESSING",
-                        Description = "Scheduler Export",
-                        Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
-                        ExecutionPeriod = null,
-                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                        LastExecutionDate = null,
-                        NextExecutionDate = null,
-                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                        UserId = userId,
-                        RoleId = roleId
-                    };
-                    
-                    handler.SetParameterData(handlerData);
-                    context.LoopHandlers.Add(handler);
-                    context.SaveChanges();
-                }
+                    //Status = Looper.Consts.StatusName.IN_PROGRESS,
+                    Id = handlerId,
+                    ConfigurationName = "PROCESSING",
+                    Description = "Scheduler Export",
+                    Name = "Module.Host.TPM.Handlers.SchedulerExportHandler",
+                    ExecutionPeriod = null,
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    LastExecutionDate = null,
+                    NextExecutionDate = null,
+                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                    UserId = userId,
+                    RoleId = roleId
+                };
+
+                handler.SetParameterData(handlerData);
+                Context.LoopHandlers.Add(handler);
+                await Context.SaveChangesAsync();
                 return Content<string>(HttpStatusCode.OK, "Export task successfully created");
             }
             catch (Exception e)

@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
@@ -10,10 +8,10 @@ using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -75,7 +73,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<NonPromoSupportBrandTech> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<NonPromoSupportBrandTech> patch)
         {
             var model = Context.Set<NonPromoSupportBrandTech>().Find(key);
             if (model == null)
@@ -85,7 +83,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -102,7 +100,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(NonPromoSupportBrandTech model)
+        public async Task<IHttpActionResult> Post(NonPromoSupportBrandTech model)
         {
             if (!ModelState.IsValid)
             {
@@ -117,7 +115,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -128,7 +126,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -140,7 +138,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -161,7 +159,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <param name="nonPromoSupportId">ID Non Promo Support</param>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult ModifyNonPromoSupportBrandTechList(Guid nonPromoSupportId)
+        public async Task<IHttpActionResult> ModifyNonPromoSupportBrandTechList(Guid nonPromoSupportId)
         {
             try
             {
@@ -215,7 +213,7 @@ namespace Module.Frontend.TPM.Controllers
                     item.DeletedDate = DateTimeOffset.Now;
                 }
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)

@@ -38,14 +38,17 @@ using Utility;
 namespace Module.Frontend.TPM.Controllers
 {
 
-    public class ClientTreeBrandTechesController : EFContextController {
+    public class ClientTreeBrandTechesController : EFContextController
+    {
         private readonly IAuthorizationManager authorizationManager;
 
-        public ClientTreeBrandTechesController(IAuthorizationManager authorizationManager) {
+        public ClientTreeBrandTechesController(IAuthorizationManager authorizationManager)
+        {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<ClientTreeBrandTech> GetConstraintedQuery() {
+        protected IQueryable<ClientTreeBrandTech> GetConstraintedQuery()
+        {
 
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -99,7 +102,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        public static int FillClientTreeBrandTechTable(DatabaseContext context)
+        public static async Task<int> FillClientTreeBrandTechTableAsync(DatabaseContext context)
         {
             var clients = context.Set<ClientTree>().Where(ct => ct.IsBaseClient && ct.EndDate == null).ToList();
             var brandTeches = context.Set<BrandTech>().AsNoTracking().Where(bt => !bt.Disabled).ToList();
@@ -131,7 +134,7 @@ namespace Module.Frontend.TPM.Controllers
                 });
             });
 
-            return context.SaveChanges();
+            return await context.SaveChangesAsync();
         }
 
         private static string GetDemandCode(ClientTree clientTree, DatabaseContext context)
@@ -157,7 +160,8 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<ClientTreeBrandTech> GetClientTreeBrandTech([FromODataUri] System.Guid key) {
+        public SingleResult<ClientTreeBrandTech> GetClientTreeBrandTech([FromODataUri] System.Guid key)
+        {
             return SingleResult.Create(GetClientTreeBrandTeches());
         }
 
@@ -172,7 +176,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <summary>
         /// Создает записи в таблице ClientTreeBrandTech аналогичные тем, что были для переданного в параметрах объекта ClientTree.
         /// </summary>
-        public static void CreateActualCloneWithZeroShareByClientTree(DatabaseContext databaseContext, ClientTree clientTree)
+        public static async Task CreateActualCloneWithZeroShareByClientTree(DatabaseContext databaseContext, ClientTree clientTree)
         {
             var newClientTreeBrandTeches = new List<ClientTreeBrandTech>();
             var actualClientTreeBrandTeches = GetActualQuery(databaseContext);
@@ -205,13 +209,13 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             databaseContext.Set<ClientTreeBrandTech>().AddRange(newClientTreeBrandTeches);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
         /// <summary>
         /// Создает записи в таблице ClientTreeBrandTech аналогичные тем, что были для переданного в параметрах объекта BrandTech.
         /// </summary>
-        public static void CreateActualCloneWithZeroShareByBrandTech(DatabaseContext databaseContext, BrandTech brandTech)
+        public static async Task CreateActualCloneWithZeroShareByBrandTechAsync(DatabaseContext databaseContext, BrandTech brandTech)
         {
             var newClientTreeBrandTeches = new List<ClientTreeBrandTech>();
             var actualClientTreeBrandTeches = GetActualQuery(databaseContext);
@@ -244,12 +248,12 @@ namespace Module.Frontend.TPM.Controllers
             }
 
             databaseContext.Set<ClientTreeBrandTech>().AddRange(newClientTreeBrandTeches);
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
-        public static void DisableNotActualClientTreeBrandTech(DatabaseContext databaseContext)
+        public static async Task DisableNotActualClientTreeBrandTech(DatabaseContext databaseContext)
         {
-            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x=>!x.Disabled).ToList();
+            var clientTreeBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x => !x.Disabled).ToList();
             var actualClientTreeBrandTeches = GetActualQuery(databaseContext);
             var notActualClientTreeBrandTeches = clientTreeBrandTeches.Except(actualClientTreeBrandTeches);
 
@@ -262,7 +266,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
             }
 
-            databaseContext.SaveChanges();
+            await databaseContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -285,7 +289,7 @@ namespace Module.Frontend.TPM.Controllers
             return clientTreeBrandTeches;
         }
 
-        public static IEnumerable<Column> GetExportSettings() 
+        public static IEnumerable<Column> GetExportSettings()
         {
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "ParentClientTreeDemandCode", Header = "Demand code", Quoting = false },
@@ -298,7 +302,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<ClientTreeBrandTech> options) 
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<ClientTreeBrandTech> options)
         {
             var ids = GetFilteredActualQuery().Select(q => q.Id).AsEnumerable();
             var query = Context.Set<ClientTreeBrandTech>().Where(q => ids.Contains(q.Id));
@@ -307,122 +311,131 @@ namespace Module.Frontend.TPM.Controllers
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(ClientTreeBrandTech), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ClientTreeBrandTechesController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ClientTreeBrandTechesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(ClientTreeBrandTech), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ClientTreeBrandTechesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ClientTreeBrandTechesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(ClientTreeBrandTech)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(ClientTreeBrandTech)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportClientShareHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateImportClientShareHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private async Task CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
+            {
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportClientsShare), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportClientsShare).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportClientsShare), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportClientsShare), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportClientsShare).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportClientsShare), data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler() {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ClientTreeBrandTech).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(ClientTreeBrandTech).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ClientTreeBrandTech).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(ClientTreeBrandTech).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "ClientsShare");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<ClientTreeBrandTech>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 

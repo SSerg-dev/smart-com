@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -346,7 +345,8 @@ namespace Module.Frontend.TPM.Controllers
                 branch = new ProductTreeNode(rootNode, true, false, true);
                 branch.AddChild(outList.Count == 0 ? children : outList);
             }
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.AllowNullCollections = true; // потому что в children должен быть null а не пустая коллекция
                 cfg.CreateMap<ProductTreeNode, ProductTreeNode>();
                 cfg.CreateMap<Technology, Technology>()
@@ -372,7 +372,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(ProductTree model)
+        public async Task<IHttpActionResult> Post(ProductTree model)
         {
             if (!ModelState.IsValid)
             {
@@ -400,7 +400,7 @@ namespace Module.Frontend.TPM.Controllers
 
             result.ObjectId = new int();
             Context.Set<ProductTree>().Add(result);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
             Context.Entry(result).Reload();
 
             return Json(new { success = true, children = result });
@@ -408,7 +408,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IHttpActionResult UpdateNode([FromBody] ProductTree model)
+        public async Task<IHttpActionResult> UpdateNode([FromBody] ProductTree model)
         {
             if (!ModelState.IsValid)
             {
@@ -500,12 +500,12 @@ namespace Module.Frontend.TPM.Controllers
                     var oldName = currentRecord.FullPathName;
                     var newName = model.FullPathName;
                     //Асинхронно, т.к. долго выполняется и иначе фронт не дождется ответа
-                    Task.Run(() => PromoHelper.UpdateProductHierarchy(currentRecord.Type, newName, oldName));
+                    await PromoHelper.UpdateProductHierarchy(currentRecord.Type, newName, oldName);
                 }
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathProductTree(currentRecord, Context.Set<ProductTree>());
                 Context.Set<ProductTree>().Add(oldRecord);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Created(currentRecord);
             }
@@ -517,7 +517,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Delete([FromODataUri] int key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
         {
             try
             {
@@ -536,7 +536,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 recordsToDelete.ForEach(x => x.EndDate = DateTime.Now);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
@@ -561,7 +561,7 @@ namespace Module.Frontend.TPM.Controllers
                 productTree = activeTree.Where(x => x.ObjectId == productTree.parentId).FirstOrDefault();
             }
 
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, data = nodes }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
         }
 
         /// <summary>
@@ -572,7 +572,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Move([FromODataUri] int nodeToMove, int destinationNode)
+        public async Task<IHttpActionResult> Move([FromODataUri] int nodeToMove, int destinationNode)
         {
             try
             {
@@ -595,7 +595,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 recordToMove.EndDate = dt;
                 Context.Set<ProductTree>().Add(newRecord);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
@@ -686,7 +686,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 productTree.LogoFileName = fileName;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Json(new { success = true, fileName });
             }

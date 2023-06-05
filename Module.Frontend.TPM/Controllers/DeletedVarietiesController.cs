@@ -1,7 +1,6 @@
 ﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.TPM;
 using Persist.Model;
 using System.Collections.Generic;
@@ -12,16 +11,20 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
 
-    public class DeletedVarietiesController : EFContextController {
+    public class DeletedVarietiesController : EFContextController
+    {
         private readonly IAuthorizationManager authorizationManager;
 
-        public DeletedVarietiesController(IAuthorizationManager authorizationManager) {
+        public DeletedVarietiesController(IAuthorizationManager authorizationManager)
+        {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<Variety> GetConstraintedQuery() {
+        protected IQueryable<Variety> GetConstraintedQuery()
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
             IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
@@ -34,13 +37,15 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<Variety> GetDeletedVarieties() {
+        public IQueryable<Variety> GetDeletedVarieties()
+        {
             return GetConstraintedQuery().Where(e => e.Disabled);
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<Variety> GetDeletedVariety([FromODataUri] System.Guid key) {
+        public SingleResult<Variety> GetDeletedVariety([FromODataUri] System.Guid key)
+        {
             return SingleResult.Create(GetConstraintedQuery()
                 .Where(e => e.Id == key)
                 .Where(e => e.Disabled));

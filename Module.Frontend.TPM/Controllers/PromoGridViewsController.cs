@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -121,7 +122,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] Guid key)
         {
             try
             {
@@ -166,7 +167,7 @@ namespace Module.Frontend.TPM.Controllers
                     promoProductsCorrection.UserId = (Guid)user.Id;
                     promoProductsCorrection.UserName = user.Login;
                 }
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 PromoCalculateHelper.RecalculateBudgets(model, user, Context);
                 PromoCalculateHelper.RecalculateBTLBudgets(model, user, Context, safe: true);
@@ -187,7 +188,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoGridView> options, [FromUri] TPMmode tPMmode)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<PromoGridView> options, [FromUri] TPMmode tPMmode)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             //TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
@@ -201,46 +202,44 @@ namespace Module.Frontend.TPM.Controllers
                                                 .Where(x => !x.Disabled)
                                                 .Where(x => results.Contains(x.Id));
 
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoGridView), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
+            if (tPMmode == TPMmode.Current)
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoGridView), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                if (tPMmode == TPMmode.Current)
-                {
-                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
-                }
-                if (tPMmode == TPMmode.RS)
-                {
-                    HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettingsRS), data, visible: false, throwIfNotExists: false);
-                }
-                HandlerDataHelper.SaveIncomingArgument("SqlString", fullResults.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(Promo)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
             }
+            if (tPMmode == TPMmode.RS)
+            {
+                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettingsRS), data, visible: false, throwIfNotExists: false);
+            }
+            HandlerDataHelper.SaveIncomingArgument("SqlString", fullResults.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("URL", url, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(Promo)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }

@@ -595,7 +595,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(ClientTree model)
+        public async Task<IHttpActionResult> Post(ClientTree model)
         {
             if (!ModelState.IsValid)
             {
@@ -644,13 +644,13 @@ namespace Module.Frontend.TPM.Controllers
 
             if (result.DemandCode != null && result.DemandCode != "")
             {
-                CreateCoefficientSI2SOHandler(null, result.DemandCode, 1);
+                await CreateCoefficientSI2SOHandler(null, result.DemandCode, 1);
             }
 
-            var resultSaveChanges = Context.SaveChanges();
+            var resultSaveChanges = await Context.SaveChangesAsync();
             if (resultSaveChanges > 0)
             {
-                ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
+                await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
             }
 
             Context.Entry(result).Reload();
@@ -660,7 +660,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
-        public IHttpActionResult UpdateNode([FromBody] ClientTree model)
+        public async Task<IHttpActionResult> UpdateNode([FromBody] ClientTree model)
         {
             if (!ModelState.IsValid)
             {
@@ -758,14 +758,14 @@ namespace Module.Frontend.TPM.Controllers
 
                 if (currentRecord.DemandCode != null && currentRecord.DemandCode != "")
                 {
-                    CreateCoefficientSI2SOHandler(null, currentRecord.DemandCode, 1);
+                    await CreateCoefficientSI2SOHandler(null, currentRecord.DemandCode, 1);
                 }
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
-                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
+                    await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
                 }
 
                 return Created(currentRecord);
@@ -778,7 +778,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Delete([FromODataUri] int key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] int key)
         {
             try
             {
@@ -798,11 +798,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 recordsToDelete.ForEach(x => x.EndDate = DateTime.Now);
 
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
-                    ClientTreeBrandTechesController.FillClientTreeBrandTechTable(Context);
-                    ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
+                    await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
                 }
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -863,7 +863,7 @@ namespace Module.Frontend.TPM.Controllers
         /// <returns></returns>
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Move([FromODataUri] int nodeToMove, int destinationNode)
+        public async Task<IHttpActionResult> Move([FromODataUri] int nodeToMove, int destinationNode)
         {
             try
             {
@@ -886,7 +886,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 recordToMove.EndDate = dt;
                 Context.Set<ClientTree>().Add(newRecord);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
@@ -1041,7 +1041,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 clientTree.LogoFileName = fileName;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Json(new { success = true, fileName });
             }
@@ -1104,41 +1104,38 @@ namespace Module.Frontend.TPM.Controllers
         /// Создание задачи на добавление новых записей коэффицициентов
         /// </summary>
         /// <param name="promo"></param>
-        private void CreateCoefficientSI2SOHandler(string brandTechCode, string demandCode, double cValue)
+        private async Task CreateCoefficientSI2SOHandler(string brandTechCode, string demandCode, double cValue)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
-            {
-                HandlerData data = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("brandTechCode", brandTechCode, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("demandCode", demandCode, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("cValue", cValue, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Adding new records for coefficients SI/SO",
-                    Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
-                    ExecutionPeriod = null,
-                    RunGroup = "CreateCoefficientSI2SO",
-                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Adding new records for coefficients SI/SO",
+                Name = "Module.Host.TPM.Handlers.CreateCoefficientSI2SOHandler",
+                ExecutionPeriod = null,
+                RunGroup = "CreateCoefficientSI2SO",
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
     }
 

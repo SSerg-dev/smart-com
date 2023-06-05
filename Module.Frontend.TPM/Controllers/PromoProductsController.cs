@@ -1,37 +1,36 @@
 ﻿using AutoMapper;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
+using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Core.Settings;
-using Module.Persist.TPM.Utils;
-using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using Module.Frontend.TPM.Util;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -130,19 +129,19 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PromoProduct> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<PromoProduct> patch)
         {
             var model = Context.Set<PromoProduct>().Find(key);
             if (model == null)
             {
                 return NotFound();
             }
-            
+
             patch.Put(model);
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -160,7 +159,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProduct model)
+        public async Task<IHttpActionResult> Post(PromoProduct model)
         {
             if (!ModelState.IsValid)
             {
@@ -176,7 +175,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -188,8 +187,8 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProduct> patch)
-        {            
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<PromoProduct> patch)
+        {
             try
             {
                 var model = Context.Set<PromoProduct>().Find(key);
@@ -206,7 +205,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     // сброс старых значений ActualProductPCQty
                     var productsToReset = Context.Set<PromoProduct>().Where(x => x.EAN_PC == model.EAN_PC && x.PromoId == model.PromoId && !x.Disabled);
-                    foreach(var item in productsToReset)
+                    foreach (var item in productsToReset)
                     {
                         item.ActualProductPCQty = null;
                     }
@@ -282,8 +281,8 @@ namespace Module.Frontend.TPM.Controllers
                         }
                     }
                 }
-              
-                Context.SaveChanges();
+
+                await Context.SaveChangesAsync();
 
                 // перерасчет фактических параметров
                 CreateTaskCalculateActual(model.PromoId);
@@ -304,11 +303,11 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -320,7 +319,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -344,7 +343,7 @@ namespace Module.Frontend.TPM.Controllers
                     .Include(g => g.Promo.PromoStatus)
                     .FirstOrDefault(x => x.PromoId == promoId && x.ProductId == productId);
                 Context.Configuration.LazyLoadingEnabled = true;
-                
+
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(
                     new { success = true, models = promoProduct },
                            new JsonSerializerSettings()
@@ -388,7 +387,7 @@ namespace Module.Frontend.TPM.Controllers
                     { "actualproductlsv", new Column() { Order = 2, Field = "ActualProductLSV", Header = "Actual Product LSV", Quoting = false }},
                     { "actualproductpostpromoeffectlsv", new Column() { Order = 2, Field = "ActualProductPostPromoEffectLSV", Header = "Actual Product Post Promo Effect LSV", Quoting = false }},
                     { "actualproductlsvbycompensation", new Column() { Order = 2, Field = "ActualProductLSVByCompensation", Header = "Actual Product LSV By Compensation", Quoting = false }},
-					{ "actualproductupliftpercent", new Column() { Order = 2, Field = "ActualProductUpliftPercent", Header = "Actual Product Uplift %", Quoting = false }},
+                    { "actualproductupliftpercent", new Column() { Order = 2, Field = "ActualProductUpliftPercent", Header = "Actual Product Uplift %", Quoting = false }},
                     { "suminvoiceproduct", new Column() { Order = 2, Field = "SumInvoiceProduct", Header = "Invoice Total Product", Quoting = false }},
                 };
 
@@ -417,7 +416,7 @@ namespace Module.Frontend.TPM.Controllers
                     new Column() { Order = 2, Field = "ActualProductPCQty", Header = "Actual Product PC Qty", Quoting = false },
                     new Column() { Order = 3, Field = "ActualProductPCLSV", Header = "Actual Product PC LSV", Quoting = false },
                 };
-            }            
+            }
 
             return columns;
         }
@@ -434,7 +433,8 @@ namespace Module.Frontend.TPM.Controllers
             return columns;
         }
 
-        private IEnumerable<Column> GetImportTemplateSettings() {
+        private IEnumerable<Column> GetImportTemplateSettings()
+        {
             IEnumerable<Column> columns = new List<Column>()
             {
                 new Column() { Order = 0, Field = "EAN_PC", Header = "EAN PC", Quoting = false },
@@ -456,7 +456,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProduct> options, string additionalColumn = null, Guid? promoId = null, bool updateActualsMode = false)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<PromoProduct> options, string additionalColumn = null, Guid? promoId = null, bool updateActualsMode = false)
         {
             // Во вкладке Promo -> Activity можно смотреть детализацию раличных параметров
             // Это один грид с разными столбцами, additionalColumn - набор столбцов
@@ -468,40 +468,38 @@ namespace Module.Frontend.TPM.Controllers
             int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
             string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
             Guid handlerId = Guid.NewGuid();
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethodParams", additionalColumn, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("CustomFileName", customFileName, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoProductsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoProductsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethodParams", additionalColumn, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("IsActuals", updateActualsMode, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("CustomFileName", customFileName, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = handlerId,
-                    ConfigurationName = "PROCESSING",
-                    Description = string.IsNullOrEmpty(customFileName) ? $"Export {nameof(PromoProduct)} dictionary" : $"Export {customFileName.Replace('_', ' ')} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = handlerId,
+                ConfigurationName = "PROCESSING",
+                Description = string.IsNullOrEmpty(customFileName) ? $"Export {nameof(PromoProduct)} dictionary" : $"Export {customFileName.Replace('_', ' ')} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, handlerId);
         }
@@ -523,7 +521,7 @@ namespace Module.Frontend.TPM.Controllers
                     string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                     string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                    CreateImportTask(fileName, promoId);
+                    await CreateImportTask(fileName, promoId);
                     return Json(new { success = true });
                 }
                 else
@@ -540,7 +538,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         public async Task<IHttpActionResult> FullImportPluXLSX(Guid promoId)
-		{
+        {
             try
             {
                 bool promoAvaible = CalculationTaskManager.BlockPromo(promoId, Guid.Empty);
@@ -555,7 +553,7 @@ namespace Module.Frontend.TPM.Controllers
                     string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                     string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                    CreateImportTask(fileName, promoId, true);
+                    await CreateImportTask(fileName, promoId, true);
                     return Json(new { success = true });
                 }
                 else
@@ -570,74 +568,71 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, Guid promoId, bool isPlu = false)
+        private async Task CreateImportTask(string fileName, Guid promoId, bool isPlu = false)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
+            Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
+            string handlerName;
+            Type importModel;
+            if (promo.LoadFromTLC)
+            {
+                handlerName = "FullXLSXImportPromoProductFromTLCHandler";
+                importModel = typeof(ImportPromoProductFromTLC);
+            }
+            else
+            {
+                if (isPlu)
                 {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
-
-                Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
-                string handlerName;
-                Type importModel;
-                if (promo.LoadFromTLC)
-                {
-                    handlerName = "FullXLSXImportPromoProductFromTLCHandler";
-                    importModel = typeof(ImportPromoProductFromTLC);
+                    handlerName = "FullXLSXImportPromoProductPluHandler";
+                    importModel = typeof(ImportPromoProductPlu);
                 }
                 else
                 {
-                    if(isPlu)
-					{
-                        handlerName = "FullXLSXImportPromoProductPluHandler";
-                        importModel = typeof(ImportPromoProductPlu);
-                    }
-                    else
-					{
-                        handlerName = "FullXLSXImportPromoProductHandler";
-                        importModel = typeof(ImportPromoProduct);
-                    }
+                    handlerName = "FullXLSXImportPromoProductHandler";
+                    importModel = typeof(ImportPromoProduct);
                 }
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", importModel, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", importModel.Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Import Actuals For Promo " + promo.Number?.ToString(),
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    RunGroup = $"ImportActualsPromo{promo.Number?.ToString()}",
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
             }
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", importModel, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", importModel.Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProduct), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Import Actuals For Promo " + promo.Number?.ToString(),
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                RunGroup = $"ImportActualsPromo{promo.Number?.ToString()}",
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
@@ -713,7 +708,7 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
         }
-        
+
         /// <summary>
         /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
         /// </summary>
@@ -754,7 +749,7 @@ namespace Module.Frontend.TPM.Controllers
 
 
         [ClaimsAuthorize]
-        public IHttpActionResult SupportAdminExportXLSX(ODataQueryOptions<PromoProduct> options, Guid? promoId = null)
+        public async Task<IHttpActionResult> SupportAdminExportXLSX(ODataQueryOptions<PromoProduct> options, Guid? promoId = null)
         {
             var products = GetConstraintedQuery(options, false, promoId).Where(x => !x.Disabled && (!promoId.HasValue || x.PromoId == promoId.Value));
             var corrections = Context.Set<PromoProductsCorrection>().Where(x => products.Select(y => y.Id).Contains(x.PromoProductId) && x.TempId == null && x.Disabled != true);
@@ -770,8 +765,7 @@ namespace Module.Frontend.TPM.Controllers
             int? promoNumber = Context.Set<Promo>().FirstOrDefault(p => p.Id == promoId)?.Number;
             string customFileName = promoNumber.HasValue && promoNumber.Value != 0 ? $"№{promoNumber}_PromoProduct" : string.Empty;
             Guid handlerId = Guid.NewGuid();
-            using (DatabaseContext context = new DatabaseContext())
-            {
+
                 HandlerData data = new HandlerData();
                 string handlerName = "ExportHandler";
 
@@ -799,11 +793,10 @@ namespace Module.Frontend.TPM.Controllers
                     RoleId = roleId
                 };
                 handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Context.LoopHandlers.Add(handler);
+                await Context.SaveChangesAsync();
 
-            return Content(HttpStatusCode.OK, handlerId);
+                return Content(HttpStatusCode.OK, handlerId);
         }
 
         public static IEnumerable<Column> GetSupportAdminExportSettings()

@@ -15,10 +15,8 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
-using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -29,7 +27,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -117,7 +114,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
         {
             var model = Context.Set<PromoProductsCorrection>().Find(key);
             if (model == null)
@@ -129,11 +126,11 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                var saveChangesResult = Context.SaveChanges();
+                var saveChangesResult = await Context.SaveChangesAsync();
                 if (saveChangesResult > 0)
                 {
                     CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -152,7 +149,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProductsCorrection model)
+        public async Task<IHttpActionResult> Post(PromoProductsCorrection model)
         {
             if (!ModelState.IsValid)
             {
@@ -180,11 +177,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)
@@ -217,11 +214,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), result);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)
@@ -235,7 +232,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<PromoProductsCorrection> patch)
         {
             try
             {
@@ -276,7 +273,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     model.TempId = null;
                 }
-              
+
 
                 ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                 string promoStatuses = settingsManager.GetSetting<string>("PROMO_PRODUCT_CORRECTION_PROMO_STATUS_LIST", "Draft,Deleted,Cancelled,Started,Finished,Closed");
@@ -288,11 +285,11 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception("Promo Locked Update"));
                 }
 
-                var saveChangesResult = Context.SaveChanges();
+                var saveChangesResult = await Context.SaveChangesAsync();
                 if (saveChangesResult > 0)
                 {
                     CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 return Updated(model);
@@ -316,7 +313,7 @@ namespace Module.Frontend.TPM.Controllers
 
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -332,11 +329,11 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                var saveChangesResult = Context.SaveChanges();
+                var saveChangesResult = await Context.SaveChangesAsync();
                 if (saveChangesResult > 0)
                 {
                     CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -346,12 +343,12 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
-        
+
         private bool EntityExists(System.Guid key)
         {
             return Context.Set<PromoProductsCorrection>().Count(e => e.Id == key) > 0;
         }
-        
+
         private ExceptionResult GetErorrRequest(Exception e)
         {
             // обработка при создании дублирующей записи
@@ -380,7 +377,7 @@ namespace Module.Frontend.TPM.Controllers
                 var importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 var fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductsCorrectionHandler");
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -394,52 +391,50 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
             var roleId = role.Id;
 
-            using (var databaseContext = new DatabaseContext())
+
+            var resiltfile = new ImportResultFilesModel();
+            var resultmodel = new ImportResultModel();
+
+            var handlerData = new HandlerData();
+            var fileModel = new FileModel()
             {
-                var resiltfile = new ImportResultFilesModel();
-                var resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = Path.GetFileName(fileName),
+                DisplayName = Path.GetFileName(fileName)
+            };
 
-                var handlerData = new HandlerData();
-                var fileModel = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = Path.GetFileName(fileName),
-                    DisplayName = Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsCorrection).Name, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+            //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() {"Name"}, handlerData);
 
-                HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsCorrection).Name, handlerData, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
-                //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() {"Name"}, handlerData);
+            var loopHandler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(PromoProductsCorrection).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(PromoProductsCorrection).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
 
-                var loopHandler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(PromoProductsCorrection).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(PromoProductsCorrection).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-
-                loopHandler.SetParameterData(handlerData);
-                databaseContext.LoopHandlers.Add(loopHandler);
-                databaseContext.SaveChanges();
-            }
+            loopHandler.SetParameterData(handlerData);
+            Context.LoopHandlers.Add(loopHandler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
@@ -492,6 +487,6 @@ namespace Module.Frontend.TPM.Controllers
                 Disabled = false
             });
         }
-        
+
     }
 }
