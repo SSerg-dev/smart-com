@@ -183,7 +183,7 @@
         idProperty: 'Id',
         model: 'App.model.tpm.baseclient.SchedulerClientTreeDTO',
         autoLoad: true,
-        pageSize: 100,
+        pageSize: 5000,
         sortInfo: { field: 'Id', direction: 'ASC' }
     },
 
