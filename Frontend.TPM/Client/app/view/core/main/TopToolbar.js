@@ -23,7 +23,7 @@
         },
         {
             xtype: 'label',
-            text: 'Rolling Scenario mode',
+            text: 'Scenario mode',
             margin: '0 0 0 5'
         },
         '->',

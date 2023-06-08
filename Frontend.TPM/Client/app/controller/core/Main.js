@@ -127,7 +127,7 @@
         var mode = settingStore.findRecord('name', 'mode');
         if (mode) {
             if (mode.data.value == 1) {
-                path = location.origin + '/Bundles/style/images/logo_rs.svg'
+                path = location.origin + '/Bundles/style/images/logo-scenario.svg'
             }
         }
 
