@@ -123,8 +123,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualProductVolumeByCompensation', (col('ActualProductPCQty') * col('PCVolume')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductVolume', (col('ActualProductQtySO') * col('PCVolume')).cast(DecimalType(30,6)))
 
-    print('check actual products1')
-
     #####*Calculate ActualPromoLSVByCompensation, ActualPromoLSVSI*
 
     sumActualProductParamsList = calcActualPromoProductDF\
@@ -178,13 +176,13 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
               ,calcActualPromoDF.ActualPromoVolumeByCompensation.alias('calcActualPromoVolumeByCompensation')
               ,calcActualPromoDF.ActualPromoVolume.alias('calcActualPromoVolume')
              )\
-      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation').isNull(), 0)\
+      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation').isNull(), col('ActualPromoLSVByCompensation'))\
                   .otherwise(col('calcActualPromoLSVByCompensation')))\
-      .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVSI').isNull(), 0).otherwise(col('calcActualPromoLSVSI')))\
-      .withColumn('ActualPromoBaselineVolume', when(col('calcActualPromoBaselineVolume').isNull(), 0).otherwise(col('calcActualPromoBaselineVolume')))\
-      .withColumn('ActualPromoPostPromoEffectVolume', when(col('calcActualPromoPostPromoEffectVolume').isNull(), 0).otherwise(col('calcActualPromoPostPromoEffectVolume')))\
-      .withColumn('ActualPromoVolumeByCompensation', when(col('calcActualPromoVolumeByCompensation').isNull(), 0).otherwise(col('calcActualPromoVolumeByCompensation')))\
-      .withColumn('ActualPromoVolume', when(col('calcActualPromoVolume').isNull(), 0).otherwise(col('calcActualPromoVolume')))\
+      .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVSI').isNull(), col('ActualPromoLSVSI')).otherwise(col('calcActualPromoLSVSI')))\
+      .withColumn('ActualPromoBaselineVolume', when(col('calcActualPromoBaselineVolume').isNull(), col('ActualPromoBaselineVolume')).otherwise(col('calcActualPromoBaselineVolume')))\
+      .withColumn('ActualPromoPostPromoEffectVolume', when(col('calcActualPromoPostPromoEffectVolume').isNull(), col('ActualPromoPostPromoEffectVolume')).otherwise(col('calcActualPromoPostPromoEffectVolume')))\
+      .withColumn('ActualPromoVolumeByCompensation', when(col('calcActualPromoVolumeByCompensation').isNull(), col('ActualPromoVolumeByCompensation')).otherwise(col('calcActualPromoVolumeByCompensation')))\
+      .withColumn('ActualPromoVolume', when(col('calcActualPromoVolume').isNull(), col('ActualPromoVolume')).otherwise(col('calcActualPromoVolume')))\
       .drop('calcActualPromoLSVByCompensation','calcActualPromoLSVSI','calcActualPromoBaselineVolume','calcActualPromoPostPromoEffectVolume','calcActualPromoVolumeByCompensation','calcActualPromoVolume')
 
     #####*Get result*
