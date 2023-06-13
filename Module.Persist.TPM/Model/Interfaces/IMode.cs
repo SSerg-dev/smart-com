@@ -7,6 +7,8 @@
     public enum TPMmode
     {
         Current,
-        RS
+        RS,
+        RA,
+        Hidden
     }
 }
