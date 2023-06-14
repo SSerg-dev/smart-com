@@ -14,6 +14,12 @@ Ext.define('App.controller.core.security.Security', {
         ref: 'rolesView',
         selector: 'changerolewindow rolesview'
     }, {
+        ref: 'modesView',
+        selector: 'changemodewindow modesview'
+    }, {
+        ref: 'modeButton',
+        selector: 'toptoolbar #modebutton'
+    }, {
         ref: 'roleButton',
         selector: 'toptoolbar #rolebutton'
     }, {
@@ -22,6 +28,11 @@ Ext.define('App.controller.core.security.Security', {
     }, {
         ref: 'viewport',
         selector: 'viewport'
+    }, {
+        ref: 'changeModeWindow',
+        selector: 'changemodewindow',
+        xtype: 'changemodewindow',
+        autoCreate: true
     }, {
         ref: 'changeRoleWindow',
         selector: 'changerolewindow',
@@ -42,14 +53,23 @@ Ext.define('App.controller.core.security.Security', {
     init: function () {
         this.listen({
             component: {
+                'changemodewindow modesview': {
+                    selectionchange: this.onModeSelectionChange
+                },
                 'changerolewindow rolesview': {
                     selectionchange: this.onRoleSelectionChange
+                },
+                'toptoolbar #modebutton': {
+                    click: this.onModeButtonClick
                 },
                 'toptoolbar #rolebutton': {
                     click: this.onRoleButtonClick
                 },
                 'toptoolbar #userbutton': {
                     click: this.onUserButtonClick
+                },
+                'changemodewindow #ok': {
+                    click: this.onOkModeButtonClick
                 },
                 'changerolewindow #ok': {
                     click: this.onOkButtonClick
@@ -106,6 +126,23 @@ Ext.define('App.controller.core.security.Security', {
         this.getChangeRoleWindow()
             .down('#ok')
             .setDisabled(!rolesView.hasSelectedRole);
+    },
+
+    onModeSelectionChange: function (modesView, oldMode, newMode) {
+        this.getChangeModeWindow()
+            .down('#ok')
+            .setDisabled(!modesView.hasSelectedMode);
+    },
+
+    onModeButtonClick: function (button) {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode').data.value;
+        
+        this.getChangeModeWindow().show();
+
+        if (!Ext.isEmpty(mode)) {
+            this.getModesView().setMode(mode);
+        }
     },
 
     onRoleButtonClick: function (button) {
@@ -166,9 +203,18 @@ Ext.define('App.controller.core.security.Security', {
         //} else {
         var role = App.UserInfo.getCurrentRole(),
             username = App.UserInfo.getUserName(),
+            modebutton = this.getModeButton(),
             rolebutton = this.getRoleButton(),
             userbutton = this.getUserButton();
 
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode').data.value;
+
+        var modesStore = Ext.create('App.store.tpm.mode.Mode');
+        var itemMode = modesStore.findRecord('id', mode);
+        if (!Ext.isEmpty(itemMode)) {
+            modebutton.setText(itemMode.data.alias);
+        }
         if (!Ext.isEmpty(role) && !Ext.isEmpty(rolebutton)) {
             rolebutton.setText(role.DisplayName);
         }
@@ -179,9 +225,23 @@ Ext.define('App.controller.core.security.Security', {
 
         Ext.getCmp('viewcontainer').removeAll(true);
         MenuMgr.init();
-        //}
     },
 
+    onOkModeButtonClick: function (button) {
+        var tpmMode = this.getModesView().getMode();
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        settingStore.load();
+        var mode = settingStore.findRecord('name', 'mode');
+        mode.set('value', tpmMode);
+
+        settingStore.sync();
+        window.location.reload();
+        //MenuMgr.refreshCurrentMenu();
+        //alert('click!')
+        
+        this.getChangeModeWindow().close();
+    },
+    
     onOkButtonClick: function (button) {
         var role = this.getRolesView().getRole();
 

@@ -548,15 +548,18 @@
     }
 
 /* Security Buttons  */
+.modebutton .securitybutton-text,
 .rolebutton .securitybutton-text {
     font-weight: bold;
 }
 
+.modebutton .securitybutton-text,
 .rolebutton .securitybutton-text,
 .userbutton .securitybutton-text {
     border-bottom: 1px solid #ccd1d9;
 }
 
+.modebutton .x-btn-inner,
 .rolebutton .x-btn-inner,
 .userbutton .x-btn-inner {
     padding-top: 1px !important;

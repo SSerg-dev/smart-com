@@ -19,14 +19,12 @@
         },
         '->',
         {
-            xtype: 'modelswitcher',
+            xtype: 'securitybutton',
+            cls: 'modebutton',
+            glyph: 0xf493,
+            itemId: 'modebutton',
+            text: '[Select TPM Mode]'
         },
-        {
-            xtype: 'label',
-            text: 'Scenario mode',
-            margin: '0 0 0 5'
-        },
-        '->',
         {
             xtype: 'securitybutton',
             cls: 'rolebutton',

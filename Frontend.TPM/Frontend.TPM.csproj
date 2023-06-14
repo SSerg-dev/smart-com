@@ -810,7 +810,9 @@
     <Content Include="Client\app\view\core\role\HistoricalRoleEditor.js" />
     <Content Include="Client\app\view\core\role\Role.js" />
     <Content Include="Client\app\view\core\role\RoleEditor.js" />
+    <Content Include="Client\app\view\core\security\ChangeModeWindow.js" />
     <Content Include="Client\app\view\core\security\LogInWindow.js" />
+    <Content Include="Client\app\view\core\security\ModesView.js" />
     <Content Include="Client\app\view\core\security\RolesView.js" />
     <Content Include="Client\app\view\core\security\SecurityButton.js" />
     <Content Include="Client\app\view\core\security\SecurityChangeRoleWindow.js" />

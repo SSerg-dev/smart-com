@@ -319,6 +319,12 @@ Ext.override(App.view.core.security.RolesView, {
     }
 });
 
+Ext.override(App.view.core.security.ModesView, {
+    header: {
+        cls: 'roles-header'
+    }
+});
+
 Ext.override(App.view.core.filter.ExtendedFilterWindow, {
     cls: 'scrollable custom-scheduler-toolbar',
     listeners: {
