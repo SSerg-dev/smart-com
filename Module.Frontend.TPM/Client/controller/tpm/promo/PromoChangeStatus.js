@@ -80,6 +80,9 @@
                 if (mode.data.value == 1) {
                     promoController.savePublishClosePromo(model, window, true, true);
                 }
+                if (mode.data.value == 2) {
+                    promoController.savePublishClosePromo(model, window, true, true);
+                }
             }
             promoController.updateStatusHistoryState();
 

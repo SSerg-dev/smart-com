@@ -150,7 +150,7 @@
             me.calendarSheduler = calendarGrid[0];
         }
         if (mode) {
-            if (mode.data.value == 1) {
+            if (mode.data.value == 1 || mode.data.value == 2) {
                 var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
                 RSmodeController.getRSPeriod(function (returnValue) {
                     StartDateRS = new Date(returnValue.StartDate);
@@ -730,13 +730,13 @@
         if (['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'].includes(App.UserInfo.getCurrentRole()['SystemName'])) {
             isEditable = true;
         }
-        if ((status == 'onapproval' || status == 'approved') && mode == 'RS') {
+        if ((status == 'onapproval' || status == 'approved') && (mode == 'RS' || mode == 'RA')) {
             isDeletable = true;
         }
-        if ((status == 'planned' || status == 'started' || status == 'finished') && mode == 'RS') {
+        if ((status == 'planned' || status == 'started' || status == 'finished') && (mode == 'RS' || mode == 'RA')) {
             isEditable = false;
         }
-        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && mode != 'RS') {
+        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && (mode != 'RS' || mode != 'RA') ) {
             isPlannable = true;
         }
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
@@ -826,6 +826,9 @@
                             }
                             else if (mode.data.value == 1) {
                                 promoStore.getProxy().extraParams.TPMmode = 'RS';
+                            }
+                            else if (mode.data.value == 2) {
+                                promoStore.getProxy().extraParams.TPMmode = 'RA';
                             }
                         }
                         panel.up('schedulecontainer').setLoading(true);
@@ -935,7 +938,7 @@
             return false;
         }
         if (mode) {
-            if (mode.data.value == 1) {
+            if (mode.data.value == 1 || mode.data.value == 2) {
                 var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
                 RSmodeController.getRSPeriod(function (returnValue) {
                     StartDateRS = new Date(returnValue.StartDate);
@@ -1230,7 +1233,7 @@
             return false;
         }
         if (mode) {
-            if (mode.data.value == 1) {
+            if (mode.data.value == 1 || mode.data.value == 2) {
                 var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
                 RSmodeController.getRSPeriod(function (returnValue) {
                     StartDateRS = new Date(returnValue.StartDate);
@@ -1829,6 +1832,9 @@
             else if (mode.data.value == 1) {
                 promoStore.getProxy().extraParams.TPMmode = 'RS';
             }
+            else if (mode.data.value == 2) {
+                promoStore.getProxy().extraParams.TPMmode = 'RA';
+            }
         }
         panel.up('schedulecontainer').setLoading(true);
         promoStore.load({
@@ -2101,7 +2107,7 @@
     },
 
     accessDeniedForRSmode: function (rec) {
-        if (mode.data.value == 1) {
+        if (mode.data.value == 1 || mode.data.value == 2) {
             if (
                 (
                     new Date(rec.get("PromoDispatchStartDate")) > new Date(StartDateRS) &&
@@ -2303,6 +2309,8 @@
             }
             else if (mode.data.value == 1) {
                 return 'RS';
+            } else if (mode.data.value == 2) {
+                return 'RA';
             } else
                 return 'Current'
         }

@@ -1501,6 +1501,12 @@
             });
             this.showRSmodeLabel(true);
         }
+        if (promoeditorcustom.TPMmode == 2) {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                promoeditorcustom.rsStartEnd = returnValue;
+            });
+            //this.showRAmodeLabel(true);
+        }
 
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
@@ -1831,7 +1837,7 @@
 
 
         if (mode) {
-            if (mode.data.value == 1) {
+            if (mode.data.value == 1 || mode.data.value == 2) {
                 if (selModel.hasSelection()) {
                     Ext.Msg.show({
                         title: l10n.ns('core').value('deleteWindowTitle'),
@@ -2831,6 +2837,9 @@
         if (window.TPMmode == 1) {
             record.data.TPMmode = 'RS';
         }
+        if (window.TPMmode == 2) {
+            record.data.TPMmode = 'RA';
+        }
         //record.data.PlanPromoBaselineLSV = promoActivityStep2.down('numberfield[name=PlanPromoBaselineLSV]').getValue();
         //record.data.PlanPromoIncrementalLSV = promoActivityStep2.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
         //record.data.PlanPromoLSV = promoActivityStep2.down('numberfield[name=PlanPromoLSV]').getValue();
@@ -2932,7 +2941,7 @@
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
-        if (promoeditorcustom.TPMmode == 1) {
+        if (promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
                 if (promoeditorcustom.rsStartEnd) {
@@ -2960,6 +2969,9 @@
         }
         if (record.data.TPMmode == 'RS') {
             this.showRSmodeLabel(true);
+        }
+        if (record.data.TPMmode == 'RA') {
+            //this.showRAmodeLabel(true);
         }
         if (record.data.IsPriceIncrease) {
             this.showIsPriceIncreaseWindowLabel(true);
@@ -3841,7 +3853,7 @@
         }
 
         //вырубает кнопки в RS режиме
-        if (promoeditorcustom.TPMmode == 1) {
+        if (promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
@@ -3879,7 +3891,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
-        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1) {
+        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -4055,6 +4067,9 @@
                     this.saveModel(model, window, close, reloadForm);
                 }
                 if (mode.data.value == 1) {
+                    this.savePublishClosePromo(model, window, close, reloadForm);
+                }
+                if (mode.data.value == 2) {
                     this.savePublishClosePromo(model, window, close, reloadForm);
                 }
             }

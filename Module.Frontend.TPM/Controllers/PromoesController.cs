@@ -8,6 +8,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Model;
@@ -271,19 +272,40 @@ namespace Module.Frontend.TPM.Controllers
                 Promo promoCopy = AutomapperProfiles.PromoCopy(model);
                 if (model.TPMmode == TPMmode.Current)
                 {
-                    if (model.TPMmode != ChangePromo.TPMmode)
+                    if (model.TPMmode == TPMmode.RS || ChangePromo.TPMmode == TPMmode.RS)
                     {
-                        model = RSmodeHelper.EditToPromoRS(Context, model);
-                    }
-                    else
-                    {
-                        Promo promoRS = Context.Set<Promo>().FirstOrDefault(f => f.Number == model.Number && f.TPMmode == TPMmode.RS);
-                        if (promoRS != null)
+                        if (model.TPMmode != ChangePromo.TPMmode)
                         {
-                            Context.Set<Promo>().Remove(promoRS);
-                            await Context.SaveChangesAsync();
-                            patch.Patch(model);
-                            RSmodeHelper.EditToPromoRS(Context, model);
+                            model = RSmodeHelper.EditToPromoRS(Context, model);
+                        }
+                        else
+                        {
+                            Promo promoRS = Context.Set<Promo>().FirstOrDefault(f => f.Number == model.Number && f.TPMmode == TPMmode.RS);
+                            if (promoRS != null)
+                            {
+                                Context.Set<Promo>().Remove(promoRS);
+                                await Context.SaveChangesAsync();
+                                patch.Patch(model);
+                                RSmodeHelper.EditToPromoRS(Context, model);
+                            }
+                        }
+                    }
+                    if (model.TPMmode == TPMmode.RA || ChangePromo.TPMmode == TPMmode.RA)
+                    {
+                        if (model.TPMmode != ChangePromo.TPMmode)
+                        {
+                            model = RAmodeHelper.EditToPromoRA(Context, model);
+                        }
+                        else
+                        {
+                            Promo promoRA = Context.Set<Promo>().FirstOrDefault(f => f.Number == model.Number && f.TPMmode == TPMmode.RA);
+                            if (promoRA != null)
+                            {
+                                Context.Set<Promo>().Remove(promoRA);
+                                await Context.SaveChangesAsync();
+                                patch.Patch(model);
+                                RAmodeHelper.EditToPromoRA(Context, model);
+                            }
                         }
                     }
                 }
@@ -1044,31 +1066,60 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return NotFound();
                 }
-                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
-                if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
+                if (TPMmode == TPMmode.RS)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
-                }
-                if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
-                {
-                    List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
-                    if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                    StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+                    if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
                     {
-                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
                     }
-                    Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
-                    if (presentRsPromo is null)
+                    if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
                     {
-                        model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                        List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
+                        if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                        {
+                            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                        }
+                        Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
+                        if (presentRsPromo is null)
+                        {
+                            model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                        }
+                        //создавать удаленную копию PromoRS c сущностями, если ее нет
                     }
-                    //создавать удаленную копию PromoRS c сущностями, если ее нет
+                    else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                    {
+                        // удалить PromoRS  c сущностями
+                        model = RSmodeHelper.DeleteToPromoRS(Context, model);
+                    }
                 }
-                else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                if (TPMmode == TPMmode.RA)
                 {
-                    // удалить PromoRS  c сущностями
-                    model = RSmodeHelper.DeleteToPromoRS(Context, model);
+                    StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
+                    if (((DateTimeOffset)model.DispatchesStart) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.DispatchesStart || model.BudgetYear != startEndModel.StartDate.Year)
+                    {
+                        return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RA period" }));
+                    }
+                    if (TPMmode == TPMmode.RA && model.TPMmode == TPMmode.Current) //фильтр промо
+                    {
+                        List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
+                        if (blockStatuses.Contains(model.PromoStatus.SystemName))
+                        {
+                            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                        }
+                        Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
+                        if (presentRsPromo is null)
+                        {
+                            model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                        }
+                        //создавать удаленную копию PromoRS c сущностями, если ее нет
+                    }
+                    else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                    {
+                        // удалить PromoRS  c сущностями
+                        model = RAmodeHelper.DeleteToPromoRA(Context, model);
+                    }
                 }
-
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
@@ -1724,30 +1775,30 @@ namespace Module.Frontend.TPM.Controllers
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
 
-                HandlerData data = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Update uplift value",
-                    Name = "Module.Host.TPM.Handlers.UpdateUpliftHandler",
-                    ExecutionPeriod = null,
-                    RunGroup = "UpdateUplift",
-                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                Context.LoopHandlers.Add(handler);
-                await Context.SaveChangesAsync();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Update uplift value",
+                Name = "Module.Host.TPM.Handlers.UpdateUpliftHandler",
+                ExecutionPeriod = null,
+                RunGroup = "UpdateUplift",
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+        }
 
         private IEnumerable<Column> GetPromoROIExportSettings()
         {
@@ -2021,9 +2072,17 @@ namespace Module.Frontend.TPM.Controllers
         }
         [HttpPost]
         [ClaimsAuthorize]
-        public IHttpActionResult GetRSPeriod()
+        public IHttpActionResult GetRSPeriod(TPMmode TPMmode)
         {
-            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+            StartEndModel startEndModel = new StartEndModel();
+            if (TPMmode == TPMmode.RS)
+            {
+                startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+            }
+            if (TPMmode == TPMmode.RA)
+            {
+                startEndModel = RAmodeHelper.GetRAPeriod();
+            }
 
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, startEndModel }));
         }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist;
 using System;
 using System.Collections.Generic;
@@ -11,6 +14,53 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
 {
     public static class RAmodeHelper
     {
+        public static StartEndModel GetRAPeriod()
+        {
+            DateTimeOffset startDate = TimeHelper.ThisStartYear().AddYears(1);
+            DateTimeOffset endDate = TimeHelper.ThisEndYear().AddYears(1);
+            StartEndModel startEndModel = new StartEndModel
+            {
+                StartDate = startDate,
+                EndDate = endDate
+            };
+            return startEndModel;
+        }
+        public static void CreateRAPeriod(Promo promo, DatabaseContext Context)
+        {
+            List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+                .Include(g => g.Promoes)
+                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
+
+            StartEndModel startEndModel = GetRAPeriod();
+            RollingScenario rollingScenario = new RollingScenario();
+            if (rollingScenarioExist == null)
+            {
+                ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+                rollingScenario = new RollingScenario
+                {
+                    StartDate = startEndModel.StartDate,
+                    EndDate = startEndModel.EndDate,
+                    RSstatus = RSstateNames.DRAFT,
+                    ClientTree = client,
+                    Promoes = new List<Promo>()
+                };
+                rollingScenario.Promoes.Add(promo);
+                Context.Set<RollingScenario>().Add(rollingScenario);
+            }
+            else
+            {
+                rollingScenarioExist.Promoes.Add(promo);
+            }
+            Context.SaveChanges();
+        }
+        public static void CreateRAPeriod(List<Promo> promoes, DatabaseContext Context)
+        {
+            foreach (Promo promo in promoes)
+            {
+                CreateRAPeriod(promo, Context);
+            }
+        }
         public static Promo EditToPromoRA(DatabaseContext Context, Promo promo, bool disabled = false, DateTimeOffset? deleteddate = null)
         {
             var configuration = new MapperConfiguration(cfg =>
@@ -124,7 +174,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
                 }
             }
             Context.SaveChanges();
-            //RAPeriodHelper.CreateRAPeriod(promoRA, Context);
+            CreateRAPeriod(promoRA, Context);
             return promoRA;
 
         }
@@ -218,7 +268,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
             List<Promo> promoesRA = mapper.Map<List<Promo>>(promoes);
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
-            //RAPeriodHelper.CreateRAPeriod(promoesRA, Context);
+            CreateRAPeriod(promoesRA, Context);
             return promoesRA;
 
         }
@@ -352,7 +402,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
             List<PromoSupportPromo> promoSupportPromoesRA = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
             Context.Set<PromoSupportPromo>().AddRange(promoSupportPromoesRA);
             Context.SaveChanges();
-            //RAPeriodHelper.CreateRAPeriod(promoSupportPromoesRA.Select(g => g.Promo).ToList(), Context);
+            CreateRAPeriod(promoSupportPromoesRA.Select(g => g.Promo).ToList(), Context);
             return promoSupportPromoesRA;
 
         }
@@ -448,7 +498,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
 
             Context.Set<IncrementalPromo>().AddRange(incrementalPromosRA);
             Context.SaveChanges();
-            //RAPeriodHelper.CreateRAPeriod(incrementalPromosRA.Select(g => g.Promo).ToList(), Context);
+            CreateRAPeriod(incrementalPromosRA.Select(g => g.Promo).ToList(), Context);
             return incrementalPromosRA;
         }
     }

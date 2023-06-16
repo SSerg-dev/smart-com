@@ -6,6 +6,7 @@ using Core.Settings;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
@@ -1031,6 +1032,10 @@ namespace Module.Frontend.TPM.Util
             if (result.TPMmode == TPMmode.RS && !result.CalculateML)
             {
                 RSPeriodHelper.CreateRSPeriod(result, context);
+            }
+            if (result.TPMmode == TPMmode.RA && !result.CalculateML)
+            {
+                RAmodeHelper.CreateRAPeriod(result, context);
             }
             return result;
         }
