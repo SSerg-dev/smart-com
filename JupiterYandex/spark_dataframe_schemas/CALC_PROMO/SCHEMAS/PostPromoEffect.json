@@ -1,0 +1,89 @@
+{
+  "fields": [
+    {
+      "metadata": {
+      },
+      "name": "Id",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "Disabled",
+      "nullable": true,
+      "type": "integer"
+    },
+    {
+      "metadata": {
+      },
+      "name": "DeletedDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "StartDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "EndDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "ClientTreeId",
+      "nullable": true,
+      "type": "integer"
+    },
+    {
+      "metadata": {
+      },
+      "name": "ProductTreeId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "EffectWeek1",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "EffectWeek2",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "TotalEffect",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "ModifiedDate",
+      "nullable": true,
+      "type": "timestamp"
+    },
+    {
+      "metadata": {
+      },
+      "name": "#QCCount",
+      "nullable": true,
+      "type": "integer"
+    }
+  ],
+  "type": "struct"
+}
