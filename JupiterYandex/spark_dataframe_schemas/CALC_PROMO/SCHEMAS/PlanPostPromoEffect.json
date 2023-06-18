@@ -24,16 +24,44 @@
     {
       "metadata": {
       },
-      "name": "StartDate",
+      "name": "Size",
       "nullable": true,
-      "type": "timestamp"
+      "type": "string"
     },
     {
       "metadata": {
       },
-      "name": "EndDate",
+      "name": "PlanPostPromoEffectW1",
       "nullable": true,
-      "type": "timestamp"
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPostPromoEffectW2",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "DiscountRangeId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "DurationRangeId",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
+      "name": "BrandTechId",
+      "nullable": true,
+      "type": "string"
     },
     {
       "metadata": {
@@ -41,34 +69,6 @@
       "name": "ClientTreeId",
       "nullable": true,
       "type": "integer"
-    },
-    {
-      "metadata": {
-      },
-      "name": "ProductTreeId",
-      "nullable": true,
-      "type": "string"
-    },
-    {
-      "metadata": {
-      },
-      "name": "EffectWeek1",
-      "nullable": true,
-      "type": "double"
-    },
-    {
-      "metadata": {
-      },
-      "name": "EffectWeek2",
-      "nullable": true,
-      "type": "double"
-    },
-    {
-      "metadata": {
-      },
-      "name": "TotalEffect",
-      "nullable": true,
-      "type": "double"
     },
     {
       "metadata": {
