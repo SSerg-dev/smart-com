@@ -103,9 +103,9 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
                                                      when(col('ActualProductBaselineLSV') != 0, col('ActualProductIncrementalLSV') / col('ActualProductBaselineLSV') * 100.0)\
                                                      .otherwise(0))\
                                                 .otherwise(None).cast(DecimalType(30,6)))\
-      .withColumn('ActualProductPostPromoEffectQtyW1', when(col('promoInOut') == 'False', col('PlanProductBaselineCaseQty') * col('promoClientPostPromoEffectW1') / 100.0)\
+      .withColumn('ActualProductPostPromoEffectQtyW1', when(col('promoInOut') == 'False', col('PlanProductBaselineCaseQty') * col('PlanProductPostPromoEffectW1') / 100.0)\
                                               .otherwise(0).cast(DecimalType(30,6)))\
-      .withColumn('ActualProductPostPromoEffectQtyW2', when(col('promoInOut') == 'False', col('PlanProductBaselineCaseQty') * col('promoClientPostPromoEffectW2') / 100.0)\
+      .withColumn('ActualProductPostPromoEffectQtyW2', when(col('promoInOut') == 'False', col('PlanProductBaselineCaseQty') * col('PlanProductPostPromoEffectW2') / 100.0)\
                                               .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectQty', when(col('promoInOut') == 'False', col('ActualProductPostPromoEffectQtyW1') + col('ActualProductPostPromoEffectQtyW2'))\
                                               .otherwise(0).cast(DecimalType(30,6)))\

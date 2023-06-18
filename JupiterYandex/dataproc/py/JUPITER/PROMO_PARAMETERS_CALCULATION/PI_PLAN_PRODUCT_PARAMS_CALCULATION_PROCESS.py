@@ -267,23 +267,23 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('PlanProductPCQty', (col('PlanProductCaseQty') * col('UOM_PC2Case')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductCaseLSV', (col('PlanProductBaselineCaseQty') * col('Price')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPCLSV', (col('PlanProductCaseLSV') / col('UOM_PC2Case')).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectQtyW1', (col('PlanProductBaselineCaseQty') * col('promoClientPostPromoEffectW1') / 100.0).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectQtyW1', (col('PlanProductBaselineCaseQty') * col('PlanProductPostPromoEffectW1') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectQtyW1', when(col('PlanProductPostPromoEffectQtyW1').isNull(), 0)\
                   .otherwise(col('PlanProductPostPromoEffectQtyW1')).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectQtyW2', (col('PlanProductBaselineCaseQty') * col('promoClientPostPromoEffectW2') / 100.0).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectQtyW2', (col('PlanProductBaselineCaseQty') * col('PlanProductPostPromoEffectW2') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectQtyW2', when(col('PlanProductPostPromoEffectQtyW2').isNull(), 0)\
                   .otherwise(col('PlanProductPostPromoEffectQtyW2')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectQty', (col('PlanProductPostPromoEffectQtyW1') + col('PlanProductPostPromoEffectQtyW2')).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectLSVW1', (col('PlanProductBaselineLSV') * col('promoClientPostPromoEffectW1') / 100.0).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectLSVW1', (col('PlanProductBaselineLSV') * col('PlanProductPostPromoEffectW1') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectLSVW1', when(col('PlanProductPostPromoEffectLSVW1').isNull(), 0)\
                   .otherwise(col('PlanProductPostPromoEffectLSVW1')).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectLSVW2', (col('PlanProductBaselineLSV') * col('promoClientPostPromoEffectW2') / 100.0).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectLSVW2', (col('PlanProductBaselineLSV') * col('PlanProductPostPromoEffectW2') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectLSVW2', when(col('PlanProductPostPromoEffectLSVW2').isNull(), 0)\
                   .otherwise(col('PlanProductPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectLSV', (col('PlanProductPostPromoEffectLSVW1') + col('PlanProductPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductBaselineVolume', (col('PlanProductBaselineCaseQty') * col('CaseVolume')).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectVolumeW1', (col('PlanProductBaselineVolume') * col('promoClientPostPromoEffectW1') / 100).cast(DecimalType(30,6)))\
-      .withColumn('PlanProductPostPromoEffectVolumeW2', (col('PlanProductBaselineVolume') * col('promoClientPostPromoEffectW2') / 100).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectVolumeW1', (col('PlanProductBaselineVolume') * col('PlanProductPostPromoEffectW1') / 100).cast(DecimalType(30,6)))\
+      .withColumn('PlanProductPostPromoEffectVolumeW2', (col('PlanProductBaselineVolume') * col('PlanProductPostPromoEffectW2') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectVolume', (col('PlanProductPostPromoEffectVolumeW1') + col('PlanProductPostPromoEffectVolumeW2')).cast(DecimalType(30,6)))
 
     #####*Calculate PlanPromoIncrementalLSV, PlanPromoBaselineLSV, PlanPromoLSV*
@@ -295,15 +295,27 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
               ,col('PlanProductBaselineLSV')
               ,col('PlanProductBaselineVolume')
               ,col('PlanProductLSV')
+              ,col('PlanProductPostPromoEffectLSVW1')
+              ,col('PlanProductPostPromoEffectLSVW2')
+              ,col('PlanProductPostPromoEffectVolumeW1')
+              ,col('PlanProductPostPromoEffectVolumeW2')
              )\
       .groupBy('promoNumber')\
       .agg(sum('PlanProductIncrementalLSV').alias('calcPlanPromoIncrementalLSV'),
            sum('PlanProductBaselineLSV').alias('calcPlanPromoBaselineLSV'),
-           sum('PlanProductBaselineVolume').alias('calcPlanProductBaselineVolume'))\
+           sum('PlanProductBaselineVolume').alias('calcPlanProductBaselineVolume'),
+           sum('PlanProductPostPromoEffectLSVW1').alias('calcPlanProductPostPromoEffectLSVW1'),
+           sum('PlanProductPostPromoEffectLSVW2').alias('calcPlanProductPostPromoEffectLSVW2'),
+           sum('PlanProductPostPromoEffectVolumeW1').alias('calcPlanProductPostPromoEffectVolumeW1'),
+           sum('PlanProductPostPromoEffectVolumeW2').alias('calcPlanProductPostPromoEffectVolumeW2'))\
       .withColumn('tempPlanPromoIncrementalLSV', when(col('calcPlanPromoIncrementalLSV').isNull(), 0).otherwise(col('calcPlanPromoIncrementalLSV')))\
       .withColumn('tempPlanPromoBaselineLSV', when(col('calcPlanPromoBaselineLSV').isNull(), 0).otherwise(col('calcPlanPromoBaselineLSV')))\
       .withColumn('calcPlanPromoLSV', col('tempPlanPromoIncrementalLSV') + col('tempPlanPromoBaselineLSV'))\
       .withColumn('calcPlanProductBaselineVolume', when(col('calcPlanProductBaselineVolume').isNull(), 0).otherwise(col('calcPlanProductBaselineVolume')))\
+      .withColumn('calcPlanProductPostPromoEffectLSVW1', when(col('calcPlanProductPostPromoEffectLSVW1').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectLSVW1')))\
+      .withColumn('calcPlanProductPostPromoEffectLSVW2', when(col('calcPlanProductPostPromoEffectLSVW2').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectLSVW2')))\
+      .withColumn('calcPlanProductPostPromoEffectVolumeW1', when(col('calcPlanProductPostPromoEffectVolumeW1').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectVolumeW1')))\
+      .withColumn('calcPlanProductPostPromoEffectVolumeW2', when(col('calcPlanProductPostPromoEffectVolumeW2').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectVolumeW2')))\
       .drop('tempPlanPromoIncrementalLSV','tempPlanPromoBaselineLSV')
 
     sumPlanProductParamsList = sumPlanProductParamsList.collect()
@@ -313,7 +325,11 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       StructField("calcPlanPromoIncrementalLSV", DecimalType(30,6), True),
       StructField("calcPlanPromoBaselineLSV", DecimalType(30,6), True),
       StructField("calcPlanProductBaselineVolume", DecimalType(30,6), True),
-      StructField("calcPlanPromoLSV", DecimalType(30,6), True)
+      StructField("calcPlanPromoLSV", DecimalType(30,6), True),
+      StructField("calcPlanProductPostPromoEffectLSVW1", DecimalType(30,6), True),
+      StructField("calcPlanProductPostPromoEffectLSVW2", DecimalType(30,6), True),
+      StructField("calcPlanProductPostPromoEffectVolumeW1", DecimalType(30,6), True),
+      StructField("calcPlanProductPostPromoEffectVolumeW2", DecimalType(30,6), True)
     ])
 
     planParDF = spark.createDataFrame(sumPlanProductParamsList, planParSchema)
@@ -336,6 +352,10 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
               ,calcPlanPromoDF.calcPlanPromoBaselineLSV
               ,calcPlanPromoDF.calcPlanPromoLSV
               ,calcPlanPromoDF.calcPlanProductBaselineVolume
+              ,calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW1
+              ,calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW2
+              ,calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW1
+              ,calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW2
              )\
       .withColumn('PlanPromoIncrementalLSV', when(calcPlanPromoDF.calcPlanPromoIncrementalLSV.isNull(), allCalcPlanPromoDF.PlanPromoIncrementalLSV)\
                                              .otherwise(calcPlanPromoDF.calcPlanPromoIncrementalLSV).cast(DecimalType(30,6)))\
@@ -343,57 +363,20 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
                                              .otherwise(calcPlanPromoDF.calcPlanPromoBaselineLSV).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoLSV', when(calcPlanPromoDF.calcPlanPromoLSV.isNull(), allCalcPlanPromoDF.PlanPromoLSV)\
                                              .otherwise(calcPlanPromoDF.calcPlanPromoLSV).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectLSV', (isNullCheck(col('PlanPromoBaselineLSV')) * isNullCheck(col('promoClientPostPromoEffectW1')) / 100.0 \
-                                                + isNullCheck(col('PlanPromoBaselineLSV')) * isNullCheck(col('promoClientPostPromoEffectW2')) / 100.0)\
-                                              .cast(DecimalType(30,6)))\
       .withColumn('PlanPromoBaselineVolume', when(calcPlanPromoDF.calcPlanProductBaselineVolume.isNull(), allCalcPlanPromoDF.PlanPromoBaselineVolume)\
                                              .otherwise(calcPlanPromoDF.calcPlanProductBaselineVolume).cast(DecimalType(30,6)))\
-      .drop('calcPlanPromoIncrementalLSV','calcPlanPromoBaselineLSV','calcPlanPromoLSV','calcPlanProductBaselineVolume')
-    
-    
-    #activeClientTreeList = clientTreeDF.where(col('EndDate').isNull()).collect()
-#
-    #tiClientNullBtDF = tiDF\
-    #  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\
-    #  .select(\
-    #           tiDF.StartDate.alias('tiStartDate')
-    #          ,tiDF.EndDate.alias('tiEndDate')
-    #          ,tiDF.SizePercent
-    #          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')
-    #         )\
-    #  .withColumn('tibtName', lit(None).cast(StringType()))
-#
-    #tiClientNotNullBtDF = tiDF\
-    #  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\
-    #  .join(brandTechDF, brandTechDF.Id == tiDF.BrandTechId, 'inner')\
-    #  .select(\
-    #           tiDF.StartDate.alias('tiStartDate')
-    #          ,tiDF.EndDate.alias('tiEndDate')
-    #          ,tiDF.SizePercent
-    #          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')
-    #          ,brandTechDF.BrandsegTechsub.alias('tibtName')
-    #         )
-#
-    #tiClientList = tiClientNullBtDF.union(tiClientNotNullBtDF).collect()
-#
-    #ratiShopperList = ratiShopperDF.collect()
-#
-    #import COGS_TI_CALCULATION as cc
-#
-    #import RA_TI_SHOPPER_CALCULATION as ra
-#
-    #calcPlanPromoDF = calcPlanPromoDF\
-    #  .withColumn('calcTiPercent', lit(cc.getTiPercent(activeClientTreeList,tiClientList)(col('ClientTreeId'), col('promoBrandTechName'), col('StartDate'))))\
-    #  .withColumn('calcRaTiShopperPercent', lit(ra.getRaTiShopperPercent(activeClientTreeList,ratiShopperList)(col('ClientTreeKeyId'), col('BudgetYear'))))
-    #  
-    #
-    #calcPlanPromoDF = calcPlanPromoDF\
-    #  .withColumn('PlanTIBasePercent', when(~col('calcTiPercent').isin(*cc.logText), col('calcTiPercent')).otherwise(col('PlanTIBasePercent')))\
-    #  .withColumn('RATIShopperPercent', when(~col('calcRaTiShopperPercent').isin(*ra.raLogText), col('calcRaTiShopperPercent')).otherwise(0))
-    #
-    #
+      .withColumn('PlanPromoPostPromoEffectLSVW1', when(calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW1.isNull(), allCalcPlanPromoDF.PlanPromoPostPromoEffectLSVW1)\
+                                             .otherwise(calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW1).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoPostPromoEffectLSVW2', when(calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW2.isNull(), allCalcPlanPromoDF.PlanPromoPostPromoEffectLSVW2)\
+                                             .otherwise(calcPlanPromoDF.calcPlanProductPostPromoEffectLSVW2).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoPostPromoEffectVolumeW1', when(calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW1.isNull(), allCalcPlanPromoDF.PlanPromoPostPromoEffectVolumeW1)\
+                                             .otherwise(calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW1).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoPostPromoEffectVolumeW2', when(calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW2.isNull(), allCalcPlanPromoDF.PlanPromoPostPromoEffectVolumeW2)\
+                                             .otherwise(calcPlanPromoDF.calcPlanProductPostPromoEffectVolumeW2).cast(DecimalType(30,6)))\
+      .drop('calcPlanPromoIncrementalLSV','calcPlanPromoBaselineLSV','calcPlanPromoLSV','calcPlanProductBaselineVolume','calcPlanProductPostPromoEffectLSVW1','calcPlanProductPostPromoEffectLSVW2','calcPlanProductPostPromoEffectVolumeW1','calcPlanProductPostPromoEffectVolumeW2')
     
     allCalcPlanPromoDF = allCalcPlanPromoDF\
+      .withColumn('PlanPromoPostPromoEffectLSV', (col('PlanPromoPostPromoEffectLSVW1') + col('PlanPromoPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoTIShopper', (col('PlanPromoLSV') * col('MarsMechanicDiscount') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoCost', (isNullCheck(col('PlanPromoTIShopper')) + isNullCheck(col('PlanPromoTIMarketing')) + isNullCheck(col('PlanPromoBranding'))\
                                   + isNullCheck(col('PlanPromoBTL')) + isNullCheck(col('PlanPromoCostProduction'))).cast(DecimalType(30,6)))\
@@ -401,8 +384,6 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('PlanPromoIncrementalCOGS', (col('PlanPromoIncrementalLSV') * col('PlanCOGSPercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoBaseTI', (col('PlanPromoLSV') * col('PlanTIBasePercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoTotalCost', (isNullCheck(col('PlanPromoCost')) + isNullCheck(col('PlanPromoBaseTI'))).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectLSVW1', (isNullCheck(col('PlanPromoBaselineLSV')) * isNullCheck(col('promoClientPostPromoEffectW1')) / 100.0).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectLSVW2', (col('PlanPromoBaselineLSV') * col('promoClientPostPromoEffectW2') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetIncrementalLSV', (isNullCheck(col('PlanPromoIncrementalLSV')) + isNullCheck(col('PlanPromoPostPromoEffectLSV'))).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetLSV', (isNullCheck(col('PlanPromoBaselineLSV')) + isNullCheck(col('PlanPromoNetIncrementalLSV'))).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetIncrementalBaseTI', (col('PlanPromoNetIncrementalLSV') * col('PlanTIBasePercent') / 100.0).cast(DecimalType(30,6)))\
@@ -433,8 +414,6 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('PlanPromoNetIncrementalLSV')) * col('RATIShopperPercent') / 100)\
                   .cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperApproved', when(col('LastApprovedDate').isNull(), col('PlanAddTIShopperCalculated')).otherwise(col('PlanAddTIShopperApproved')))\
-      .withColumn('PlanPromoPostPromoEffectVolumeW1', (isNullCheck(col('PlanPromoBaselineVolume')) * isNullCheck(col('promoClientPostPromoEffectW1')) / 100).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectVolumeW2', (isNullCheck(col('PlanPromoBaselineVolume')) * isNullCheck(col('promoClientPostPromoEffectW2')) / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoPostPromoEffectVolume',  (isNullCheck(col('PlanPromoPostPromoEffectVolumeW1')) + isNullCheck(col('PlanPromoPostPromoEffectVolumeW2'))).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetIncrementalVolume', (col('PlanPromoIncrementalVolume') + col('PlanPromoPostPromoEffectVolume')).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoIncrementalCOGSTn', (col('PlanPromoIncrementalVolume') * col('PlanCOGSTn')).cast(DecimalType(30,6)))\
