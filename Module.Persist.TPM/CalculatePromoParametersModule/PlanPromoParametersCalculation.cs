@@ -39,10 +39,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 List<PromoProductPriceIncrease> promoProductPIs = promo.PromoPriceIncrease.PromoProductPriceIncreases
                     .Where(x => !x.Disabled)
                     .ToList();
-                double sumPlanProductPostPromoEffectVolumeW1PI = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW1);
-                double sumPlanProductPostPromoEffectVolumeW2PI = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW2);
-                double sumPlanProductPostPromoEffectLSVW1PI = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectLSVW1);
-                double sumPlanProductPostPromoEffectLSVW2PI = promoProducts.Sum(x => (double)x.PlanProductPostPromoEffectLSVW2);
+                double sumPlanProductPostPromoEffectVolumeW1PI = promoProductPIs.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW1);
+                double sumPlanProductPostPromoEffectVolumeW2PI = promoProductPIs.Sum(x => (double)x.PlanProductPostPromoEffectVolumeW2);
+                double sumPlanProductPostPromoEffectLSVW1PI = promoProductPIs.Sum(x => (double)x.PlanProductPostPromoEffectLSVW1);
+                double sumPlanProductPostPromoEffectLSVW2PI = promoProductPIs.Sum(x => (double)x.PlanProductPostPromoEffectLSVW2);
                 ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
                 //promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
