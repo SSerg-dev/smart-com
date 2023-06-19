@@ -5,6 +5,7 @@
         scale: 'medium',
         glyph: 0xF56E,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         children: [
             {
@@ -12,6 +13,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('Dashboard'),
                 glyph: 0xFA1C,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 widget: 'clientdashboard'
             },
@@ -20,6 +22,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdata'),
                 glyph: 0xF572,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 widget: 'clientkpidata'
             },
@@ -28,6 +31,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientKPIdataRS'),
                 glyph: 0xF572,
                 rsMode: true,
+                raMode: true,
                 currentMode: false,
                 widget: 'clientkpidatars'
             },
@@ -39,6 +43,7 @@
         scale: 'medium',
         glyph: 0xfa1c,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         roles: ['DemandFinance', 'KeyAccountManager', 'DemandPlanning', 'CustomerMarketing', 'CMManager', 'GAManager'],
         widget: 'userdashboard'
@@ -49,6 +54,7 @@
         scale: 'medium',
         glyph: 0xF873,
         rsMode: false,
+        raMode: false,
         currentMode: true,
         children: [
             {
@@ -57,6 +63,7 @@
                 scale: 'medium',
                 glyph: 0xF873,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'metricsdashboard'
             },
@@ -66,6 +73,7 @@
                 scale: 'medium',
                 glyph: 0xF2DA,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'SupportAdministrator'],
                 widget: 'metricslivehistory'
@@ -77,6 +85,7 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('SchedulerItem'),
         glyph: 0xf0f1,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         scale: 'medium',
         widget: 'schedulecontainer'
@@ -86,6 +95,7 @@
         tooltip: l10n.ns('tpm', 'mainmenu').value('PromoItem'),
         scale: 'medium',
         rsMode: true,
+        raMode: true,
         currentMode: true,
         glyph: 0xf392,
         widget: 'promo'
@@ -96,6 +106,7 @@
         scale: 'medium',
         glyph: 0xf1b3,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         children: [
             {
@@ -103,6 +114,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoSupport'),
                 glyph: 0xf1b3,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'SuperReader'],
                 widget: 'associatedpromosupport',
@@ -112,6 +124,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('NonPromoSupport'),
                 glyph: 0xf1b3,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'KeyAccountManager', 'SuperReader'],
                 widget: 'associatednonpromosupport',
@@ -121,6 +134,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('CostProduction'),
                 glyph: 0xf1b3,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'SuperReader'],
                 widget: 'associatedcostproduction'
@@ -130,6 +144,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BTL'),
                 glyph: 0xf1b3,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 //roles: [],
                 widget: 'associatedbtlpromo'
@@ -142,6 +157,7 @@
         scale: 'medium',
         glyph: 0xfd01,
         rsMode: false,
+        raMode: false,
         currentMode: true,
         roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
         children: [
@@ -150,6 +166,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('Competitor'),
                 glyph: 0xf14c,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
                 widget: 'competitor',
@@ -159,6 +176,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorBrandTech'),
                 glyph: 0xf619,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
                 widget: 'competitorbrandtech',
@@ -168,6 +186,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('CompetitorPromo'),
                 glyph: 0xfd01,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'SupportAdministrator', 'CMManager'],
                 widget: 'competitorpromo',
@@ -180,6 +199,7 @@
         scale: 'medium',
         glyph: 0xf494,
         rsMode: false,
+        raMode: false,
         currentMode: true,
         roles: ['Administrator',
             'SupportAdministrator',
@@ -197,6 +217,7 @@
         scale: 'medium',
         glyph: 0xf149,
         rsMode: true,
+        raMode: true,
         currentMode: false,
         roles: ['Administrator',
             'SupportAdministrator',
@@ -212,6 +233,7 @@
         scale: 'medium',
         glyph: 0xf007,
         rsMode: false,
+        raMode: false,
         currentMode: true,
         children: [
             {
@@ -219,6 +241,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientTreeItem'),
                 glyph: 0xf007,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'clienttree'
             },
@@ -227,6 +250,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BaseClientTreeView'),
                 glyph: 0xf007,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'baseclienttreeview'
             },
@@ -235,6 +259,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('RetailType'),
                 glyph: 0xf110,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'retailtype'
             },
@@ -243,6 +268,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientTreeBrandTech'),
                 glyph: 0xf007,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'clienttreebrandtech'
             },
@@ -251,6 +277,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('AssortmentMatrix'),
                 glyph: 0xf007,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'assortmentmatrix'
             },
@@ -259,6 +286,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PLUDictionary'),
                 glyph: 0xf007,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'pludictionary',
                 roles: ['Administrator', 'KeyAccountManager', 'DemandPlanning', 'SupportAdministrator']
@@ -271,6 +299,7 @@
         scale: 'medium',
         glyph: 0xf1a6,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         children: [
             {
@@ -278,6 +307,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ProductItem'),
                 glyph: 0xf1a6,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'product'
             },
@@ -286,6 +316,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ProductTreeItem'),
                 glyph: 0xf645,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'producttree'
             },
@@ -294,6 +325,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BrandItem'),
                 glyph: 0xf071,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'brand'
             },
@@ -302,6 +334,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('TechnologyItem'),
                 glyph: 0xf3d3,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'technology'
             },
@@ -310,6 +343,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BrandTechItem'),
                 glyph: 0xf619,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'brandtech'
             },
@@ -318,6 +352,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorection'),
                 glyph: 0xf619,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 widget: 'promoproductcorrection'
             },
@@ -326,6 +361,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
                 glyph: 0xf619,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'promoproductcorrectionpriceincrease'
             },
@@ -337,6 +373,7 @@
         scale: 'medium',
         glyph: 0xf127,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         children: [/*{
 			text: l10n.ns('tpm', 'mainmenu').value('ActualItem'),
@@ -351,6 +388,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BaseLineItem'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
@@ -361,6 +399,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('IncreaseBaseLineItem'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
@@ -371,6 +410,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanPostPromoEffectItem'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 //roles: ['Administrator', 'FunctionalExpert', 'CMManager', 'CustomerMarketing', 'DemandFinance', 'DemandPlanning', 'KeyAccountManager'],
@@ -381,6 +421,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanIncrementalReport'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
@@ -391,6 +432,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('IncrementalPromo'),
                 glyph: 0xf127,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
@@ -401,6 +443,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ActualLSV'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
@@ -411,6 +454,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PriceList'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'FunctionalExpert', 'DemandPlanning', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
@@ -421,6 +465,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('CoefficientSI2SO'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'DemandPlanning', 'SuperReader', 'SupportAdministrator'],
@@ -431,6 +476,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PreviousDayIncremental'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'DemandPlanning', 'SuperReader', 'SupportAdministrator'],
@@ -441,6 +487,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PreviousDayIncremental'),
                 glyph: 0xf127,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 scale: 'medium',
                 roles: ['Administrator', 'DemandPlanning', 'SupportAdministrator', 'SuperReader'],
@@ -454,6 +501,7 @@
         scale: 'medium',
         glyph: 0xf0ba,
         rsMode: false,
+        raMode: false,
         currentMode: true,
         children: [
             {
@@ -461,6 +509,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetItem'),
                 glyph: 0xf218,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'budget'
             },
@@ -469,6 +518,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetItem'),
                 glyph: 0xf218,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'promotypes'
             },
@@ -477,6 +527,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetItemItem'),
                 glyph: 0xf0be,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'budgetitem'
             },
@@ -485,6 +536,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('BudgetSubItemItem'),
                 glyph: 0xf0be,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'associatedbudgetsubitemclienttree'
             },
@@ -493,6 +545,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('NonPromoEquipment'),
                 glyph: 0xf0be,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'nonpromoequipment'
             },
@@ -501,6 +554,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('MechanicItem'),
                 glyph: 0xf4fb,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'mechanic'
             },
@@ -509,6 +563,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('MechanicTypeItem'),
                 glyph: 0xf4fc,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'mechanictype'
             },
@@ -517,6 +572,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoStatusItem'),
                 glyph: 0xf0ef,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'promostatus'
             },
@@ -525,6 +581,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('RejectReasonItem'),
                 glyph: 0xf739,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'rejectreason'
             },
@@ -533,6 +590,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ColorItem'),
                 glyph: 0xf266,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'color'
             },
@@ -541,6 +599,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('EventItem'),
                 glyph: 0xf0f6,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'associatedeventclienttree'
             },
@@ -549,6 +608,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('NodeTypeItem'),
                 glyph: 0xf645,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'nodetype'
             },
@@ -557,6 +617,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('NoneNego'),
                 glyph: 0xf13a,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 widget: 'nonenego'
             }
@@ -568,6 +629,7 @@
         scale: 'medium',
         glyph: 0xf81e,
         rsMode: true,
+        raMode: true,
         currentMode: true,
         children: [
             {
@@ -575,6 +637,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('COGS'),
                 glyph: 0xf152,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'cogs'
@@ -584,6 +647,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ActualCOGS'),
                 glyph: 0xf152,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'actualcogs'
@@ -593,6 +657,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PlanCOGSTn'),
                 glyph: 0xf152,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'plancogstn'
@@ -602,6 +667,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ActualCOGSTn'),
                 glyph: 0xf152,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'actualcogstn'
@@ -611,6 +677,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('TradeInvestment'),
                 glyph: 0xfb2d,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'tradeinvestment'
@@ -620,6 +687,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ActualTradeInvestment'),
                 glyph: 0xfb2d,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader', 'CustomerMarketing', 'CMManager', 'SupportAdministrator'],
                 widget: 'actualtradeinvestment'
@@ -629,6 +697,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoROIReport'),
                 glyph: 0xf215,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
                 widget: 'promoroireport'
@@ -638,6 +707,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('PromoPriceIncreaseROIReport'),
                 glyph: 0xf215,
                 rsMode: true,
+                raMode: true,
                 currentMode: true,
                 //roles: ['Administrator', 'FunctionalExpert', 'DemandFinance', 'SuperReader'],
                 widget: 'promopriceincreaseroireport'
@@ -647,6 +717,7 @@
                 tooltip: l10n.ns('tpm', 'mainmenu').value('RATIShopper'),
                 glyph: 0xfcce,
                 rsMode: false,
+                raMode: false,
                 currentMode: true,
                 roles: ['Administrator', 'DemandFinance', 'SupportAdministrator', 'SuperReader', 'CustomerMarketing', 'CMManager', 'FunctionalExpert'],
                 widget: 'ratishopper'
