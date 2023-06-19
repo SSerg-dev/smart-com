@@ -142,8 +142,6 @@
         me.__dragContext = dragContext;
         var calendarGrid = Ext.ComponentQuery.query('scheduler');
         var dispatchesStart = record.get('DispatchesStart');
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var calcDispatchesStart = new Date(dragContext.startDate);
         calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (calendarGrid.length > 0) {
@@ -160,8 +158,7 @@
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
                 dragContext.finalize(false);
                 return false;
-                }
-            } 
+            }
         }
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
@@ -933,7 +930,6 @@
 
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
-                }
             }
         }
         if (createContext.start > new Date(new Date().toDateString()) || App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator') {
@@ -1199,8 +1195,6 @@
 
     onEventResize: function (s, resizeContext) {
         var me = this;
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var calcDispatchesStart = new Date(resizeContext.start);
         calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (resizeContext.eventRecord.get('TypeName') == 'Competitor') {
@@ -1229,11 +1223,10 @@
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
                 resizeContext.finalize(false);
-                if(calendarGrid.length > 0) {
+                if (calendarGrid.length > 0) {
                     calendarGrid[0].resourceStore.load();
                 }
                 return false;
-                }
             }
         }
 
