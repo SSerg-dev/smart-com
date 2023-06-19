@@ -500,10 +500,6 @@
     },
 
     onUploadFileOkButtonClick: function (button) {
-        var me = this;
-        //rsmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var win = button.up('uploadfilewindow');
         var promoId = breeze.DataType.Guid.fmtOData(Ext.ComponentQuery.query('promoeditorcustom')[0].promoId);
         var url = Ext.String.format("/odata/{0}/{1}?promoId={2}", win.resource, win.action, promoId);

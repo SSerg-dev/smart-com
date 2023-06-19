@@ -342,39 +342,30 @@
             var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
             msfaButton.setDisabled(true);
         });
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var promogrid = Ext.getCmp('promoGrid').down('grid');
-                var indexh = this.getColumnIndex(promogrid, 'TPMmode')
-                promogrid.columnManager.getColumns()[indexh].hide();
-            }
-            else {
-                var promoGridViewStore = grid.getStore();
-                var promoGridViewStoreProxy = promoGridViewStore.getProxy();
+        if (!TpmModes.isRsRaMode()) {
+            var promogrid = Ext.getCmp('promoGrid').down('grid');
+            var indexh = this.getColumnIndex(promogrid, 'TPMmode')
+            promogrid.columnManager.getColumns()[indexh].hide();
+        }
+        else {
+            var promoGridViewStore = grid.getStore();
+            var promoGridViewStoreProxy = promoGridViewStore.getProxy();
 
-                promoGridViewStoreProxy.extraParams.TPMmode = 'RS';
-            }
+            promoGridViewStoreProxy.extraParams.TPMmode = TpmModes.getSelectedMode().alias;
         }
 
         this.onGridAfterrender(grid);
     },
 
     onGridChoosePromoAfterrender: function (grid) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
-            }
-            else {
-                var promoGridStore = grid.getStore();
-                var promoGridStoreProxy = promoGridStore.getProxy();
-                promoGridStoreProxy.extraParams.TPMmode = 'RS';
-            }
+        if (!TpmModes.isRsRaMode()) {
+            var indexh = this.getColumnIndex(grid, 'TPMmode');
+            grid.columnManager.getColumns()[indexh].hide();
+        }
+        else {
+            var promoGridStore = grid.getStore();
+            var promoGridStoreProxy = promoGridStore.getProxy();
+            promoGridStoreProxy.extraParams.TPMmode = TpmModes.getSelectedMode().alias;
         }
         this.onGridAfterrender(grid);
     },
@@ -388,16 +379,10 @@
         }
     },
     
-    isRsMode: function() {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        return mode.data.value == 1;
-    },
-
     massApprovalButtonDisable: function (grid, store) {
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
         var currentRole = App.UserInfo.getCurrentRole();
-        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']) && !this.isRsMode();
+        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']) && !TpmModes.isRsMode();
         if (isMassButtonVisible) {
             maButton.setVisible(true);
             
@@ -1826,67 +1811,63 @@
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
 
-            if (TpmModes.isRsRaMode()) {
-                if (selModel.hasSelection()) {
-                    Ext.Msg.show({
-                        title: l10n.ns('core').value('deleteWindowTitle'),
-                        msg: l10n.ns('core').value('deleteConfirmMessage'),
-                        fn: onMsgBoxClose,
-                        scope: this,
-                        icon: Ext.Msg.QUESTION,
-                        buttons: Ext.Msg.YESNO,
-                        buttonText: {
-                            yes: l10n.ns('core', 'buttons').value('delete'),
-                            no: l10n.ns('core', 'buttons').value('cancel')
-                        }
-                    });
-                } else {
-                    console.log('No selection');
-                }
+        if (TpmModes.isRsRaMode()) {
+            if (selModel.hasSelection()) {
+                Ext.Msg.show({
+                    title: l10n.ns('core').value('deleteWindowTitle'),
+                    msg: l10n.ns('core').value('deleteConfirmMessage'),
+                    fn: onMsgBoxClose,
+                    scope: this,
+                    icon: Ext.Msg.QUESTION,
+                    buttons: Ext.Msg.YESNO,
+                    buttonText: {
+                        yes: l10n.ns('core', 'buttons').value('delete'),
+                        no: l10n.ns('core', 'buttons').value('cancel')
+                    }
+                });
+            } else {
+                console.log('No selection');
+            }
 
-                function onMsgBoxClose(buttonId) {
-                    if (buttonId === 'yes') {
-                        var record = selModel.getSelection()[0],
-                            store = grid.getStore(),
-                            view = grid.getView(),
-                            currentIndex = store.indexOf(record),
-                            pageIndex = store.getPageFromRecordIndex(currentIndex),
-                            endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
+            function onMsgBoxClose(buttonId) {
+                if (buttonId === 'yes') {
+                    var record = selModel.getSelection()[0],
+                        store = grid.getStore(),
+                        view = grid.getView(),
+                        currentIndex = store.indexOf(record),
+                        pageIndex = store.getPageFromRecordIndex(currentIndex),
+                        endIndex = store.getTotalCount() - 2; // 2, т.к. после удаления станет на одну запись меньше
 
-                        currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
-                        panel.setLoading(l10n.ns('core').value('deletingText'));
+                    currentIndex = Math.min(Math.max(currentIndex, 0), endIndex);
+                    panel.setLoading(l10n.ns('core').value('deletingText'));
 
 
-                        $.ajax({
-                            type: "POST",
-                            cache: false,
-                            url: "/odata/Promoes/PromoRSDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
-                            dataType: "json",
-                            contentType: false,
-                            processData: false,
-                            success: function (response) {
-                                var result = Ext.JSON.decode(response.value);
-                                if (result.success) {
-                                    store.on('load', function () {
-                                        panel.setLoading(false);
-                                    });
-
-                                    store.load();
-                                } else {
-                                    App.Notify.pushError(result.message);
+                    $.ajax({
+                        type: "POST",
+                        cache: false,
+                        url: "/odata/Promoes/PromoRSDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            var result = Ext.JSON.decode(response.value);
+                            if (result.success) {
+                                store.on('load', function () {
                                     panel.setLoading(false);
-                                }
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                App.Notify.pushError();
+                                });
+
+                                store.load();
+                            } else {
+                                App.Notify.pushError(result.message);
                                 panel.setLoading(false);
                             }
-                        });
-                    }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            App.Notify.pushError();
+                            panel.setLoading(false);
+                        }
+                    });
                 }
-            }
-            else {
-                this.onDeleteButtonClick(button);
             }
         }
         else {
@@ -2919,10 +2900,9 @@
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
         var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
         //rsmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
-        if (promoeditorcustom.TPMmode == 1) {
+        promoeditorcustom.TPMmode = TpmModes.getSelectedModeId();
+        if (TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
                 if (promoeditorcustom.rsStartEnd) {
@@ -2948,7 +2928,7 @@
             var panelGA = promoMechanics.down('[name=panelGA]');
             panelGA.setDisabled(true);
         }
-        if (record.data.TPMmode == 'RS') {
+        if (TpmMode.isRsRaMode(record.data.TPMmode)) {
             this.showRSmodeLabel(true);
         }
         if (record.data.IsPriceIncrease) {
@@ -4026,9 +4006,6 @@
         var window = button.up('promoeditorcustom');
 
         var isModelComplete = this.validatePromoModel(window);
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
 
         if (isModelComplete === '') {
             var record = this.getRecord(window);
@@ -7057,18 +7034,8 @@
         var proxy = store.getProxy();
         var actionName = button.action || 'ExportXLSX';
         var resource = button.resource || proxy.resourceName;
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        var tpmmode;
-        if (mode) {
-            if (mode.data.value == 0) {
-                tpmmode = 'Current';
-            }
-            else {
-                tpmmode = 'RS';
-            }
-        }
+        var tpmmode = TpmModes.getSelectedMode().alias;
+
         panel.setLoading(true);
 
         var query = breeze.EntityQuery

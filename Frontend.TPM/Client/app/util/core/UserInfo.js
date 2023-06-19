@@ -148,7 +148,7 @@ Ext.define('App.util.core.UserInfo', function () {
                         return item.Resource === resource && item.Action === action && item.TPMmode === true;
                     }, this);
                 }
-                else{
+                else {
                     var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
                         return item.Resource === resource && item.Action === action;
                     }, this);

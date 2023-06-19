@@ -375,15 +375,7 @@
                     return client.get('ObjectId')
                 }),
             actionName = 'ExportSchedule',
-            resource = 'PromoViews';
-
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value == 1) {
-                resource = 'PromoRSViews';
-            }
-        }
+            resource = TpmModes.isRsRaMode() ? 'PromoRSViews' : 'PromoViews';
 
         competitorCheckBoxes.map(
             function (checkbox) {
@@ -913,8 +905,6 @@
         var me = this;
         var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
         var typeToCreate = null;
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var calcDispatchesStart = new Date(createContext.start);
         calcDispatchesStart.setDate(calcDispatchesStart.getDate() - 15);
         if (createContext.resourceRecord.get('TypeName') == 'Competitor') {
@@ -2153,22 +2143,17 @@
         store.fixedFilters = filter;
 
         // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var StartDateRS = null;
         var EndDateRS = null;
-        if (mode) {
-            if (mode.data.value == 0) {
-                store.getProxy().extraParams.TPMmode = 'Current';
-            }
-            else if (true) {
-                store.getProxy().extraParams.TPMmode = 'RS';
-                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    StartDateRS = new Date(returnValue.StartDate);
-                    EndDateRS = new Date(returnValue.EndDate);
-                });
-            }
+        var tpmMode = TpmModes.getSelectedMode().alias;
+        store.getProxy().extraParams.TPMmode = tpmMode;
+
+        if (!TpmModes.isProdMode(tpmMode)) {
+            var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+            RSmodeController.getRSPeriod(function (returnValue) {
+                StartDateRS = new Date(returnValue.StartDate);
+                EndDateRS = new Date(returnValue.EndDate);
+            });
         }
 
         store.suspendEvent("refresh");

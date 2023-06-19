@@ -381,15 +381,12 @@
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                tPMmode: mode?.data?.value
+                tPMmode: TpmModes.getSelectedModeId()
             });
 
         query = me.buildQuery(query, store)
@@ -416,15 +413,12 @@
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                tPMmode: mode?.data?.value
+                tPMmode: TpmModes.getSelectedModeId()
             });
 
         query = me.buildQuery(query, store)
@@ -494,16 +488,13 @@
             resource = Ext.String.format(button.resource || defaultResource, defaultResource),
             action = Ext.String.format(button.action, resource);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         var editor = Ext.create('App.view.core.common.UploadFileWindow', {
             title: l10n.ns('core').value('uploadFileWindowTitle'),
             itemId: 'intpromouploadfilewindow',
             parentGrid: grid,
             resource: resource,
             action: action,
-            tpmmode: mode?.data?.value,
+            tpmmode: TpmModes.getSelectedModeId(),
             buttons: [{
                 text: l10n.ns('core', 'buttons').value('cancel'),
                 itemId: 'cancel'

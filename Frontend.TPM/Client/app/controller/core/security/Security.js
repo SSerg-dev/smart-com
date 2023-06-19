@@ -225,12 +225,7 @@ Ext.define('App.controller.core.security.Security', {
 
     onOkModeButtonClick: function (button) {
         var tpmMode = this.getModesView().getMode();
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        settingStore.load();
-        var mode = settingStore.findRecord('name', 'mode');
-        mode.set('value', tpmMode);
-
-        settingStore.sync();
+        TpmModes.setMode(tpmMode);
         window.location.reload();
         //MenuMgr.refreshCurrentMenu();
         //alert('click!')

@@ -99,15 +99,12 @@
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-    
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                tPMmode: mode?.data?.value
+                tPMmode: TpmModes.getSelectedModeId()
             });
     
         query = me.buildQuery(query, store)

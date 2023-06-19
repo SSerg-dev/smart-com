@@ -15,9 +15,6 @@
             }
 
             inputCmp.mon(inputCmp.el, 'change', function () {
-                var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-                settingStore.load();
-                var mode = settingStore.findRecord('name', 'mode');
                 if (inputCmp.el.dom.checked) {
                     Ext.Msg.show({
                         title: 'Choose mode',
@@ -32,9 +29,7 @@
                     });
                     //console.log("Mode RS");
                 } else {
-                    mode.set('value', 0);
-
-                    settingStore.sync();
+                    TpmModes.setMode(TpmModes.Prod.id);
                     window.location.reload();
                     //MenuMgr.refreshCurrentMenu();
                     //alert('click!')
@@ -44,11 +39,10 @@
 
                 function onMsgBoxClose(buttonId) {
                     if (buttonId === 'yes') {
-                        mode.set('value', 1);
+                        TpmModes.setMode(TpmModes.RS.id);
                     } else {
-                        mode.set('value', 2);
+                        TpmModes.setMode(TpmModes.RA.id);
                     }
-                    settingStore.sync();
                     window.location.reload();
                     //MenuMgr.refreshCurrentMenu();
                     //alert('click!')

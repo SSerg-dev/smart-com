@@ -318,8 +318,6 @@
         var isCreate = model.phantom;
         grid = this.editor.grid;
         this.editor.setLoading(l10n.ns('core').value('savingText'));
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
 
         model.set('TPMmode', TpmModes.getSelectedMode().alias);
         model.save({
@@ -453,15 +451,12 @@
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        
         var query = breeze.EntityQuery
         .from(resource)
         .withParameters({
             $actionName: actionName,
             $method: 'POST',
-            TPMmode: mode?.data?.value
+            TPMmode: TpmModes.getSelectedModeId()
         });
         
         // тут store фильтр не работает на бэке другой запрос
@@ -606,15 +601,12 @@
         var resource = button.resource || proxy.resourceName;
         panel.setLoading(true);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         var query = breeze.EntityQuery
             .from(resource)
             .withParameters({
                 $actionName: actionName,
                 $method: 'POST',
-                tPMmode: mode?.data?.value
+                tPMmode: TpmModes.getSelectedModeId()
             });
 
         query = me.buildQuery(query, store)
@@ -639,16 +631,13 @@
             resource = Ext.String.format(button.resource || defaultResource, defaultResource),
             action = Ext.String.format(button.action, resource);
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         var editor = Ext.create('App.view.core.common.UploadFileWindow', {
             title: l10n.ns('core').value('uploadFileWindowTitle'),
             itemId: 'ppcuploadfilewindow',
             parentGrid: grid,
             resource: resource,
             action: action,
-            tpmmode: mode?.data?.value,
+            tpmmode: TpmModes.getSelectedModeId(),
             buttons: [{
                 text: l10n.ns('core', 'buttons').value('cancel'),
                 itemId: 'cancel'

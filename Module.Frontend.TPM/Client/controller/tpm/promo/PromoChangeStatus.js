@@ -61,9 +61,6 @@
         var window = button.up('promoeditorcustom');
         var promoController = App.app.getController('tpm.promo.Promo');
         var checkValid = promoController.validatePromoModel(window);
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
 
         if (checkValid === '') {
             var record = promoController.getRecord(window);
@@ -79,9 +76,6 @@
             } else
             if (TpmModes.isRsRaMode(modeId)) {
                 promoController.savePublishClosePromo(model, window, true, true);
-                if (mode.data.value == 2) {
-                    promoController.savePublishClosePromo(model, window, true, true);
-                }
             }
             promoController.updateStatusHistoryState();
 
