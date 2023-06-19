@@ -92,7 +92,7 @@
                 },
                 xtype: 'booleancolumn',
                 trueText: 'RS',
-                falseText: 'Current',
+                falseText: TpmModes.Prod.alias,
                 filter: {
                     type: 'bool',
                     store: [

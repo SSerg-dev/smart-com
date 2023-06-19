@@ -144,9 +144,7 @@
         if (!panel['loaderState']) {
             panel.setLoading(true);
         }
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode.data.value != 1) {
+        if (!TpmModes.isRsRaMode()) {
             accountInformationRSButton = Ext.ComponentQuery.query('button[itemId=accountInformationRSButton]')[0];
             promoWeeksRSButton = Ext.ComponentQuery.query('button[itemId=promoWeeksRSButton]')[0];
             accountInformationRSButton.setVisible(false);

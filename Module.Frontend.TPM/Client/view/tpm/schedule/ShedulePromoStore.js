@@ -14,12 +14,7 @@ Ext.define('App.store.core.SchedulePromoStore', {
     pageSize: 20000, // TODO: загружать буферизированно
 
     constructor: function (config) {
-
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        this.model = 'App.model.tpm.promo.PromoView';
-        if(mode.data.value == 1)
-            this.model = 'App.model.tpm.promo.PromoRSView';
+        this.model = TpmModes.isRsRaMode() ? 'App.model.tpm.promo.PromoRSView' : 'App.model.tpm.promo.PromoView';
         this.callParent(arguments);
         this.initConfig(config);
     },

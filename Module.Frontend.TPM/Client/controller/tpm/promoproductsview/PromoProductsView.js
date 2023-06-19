@@ -99,13 +99,10 @@
         }
 
         // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var model = Ext.ComponentQuery.query('promoeditorcustom')[0].model;
-        if (mode.data.value == 1 && model.data.TPMmode == 'Current') {
+        if (TpmModes.isRsRaMode() && TpmModes.isProdMode(model.data.TPMmode)) {
             promoProductsView.isReadable = true;
         }
-        var sg = Ext.ComponentQuery.query('[itemId=GlyphLock]');
         // если грид открывается для чтения
         if (promoProductsView.isReadable || Ext.ComponentQuery.query('[itemId=GlyphLock]')[0].disabled) {
             promoProductsView.down('#updatebutton').setVisible(false);
@@ -116,8 +113,7 @@
 
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemgroup=customloadimportbutton]').setVisible(false);
             promoProductsView.down('customheadermenu[itemId=importExport]').down('[itemId=customloadimporttemplatexlsxbutton]').setVisible(false);
-        };
-
+        }
     },
 
     onUpdateButtonClick: function (button) {
@@ -224,10 +220,6 @@
             record = form.getRecord(),
             oldUpliftPercent = record.data.PlanProductUpliftPercent;
 
-        // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
         if (!form.isValid()) {
@@ -251,7 +243,7 @@
                 PromoProductId: record.data.Id,
                 PlanProductUpliftPercentCorrected: newUpliftPercent,
                 TempId: Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId,
-                TPMmode: mode.data.value,
+                TPMmode: TpmModes.getSelectedModeId(),
             });
             Ext.ComponentQuery.query('promoeditorcustom')[0].productUpliftChanged = true;
             this.createPromoProductCorrection(_promoProductCorrection);
@@ -513,12 +505,9 @@
 
     onUploadFileOkButtonClick: function (button) {
         var me = this;
-        //rsmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var win = button.up('uploadfilewindow');
         var promoId = breeze.DataType.Guid.fmtOData(Ext.ComponentQuery.query('promoeditorcustom')[0].promoId);
-        var url = Ext.String.format("/odata/{0}/{1}?promoId={2}&tempEditUpliftId={3}&tPMmode={4}", win.resource, win.action, promoId, Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId, mode.data.value);
+        var url = Ext.String.format("/odata/{0}/{1}?promoId={2}&tempEditUpliftId={3}&tPMmode={4}", win.resource, win.action, promoId, Ext.ComponentQuery.query('promoeditorcustom')[0].tempEditUpliftId, TpmModes.getSelectedModeId());
         var needCloseParentAfterUpload = win.needCloseParentAfterUpload;
         var parentWin = win.parentGrid ? win.parentGrid.up('window') : null;
         var form = win.down('#importform');

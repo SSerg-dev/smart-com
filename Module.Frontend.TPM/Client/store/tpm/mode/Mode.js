@@ -5,8 +5,8 @@ Ext.define('App.store.tpm.mode.Mode', {
     fields: ['id', 'alias', 'text'],
 
     data: [
-        { id: 0, alias: 'Off', text: 'Production'},
-        { id: 1, alias: 'RS', text: 'Rolling Scenario'},
-        { id: 2, alias: 'RA', text: 'Resource Allocation'}
+        TpmModes.Prod,
+        TpmModes.RS,
+        TpmModes.RA
     ]
 });

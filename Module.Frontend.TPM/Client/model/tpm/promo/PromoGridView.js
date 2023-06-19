@@ -118,7 +118,7 @@
         extraParams: {
             // параметр указывающий на то, нужно ли фильтровать записи по признаку возможности перевода в другой статус
             canChangeStateOnly: false,
-            TPMmode: 'Current'
+            TPMmode: TpmModes.Prod.alias
         }
     }
 });

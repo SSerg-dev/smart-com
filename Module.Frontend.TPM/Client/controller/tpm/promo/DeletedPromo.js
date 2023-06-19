@@ -48,18 +48,14 @@
     },
 
     onGridDeletedPromoAfterrender: function (grid) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
-            }
-            else {
-                var deletedPromoGridStore = grid.getStore();
-                var deletedPromoGridStoreProxy = deletedPromoGridStore.getProxy();
-                deletedPromoGridStoreProxy.extraParams.TPMmode = 'RS';
-            }
+        if (!TpmModes.isRsRaMode()) {
+            var indexh = this.getColumnIndex(grid, 'TPMmode');
+            grid.columnManager.getColumns()[indexh].hide();
+        }
+        else {
+            var deletedPromoGridStore = grid.getStore();
+            var deletedPromoGridStoreProxy = deletedPromoGridStore.getProxy();
+            deletedPromoGridStoreProxy.extraParams.TPMmode = TpmModes.getSelectedMode().alias;
         }
         this.onGridAfterrender(grid);
     },

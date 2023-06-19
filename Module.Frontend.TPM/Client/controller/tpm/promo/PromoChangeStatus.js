@@ -73,13 +73,12 @@
             window.promoName = promoController.getPromoName(window);
 
             var model = promoController.buildPromoModel(window, record);
-            if (mode) {
-                if (mode.data.value == 0) {
-                    promoController.saveModel(model, window, false, true);
-                }
-                if (mode.data.value == 1) {
-                    promoController.savePublishClosePromo(model, window, true, true);
-                }
+            var modeId = TpmModes.getSelectedModeId();
+            if (TpmModes.isProdMode(modeId)) {
+                promoController.saveModel(model, window, false, true);
+            } else
+            if (TpmModes.isRsRaMode(modeId)) {
+                promoController.savePublishClosePromo(model, window, true, true);
                 if (mode.data.value == 2) {
                     promoController.savePublishClosePromo(model, window, true, true);
                 }

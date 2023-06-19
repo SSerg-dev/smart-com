@@ -20,18 +20,7 @@ Ext.application({
     },
 
     loadColorScheme: function () {
-        var colorScheme = 'prod';
-
-        var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
-        settingStore.load();
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value == 1 || mode.data.value == 2) {
-                colorScheme = 'rs';
-            }
-        }
-
-        if (colorScheme == 'rs') {
+        if (TpmModes.isRsRaMode()) {
             document.getElementById('themeRS').disabled = false;
             document.getElementById('themeProd').disabled = true;
         } else {

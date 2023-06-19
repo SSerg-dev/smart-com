@@ -52,16 +52,13 @@
     },
 
     isAvailable: function (config) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value == 0 && !config.currentMode) {
-                return false;
-            }
-            else if (mode.data.value == 1 && !config.rsMode) {
-                return false;
-            }
+        if (TpmModes.isProdMode() && !config.currentMode) {
+            return false;
         }
+        else if (TpmModes.isRsRaMode() && !config.rsMode) {
+            return false;
+        }
+
         var hasValidRolesProperty = config.hasOwnProperty('roles') && Ext.isArray(config.roles);
 
         if (!hasValidRolesProperty) {

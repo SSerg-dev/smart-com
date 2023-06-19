@@ -219,7 +219,8 @@
         'SystemMenu': 'Administration',
         'AttendanceType': 'Attendance Types',
         'ModuleItem': 'Modules',
-        'RSmode': 'RS'
+        'RSmode': 'RS',
+        'RAmode': 'RA'
     },
 
     'compositePanelTitles': {

@@ -207,13 +207,9 @@ Ext.define('App.controller.core.security.Security', {
             rolebutton = this.getRoleButton(),
             userbutton = this.getUserButton();
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode').data.value;
-
-        var modesStore = Ext.create('App.store.tpm.mode.Mode');
-        var itemMode = modesStore.findRecord('id', mode);
+        var itemMode = TpmModes.getSelectedMode();
         if (!Ext.isEmpty(itemMode)) {
-            modebutton.setText(itemMode.data.alias);
+            modebutton.setText(itemMode.alias);
         }
         if (!Ext.isEmpty(role) && !Ext.isEmpty(rolebutton)) {
             rolebutton.setText(role.DisplayName);

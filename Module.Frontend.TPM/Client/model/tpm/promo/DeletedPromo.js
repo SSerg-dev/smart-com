@@ -200,7 +200,7 @@
         extraParams: {
             //Id промо для метода GetById в истории
             promoIdHistory: null,
-            TPMmode: 'Current'
+            TPMmode: TpmModes.Prod.alias
         }
     }
 });

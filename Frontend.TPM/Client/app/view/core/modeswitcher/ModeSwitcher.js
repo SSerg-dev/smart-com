@@ -10,14 +10,10 @@
     },
     listeners: {
         afterrender: function (inputCmp) {
-            var settingStore = Ext.create('App.store.core.settinglocal.SettingLocalStore');
-            settingStore.load();
-            var mode = settingStore.findRecord('name', 'mode');
-            if (mode) {
-                if (mode.data.value == 1) {
-                    inputCmp.el.dom.checked = true;
-                }
+            if (TpmModes.isRsRaMode()) {
+                inputCmp.el.dom.checked = true;
             }
+
             inputCmp.mon(inputCmp.el, 'change', function () {
                 var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
                 settingStore.load();

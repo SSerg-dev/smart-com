@@ -81,22 +81,17 @@
 
     onGridIncrementalPromoAfterrender: function (grid) {
         var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value != 1) {
-                var indexh = this.getColumnIndex(grid, 'TPMmode');
-                grid.columnManager.getColumns()[indexh].hide();
-            }
-            else {
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    startEndModel = returnValue;
-                });
-                var incrementalPromoGridStore = grid.getStore();
-                var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
+        if (!TpmModes.isRsRaMode()) {
+            var indexh = this.getColumnIndex(grid, 'TPMmode');
+            grid.columnManager.getColumns()[indexh].hide();
+        } else {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                startEndModel = returnValue;
+            });
+            var incrementalPromoGridStore = grid.getStore();
+            var incrementalPromoGridStoreProxy = incrementalPromoGridStore.getProxy();
 
-                incrementalPromoGridStoreProxy.extraParams.TPMmode = 'RS';
-            }
+            incrementalPromoGridStoreProxy.extraParams.TPMmode = TpmModes.getSelectedMode().alias;
         }
         this.onGridAfterrender(grid);
     },
@@ -274,10 +269,7 @@
 
         this.editor.setLoading(l10n.ns('core').value('savingText'));
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        model.data.TPMmode = mode.data.value;
-
+        model.data.TPMmode = TpmModes.getSelectedModeId();
         model.save({
             scope: this,
             success: function (rec, resp, opts) {

@@ -325,7 +325,8 @@
                         type: 'bool',
                         store: [
                             [0, 'Current'],
-                            [1, 'RS']
+                            [1, 'RS'],
+                            [2, 'RA']
                         ]
                     }
                 },

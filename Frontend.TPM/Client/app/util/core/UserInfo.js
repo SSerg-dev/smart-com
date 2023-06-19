@@ -143,21 +143,17 @@ Ext.define('App.util.core.UserInfo', function () {
             var currentRole = this.getCurrentRole();
             
             if (currentRole) {
-                var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-                var mode = settingStore.findRecord('name', 'mode');
-                if (mode) {
-                    if (mode.data.value == 1) {                        
-                        var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
-                            return item.Resource === resource && item.Action === action && item.TPMmode === true;
-                        }, this);
-                    }
-                    else{
-                        var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
-                            return item.Resource === resource && item.Action === action;
-                        }, this);
-                    }
-                    return ap !== null; 
-                }                
+                if (TpmModes.isRsRaMode()) {
+                    var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
+                        return item.Resource === resource && item.Action === action && item.TPMmode === true;
+                    }, this);
+                }
+                else{
+                    var ap = Ext.Array.findBy(currentRole.AccessPoints, function (item) {
+                        return item.Resource === resource && item.Action === action;
+                    }, this);
+                }
+                return ap !== null;
             }
 
             return false;

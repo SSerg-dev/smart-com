@@ -95,15 +95,11 @@
                     deleteBtn.show();
 
                 }
-                var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-                var mode = settingStore.findRecord('name', 'mode');
-                if (mode) {
-                    if (mode.data.value == 1) {
+                if (TpmModes.isRsRaMode()) {
 
-                    }
-                    else{
+                }
+                else{
 
-                    }
                 }
             }
         },

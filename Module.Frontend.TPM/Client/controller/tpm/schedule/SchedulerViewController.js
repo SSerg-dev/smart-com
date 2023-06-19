@@ -149,13 +149,12 @@
         if (calendarGrid.length > 0) {
             me.calendarSheduler = calendarGrid[0];
         }
-        if (mode) {
-            if (mode.data.value == 1 || mode.data.value == 2) {
-                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    StartDateRS = new Date(returnValue.StartDate);
-                    EndDateRS = new Date(returnValue.EndDate);
-                });
+        if (TpmModes.isRsRaMode()) {
+            var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+            RSmodeController.getRSPeriod(function (returnValue) {
+                StartDateRS = new Date(returnValue.StartDate);
+                EndDateRS = new Date(returnValue.EndDate);
+            });
 
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
@@ -730,13 +729,13 @@
         if (['Administrator', 'CMManager', 'CustomerMarketing', 'FunctionalExpert', 'KeyAccountManager', 'DemandPlanning'].includes(App.UserInfo.getCurrentRole()['SystemName'])) {
             isEditable = true;
         }
-        if ((status == 'onapproval' || status == 'approved') && (mode == 'RS' || mode == 'RA')) {
+        if ((status == 'onapproval' || status == 'approved') && TpmModes.isRsRaMode(modeId)) {
             isDeletable = true;
         }
-        if ((status == 'planned' || status == 'started' || status == 'finished') && (mode == 'RS' || mode == 'RA')) {
+        if ((status == 'planned' || status == 'started' || status == 'finished') && TpmModes.isRsRaMode(modeId)) {
             isEditable = false;
         }
-        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && (mode != 'RS' || mode != 'RA') ) {
+        if (['Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) && status == 'approved' && !TpmModes.isRsRaMode(modeId)) {
             isPlannable = true;
         }
         var postAccess = me.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === 'Post' });
@@ -818,19 +817,7 @@
                     hidden: !postAccess,
                     handler: function (button) {
                         // RSmode
-                        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-                        var mode = settingStore.findRecord('name', 'mode');
-                        if (mode) {
-                            if (mode.data.value == 0) {
-                                promoStore.getProxy().extraParams.TPMmode = 'Current';
-                            }
-                            else if (mode.data.value == 1) {
-                                promoStore.getProxy().extraParams.TPMmode = 'RS';
-                            }
-                            else if (mode.data.value == 2) {
-                                promoStore.getProxy().extraParams.TPMmode = 'RA';
-                            }
-                        }
+                        promoStore.getProxy().extraParams.TPMmode = TpmModes.getSelectedMode().alias;
                         panel.up('schedulecontainer').setLoading(true);
                         promoStore.load({
                             id: panel.ctx.recId,
@@ -937,13 +924,12 @@
             createContext.finalize(false);
             return false;
         }
-        if (mode) {
-            if (mode.data.value == 1 || mode.data.value == 2) {
-                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    StartDateRS = new Date(returnValue.StartDate);
-                    EndDateRS = new Date(returnValue.EndDate);
-                });
+        if (TpmModes.isRsRaMode()) {
+            var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+            RSmodeController.getRSPeriod(function (returnValue) {
+                StartDateRS = new Date(returnValue.StartDate);
+                EndDateRS = new Date(returnValue.EndDate);
+            });
 
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
@@ -1232,13 +1218,13 @@
             }
             return false;
         }
-        if (mode) {
-            if (mode.data.value == 1 || mode.data.value == 2) {
-                var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
-                RSmodeController.getRSPeriod(function (returnValue) {
-                    StartDateRS = new Date(returnValue.StartDate);
-                    EndDateRS = new Date(returnValue.EndDate);
-                });
+
+        if (TpmModes.isRsRaMode()) {
+            var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
+            RSmodeController.getRSPeriod(function (returnValue) {
+                StartDateRS = new Date(returnValue.StartDate);
+                EndDateRS = new Date(returnValue.EndDate);
+            });
 
             if (calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) {
                 App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
@@ -1823,19 +1809,7 @@
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
         // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value == 0) {
-                promoStore.getProxy().extraParams.TPMmode = 'Current';
-            }
-            else if (mode.data.value == 1) {
-                promoStore.getProxy().extraParams.TPMmode = 'RS';
-            }
-            else if (mode.data.value == 2) {
-                promoStore.getProxy().extraParams.TPMmode = 'RA';
-            }
-        }
+        promoStore.getProxy().extraParams.TPMmode = TpmModes.getSelectedMode().alias;
         panel.up('schedulecontainer').setLoading(true);
         promoStore.load({
             id: eventRecord.data.Id,
@@ -2107,7 +2081,7 @@
     },
 
     accessDeniedForRSmode: function (rec) {
-        if (mode.data.value == 1 || mode.data.value == 2) {
+        if (TpmModes.isRsRaMode()) {
             if (
                 (
                     new Date(rec.get("PromoDispatchStartDate")) > new Date(StartDateRS) &&
@@ -2297,22 +2271,6 @@
                     }
                 }
             }
-        };
-    },
-
-    getTPMmode: function () {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-        if (mode) {
-            if (mode.data.value == 0) {
-                return 'Current';
-            }
-            else if (mode.data.value == 1) {
-                return 'RS';
-            } else if (mode.data.value == 2) {
-                return 'RA';
-            } else
-                return 'Current'
         }
     }
 });

@@ -279,10 +279,8 @@
                 });
         };
         // RSmode
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
         var model = Ext.ComponentQuery.query('promoeditorcustom')[0].model;
-        if (mode.data.value == 1 && model.data.TPMmode == 'Current') {
+        if (TpmModes.isRsRaMode() && TpmModes.isProdMode(model.data.TPMmode)) {
             showMessage = true;
         }
 

@@ -1710,21 +1710,19 @@
             // можно ли редактировать -> скрываем/показываем кнопку "Редактировать"
             var pointsAccess = App.UserInfo.getCurrentRole().AccessPoints;
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-                var mode = settingStore.findRecord('name', 'mode');
-                if (mode) {
-                    if (mode.data.value == 1) { 
-                        var access = pointsAccess.find(function (element) {
-                            return element.Resource == 'PromoSupports' && element.Action == 'Patch' && element.TPMmode == true;
-                        });
-                    }
-                    else {
-                        var access = pointsAccess.find(function (element) {
-                            return element.Resource == 'PromoSupports' && element.Action == 'Patch';
-                        });
-                    }
-                }            
+            var mode = settingStore.findRecord('name', 'mode');
+            if (mode) {
+                if (TpmModes.isRsRaMode()) {
+                    var access = pointsAccess.find(function (element) {
+                        return element.Resource == 'PromoSupports' && element.Action == 'Patch' && element.TPMmode == true;
+                    });
+                } else {
+                    var access = pointsAccess.find(function (element) {
+                        return element.Resource == 'PromoSupports' && element.Action == 'Patch';
+                    });
+                }
+            }
             
-
             customPromoSupportEditor.down('#editPromoSupportEditorButton').setVisible(access);
             customPromoSupportEditor.down('#savePromoSupportForm').setVisible(false);
             customPromoSupportEditor.down('#cancelPromoSupportForm').setVisible(false);

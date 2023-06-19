@@ -292,11 +292,7 @@
         var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var mode = settingStore.findRecord('name', 'mode');
 
-
-        var tPMmode = mode.data.value === 1 ? 'RS' : 'Current';
-
-        model.set('TPMmode', tPMmode);
-
+        model.set('TPMmode', TpmModes.getSelectedMode().alias);
         model.save({
             scope: this,
             success: function (rec, resp, opts) {
@@ -356,14 +352,10 @@
     saveModel: function (promoId, productId) {
         if (promoId && productId) {
 
-            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-            var mode = settingStore.findRecord('name', 'mode');
-
             var parameters = {
                 promoId: breeze.DataType.Guid.fmtOData(promoId),
                 productId: breeze.DataType.Guid.fmtOData(productId),
-                mode: mode.data.value
-
+                mode: TpmModes.getSelectedModeId()
             };
 
             App.Util.makeRequestWithCallback('PromoProducts', 'GetPromoProductByPromoAndProduct', parameters, function (data) {
@@ -470,12 +462,7 @@
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
 
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode');
-
-
-        if (mode) {
-            if (mode.data.value == 1) {
+            if (TpmModes.isRsRaMode()) {
                 if (selModel.hasSelection()) {
                     Ext.Msg.show({
                         title: l10n.ns('core').value('deleteWindowTitle'),
@@ -509,7 +496,7 @@
                         $.ajax({
                             type: "POST",
                             cache: false,
-                            url: "/odata/PromoProductCorrectionViews/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                            url: "/odata/PromoProductCorrectionViews/PromoProductCorrectionDelete?key=" + record.data.Id + '&TPMmode=' + TpmModes.getSelectedModeId(),
                             dataType: "json",
                             contentType: false,
                             processData: false,
@@ -537,10 +524,6 @@
             else {
                 this.onDeleteButtonClick(button);
             }
-        }
-        else {
-            this.onDeleteButtonClick(button);
-        }
     },
 
     onPromoProductCorrectionPIGridSelectionChange: function (selMode, selected) {

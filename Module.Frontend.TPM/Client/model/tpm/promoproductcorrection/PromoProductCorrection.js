@@ -51,7 +51,7 @@
             root: 'results'
         },
         extraParams: {
-            TPMmode: 'Current'
+            TPMmode: TpmModes.Prod.alias
         }
     }
 });
