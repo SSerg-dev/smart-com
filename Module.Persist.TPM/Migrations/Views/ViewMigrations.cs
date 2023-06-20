@@ -1595,6 +1595,7 @@
 				pr.IsGrowthAcceleration AS IsGrowthAcceleration,
 				pr.IsInExchange AS IsInExchange,
 				pr.DispatchesStart AS PromoDispatchStartDate,
+				pr.BudgetYear AS PromoBudgetYear,
 				ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) AS row_number
 
 			FROM 

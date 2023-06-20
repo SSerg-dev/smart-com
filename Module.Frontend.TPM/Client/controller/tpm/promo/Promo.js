@@ -1486,6 +1486,12 @@
             });
             this.showRSmodeLabel(true);
         }
+        if (promoeditorcustom.TPMmode == 2) {
+            RSmodeController.getRSPeriod(function (returnValue) {
+                promoeditorcustom.rsStartEnd = returnValue;
+            });
+            this.showRAmodeLabel(true);
+        }
 
         // из-за вызова из календаря, нужно конкретизировать
         this.getController('tpm.promo.Promo').detailButton = null;
@@ -2323,7 +2329,7 @@
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
         }
 
-        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1) {
+        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -2928,8 +2934,11 @@
             var panelGA = promoMechanics.down('[name=panelGA]');
             panelGA.setDisabled(true);
         }
-        if (TpmMode.isRsRaMode(record.data.TPMmode)) {
+        if (TpmModes.isRsMode(record.data.TPMmode)) {
             this.showRSmodeLabel(true);
+        }
+        if (TpmModes.isRaMode(record.data.TPMmode)) {
+            this.showRAmodeLabel(true);
         }
         if (record.data.IsPriceIncrease) {
             this.showIsPriceIncreaseWindowLabel(true);
@@ -3811,7 +3820,7 @@
         }
 
         //вырубает кнопки в RS режиме
-        if (promoeditorcustom.TPMmode == 1) {
+        if (promoeditorcustom.TPMmode == 1 && promoeditorcustom.TPMmode == 2) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
@@ -3849,7 +3858,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
-        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1) {
+        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -6997,14 +7006,21 @@
         }
     },
 
-    changeRSmodeLabel: function (newValue) {
-        var promoEditorCustom = Ext.ComponentQuery.query('promoeditorcustom')[0];
-        var promoController = App.app.getController('tpm.promo.Promo');
+    getRAmodeLabel: function () {
+        var rsModeComponent = Ext.ComponentQuery.query('#btn_promoIsRAmode')[0];
+        return rsModeComponent;
+    },
 
-        if (promoEditorCustom && newValue) {
-            promoController.showRSmodeLabel(true);
+    showRAmodeLabel: function (value) {
+        var raModeLabel = this.getRAmodeLabel();
+        if (value) {
+            if (raModeLabel) {
+                raModeLabel.show();
+            }
         } else {
-            promoController.showRSmodeLabel(false);
+            if (raModeLabel) {
+                raModeLabel.hide();
+            }
         }
     },
 

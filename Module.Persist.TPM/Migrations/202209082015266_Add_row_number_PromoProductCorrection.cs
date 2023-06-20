@@ -9,7 +9,7 @@ namespace Module.Persist.TPM.Migrations
         public override void Up()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            Sql(ViewMigrations.UpdatePromoProductCorrectionViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdatePromoProductCorrectionViewString(defaultSchema));
         }
         
         public override void Down()

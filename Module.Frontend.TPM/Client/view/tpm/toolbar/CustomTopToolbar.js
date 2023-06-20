@@ -67,6 +67,16 @@
         },
         {
             xtype: 'button',
+            itemId: 'btn_promoIsRAmode',
+            glyph: 0xfbc7,
+            cls: 'in-out-promo-header-button custom-top-panel-item',
+            text: 'RA mode',
+            height: 20,
+            hidden: true,
+            disabled: true
+        },
+        {
+            xtype: 'button',
             itemId: 'btn_promoIsPriceIncrease',
             glyph: 0xfbf4,
             cls: 'in-out-promo-header-button custom-top-panel-item',

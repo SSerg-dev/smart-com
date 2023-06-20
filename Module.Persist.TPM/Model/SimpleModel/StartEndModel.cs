@@ -10,5 +10,6 @@ namespace Module.Persist.TPM.Model.SimpleModel
     {
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
+        public int BudgetYear { get; set; }
     }
 }

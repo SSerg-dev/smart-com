@@ -28,6 +28,7 @@ Ext.define('App.model.tpm.promoproductcorrection.PromoProductCorrectionView', {
         { name: 'PromoStatusName', type: 'string', hidden: true, isDefault: true  },
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: true },
         { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: true },
+        { name: 'PromoBudgetYear', type: 'int', hidden: true, isDefault: false },
     ],
 
     proxy: {

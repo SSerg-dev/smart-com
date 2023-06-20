@@ -31,6 +31,7 @@
         { name: 'PromoStatusName', type: 'string', mapping: 'Promo.PromoStatus.Name', defaultFilterConfig: { valueField: 'Name' }, breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsGrowthAcceleration' },
         { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsInExchange' },
+        { name: 'PromoBudgetYear', type: 'int', mapping: 'Promo.BudgetYear', hidden: true, isDefault: false },
     ],
     proxy: {
         type: 'breeze',

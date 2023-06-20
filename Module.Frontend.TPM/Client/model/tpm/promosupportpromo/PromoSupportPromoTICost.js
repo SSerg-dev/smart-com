@@ -26,6 +26,7 @@
         { name: 'PromoDispatchStartDate', type: 'date', hidden: true, mapping: 'Promo.DispatchesStart', timeZone: +3, convert: dateConvertTimeZone },
         { name: 'IsGrowthAcceleration', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsGrowthAcceleration' },
         { name: 'IsInExchange', type: 'boolean', hidden: true, isDefault: false, mapping: 'Promo.IsInExchange' },
+        { name: 'PromoBudgetYear', type: 'int', mapping: 'Promo.BudgetYear', hidden: true, isDefault: false },
         
     ],
     proxy: {

@@ -1,9 +1,9 @@
 ﻿Ext.define('App.controller.tpm.promoproductcorrection.PromoProductCorrection', {
     extend: 'App.controller.core.AssociatedDirectory',
     mixins: ['App.controller.core.ImportExportLogic'],
-    
+
     startEndModel: null,
-    
+
     thisGrid: null,
 
     init: function () {
@@ -78,7 +78,7 @@
                 },
                 'promoproductcorrection #exportcorrectionxlsxbutton': {
                     click: this.onExportCorrectionButtonClick
-                },                
+                },
                 '#ppcuploadfilewindow #userOk': {
                     click: this.onUploadFileOkButtonClick
                 },
@@ -119,8 +119,8 @@
     onCreateButtonClick: function (button) {
         var grid = this.getGridByButton(button);
         store = grid.getStore(),
-        model = Ext.create(Ext.ModelManager.getModel(store.model)),
-        this.startCreateRecord(model, grid);
+            model = Ext.create(Ext.ModelManager.getModel(store.model)),
+            this.startCreateRecord(model, grid);
 
         var promoproductcorrectioneditor = Ext.ComponentQuery.query('promoproductcorrectioneditor')[0];
         var createDate = promoproductcorrectioneditor.down('[name=CreateDate]');
@@ -201,7 +201,7 @@
         this.editor.show();
     },
 
-    startCreateRecord: function(model, grid) {
+    startCreateRecord: function (model, grid) {
         this.editor = grid.editorModel.createEditor({
             title: l10n.ns('core').value('createWindowTitle'),
             buttons: [{
@@ -289,10 +289,10 @@
         this.editor.grid.getStore().load();
     },
 
-    getAndSaveFormData: function() {
+    getAndSaveFormData: function () {
         var form = this.editor.down('editorform').getForm();
-        record = form.getRecord();        
-    
+        record = form.getRecord();
+
         if (!form.isValid()) {
             return;
         }
@@ -357,12 +357,12 @@
                         }, this);
                     } else {
                         this.editor.close();
-                    }               
+                    }
                 }
                 if (resp.action == 'create') {
                     this.editor.setLoading(false);
                     this.editor.close();
-                }                
+                }
             },
             failure: function (fff) {
                 if (callback) {
@@ -442,7 +442,7 @@
         this.ExportPromoProductCorrection(actionName, button)
     },
 
-    ExportPromoProductCorrection: function(actionName, button) {
+    ExportPromoProductCorrection: function (actionName, button) {
         var me = this;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
@@ -452,13 +452,13 @@
         panel.setLoading(true);
 
         var query = breeze.EntityQuery
-        .from(resource)
-        .withParameters({
-            $actionName: actionName,
-            $method: 'POST',
-            TPMmode: TpmModes.getSelectedModeId()
-        });
-        
+            .from(resource)
+            .withParameters({
+                $actionName: actionName,
+                $method: 'POST',
+                TPMmode: TpmModes.getSelectedModeId()
+            });
+
         // тут store фильтр не работает на бэке другой запрос
         query = me.buildQuery(query, store)
             .using(Ext.ux.data.BreezeEntityManager.getEntityManager())
@@ -472,7 +472,7 @@
                 panel.setLoading(false);
                 App.Notify.pushError(me.getErrorMessage(data));
             });
-    },    
+    },
 
     onEditorClose: function (window) {
         var form = this.editor.down('editorform'),
@@ -482,7 +482,7 @@
         this.editor = null;
         this.detailMode = null;
     },
-    onDeletePromoProductCorrectionButtonClick: function(button) {
+    onDeletePromoProductCorrectionButtonClick: function (button) {
         var grid = this.getGridByButton(button),
             panel = grid.up('combineddirectorypanel'),
             selModel = grid.getSelectionModel();
@@ -555,8 +555,7 @@
         if (selected[0]) {
             var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
             const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) 
-            {
+            if (tpmMode == 1) {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
@@ -574,14 +573,41 @@
                         !selected[0].data.IsGrowthAcceleration ||
                         !selected[0].data.IsInExchange
                     )
-                   ) {
+                ) {
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
                 } else {
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
                 }
-            }else if (selected[0].data.PromoStatusName != 'Closed') {
+            } if (tpmMode == 2) {
+                if (
+                    (
+                        new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
+                        new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate) &&
+                        startEndModel.BudgetYear == selected[0].data.PromoBudgetYear
+                    ) &&
+                    (
+                        selected[0].data.PromoStatusName != "Draft" &&
+                        selected[0].data.PromoStatusName != "Planned" &&
+                        selected[0].data.PromoStatusName != "Started" &&
+                        selected[0].data.PromoStatusName != "Finished" &&
+                        selected[0].data.PromoStatusName != "Closed" &&
+                        selected[0].data.PromoStatusName != "Cancelled"
+                    ) &&
+                    (
+                        !selected[0].data.IsGrowthAcceleration ||
+                        !selected[0].data.IsInExchange
+                    )
+                ) {
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
+                } else {
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
+                    Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
+                }
+            }
+            else if (selected[0].data.PromoStatusName != 'Closed') {
                 Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').enable();
                 Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').enable();
             } else {

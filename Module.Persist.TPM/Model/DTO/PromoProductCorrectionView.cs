@@ -39,6 +39,7 @@ namespace Module.Persist.TPM.Model.DTO
 		public bool IsInExchange { get; set; }
 
         public long row_number { get; set; }
+        public int PromoBudgetYear { get; set; }
 
     }
 }
