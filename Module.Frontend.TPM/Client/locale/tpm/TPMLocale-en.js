@@ -1539,7 +1539,8 @@
         'ModalWindowCloseButton': 'Close',
         'ModalWindowOkButton': 'Create',
         'NotSelected': 'Client and type must be selected.',
-        'CreateButtonText': 'Create support type'
+        'CreateButtonText': 'Create support type',
+        'ClientTreeIdValid': 'Only base clients are available for selection.'
     },
 
     'PromoType': {

@@ -365,17 +365,6 @@ lightPromoDF = promoDF\
           ,col('ActualPromoPostPromoEffectLSV')
          )
 
-lightPromoDF = lightPromoDF\
-  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId == clientTreeDF.Id, 'inner')\
-  .select(\
-           lightPromoDF['*']
-          ,to_date(clientTreeDF.EndDate, 'yyyy-MM-dd').alias('ctEndDate')
-          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')
-          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')
-          )\
-  .where(col('ctEndDate').isNull())\
-  .drop('ctEndDate')
-
 calcActualPromoDF = calcActualPromoDF\
   .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\
   .select(\
@@ -450,14 +439,6 @@ calcActualPromoProductDF = calcActualPromoProductDF\
           ,productDF.PCVolume
          )
 
-calcActualPromoDF = calcActualPromoDF\
-  .join(lightPromoDF, lightPromoDF.promoNumber == calcActualPromoDF.Number, 'inner')\
-  .select(\
-           calcActualPromoDF['*']
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
-         )
-
 # print(allCalcActualPromoProductDF.count())
 # print(calcActualPromoProductDF.count())
 # print(notCalcActualPromoProductDF.count())
@@ -474,8 +455,6 @@ allCalcActualPromoDF = allCalcActualPromoDF\
   .select(\
            allCalcActualPromoDF['*']
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
          )
 
 calcActualSupportPromoDF = allCalcActualPromoDF\

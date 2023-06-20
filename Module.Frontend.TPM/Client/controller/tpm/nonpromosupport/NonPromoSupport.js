@@ -139,8 +139,8 @@
 
         clientTreeField.validate();
 
-        if (!clientTreeField.record.data.isBaseClient) {
-            App.Notify.pushError('Only base clients are available for selection.');
+        if (!clientTreeField.record.data.IsBaseClient) {
+            App.Notify.pushError(l10n.ns('tpm', 'NonPromoSupportClient').value('ClientTreeIdValid'));
             window.setLoading(false);
         } else if (clientTreeField && clientTreeField.isValid()) {
             var customNonPromoSupportEditor = Ext.widget('customnonpromosupporteditor');

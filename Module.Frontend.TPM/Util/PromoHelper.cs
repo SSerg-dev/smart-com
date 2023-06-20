@@ -818,7 +818,7 @@ namespace Module.Frontend.TPM.Util
                 }
                 else
                 {
-                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == product.SubBrand_code);
+                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
                     compositname = technology.Name + " " + technology.SubBrand;
                 }
 

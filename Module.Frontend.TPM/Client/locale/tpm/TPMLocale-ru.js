@@ -1204,7 +1204,8 @@
         'ModalWindowCloseButton': 'Закрыть',
         'ModalWindowOkButton': 'Создать',
         'NotSelected': 'Должн быть выбран клиент.',
-        'CreateButtonText': 'Create support client'
+        'CreateButtonText': 'Create support client',
+        'ClientTreeIdValid': 'Only base clients are available for selection.'
     },
 
     'RetailType': {
