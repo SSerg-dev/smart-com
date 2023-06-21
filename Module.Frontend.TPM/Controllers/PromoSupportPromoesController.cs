@@ -8,6 +8,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
@@ -852,6 +853,10 @@ namespace Module.Frontend.TPM.Controllers
                 if (TPMmode == TPMmode.RS && supportPromos[0].TPMmode == TPMmode.Current) //фильтр промо
                 {
                     RSmodeHelper.EditToPromoSupportPromoRS(Context, supportPromos, true, System.DateTime.Now);
+                }
+                else if (TPMmode == TPMmode.RA && supportPromos[0].TPMmode == TPMmode.Current)
+                {
+                    RAmodeHelper.EditToPromoSupportPromoRA(Context, supportPromos, true, System.DateTime.Now);
                 }
                 else
                 {

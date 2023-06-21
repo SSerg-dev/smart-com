@@ -8,6 +8,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Util;
@@ -265,6 +266,18 @@ namespace Module.Frontend.TPM.Controllers
                         .Where(x => x.PromoProduct.PromoId == item.PromoProduct.PromoId && !x.Disabled)
                         .ToList();
                     promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    item = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == item.PromoProduct.ZREP);
+                }
+                // Редактирование Current promo в RA режиме => копируем в RA, работаем с копией
+                if (tPMmode == TPMmode.RA && mode == TPMmode.Current)
+                {
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == item.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RAmodeHelper.EditToPromoProductsCorrectionRA(Context, promoProductsCorrections);
                     item = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.ZREP == item.PromoProduct.ZREP);
                 }
 
@@ -633,7 +646,7 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                if (TPMmode == TPMmode.RS && model.TPMmode != TPMmode.RS) //фильтр промо
+                if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.Current) //фильтр промо
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
@@ -642,6 +655,17 @@ namespace Module.Frontend.TPM.Controllers
                         .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
                         .ToList();
                     promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
+                }
+                if (TPMmode == TPMmode.RA && model.TPMmode == TPMmode.Current) //фильтр промо
+                {
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RAmodeHelper.EditToPromoProductsCorrectionRA(Context, promoProductsCorrections);
                     model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
                 }
                 model.DeletedDate = System.DateTime.Now;

@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
@@ -193,6 +194,22 @@ namespace Module.Frontend.TPM.Controllers
                             .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
                             .ToList();
                         List<IncrementalPromo> resultIncrementalPromos = RSmodeHelper.EditToIncrementalPromoRS(Context, incrementalPromos);
+                        model = resultIncrementalPromos.FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.ProductId == model.ProductId && !g.Disabled);
+                    }
+                }
+                if (ChangeIncrementalPromo.TPMmode == TPMmode.RA)
+                {
+                    if (model.TPMmode == TPMmode.Current)
+                    {
+                        //нужно взять все причастные записи IncrementalPromo по promo
+                        List<IncrementalPromo> incrementalPromos = Context.Set<IncrementalPromo>()
+                            .Include(x => x.Promo.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .Include(x => x.Promo.BTLPromoes)
+                            .Include(x => x.Promo.PromoProductTrees)
+                            .Include(x => x.Promo.PromoSupportPromoes)
+                            .Where(g => g.Promo.Number == model.Promo.Number && !g.Disabled)
+                            .ToList();
+                        List<IncrementalPromo> resultIncrementalPromos = RAmodeHelper.EditToIncrementalPromoRA(Context, incrementalPromos);
                         model = resultIncrementalPromos.FirstOrDefault(g => g.Promo.Number == model.Promo.Number && g.ProductId == model.ProductId && !g.Disabled);
                     }
                 }
