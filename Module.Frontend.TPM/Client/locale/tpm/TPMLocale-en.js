@@ -197,7 +197,7 @@
         'ApproveClosePromoWindow': 'Confirm closing',
         'Competitor': 'Competitor',
         'CompetitorBrandTech': 'Competitor BrandTech',
-        'RSmode': 'RS',
+        'RSmode': 'Scenario List',
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
         'MetricsLiveHistory':'Metrics Live History',
@@ -3073,14 +3073,15 @@
     'DeletedCompetitorBrandTech': ['.tpm.CompetitorBrandTech', '.core.BaseDeletedEntity'],
 
     'RSmode': {
-        'RSId': 'RS ID',
+        'RSId': 'Scenario ID',
+        'ScenarioType': 'Scenario Type',
         'ClientTreeFullPathName': 'Client',
         'ExpirationDate': 'Expiration Date',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
         'RSstatus': 'Status',
         'IsMLmodel': 'MLmodel',
-        'TaskStatus': 'Task',
+        'TaskStatus': 'Task'
     },
     'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity'],
     'MetricsLiveHistory': {

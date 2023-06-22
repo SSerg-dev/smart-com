@@ -135,9 +135,8 @@ Ext.define('App.controller.core.security.Security', {
     },
 
     onModeButtonClick: function (button) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var mode = settingStore.findRecord('name', 'mode').data.value;
-        
+        var mode = TpmModes.getSelectedModeId();
+
         this.getChangeModeWindow().show();
 
         if (!Ext.isEmpty(mode)) {
@@ -300,11 +299,6 @@ Ext.define('App.controller.core.security.Security', {
         });
     },
     afterrenderToolBar: function (toolbar) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        settingStore.load();
-        if (settingStore.data.length == 0) {
-            settingStore.add({ name: 'mode', value: 0 });
-            settingStore.sync();
-        }
+        TpmModes.setMode(TpmModes.getSelectedModeId());
     }
 });

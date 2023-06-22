@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Module.Persist.TPM.Enum;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -16,6 +17,7 @@ namespace Module.Persist.TPM.Model.TPM
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [Index(IsUnique = true)]
         public int? RSId { get; set; }
+        public ScenarioType ScenarioType { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpirationDate { get; set; }

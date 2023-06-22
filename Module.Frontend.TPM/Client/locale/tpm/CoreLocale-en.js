@@ -219,8 +219,7 @@
         'SystemMenu': 'Administration',
         'AttendanceType': 'Attendance Types',
         'ModuleItem': 'Modules',
-        'RSmode': 'RS',
-        'RAmode': 'RA'
+        'RSmode': 'Scenario List'
     },
 
     'compositePanelTitles': {

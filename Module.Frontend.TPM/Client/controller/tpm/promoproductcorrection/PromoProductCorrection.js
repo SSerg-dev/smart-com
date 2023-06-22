@@ -553,9 +553,8 @@
 
     onPromoProductCorrectionGridSelectionChange: function (selMode, selected) {
         if (selected[0]) {
-            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) {
+            const tpmMode = TpmModes.getSelectedModeId();
+            if (TpmModes.isRsMode(tpmMode)) {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
@@ -580,7 +579,7 @@
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#updatebutton').disable();
                     Ext.ComponentQuery.query('promoproductcorrection')[0].down('#deletebutton').disable();
                 }
-            } if (tpmMode == 2) {
+            } if (TpmModes.isRaMode(tpmMode)) {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&

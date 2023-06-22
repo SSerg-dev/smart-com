@@ -184,6 +184,19 @@
                     dataIndex: 'RSId'
                 },
                 {
+                    text: l10n.ns('tpm', 'RSmode').value('ScenarioType'),
+                    dataIndex: 'ScenarioType',
+                    falseText: 'RS',
+                    trueText: 'RA',
+                    filter: {
+                        type: 'bool',
+                        store: [
+                            [0, 'RS'],
+                            [1, 'RA']
+                        ]
+                    }
+                },
+                {
                     text: l10n.ns('tpm', 'RSmode').value('ClientTreeFullPathName'),
                     dataIndex: 'ClientTreeFullPathName',
                     minWidth: 200,

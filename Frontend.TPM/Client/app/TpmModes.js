@@ -14,6 +14,13 @@ TpmModes = {
         alias: 'RA',
         text: 'Resource Allocation'
     },
+    getTpmModeStore: function() {
+        let tpmModeStore = Ext.data.StoreManager.lookup('tpmModeStore');
+        if (Ext.isEmpty(tpmModeStore)) {
+            tpmModeStore = Ext.create('App.store.tpm.mode.Mode');
+        }
+        return tpmModeStore;
+    },
     getSettingStore: function() {
         let settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         if (Ext.isEmpty(settingStore)) {
@@ -24,9 +31,12 @@ TpmModes = {
     },
     setMode: function(modeId) {
         let settingStore = this.getSettingStore();
+        settingStore.load();
         let mode = settingStore.findRecord('name', 'mode');
         if (!Ext.isEmpty(mode)) {
             mode.set('value', modeId);
+        } else {
+            settingStore.add({ name: 'mode', value: modeId });
         }
         settingStore.sync();
     },
@@ -35,8 +45,8 @@ TpmModes = {
         return settingStore.findRecord('name', 'mode');
     },
     getTpmModeById: function(modeId) {
-        let modesStore = Ext.create('App.store.tpm.mode.Mode');
-        let mode = modesStore.findRecord('id', modeId);
+        //let modesStore = Ext.create('App.store.tpm.mode.Mode');
+        let mode = this.getTpmModeStore().findRecord('id', modeId);
         return mode ? mode.data : null;
     },
     getSelectedMode: function() {

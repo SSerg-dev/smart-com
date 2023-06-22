@@ -523,8 +523,6 @@
 
     onPromoProductCorrectionPIGridSelectionChange: function (selMode, selected) {
         if (selected[0]) {
-            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
             if (selected[0].data.PromoStatusName != 'Closed') {
                 Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#updatebutton').enable();
                 Ext.ComponentQuery.query('promoproductcorrectionpriceincrease')[0].down('#deletebutton').enable();

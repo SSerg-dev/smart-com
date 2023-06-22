@@ -88,11 +88,10 @@
         });
     },
     getRSPeriod: function (cb_func) {
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-        var TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        var tpmMode = TpmModes.getSelectedModeId();
         $.ajax({
             dataType: 'json',
-            url: '/odata/Promoes/GetRSPeriod?TPMmode=' + TPMmode,
+            url: '/odata/Promoes/GetRSPeriod?TPMmode=' + tpmMode,
             type: 'POST',
             async: false,
             success: function (response) {

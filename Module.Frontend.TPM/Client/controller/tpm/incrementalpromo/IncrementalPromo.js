@@ -107,9 +107,8 @@
 
     onGridSelectionChangeCustom: function (selMode, selected) {
         if (selected[0]) {
-            var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
-            const tpmMode = settingStore.findRecord('name', 'mode').data.value;
-            if (tpmMode == 1) {
+            const tpmMode = TpmModes.getSelectedModeId();
+            if (TpmModes.isRsMode(tpmMode)) {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
@@ -135,7 +134,7 @@
                     this.canEditInRSmode = false;
                 }
             }
-            else if (tpmMode == 2) {
+            else if (TpmModes.isRaMode(tpmMode)) {
                 if (
                     (
                         new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&

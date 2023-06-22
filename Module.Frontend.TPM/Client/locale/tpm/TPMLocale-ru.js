@@ -947,7 +947,8 @@
         'ExportTaskComplete': 'Export task was successfully completed. Results file will be available in the task details.',
         'ExportTaskError': 'The export task failed. You can see the details of the task here:',
         'AllSelected': 'All selected',
-        'Filtered': 'Filtered'
+        'Filtered': 'Filtered',
+        'RSmode': 'Scenario List'
     },
 
     'Color': {

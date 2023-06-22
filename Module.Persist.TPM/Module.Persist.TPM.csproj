@@ -333,6 +333,7 @@
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
     <Compile Include="ElasticSearch\InsteadHistoricalAttribute.cs" />
     <Compile Include="Enum\RSstateNames.cs" />
+    <Compile Include="Enum\ScenarioType.cs" />
     <Compile Include="Enum\TaskStatusNames.cs" />
     <Compile Include="Hubs\LogHub.cs" />
     <Compile Include="Hubs\TasksLogHub.cs" />
@@ -3583,6 +3584,10 @@
     <Compile Include="Migrations\202306200959201_Add_PPCV_BudgetYear.designer.cs">
       <DependentUpon>202306200959201_Add_PPCV_BudgetYear.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202306220823425_AddScenarioTypeColumn.cs" />
+    <Compile Include="Migrations\202306220823425_AddScenarioTypeColumn.designer.cs">
+      <DependentUpon>202306220823425_AddScenarioTypeColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6733,6 +6738,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202306200959201_Add_PPCV_BudgetYear.resx">
       <DependentUpon>202306200959201_Add_PPCV_BudgetYear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306220823425_AddScenarioTypeColumn.resx">
+      <DependentUpon>202306220823425_AddScenarioTypeColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

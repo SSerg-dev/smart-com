@@ -1468,7 +1468,6 @@
     onCreateButtonClick: function (button, e, schedulerData, isInOutPromo, promotype) {
 
         var me = this;
-        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
         var promoeditorcustom = Ext.widget('promoeditorcustom');
         var RSmodeController = App.app.getController('tpm.rsmode.RSmode');
         promoeditorcustom.isInOutPromo = isInOutPromo;
@@ -1480,13 +1479,13 @@
         promoeditorcustom.isCreating = true;
 
         promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
-        if (promoeditorcustom.TPMmode == 1) {
+        if (TpmModes.isRsMode(promoeditorcustom.TPMmode)) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
             });
             this.showRSmodeLabel(true);
         }
-        if (promoeditorcustom.TPMmode == 2) {
+        if (TpmModes.isRaMode(promoeditorcustom.TPMmode)) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
             });
