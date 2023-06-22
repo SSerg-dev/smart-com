@@ -540,6 +540,7 @@
     <Compile Include="FunctionalHelpers\RA\RAmodeHelper.cs" />
     <Compile Include="FunctionalHelpers\RSmode\RSmodeHelper.cs" />
     <Compile Include="FunctionalHelpers\RSPeriod\RSPeriodHelper.cs" />
+    <Compile Include="FunctionalHelpers\Scenario\ScenarioHelper.cs" />
     <Compile Include="Model\RPAEventJsonField.cs" />
     <Compile Include="Util\AzureBlobHelperLocal.cs" />
     <Compile Include="Util\GetExceptionMessage.cs" />

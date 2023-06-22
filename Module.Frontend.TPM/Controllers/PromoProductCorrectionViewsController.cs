@@ -252,6 +252,10 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return InternalServerError(new Exception("Promo is not in the RS period"));
                 }
+                if (tPMmode == TPMmode.RA && !CheckRAPeriodSuitable(item.PromoProduct.Promo, Context))
+                {
+                    return InternalServerError(new Exception("Promo is not in the RA period"));
+                }
                 if (item.PromoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(item.TempId))
                 {
                     return InternalServerError(new Exception("Promo Locked Update"));
@@ -444,6 +448,43 @@ namespace Module.Frontend.TPM.Controllers
                     result.UserName = user.Login;
                     Context.Set<PromoProductsCorrection>().Add(result);
                 }
+                if (tPMmode == TPMmode.RA)
+                {
+                    var promoProduct = Context.Set<PromoProduct>()
+                                        .Include(x => x.Promo)
+                                        .FirstOrDefault(x => x.Id == result.PromoProductId && !x.Disabled);
+                    if (!CheckRAPeriodSuitable(promoProduct.Promo, Context))
+                    {
+                        return InternalServerError(new Exception("Promo is not in the RA period"));
+                    }
+                    if (promoProduct.Promo.NeedRecountUplift == false && String.IsNullOrEmpty(result.TempId))
+                    {
+                        return InternalServerError(new Exception("Promo Locked Update"));
+                    }
+                    var promoProductRA = Context.Set<PromoProduct>()
+                                        .FirstOrDefault(x => x.Promo.Number == promoProduct.Promo.Number && x.ZREP == promoProduct.ZREP && !x.Disabled && x.TPMmode == TPMmode.RA);
+                    //to do передавать mode при запросе промо в searchfield
+                    if (promoProductRA == null)
+                    {
+                        var currentPromo = Context.Set<Promo>()
+                            .Include(g => g.BTLPromoes)
+                            .Include(g => g.PromoSupportPromoes)
+                            .Include(g => g.PromoProductTrees)
+                            .Include(g => g.IncrementalPromoes)
+                            .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .FirstOrDefault(p => p.Number == model.Number && p.TPMmode == TPMmode.Current);
+                        var promoRA = RAmodeHelper.EditToPromoRA(Context, currentPromo);
+                        promoProductRA = promoRA.PromoProducts
+                            .FirstOrDefault(x => x.ZREP == model.ZREP);
+                    }
+                    result.PromoProduct = promoProductRA;
+                    result.PromoProductId = promoProductRA.Id;
+                    result.CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.ChangeDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                    result.UserId = user.Id;
+                    result.UserName = user.Login;
+                    Context.Set<PromoProductsCorrection>().Add(result);
+                }
                 try
                 {
                     var saveChangesResult = await Context.SaveChangesAsync();
@@ -542,7 +583,7 @@ namespace Module.Frontend.TPM.Controllers
                         promoProductsCorrection.UserName = user.Login;
                     }
                 }
-                else if (mode != tPMmode)
+                else if (mode == TPMmode.RS)
                 {
                     List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
                         .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
@@ -551,6 +592,17 @@ namespace Module.Frontend.TPM.Controllers
                         .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
                         .ToList();
                     promoProductsCorrections = RSmodeHelper.EditToPromoProductsCorrectionRS(Context, promoProductsCorrections);
+                    model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
+                }
+                else if (mode == TPMmode.RA)
+                {
+                    List<PromoProductsCorrection> promoProductsCorrections = Context.Set<PromoProductsCorrection>()
+                        .Include(g => g.PromoProduct.Promo.IncrementalPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoSupportPromoes)
+                        .Include(g => g.PromoProduct.Promo.PromoProductTrees)
+                        .Where(x => x.PromoProduct.PromoId == model.PromoProduct.PromoId && !x.Disabled)
+                        .ToList();
+                    promoProductsCorrections = RAmodeHelper.EditToPromoProductsCorrectionRA(Context, promoProductsCorrections);
                     model = promoProductsCorrections.FirstOrDefault(g => g.PromoProduct.Promo.Number == model.PromoProduct.Promo.Number && g.PromoProduct.ZREP == model.PromoProduct.ZREP);
                 }
 
@@ -849,6 +901,11 @@ namespace Module.Frontend.TPM.Controllers
         {
             var startEndModel = RSPeriodHelper.GetRSPeriod(context);
             return promo.DispatchesStart >= startEndModel.StartDate && startEndModel.EndDate >= promo.EndDate;
+        }
+        private bool CheckRAPeriodSuitable(Promo promo, DatabaseContext context)
+        {
+            var startEndModel = RAmodeHelper.GetRAPeriod();
+            return promo.DispatchesStart >= startEndModel.StartDate && startEndModel.EndDate >= promo.EndDate && promo.BudgetYear == startEndModel.BudgetYear;
         }
     }
 }

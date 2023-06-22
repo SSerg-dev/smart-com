@@ -198,12 +198,7 @@ namespace Module.Frontend.TPM.Controllers
                         promoIdsList = JsonConvert.DeserializeObject<List<string>>(promoIds);
                     }
 
-                    List<Guid> guidPromoIds = new List<Guid>();
-                    foreach (var id in promoIdsList)
-                    {
-                        Guid promoId = Guid.Parse(id);
-                        guidPromoIds.Add(promoId);
-                    }
+                    List<Guid> guidPromoIds = promoIdsList.Select(f => Guid.Parse(f)).ToList();
 
                     List<PromoSupportPromo> promoSupportPromoes = Context.Set<PromoSupportPromo>()
                         .Include(g => g.PromoSupport)
@@ -215,21 +210,44 @@ namespace Module.Frontend.TPM.Controllers
                         .ToList();
                     bool isAllCurrent = promoSupportPromoes.All(g => g.TPMmode == TPMmode.Current);
                     bool isAllRS = promoSupportPromoes.All(g => g.TPMmode == TPMmode.RS);
+                    bool isAllRA = promoSupportPromoes.All(g => g.TPMmode == TPMmode.RA);
                     List<PromoSupportPromo> promoSupportPromoesRS = new List<PromoSupportPromo>();
-                    if (TPMmode == TPMmode.RS && isAllCurrent)
+                    List<PromoSupportPromo> promoSupportPromoesRA = new List<PromoSupportPromo>();
+                    if (TPMmode == TPMmode.RS)
                     {
-                        promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
+                        if (TPMmode == TPMmode.RS && isAllCurrent)
+                        {
+                            promoSupportPromoes = RSmodeHelper.EditToPromoSupportPromoRS(Context, promoSupportPromoes);
+                        }
+                        if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
+                        {
+                            promoSupportPromoesRS = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
+                            // убираем RSы
+                            promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                        }
+                        else
+                        {
+                            // убираем currentы
+                            promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
+                        }
                     }
-                    if (!isAllCurrent && !isAllRS && TPMmode == TPMmode.Current)
+                    if (TPMmode == TPMmode.RA)
                     {
-                        promoSupportPromoesRS = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
-                        // убираем RSы
-                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
-                    }
-                    else
-                    {
-                        // убираем currentы
-                        promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RS).ToList();
+                        if (TPMmode == TPMmode.RA && isAllCurrent)
+                        {
+                            promoSupportPromoes = RAmodeHelper.EditToPromoSupportPromoRA(Context, promoSupportPromoes);
+                        }
+                        if (!isAllCurrent && !isAllRA && TPMmode == TPMmode.Current)
+                        {
+                            promoSupportPromoesRA = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RA).ToList();
+                            // убираем RSы
+                            promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.Current).ToList();
+                        }
+                        else
+                        {
+                            // убираем currentы
+                            promoSupportPromoes = promoSupportPromoes.Where(g => g.TPMmode == TPMmode.RA).ToList();
+                        }
                     }
                     foreach (var id in guidPromoIds)
                     {
@@ -266,9 +284,33 @@ namespace Module.Frontend.TPM.Controllers
                                     Context.Set<PromoSupportPromo>().Add(psp);
                                 }
                             }
+                            else if (TPMmode == TPMmode.RA)
+                            {
+                                if (promo.TPMmode == TPMmode.Current)
+                                {
+                                    promo = RAmodeHelper.EditToPromoRA(Context, promo);
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = promo.Id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    promo.PromoSupportPromoes.Add(psp);
+                                }
+                                else
+                                {
+                                    PromoSupportPromo psp = new PromoSupportPromo
+                                    {
+                                        PromoSupportId = promoSupportId,
+                                        PromoId = id,
+                                        TPMmode = promo.TPMmode
+                                    };
+                                    Context.Set<PromoSupportPromo>().Add(psp);
+                                }
+                            }
                             else
                             {
-                                Promo promoMode = Context.Set<Promo>()
+                                Promo promoModeRS = Context.Set<Promo>()
                                     .Include(g => g.PromoSupportPromoes)
                                     .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RS);
                                 PromoSupportPromo psp = new PromoSupportPromo
@@ -278,9 +320,9 @@ namespace Module.Frontend.TPM.Controllers
                                     TPMmode = promo.TPMmode
                                 };
                                 Context.Set<PromoSupportPromo>().Add(psp);
-                                if (promoMode != null)
+                                if (promoModeRS != null)
                                 {
-                                    if (promoMode.PromoSupportPromoes.Any(g => g.PromoSupportId == promoSupportId && !g.Disabled))
+                                    if (promoModeRS.PromoSupportPromoes.Any(g => g.PromoSupportId == promoSupportId && !g.Disabled))
                                     {
                                         //по идее надо - CalculateBudgetsCreateTask но это тормознет сохранение в Current
                                     }
@@ -289,7 +331,7 @@ namespace Module.Frontend.TPM.Controllers
                                         PromoSupportPromo psp1 = new PromoSupportPromo
                                         {
                                             PromoSupportId = promoSupportId,
-                                            PromoId = promoMode.Id,
+                                            PromoId = promoModeRS.Id,
                                             TPMmode = promo.TPMmode
                                         };
                                         Context.Set<PromoSupportPromo>().Add(psp1);
@@ -304,6 +346,52 @@ namespace Module.Frontend.TPM.Controllers
                                         {
                                             PromoSupportId = promoSupportId,
                                             PromoId = promoRS.Id,
+                                            TPMmode = TPMmode.RS
+                                        };
+                                        Context.Set<PromoSupportPromo>().Add(psp1);
+                                    }
+                                    else
+                                    {
+                                        promo = RSmodeHelper.EditToPromoRS(Context, promo);
+                                        PromoSupportPromo psp2 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promo.Id,
+                                            TPMmode = promo.TPMmode
+                                        };
+                                        promo.PromoSupportPromoes.Add(psp2);
+                                    }
+
+                                }
+                                Promo promoModeRA = Context.Set<Promo>()
+                                    .Include(g => g.PromoSupportPromoes)
+                                    .FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RA);
+                                if (promoModeRA != null)
+                                {
+                                    if (promoModeRA.PromoSupportPromoes.Any(g => g.PromoSupportId == promoSupportId && !g.Disabled))
+                                    {
+                                        //по идее надо - CalculateBudgetsCreateTask но это тормознет сохранение в Current
+                                    }
+                                    else
+                                    {
+                                        PromoSupportPromo psp1 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promoModeRA.Id,
+                                            TPMmode = promo.TPMmode
+                                        };
+                                        Context.Set<PromoSupportPromo>().Add(psp1);
+                                    }
+                                }
+                                else if (promoSupportPromoesRS.Count > 0)
+                                {
+                                    Promo promoRA = Context.Set<Promo>().FirstOrDefault(g => g.Number == promo.Number && g.TPMmode == TPMmode.RA);
+                                    if (promoRA != null)
+                                    {
+                                        PromoSupportPromo psp1 = new PromoSupportPromo
+                                        {
+                                            PromoSupportId = promoSupportId,
+                                            PromoId = promoRA.Id,
                                             TPMmode = TPMmode.RS
                                         };
                                         Context.Set<PromoSupportPromo>().Add(psp1);

@@ -122,6 +122,9 @@
 
     isDraggable: function (rec) {
         var res = false;
+        if ((['Started', 'Finished', 'Planned'].includes(rec.get('PromoStatusSystemName')) && TpmModes.isRsRaMode(modeId))) {
+            return false;
+        }
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
             res = true;
         } else {
