@@ -243,7 +243,7 @@
                 ISNULL(pr.ActualInStoreShelfPrice, 0) AS Price, 
                 ISNULL(pr.ActualInStoreDiscount, 0) AS Discount,
                 [DefaultSchemaSetting].[GetPromoSubrangesById](pr.Id) as Subranges,
-				ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) AS row_number
+				CASE WHEN TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) ELSE 0 END AS row_number
 
             FROM
                 [DefaultSchemaSetting].Promo AS pr LEFT OUTER JOIN
@@ -1564,7 +1564,7 @@
 			return UpdatePromoProductCorrectionViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdatePromoProductCorrectionViewSqlString = @"
-		ALTER VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
+		CREATE OR ALTER VIEW [DefaultSchemaSetting].[PromoProductCorrectionView]
 			AS
 			SELECT
 				ppc.Id AS Id,
@@ -1596,7 +1596,7 @@
 				pr.IsInExchange AS IsInExchange,
 				pr.DispatchesStart AS PromoDispatchStartDate,
 				pr.BudgetYear AS PromoBudgetYear,
-				ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) AS row_number
+				CASE WHEN ppc.TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) ELSE 0 END AS row_number
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN
@@ -2086,7 +2086,7 @@
 			return UpdateClientDashboardRSViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
 		}
 		private static string UpdateClientDashboardRSViewSqlString = @"
-					CREATE VIEW [DefaultSchemaSetting].[ClientDashboardRSView] AS
+			CREATE OR ALTER VIEW [DefaultSchemaSetting].[ClientDashboardRSView] AS
 			WITH
 				Years
 			AS
@@ -2160,7 +2160,7 @@
 				pr.PlanPromoCostProduction,
 				pr.PlanPromoNSV,
 				CS.SystemName,
-				ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) AS row_number
+				CASE WHEN TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) ELSE 0 END AS row_number
 
 				FROM [DefaultSchemaSetting].[Promo] AS pr (NOLOCK)
 				LEFT JOIN [DefaultSchemaSetting].[PromoStatus] AS CS (NOLOCK) ON CS.Id = pr.PromoStatusId

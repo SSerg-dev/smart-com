@@ -3584,9 +3584,17 @@
     <Compile Include="Migrations\202306200959201_Add_PPCV_BudgetYear.designer.cs">
       <DependentUpon>202306200959201_Add_PPCV_BudgetYear.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202306231047528_Exclude_Hidden_From_View.cs" />
+    <Compile Include="Migrations\202306231047528_Exclude_Hidden_From_View.designer.cs">
+      <DependentUpon>202306231047528_Exclude_Hidden_From_View.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202306220823425_AddScenarioTypeColumn.cs" />
     <Compile Include="Migrations\202306220823425_AddScenarioTypeColumn.designer.cs">
       <DependentUpon>202306220823425_AddScenarioTypeColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202306231109455_Empty_After_Hidden_Merge.cs" />
+    <Compile Include="Migrations\202306231109455_Empty_After_Hidden_Merge.designer.cs">
+      <DependentUpon>202306231109455_Empty_After_Hidden_Merge.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -6741,6 +6749,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202306220823425_AddScenarioTypeColumn.resx">
       <DependentUpon>202306220823425_AddScenarioTypeColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306231047528_Exclude_Hidden_From_View.resx">
+      <DependentUpon>202306231047528_Exclude_Hidden_From_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306231109455_Empty_After_Hidden_Merge.resx">
+      <DependentUpon>202306231109455_Empty_After_Hidden_Merge.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
