@@ -183,6 +183,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DurationRange);
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.BrandTech);
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.ClientTree);
+
+            modelBuilder.Entity<SavedScenario>().HasRequired(g => g.RollingScenario);
         }
 
 
@@ -956,14 +958,14 @@ namespace Module.Persist.TPM
             builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
 
             builder.Entity<PlanPostPromoEffect>().Collection.Action("DownloadTemplateXLSX");
-            
+
             builder.Entity<PlanPostPromoEffect>().Collection.Action("GetBrandTechSizes");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
             builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
             builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
             builder.EntitySet<DurationRange>("DurationRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
             builder.EntitySet<DiscountRange>("DiscountRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
-            
+
             builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
             builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");
             builder.EntitySet<HistoricalPlanCOGSTn>("HistoricalPlanCOGSTns");

@@ -3596,6 +3596,10 @@
     <Compile Include="Migrations\202306231109455_Empty_After_Hidden_Merge.designer.cs">
       <DependentUpon>202306231109455_Empty_After_Hidden_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202306260841534_Add_SavedScenario.cs" />
+    <Compile Include="Migrations\202306260841534_Add_SavedScenario.designer.cs">
+      <DependentUpon>202306260841534_Add_SavedScenario.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3760,6 +3764,7 @@
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductPriceIncrease.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
+    <Compile Include="Model\TPM\SavedScenario.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Competitor.cs" />
@@ -6755,6 +6760,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202306231109455_Empty_After_Hidden_Merge.resx">
       <DependentUpon>202306231109455_Empty_After_Hidden_Merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306260841534_Add_SavedScenario.resx">
+      <DependentUpon>202306260841534_Add_SavedScenario.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

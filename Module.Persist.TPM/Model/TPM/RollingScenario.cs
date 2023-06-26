@@ -42,5 +42,6 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset? ModifiedDate { get; set; }
 
         public ICollection<Promo> Promoes { get; set; }
+        public ICollection<SavedScenario> SavedScenarios { get; set; }
     }
 }
