@@ -19,19 +19,16 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         public static StartEndModel GetRSPeriod(DatabaseContext Context)
         {
             string weeks = Context.Set<Setting>().Where(g => g.Name == "RS_START_WEEKS").FirstOrDefault().Value;
-            DateTimeOffset today = TimeHelper.TodayStartDay();
-            DateTimeOffset endDate = TimeHelper.ThisEndYear();
+
             StartEndModel startEndModel = new StartEndModel
             {
-                EndDate = endDate
+                BudgetYear = TimeHelper.ThisBuggetYear()
             };
 
             if (Int32.TryParse(weeks, out int intweeks))
             {
-
-                DateTimeOffset RsStartDate = today.AddDays(intweeks * 7);
-                startEndModel.StartDate = RsStartDate;
-
+                startEndModel.StartDate = TimeHelper.TodayStartDay().AddDays(intweeks * 7);
+                startEndModel.EndDate = TimeHelper.ThisBuggetYearEnd();
                 return startEndModel;
             }
             else
@@ -528,7 +525,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     promo.PromoStatusId = promoStatusOnApproval;
                     //promoesRS.Remove(promoRS); - нельзя сделать
                     Context.Set<Promo>().Remove(promoRS); // не отследит EF
-                    //ChangeStatusOnApproval(Context, promo);
+                                                          //ChangeStatusOnApproval(Context, promo);
                 }
                 else // новый
                 {

@@ -3600,6 +3600,10 @@
     <Compile Include="Migrations\202306260841534_Add_SavedScenario.designer.cs">
       <DependentUpon>202306260841534_Add_SavedScenario.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202306261055558_Add_budgetYear_PromoViewRS.cs" />
+    <Compile Include="Migrations\202306261055558_Add_budgetYear_PromoViewRS.designer.cs">
+      <DependentUpon>202306261055558_Add_budgetYear_PromoViewRS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6763,6 +6767,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202306260841534_Add_SavedScenario.resx">
       <DependentUpon>202306260841534_Add_SavedScenario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306261055558_Add_budgetYear_PromoViewRS.resx">
+      <DependentUpon>202306261055558_Add_budgetYear_PromoViewRS.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

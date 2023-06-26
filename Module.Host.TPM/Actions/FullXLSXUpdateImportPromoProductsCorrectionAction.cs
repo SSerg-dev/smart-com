@@ -229,7 +229,7 @@ namespace Module.Host.TPM.Actions
                     else if (TPMmode == TPMmode.RS)
                     {
                         StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
-                        if (promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < promo.EndDate)
+                        if ((promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < promo.EndDate) && promo.BudgetYear == startEndModel.BudgetYear)
                         {
                             HasErrors = true;
                             errorRecords.Add(new Tuple<IEntity<Guid>, string>(promo, $"Promo number:{promo.Number} is not in the RS period"));

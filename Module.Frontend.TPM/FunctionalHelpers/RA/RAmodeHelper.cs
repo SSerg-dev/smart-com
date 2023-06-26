@@ -16,13 +16,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
     {
         public static StartEndModel GetRAPeriod()
         {
-            DateTimeOffset startDate = TimeHelper.ThisStartYear().AddYears(1).AddMonths(-1);
-            DateTimeOffset endDate = TimeHelper.ThisEndYear().AddYears(1).AddMonths(+1);
             StartEndModel startEndModel = new StartEndModel
             {
-                StartDate = TimeHelper.ThisStartYear().AddYears(1).AddMonths(-1),
-                EndDate = TimeHelper.ThisEndYear().AddYears(1).AddMonths(+1),
-                BudgetYear = TimeHelper.ThisEndYear().AddYears(1).Year
+                StartDate = TimeHelper.NextBuggetYearStart(),
+                EndDate = TimeHelper.NextBuggetYearEnd(),
+                BudgetYear = TimeHelper.NextBuggetYear()
             };
             return startEndModel;
         }

@@ -1069,7 +1069,7 @@ namespace Module.Frontend.TPM.Controllers
                 if (TPMmode == TPMmode.RS)
                 {
                     StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
-                    if (((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate)
+                    if ((((DateTimeOffset)model.StartDate).AddDays(15) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.EndDate) && model.BudgetYear == startEndModel.BudgetYear)
                     {
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RS period" }));
                     }

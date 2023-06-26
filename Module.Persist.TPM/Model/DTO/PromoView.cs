@@ -52,6 +52,7 @@ namespace Module.Persist.TPM.Model.DTO {
 
         public string Subranges { get; set; }
         public bool IsOnHold { get; set; }
+        public int? BudgetYear { get; set; }
     }
 
     public class PromoRSView : IEntity<Guid> 
@@ -104,5 +105,6 @@ namespace Module.Persist.TPM.Model.DTO {
 
         public string Subranges { get; set; }
         public bool IsOnHold { get; set; }
+        public int? BudgetYear { get; set; }
     }
 }

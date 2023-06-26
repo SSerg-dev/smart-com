@@ -48,5 +48,29 @@ namespace Module.Persist.TPM.Utils
         {
             return ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
         }
+        public static DateTimeOffset ThisBuggetYearStart()
+        {
+            return ThisStartYear().AddMonths(-1);
+        }
+        public static DateTimeOffset ThisBuggetYearEnd()
+        {
+            return ThisEndYear().AddMonths(+1);
+        }
+        public static DateTimeOffset NextBuggetYearStart()
+        {
+            return ThisStartYear().AddYears(1).AddMonths(-1);
+        }
+        public static DateTimeOffset NextBuggetYearEnd()
+        {
+            return ThisEndYear().AddYears(1).AddMonths(+1);
+        }
+        public static int ThisBuggetYear()
+        {
+            return ThisEndYear().Year;
+        }
+        public static int NextBuggetYear()
+        {
+            return ThisEndYear().AddYears(1).Year;
+        }
     }
 }

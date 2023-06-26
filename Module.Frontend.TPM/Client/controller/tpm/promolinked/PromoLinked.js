@@ -567,7 +567,8 @@
                 if (
                         (
                             new Date(selected[0].data.PromoDispatchStartDate) > new Date(startEndModel.StartDate) &&
-                            new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate)
+                            new Date(selected[0].data.PromoDispatchStartDate) <= new Date(startEndModel.EndDate) &&
+                            startEndModel.BudgetYear == selected[0].data.PromoBudgetYear
                         ) &&
                         (
                             selected[0].data.PromoStatusName != "Draft" &&

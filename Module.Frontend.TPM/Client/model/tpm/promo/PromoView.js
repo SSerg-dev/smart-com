@@ -57,6 +57,7 @@
 
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'IsOnHold', type: 'boolean', hidden: false, isDefault: false },
+        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

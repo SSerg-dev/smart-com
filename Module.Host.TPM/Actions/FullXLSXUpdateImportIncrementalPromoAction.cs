@@ -291,7 +291,7 @@ namespace Module.Host.TPM.Actions
             if (TPMmode == TPMmode.RS)
             {
                 StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
-                if (ipRec.Promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < ipRec.Promo.EndDate)
+                if ((ipRec.Promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < ipRec.Promo.EndDate) && ipRec.Promo.BudgetYear == startEndModel.BudgetYear)
                 {
                     isSuitable = false;
                     errors.Add($"Promo number:{iipRec.PromoNumber} is not in the RS period");

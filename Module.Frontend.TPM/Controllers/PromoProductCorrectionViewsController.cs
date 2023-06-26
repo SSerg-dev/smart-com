@@ -900,7 +900,7 @@ namespace Module.Frontend.TPM.Controllers
         private bool CheckRSPeriodSuitable(Promo promo, DatabaseContext context)
         {
             var startEndModel = RSPeriodHelper.GetRSPeriod(context);
-            return promo.DispatchesStart >= startEndModel.StartDate && startEndModel.EndDate >= promo.EndDate;
+            return promo.DispatchesStart >= startEndModel.StartDate && startEndModel.EndDate >= promo.EndDate && promo.BudgetYear == startEndModel.BudgetYear;
         }
         private bool CheckRAPeriodSuitable(Promo promo, DatabaseContext context)
         {
