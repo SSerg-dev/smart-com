@@ -1,25 +1,30 @@
-﻿using Core.Dependency;
+﻿using AutoMapper;
+using Core.Dependency;
+using Core.MarsCalendar;
 using Core.Security.Models;
 using Core.Settings;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Http.OData;
-using Utility;
 
 namespace Module.Frontend.TPM.Util
 {
@@ -511,6 +516,7 @@ namespace Module.Frontend.TPM.Util
             };
             return columns;
         }
+
         public static IEnumerable<Column> GetViewExportSettingsRS()
         {
             IEnumerable<Column> columns = new List<Column>()
@@ -632,6 +638,869 @@ namespace Module.Frontend.TPM.Util
                 new Column { Order = orderNumber++, Field = "PlanProductUpliftPercent", Header = "Plan Product Uplift, %", Quoting = false,  Format = "0.00"},
             };
             return columns;
+        }
+        public static Promo CreateDefaultPromo(DatabaseContext context)
+        {
+            int dayspromo = 4;
+            DateTimeOffset startD = TimeHelper.TodayStartDay();
+            DateTimeOffset endD = startD.AddDays(dayspromo);
+            DateTimeOffset startP = startD.AddDays(14);
+            DateTimeOffset endP = endD.AddDays(14);
+            Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+            Guid EventId = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo").Id;
+            Guid MechanicId = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == "Other" && g.PromoTypesId == PromoTypesId).Id;
+            Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "Draft").Id;
+            Promo promo = new Promo
+            {
+                TPMmode = TPMmode.Current,
+                ActualPromoBTL = 0,
+                ActualPromoBranding = 0,
+                ActualPromoCost = 0,
+                ActualPromoLSV = 0,
+                ActualPromoLSVSO = 0,
+                ActualPromoTIShopper = 0,
+                AdditionalUserTimestamp = "",
+                BudgetYear = 2023,
+                CalendarPriority = 3,
+                ClientHierarchy = "NA > Tander > Magnit MM",
+                ClientTreeId = 5000004,
+                ClientTreeKeyId = 19,
+                DeviationCoefficient = 10,
+                DispatchesStart = startD,
+                DispatchesEnd = endD,
+                StartDate = startP,
+                EndDate = endP,
+                EventId = EventId,
+                Id = Guid.NewGuid(),
+                InOutProductIds = "to change!!! 8af37b51-e73d-ea11-a86c-000d3a46085b;a5f37b51-e73d-ea11-a86c-000d3a46085b;",
+                IsApolloExport = true,
+                MarsMechanicDiscount = 20,
+                MarsMechanicId = MechanicId,
+                Name = "Unpublish Promo",
+                NeedRecountUplift = true,
+                ProductHierarchy = "Kitekat > Dry",
+                ProductTreeObjectIds = "1000043",
+                PromoStatusId = PromoStatusId,
+                PromoTypesId = PromoTypesId,
+
+            };
+            return promo;
+        }
+        public static Promo CreateRSDefaultPromo(DatabaseContext context)
+        {
+            int dayspromo = 4;
+            DateTimeOffset startD = TimeHelper.TodayStartDay();
+            DateTimeOffset endD = startD.AddDays(dayspromo);
+            DateTimeOffset startP = startD.AddDays(14);
+            DateTimeOffset endP = endD.AddDays(14);
+            Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+            Guid EventId = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo").Id;
+            Guid MechanicId = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == "Other" && g.PromoTypesId == PromoTypesId).Id;
+            Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
+            Promo promo = new Promo
+            {
+                TPMmode = TPMmode.RS,
+                ActualPromoBTL = 0,
+                ActualPromoBranding = 0,
+                ActualPromoCost = 0,
+                ActualPromoLSV = 0,
+                ActualPromoLSVSO = 0,
+                ActualPromoTIShopper = 0,
+                AdditionalUserTimestamp = "",
+                BudgetYear = 2023,
+                CalendarPriority = 3,
+                ClientHierarchy = "NA > Tander > Magnit MM",
+                ClientTreeId = 5000004,
+                ClientTreeKeyId = 19,
+                DeviationCoefficient = 10,
+                DispatchesStart = startD,
+                DispatchesEnd = endD,
+                StartDate = startP,
+                EndDate = endP,
+                EventId = EventId,
+                Id = Guid.NewGuid(),
+                InOutProductIds = "to change!!! 8af37b51-e73d-ea11-a86c-000d3a46085b;a5f37b51-e73d-ea11-a86c-000d3a46085b;",
+                IsApolloExport = true,
+                MarsMechanicDiscount = 20,
+                MarsMechanicId = MechanicId,
+                Name = "Unpublish Promo",
+                NeedRecountUplift = true,
+                ProductHierarchy = "Kitekat > Dry",
+                ProductTreeObjectIds = "1000043",
+                PromoStatusId = PromoStatusId,
+                PromoTypesId = PromoTypesId,
+
+            };
+            return promo;
+        }
+        public static List<InputML> GetInputML(string pathfile, string delimiter)
+        {
+            var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            List<InputML> inputMLs = Lines
+                   .Skip(1)
+                   .Select(x => x.Split(char.Parse(delimiter)))
+                   .Select(x => new InputML
+                   {
+                       PromoId = int.Parse(x[0]),
+                       PPG = x[1],
+                       Format = x[2],
+                       ZREP = int.Parse(x[3]),
+                       StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                       EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                       MechanicMars = x[6],
+                       DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                       MechInstore = x[8],
+                       InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                       PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                       PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                       FormatCode = int.Parse(x[12]),
+                       Source = x[13],
+                       BaseLSV = double.Parse(x[14], CultureInfo.InvariantCulture),
+                       TotalLSV = double.Parse(x[15], CultureInfo.InvariantCulture),
+                   })
+                   .Where(g => g.Source == "optimizer")
+                   .ToList();
+            return inputMLs;
+        }
+        public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, ProductTree productTree, double MarsMechanicDiscount)
+        {
+            // доработать если нужен тип VP
+            var promoNameProductTreeAbbreviations = "";
+
+            if (productTree != null)
+            {
+                if (productTree.Type != "Brand")
+                {
+                    var currentTreeNode = productTree;
+                    while (currentTreeNode != null && currentTreeNode.Type != "Brand")
+                    {
+                        currentTreeNode = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == currentTreeNode.parentId);
+                    }
+                    promoNameProductTreeAbbreviations = currentTreeNode.Abbreviation;
+                }
+                promoNameProductTreeAbbreviations = promoNameProductTreeAbbreviations + " " + productTree.Abbreviation;
+            }
+
+
+            var promoNameMechanic = "";
+            if (mechanic != null)
+            {
+                promoNameMechanic = mechanic.Name;
+                if (mechanic.SystemName == "TPR" || mechanic.SystemName == "Other")
+                {
+                    promoNameMechanic += " " + MarsMechanicDiscount + "%";
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                    //promoNameMechanic += " " + promo.MarsMechanicType.Name;
+                }
+            }
+
+            return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
+        }
+        public static ReturnName GetNamePromo(DatabaseContext context, Mechanic mechanic, Product product, double MarsMechanicDiscount)
+        {
+            // доработать если нужен тип VP
+            var promoNameProductTreeAbbreviations = "";
+            ProductTree productTreeTech = new ProductTree();
+            if (product != null)
+            {
+                Brand brand = context.Set<Brand>().FirstOrDefault(g => g.Brand_code == product.Brand_code);
+
+                Technology technology = new Technology();
+                string compositname;
+                if (string.IsNullOrEmpty(product.SubBrand_code))
+                {
+                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
+                    compositname = technology.Name;
+                }
+                else
+                {
+                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
+                    compositname = technology.Name + " " + technology.SubBrand;
+                }
+
+                ProductTree productTreeBrand = context.Set<ProductTree>().FirstOrDefault(g => g.BrandId == brand.Id);
+
+                productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
+                promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
+            }
+
+
+            var promoNameMechanic = "";
+            if (mechanic != null)
+            {
+                promoNameMechanic = mechanic.Name;
+                if (mechanic.SystemName == "TPR" || mechanic.SystemName == "Other")
+                {
+                    promoNameMechanic += " " + MarsMechanicDiscount + "%";
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                    //promoNameMechanic += " " + promo.MarsMechanicType.Name;
+                }
+            }
+
+            return new ReturnName
+            {
+                Name = promoNameProductTreeAbbreviations + " " + promoNameMechanic,
+                ProductTree = productTreeTech
+            };
+        }
+        public class ReturnName
+        {
+            public string Name { get; set; }
+            public ProductTree ProductTree { get; set; }
+        }
+        public static ClientDispatchDays GetClientDispatchDays(ClientTree clientTree)
+        {
+            ClientDispatchDays clientDispatchDays = new ClientDispatchDays();
+            if (clientTree.IsBeforeStart != null)
+            {
+                if (clientTree.IsBeforeStart.Value)
+                {
+                    clientDispatchDays.IsStartAdd = false;
+                }
+                else
+                {
+                    clientDispatchDays.IsStartAdd = true;
+                }
+                if (clientTree.IsDaysStart.Value)
+                {
+                    clientDispatchDays.StartDays = clientTree.DaysStart.Value;
+                }
+                else
+                {
+                    clientDispatchDays.StartDays = clientTree.DaysStart.Value * 7;
+                }
+            }
+            else
+            {
+                throw new Exception($"Client {clientTree.ObjectId} without dispatch dates");
+            }
+            if (clientTree.IsBeforeEnd != null)
+            {
+                if (clientTree.IsBeforeEnd.Value)
+                {
+                    clientDispatchDays.IsEndAdd = false;
+                }
+                else
+                {
+                    clientDispatchDays.IsEndAdd = true;
+                }
+                if (clientTree.IsDaysEnd.Value)
+                {
+                    clientDispatchDays.EndDays = clientTree.DaysEnd.Value;
+                }
+                else
+                {
+                    clientDispatchDays.EndDays = clientTree.DaysEnd.Value * 7;
+                }
+            }
+            else
+            {
+                throw new Exception($"Client {clientTree.ObjectId} without dispatch dates");
+            }
+
+            return clientDispatchDays;
+        }
+        public class ClientDispatchDays
+        {
+            public int StartDays { get; set; }
+            public bool IsStartAdd { get; set; } // true прибавляет дни
+            public int EndDays { get; set; }
+            public bool IsEndAdd { get; set; } // true прибавляет дни
+        }
+        public static Promo SavePromo(Promo model, DatabaseContext context, UserInfo user, RoleInfo role)
+        {
+            model.DeviationCoefficient /= 100;
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+            model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
+            model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
+
+            DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
+
+            if (model.EventId == null)
+            {
+                Event promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event 'Standard promo' not found");
+                }
+
+                model.EventId = promoEvent.Id;
+                model.EventName = promoEvent.Name;
+            }
+            else
+            {
+                Event promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event not found");
+                }
+                model.EventName = promoEvent.Name;
+            }
+
+            string userRole = role.SystemName;
+
+            string message;
+
+            PromoStateContext promoStateContext = new PromoStateContext(context, null);
+            bool status = promoStateContext.ChangeState(model, userRole, out message);
+
+            if (!status)
+            {
+                throw new Exception(message);
+            }
+
+            Promo proxy = new Promo();
+            Promo result = AutomapperProfiles.PromoCopy(model, proxy);
+
+            if (result.CreatorId == null)
+            {
+                result.CreatorId = user.Id;
+                result.CreatorLogin = user.Login;
+            }
+
+            context.Set<Promo>().Add(result);
+            context.SaveChanges();
+            // Добавление продуктов
+            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
+
+            //Установка полей по дереву ProductTree
+            SetPromoByProductTree(result, promoProductTrees, context);
+            //Установка дат в Mars формате
+            SetPromoMarsDates(result);
+            //Установка полей по дереву ClientTree
+            SetPromoByClientTree(result, context);
+            //Установка механик
+            SetMechanic(result, context);
+            SetMechanicIA(result, context);
+
+            //Установка начального статуса
+            PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+            psc.PromoId = result.Id;
+            psc.StatusId = result.PromoStatusId;
+            psc.UserId = user.Id;
+            psc.RoleId = role.Id;
+            psc.Date = DateTimeOffset.UtcNow;
+            context.Set<PromoStatusChange>().Add(psc);
+
+            //Установка времени последнгего присвоения статуса Approved
+            if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved")
+            {
+                result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
+            }
+
+
+            // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
+            if (result.PromoStatus.SystemName.ToLower() != "draft" && !result.CalculateML)
+            {
+                // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
+                List<Product> filteredProducts; // продукты, подобранные по фильтрам
+                CheckSupportInfo(result, promoProductTrees, out filteredProducts, context);
+                //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
+                CalculatePromo(result, context, (Guid)user.Id, (Guid)role.Id, false, false, false, true);
+            }
+            else
+            {
+                // Добавить запись в таблицу PromoProduct при сохранении.
+                PlanProductParametersCalculation.SetPromoProduct(context.Set<Promo>().First(x => x.Id == result.Id).Id, context, out string error, true, promoProductTrees);
+                // Создаём инцидент для draft сразу
+                WritePromoDemandChangeIncident(context, result);
+            }
+
+            // привязывает дочерние промо
+            if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
+            {
+                List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
+                List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
+                List<Promo> ChildPromoes = context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number) && !g.Disabled).ToList();
+                foreach (var ChildPromo in ChildPromoes)
+                {
+                    ChildPromo.MasterPromoId = result.Id;
+                }
+            }
+
+            result.LastChangedDate = ChangedDate;
+            context.SaveChanges();
+            if (result.TPMmode == TPMmode.RS && !result.CalculateML)
+            {
+                RSPeriodHelper.CreateRSPeriod(result, context);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Добавить продукты из иерархии к промо
+        /// </summary>
+        /// <param name="objectIds">Список ObjectId продуктов в иерархии</param>
+        /// <param name="promo">Промо к которому прикрепляются продукты</param>
+        public static List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, out bool isSubrangeChanged, DatabaseContext context)
+        {
+            // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
+            List<PromoProductTree> currentProducTrees = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+            List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
+            List<string> newProductTreesIds = new List<string>();
+
+            if (!String.IsNullOrEmpty(objectIds))
+            {
+                newProductTreesIds = objectIds.Split(';').ToList();
+            }
+            List<string> dispatchIds = currentProducTreesIds.Except(newProductTreesIds).ToList();
+            dispatchIds.AddRange(newProductTreesIds.Except(currentProducTreesIds));
+            if (dispatchIds.Count == 0)
+            {
+                isSubrangeChanged = false;
+            }
+            else
+            {
+                isSubrangeChanged = true;
+            }
+
+            // Если Null, значит продукты не менялись
+            if (objectIds != null)
+            {
+                List<int> productTreeObjectIds = new List<int>();
+
+                if (objectIds.Length > 0)
+                {
+                    productTreeObjectIds = objectIds.Split(';').Select(n => Int32.Parse(n)).ToList();
+                }
+
+                // находим прежние записи, если они остались то ислючаем их из нового списка
+                // иначе удаляем
+                //var oldRecords = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled);
+                //PromoProductTree[] oldRecords = new PromoProductTree[currentProducTrees.Count];
+                //currentProducTrees.CopyTo(oldRecords);
+                foreach (var rec in currentProducTrees)
+                {
+                    int index = productTreeObjectIds.IndexOf(rec.ProductTreeObjectId);
+
+                    if (index >= 0)
+                    {
+                        productTreeObjectIds.RemoveAt(index);
+                    }
+                    else
+                    {
+                        rec.DeletedDate = System.DateTime.Now;
+                        rec.Disabled = true;
+                    }
+                }
+
+                // Добавляем новые продукты в промо
+                foreach (int objectId in productTreeObjectIds)
+                {
+                    PromoProductTree promoProductTree = new PromoProductTree()
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductTreeObjectId = objectId,
+                        Promo = promo,
+                        TPMmode = promo.TPMmode
+                    };
+
+                    currentProducTrees.Add(promoProductTree);
+                    context.Set<PromoProductTree>().Add(promoProductTree);
+                }
+            }
+
+            return currentProducTrees.Where(n => !n.Disabled).ToList();
+        }
+        /// <summary>
+        /// Установка в промо цвета, бренда и BrandTech на основании дерева продуктов
+        /// </summary>
+        /// <param name="promo"></param>
+        public static void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, DatabaseContext context)
+        {
+            PromoProductTree product = promoProducts.FirstOrDefault();
+            DateTime dt = DateTime.Now;
+            if (product != null)
+            {
+                //Заполнение Subranges
+                IQueryable<ProductTree> ptQuery = context.Set<ProductTree>().Where(x => x.Type == "root"
+                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+                IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
+                IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
+                promo.ProductSubrangesList = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
+                promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
+
+                int objectId = product.ProductTreeObjectId;
+                ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
+                if (pt != null)
+                {
+                    Guid? BrandId = null;
+                    Guid? TechId = null;
+                    Brand brandTo = null;
+                    bool end = false;
+                    do
+                    {
+                        if (pt.Type == "Brand")
+                        {
+                            brandTo = context.Set<Brand>().FirstOrDefault(x => x.Name == pt.Name);
+                            if (brandTo != null)
+                            {
+                                BrandId = brandTo.Id;
+                                promo.BrandId = brandTo.Id;
+                            }
+                        }
+                        if (pt.Type == "Technology")
+                        {
+                            var tech = context.Set<Technology>().FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
+                            if (tech != null)
+                            {
+                                TechId = tech.Id;
+                                promo.TechnologyId = tech.Id;
+                            }
+                        }
+                        if (pt.parentId != 1000000)
+                        {
+                            pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
+                        }
+                        else
+                        {
+                            end = true;
+                        }
+                    } while (!end && pt != null);
+
+                    if (brandTo == null)
+                    {
+                        promo.BrandId = null;
+                    }
+
+                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
+                    if (bt != null)
+                    {
+                        promo.BrandTechId = bt.Id;
+                        var colors = context.Set<Color>().Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
+                        if (colors.Count() == 1)
+                        {
+                            promo.ColorId = colors.First().Id;
+                        }
+                        else
+                        {
+                            promo.ColorId = null;
+                        }
+                    }
+                    else
+                    {
+                        promo.ColorId = null;
+                        promo.BrandTechId = null;
+                    }
+                }
+                else
+                {
+                    promo.ColorId = null;
+                }
+            }
+        }
+        //Простановка дат в формате Mars
+        public static void SetPromoMarsDates(Promo promo)
+        {
+            string stringFormatYP2WD = "{0}P{1:D2}W{2}D{3}";
+
+            if (promo.StartDate != null)
+            {
+                promo.MarsStartDate = (new MarsDate((DateTimeOffset)promo.StartDate)).ToString(stringFormatYP2WD);
+            }
+            if (promo.EndDate != null)
+            {
+                promo.MarsEndDate = (new MarsDate((DateTimeOffset)promo.EndDate)).ToString(stringFormatYP2WD);
+            }
+            if (promo.EndDate != null && promo.StartDate != null)
+            {
+                promo.PromoDuration = (promo.EndDate - promo.StartDate).Value.Days + 1;
+            }
+            else
+            {
+                promo.PromoDuration = null;
+            }
+
+            if (promo.DispatchesStart != null)
+            {
+                promo.MarsDispatchesStart = (new MarsDate((DateTimeOffset)promo.DispatchesStart)).ToString(stringFormatYP2WD);
+            }
+            if (promo.DispatchesEnd != null)
+            {
+                promo.MarsDispatchesEnd = (new MarsDate((DateTimeOffset)promo.DispatchesEnd)).ToString(stringFormatYP2WD);
+            }
+            if (promo.DispatchesStart != null && promo.DispatchesEnd != null)
+            {
+                promo.DispatchDuration = (promo.DispatchesEnd - promo.DispatchesStart).Value.Days + 1;
+            }
+            else
+            {
+                promo.DispatchDuration = null;
+            }
+        }
+        /// <summary>
+        /// Установка промо по дереву клиентов
+        /// </summary>
+        /// <param name="promo"></param>
+        public static void SetPromoByClientTree(Promo promo, DatabaseContext context)
+        {
+            int? ClientTreeId = promo.ClientTreeId;
+            String resultMultiBaseStr = "";
+            if (promo.ClientTreeId != null)
+            {
+
+                IQueryable<ClientTree> ctQuery = context.Set<ClientTree>().Where(x => x.Type == "root"
+               || (DateTime.Compare(x.StartDate, DateTime.Now) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)));
+                ClientTree ct = ctQuery.FirstOrDefault(y => y.ObjectId == promo.ClientTreeId);
+
+
+                int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
+                if (upBaseClientId.HasValue)
+                {
+                    resultMultiBaseStr = upBaseClientId.ToString();
+                }
+                else
+                {
+                    resultMultiBaseStr =
+                        String.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, context));
+                }
+
+            }
+            promo.BaseClientTreeIds = resultMultiBaseStr;
+        }
+        /// <summary>
+        /// Поиск базовых клиентов в дереве в корень
+        /// </summary>
+        /// <param name="clientTreeId"></param>
+        /// <returns></returns>
+        private static int? RecursiveUpBaseClientsFind(int? clientTreeId, DatabaseContext context)
+        {
+            if (!clientTreeId.HasValue)
+            {
+                return null;
+            }
+            else
+            {
+                ClientTree ctn = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
+                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
+                if (ctn == null)
+                {
+                    return null;
+                }
+                else if (ctn.IsBaseClient)
+                {
+                    return ctn.ObjectId;
+                }
+                else if (ctn.ObjectId == ctn.parentId)
+                {
+                    return null;
+                }
+                else
+                {
+                    return RecursiveUpBaseClientsFind(ctn.parentId, context);
+                }
+
+            }
+        }
+
+
+        /// <summary>
+        /// Поиск базовых клиентов в дереве назад
+        /// </summary>
+        /// <param name="clientTreeId"></param>
+        /// <returns></returns>
+        private static List<int> RecursiveDownBaseClientsFind(int? clientTreeId, DatabaseContext context)
+        {
+            if (!clientTreeId.HasValue)
+            {
+                return new List<int>();
+            }
+            else
+            {
+                ClientTree ct = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
+                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
+                if (ct.IsBaseClient)
+                {
+                    return new List<int>() { ct.ObjectId };
+                }
+
+                List<ClientTree> ctChilds = context.Set<ClientTree>().Where(
+                 x =>
+                 //DateTime.Compare(x.StartDate, ct.StartDate) <= 0 && 
+                 x.parentId == ct.ObjectId &&
+                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)).ToList();
+
+                List<int> res = new List<int>();
+                res.AddRange(ctChilds.Where(y => y.IsBaseClient).Select(z => z.ObjectId).ToList());
+
+                foreach (var item in ctChilds.Where(y => !y.IsBaseClient))
+                {
+                    res.AddRange(RecursiveDownBaseClientsFind(item.ObjectId, context));
+                }
+                return res;
+            }
+        }
+        /// <summary>
+        /// Установка значения единого поля для Mechanic
+        /// </summary>
+        /// <param name="promo"></param>
+        public static void SetMechanic(Promo promo, DatabaseContext context)
+        {
+            // нет механики - нет остального
+            if (promo.MarsMechanicId != null)
+            {
+                var mechanic = context.Set<Mechanic>().Find(promo.MarsMechanicId);
+                string result = mechanic.Name;
+
+                if (promo.MarsMechanicTypeId != null)
+                {
+                    var mechanicType = context.Set<MechanicType>().Find(promo.MarsMechanicTypeId);
+                    result += " " + mechanicType.Name;
+                }
+
+                if (promo.MarsMechanicDiscount != null)
+                    result += " " + promo.MarsMechanicDiscount + "%";
+
+                promo.Mechanic = result;
+            }
+        }
+
+        /// <summary>
+        /// Установка значения единого поля для Mechanic IA
+        /// </summary>
+        /// <param name="promo"></param>
+        public static void SetMechanicIA(Promo promo, DatabaseContext context)
+        {
+            string result = null;
+
+            // нет механики - нет остального
+            if (promo.PlanInstoreMechanicId != null)
+            {
+                var mechanic = context.Set<Mechanic>().Find(promo.PlanInstoreMechanicId);
+                result = mechanic.Name;
+
+                if (promo.PlanInstoreMechanicTypeId != null)
+                {
+                    var mechanicType = context.Set<MechanicType>().Find(promo.PlanInstoreMechanicTypeId);
+                    result += " " + mechanicType.Name;
+                }
+
+                if (promo.MarsMechanicDiscount != null)
+                    result += " " + promo.PlanInstoreMechanicDiscount + "%";
+            }
+
+            promo.MechanicIA = result;
+        }
+        /// <summary>
+        /// Проверка TI, COGS и наличия продуктов, попадающих под фильтрация
+        /// </summary>
+        /// <param name="promo">Проверяемое промо</param>
+        /// <param name="promoProductTrees">Список узлов продуктового дерева</param>
+        /// <exception cref="Exception">Исключение генерируется при отсутсвии одного из проверяемых параметров</exception>
+        public static void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products, DatabaseContext context, IQueryable<Product> productQuery = null)
+        {
+            List<string> messagesError = new List<string>();
+            string message = null;
+            bool error;
+            bool isProductListEmpty = false;
+            products = null;
+
+            // проверка на наличие TI
+            IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+            SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
+            PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+            if (message != null && error)
+            {
+                messagesError.Add(message);
+                message = null;
+            }
+            else if (message != null)
+            {
+                throw new Exception(message);
+            }
+
+            // проверка на наличие COGS
+            //if (promo.IsLSVBased)
+            //{
+            IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+            SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
+            PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+            //}
+            if (message != null)
+            {
+                messagesError.Add(message);
+                message = null;
+            }
+
+            IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+            simplePromoCOGS = new SimplePromoCOGS(promo);
+            PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
+
+            if (message != null)
+            {
+                messagesError.Add(message);
+                message = null;
+            }
+
+            // проверка на наличие продуктов, попадающих под фильтр (для промо не из TLC)
+            if (!promo.LoadFromTLC)
+            {
+                if (promo.InOut.HasValue && promo.InOut.Value)
+                {
+                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo, productQuery);
+                }
+                else
+                {
+                    isProductListEmpty = PlanProductParametersCalculation.IsProductListEmpty(promo, context, out message, promoProductTrees);
+                }
+                if (message != null)
+                {
+                    messagesError.Add(message);
+                }
+
+                if (isProductListEmpty)
+                {
+                    messagesError.Add("Product list is empty. Please, check assortment matrix or/and Dispath period");
+                }
+            }
+
+            // если что-то не найдено, то генерируем ошибку
+            if (messagesError.Count > 0)
+            {
+                string messageError = "";
+                for (int i = 0; i < messagesError.Count; i++)
+                {
+                    string endString = i == messagesError.Count - 1 ? "" : " ";
+                    messageError += messagesError[i] + endString;
+                }
+
+                throw new Exception(messageError);
+            }
+        }
+        /// <summary>
+        /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
+        /// </summary>
+        /// <param name="promo"></param>
+        public static void CalculatePromo(Promo promo, DatabaseContext context, Guid userId, Guid roleId, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
+        {
+            HandlerData data = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrectionsPI", needResetUpliftCorrectionsPI, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentCreate", createDemandIncidentCreate, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentUpdate", createDemandIncidentUpdate, data, visible: false, throwIfNotExists: false);
+
+            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanic", oldMarsMechanic, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanicDiscount", oldMarsMechanicDiscount, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldDispatchesStart", oldDispatchesStart, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoUpliftPercent", oldPlanPromoUpliftPercent, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoIncrementalLSV", oldPlanPromoIncrementalLSV, data, visible: false, throwIfNotExists: false);
+
+
+            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, context, promo.Id);
+
+            if (!success)
+                throw new Exception("Promo was blocked for calculation");
         }
     }
 }

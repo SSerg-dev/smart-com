@@ -31,6 +31,10 @@
             name: 'BrandTech',
         }, {
             xtype: 'singlelinedisplayfield',
+            fieldLabel: l10n.ns('tpm', 'ActualLSV').value('ProductSubrangesList'),
+            name: 'ProductSubrangesList',
+        }, {
+            xtype: 'singlelinedisplayfield',
             fieldLabel: l10n.ns('tpm', 'ActualLSV').value('Event'),
             name: 'Event',
         }, {

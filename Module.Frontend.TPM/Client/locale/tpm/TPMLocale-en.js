@@ -846,6 +846,7 @@
         'ROIHeader': 'ROIHeader',
         'UpliftHeader': 'UpliftHeader',
         'Confirm Approval': 'Do you really want to approve the PROMO form?',
+        'Confirm Mass Approval': 'GA, GA InExchange promo will not be considered.<br>Do you really want to approve the PROMO form?',
         'ConfirmSendForApproval': 'Do you really want send promoes for Approval?',
         'ConfirmPromoStatusChange': 'Are you sure you want to do this action? It may not join in standart workflow process.',
         'FailToSelectStatus': 'You can not select current status.',
@@ -991,6 +992,7 @@
 
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'PriceIncrease',
+        'MLPromoId': 'MLPromo',
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
@@ -2279,7 +2281,8 @@
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'Price Increase',
-        'IsApolloExport': 'Anaplan Export'
+        'IsApolloExport': 'Anaplan Export',
+        'MLmodel': 'ML model'
     },
     'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 
@@ -2661,6 +2664,7 @@
         'ClientHierarchy': 'Client',
         'Name': 'Promo name',
         'BrandTech': 'Brandtech',
+        'ProductSubrangesList': 'Subrange',
         'Event': 'Event',
         'Mechanic': 'Mars mechanic',
         'MechanicIA': 'IA mechanic',
@@ -3040,7 +3044,9 @@
         'ExpirationDate': 'Expiration Date',
         'StartDate': 'Start Date',
         'EndDate': 'End Date',
-        'PromoStatusName': 'Status',
+        'RSstatus': 'Status',
+        'IsMLmodel': 'MLmodel',
+        'TaskStatus': 'Task',
     },
     'DeletedRSmode': ['.tpm.RSmode', '.core.BaseDeletedEntity'],
     'MetricsLiveHistory': {

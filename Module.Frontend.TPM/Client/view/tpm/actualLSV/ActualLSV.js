@@ -150,6 +150,10 @@
                     }
                 }
             }, {
+                text: l10n.ns('tpm', 'ActualLSV').value('ProductSubrangesList'),
+                dataIndex: 'ProductSubrangesList',
+                width: 120
+            }, {
                 text: l10n.ns('tpm', 'ActualLSV').value('Event'),
                 dataIndex: 'Event',
                 width: 110,

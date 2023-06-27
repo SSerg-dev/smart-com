@@ -387,33 +387,50 @@
             }
         }
     },
+    
+    isRsMode: function() {
+        var settingStore = Ext.data.StoreManager.lookup('settingLocalStore');
+        var mode = settingStore.findRecord('name', 'mode');
+        return mode.data.value == 1;
+    },
 
     massApprovalButtonDisable: function (grid, store) {
-        var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
-        var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
-
-        var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
-        var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
-        var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
-        var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
-        var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
-        var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
-        var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
         var maButton = grid.up().down('custombigtoolbar').down('#massapprovalbutton');
+        var currentRole = App.UserInfo.getCurrentRole();
+        var isMassButtonVisible = UserRoles.isMassiveApproveRole(currentRole['SystemName']) && !this.isRsMode();
+        if (isMassButtonVisible) {
+            maButton.setVisible(true);
+            
+            var promoHelperController = App.app.getController('tpm.promo.PromoHelper');
+            var filter = store.fixedFilters ? store.fixedFilters['hiddenExtendedFilter'] : null;
+            var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
 
-        var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
-            !this.compareFilters(filter, onApprovalFilterDF) &&
-            !this.compareFilters(filter, onApprovalFilterCMM) &&
-            !this.compareFilters(filter, onApprovalGAFilterDP) &&
-            !this.compareFilters(filter, onApprovalGAFilterDF) &&
-            !this.compareFilters(filter, onApprovalGAFilterCMM) &&
-            !this.compareFilters(filter, onApprovalGAFilterGAM);
+            var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
+            var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
+            var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
+            var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
+            var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
+            var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
+            var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
+            var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
 
-        maButton.setDisabled(isDisabled);
+            var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
+                !this.compareFilters(filter, onApprovalFilterDF) &&
+                !this.compareFilters(filter, onApprovalFilterCMM) &&
+                !this.compareFilters(filter, onApprovalGAFilterDF) &&
+                !isOnHold &&
+                !this.compareFilters(filter, onApprovalGAFilterGAM) ||
+                this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
+                this.compareFilters(filter, onApprovalGAFilterDP) && !isOnHold ||
+                this.compareFilters(filter, onApprovalGAFilterCMM);
+
+            maButton.setDisabled(isDisabled);
+        } else {
+            maButton.setVisible(false);
+        }
     },
 
     massSendForApprovalButtonDisable: function (grid, store) {
-        debugger;
         var filters = store.filters.items;
         
         var msfaButton = grid.up().down('custombigtoolbar').down('#sendforapprovalbutton');
@@ -2934,6 +2951,11 @@
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();
                     }
+                    if (record.data.CalculateML) {
+                        record.data.PromoStatusSystemName = 'Cancelled';
+                        var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
+                        onHoldLabel.show();
+                    }
                 }
             });
             var promoMechanics = promoeditorcustom.down('promomechanic');
@@ -2948,6 +2970,10 @@
         }
         else {
             this.showIsPriceIncreaseWindowLabel(false);
+        }
+        if (record.data.MLPromoId.length > 0) {
+            var promoMLLabel = Ext.ComponentQuery.query('#btn_promoML')[0];
+            promoMLLabel.show();
         }
         // Для InOut Promo
         promoeditorcustom.isInOutPromo = record.data.InOut;
@@ -5845,8 +5871,14 @@
 
         if (proxy.extraParams.canChangeStateOnly) {
             button.addCls('showEditablePromo-btn-active');
+            store.setFixedFilter('IsOnHold', {
+                property: 'IsOnHold',
+                operation: 'Equals',
+                value: false
+            });            
         } else {
             button.removeCls('showEditablePromo-btn-active');
+            store.removeFixedFilter('IsOnHold');
         }
     },
 

@@ -53,7 +53,7 @@
 								 ELSE ''  
 							  END), 
 							  '') as WorkflowStep,
-							  pr.InvoiceNumber, pr.IsPriceIncrease
+							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
@@ -864,6 +864,7 @@
 					p.[ActualPromoNetIncrementalVolume],
 					p.[IsApolloExport],
 					p.[Disabled],
+					MLmodel = CONVERT(bit, case when p.MLPromoId is not null then 1  else  0 end),
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
 					ps.[Name]						AS [PromoStatusName],
@@ -1174,6 +1175,7 @@
 					p.[Disabled],
 					p.[IsPriceIncrease],
 					p.[IsApolloExport],
+					MLmodel = CONVERT(bit, case when p.MLPromoId is not null then 1  else  0 end),
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
 					ps.[Name]						AS [PromoStatusName],
@@ -1441,6 +1443,7 @@
 					p.[Disabled],
 					p.[IsPriceIncrease],
 					p.[IsApolloExport],
+					MLmodel = CONVERT(bit, case when p.MLPromoId is not null then 1  else  0 end),
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
 					ps.[Name]						AS [PromoStatusName],

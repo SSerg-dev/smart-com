@@ -44,5 +44,9 @@ namespace Module.Persist.TPM.Utils
             DateTimeOffset thisStartYear = ChangeTimeZoneUtil.ResetTimeZone(new DateTimeOffset(inday.Year, inday.Month, inday.Day, 23, 59, 999, TimeSpan.Zero));
             return thisStartYear;
         }
+        public static DateTimeOffset Now()
+        {
+            return ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
+        }
     }
 }

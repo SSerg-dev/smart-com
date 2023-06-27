@@ -96,6 +96,21 @@
                 tooltip: 'Decline'
             },
             {
+                itemId: 'calculatebutton',
+                action: 'Calculate',
+                disabled: true,
+                glyph: 0xF0EC,
+                text: 'Update to draft',
+                tooltip: 'Update to draft'
+            },
+            {
+                itemId: 'showlogbutton',
+                disabled: false,
+                glyph: 0xF262,
+                text: 'Show Log',
+                tooltip: 'Show Log'
+            },
+            {
                 itemId: 'deletedbutton',
                 resource: 'Deleted{0}',
                 action: 'Get{0}',
@@ -206,30 +221,19 @@
                     renderer: Ext.util.Format.dateRenderer('d.m.Y')
                 },
                 {
-                    text: l10n.ns('tpm', 'RSmode').value('PromoStatusName'),
-                    dataIndex: 'PromoStatusName',
-                    width: 120,
-                    filter: {
-                        type: 'search',
-                        selectorWidget: 'promostatus',
-                        valueField: 'Name',
-                        operator: 'eq',
-                        store: {
-                            type: 'directorystore',
-                            model: 'App.model.tpm.promostatus.PromoStatus',
-                            extendedFilter: {
-                                xclass: 'App.ExtFilterContext',
-                                supportedModels: [{
-                                    xclass: 'App.ExtSelectionFilterModel',
-                                    model: 'App.model.tpm.promostatus.PromoStatus',
-                                    modelId: 'efselectionmodel'
-                                }, {
-                                    xclass: 'App.ExtTextFilterModel',
-                                    modelId: 'eftextmodel'
-                                }]
-                            }
-                        }
+                    text: l10n.ns('tpm', 'RSmode').value('RSstatus'),
+                    dataIndex: 'RSstatus',
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('IsMLmodel'),
+                    dataIndex: 'IsMLmodel',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
                     }
+                },
+                {
+                    text: l10n.ns('tpm', 'RSmode').value('TaskStatus'),
+                    dataIndex: 'TaskStatus'
                 },
             ]
         }

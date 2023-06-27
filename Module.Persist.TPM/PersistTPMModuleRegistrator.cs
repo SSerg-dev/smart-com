@@ -175,6 +175,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductCorrectionPriceIncreaseView>().ToTable("PromoProductCorrectionPriceIncreaseView");
 
             modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
+            modelBuilder.Entity<CloudTask>();
         }
 
 
@@ -1236,8 +1237,6 @@ namespace Module.Persist.TPM
             builder.Entity<RPA>().Collection.Action("SaveRPA");
             builder.Entity<RPA>().Collection.Action("DownloadTemplateXLSX");
 
-            builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
-            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.PromoStatus, "PromoStatuss");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
@@ -1245,6 +1244,7 @@ namespace Module.Persist.TPM
             builder.Entity<RollingScenario>().Collection.Action("OnApproval");
             builder.Entity<RollingScenario>().Collection.Action("Approve");
             builder.Entity<RollingScenario>().Collection.Action("Decline");
+            builder.Entity<RollingScenario>().Collection.Action("Calculate");
             builder.Entity<RollingScenario>().Collection.Action("GetVisibleButton");
             builder.Entity<RollingScenario>().Collection.Action("GetCanceled");
             builder.Entity<RollingScenario>().Collection.Action("MassApprove");

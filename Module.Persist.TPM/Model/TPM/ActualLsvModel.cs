@@ -40,6 +40,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualPromoPostPromoEffectLSVW2 { get; set; }
         public double? PlanPromoPostPromoEffectLSV { get; set; }
         public double? ActualPromoPostPromoEffectLSV { get; set; }
+        public string ProductSubrangesList { get; set; }
         public bool? InOut { get; set; }
         public bool? IsOnInvoice { get; set; }
     }

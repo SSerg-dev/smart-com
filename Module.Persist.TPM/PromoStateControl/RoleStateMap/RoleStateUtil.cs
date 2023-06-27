@@ -50,7 +50,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             }),
             new RoleStateMap(StateNames.UNDEFINED, new Dictionary<string, List<string>>(){
                 { StateNames.DRAFT, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } },
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "System", "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "DemandFinance", "DemandPlanning", "FunctionalExpert", "KeyAccountManager" } }
             })
         };
 

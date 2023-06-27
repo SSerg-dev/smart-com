@@ -113,6 +113,7 @@ namespace Module.Frontend.TPM.Controllers
                     ActualPromoPostPromoEffectLSVW2 = n.ActualPromoPostPromoEffectLSVW2,
                     PlanPromoPostPromoEffectLSV = n.PlanPromoPostPromoEffectLSV,
                     ActualPromoPostPromoEffectLSV = n.ActualPromoPostPromoEffectLSV,
+                    ProductSubrangesList = n.ProductSubrangesList,
                     InOut = n.InOut,
                     IsOnInvoice = n.IsOnInvoice
                 });
@@ -227,6 +228,7 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "Name", Header = "Promo name", Quoting = false },
                 new Column() { Order = order++, Field = "InOut", Header = "In Out", Quoting = false },
                 new Column() { Order = order++, Field = "BrandTech", Header = "Brandtech", Quoting = false },
+                new Column() { Order = order++, Field = "ProductSubrangesList", Header = "Subrange", Quoting = false },
                 new Column() { Order = order++, Field = "Event", Header = "Event", Quoting = false },
                 new Column() { Order = order++, Field = "Mechanic", Header = "Mars mechanic", Quoting = false },
                 new Column() { Order = order++, Field = "MechanicIA", Header = "IA mechanic", Quoting = false },

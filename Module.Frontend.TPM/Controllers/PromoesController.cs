@@ -143,9 +143,9 @@ namespace Module.Frontend.TPM.Controllers
                 //Установка полей по дереву ProductTree
                 //SetPromoByProductTree(model);
                 //Установка дат в Mars формате
-                SetPromoMarsDates(model);
+                PromoHelper.SetPromoMarsDates(model);
                 //Установка полей по дереву ClientTree
-                SetPromoByClientTree(model);
+                PromoHelper.SetPromoByClientTree(model, Context);
 
                 Context.SaveChanges();
             }
@@ -178,7 +178,9 @@ namespace Module.Frontend.TPM.Controllers
 
                     return Created(promo);
                 }
-                Promo result = SavePromo(model);
+                UserInfo user = authorizationManager.GetCurrentUser();
+                RoleInfo role = authorizationManager.GetCurrentRole();
+                Promo result = PromoHelper.SavePromo(model, Context, user, role);
 
                 return Created(result);
             }
@@ -195,6 +197,9 @@ namespace Module.Frontend.TPM.Controllers
             List<string> inOutProductIds = model.InOutProductIds.Split(';').ToList();
             List<string> productSubranges = model.ProductSubrangesList?.Split(';').ToList();
             List<string> productSubrangesRU = model.ProductSubrangesListRU?.Split(';').ToList();
+
+            UserInfo user = authorizationManager.GetCurrentUser();
+            RoleInfo role = authorizationManager.GetCurrentRole();
 
             inOutProductIds.RemoveAt(inOutProductIds.Count - 1);//remove last element, because it contains empty
             for (int i = 0; i < productTreeObjectIds.Count(); i++)
@@ -221,135 +226,11 @@ namespace Module.Frontend.TPM.Controllers
                 model.InOutProductIds = inOutProductIdsForProductTree;
                 model.ProductSubrangesList = productSubranges == null ? "" : productSubranges[i];
                 model.ProductSubrangesListRU = productSubrangesRU == null ? "" : productSubrangesRU[i];
-                promo = SavePromo(model);
+                promo = PromoHelper.SavePromo(model, Context, user, role);
             }
 
             return promo;
-        }
-
-        private Promo SavePromo(Promo model)
-        {
-            model.DeviationCoefficient /= 100;
-            // делаем UTC +3
-            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
-            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
-            model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
-            model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
-
-            DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
-
-            if (model.EventId == null)
-            {
-                Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
-                if (promoEvent == null)
-                {
-                    throw new Exception("Event 'Standard promo' not found");
-                }
-
-                model.EventId = promoEvent.Id;
-                model.EventName = promoEvent.Name;
-            }
-            else
-            {
-                Event promoEvent = Context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Id == model.EventId);
-                if (promoEvent == null)
-                {
-                    throw new Exception("Event not found");
-                }
-                model.EventName = promoEvent.Name;
-            }
-
-            UserInfo user = authorizationManager.GetCurrentUser();
-            string userRole = user.GetCurrentRole().SystemName;
-
-            string message;
-
-            PromoStateContext promoStateContext = new PromoStateContext(Context, null);
-            bool status = promoStateContext.ChangeState(model, userRole, out message);
-
-            if (!status)
-            {
-                throw new Exception(message);
-            }
-
-            Promo proxy = new Promo();
-            Promo result = AutomapperProfiles.PromoCopy(model, proxy);
-
-            if (result.CreatorId == null)
-            {
-                result.CreatorId = user.Id;
-                result.CreatorLogin = user.Login;
-            }
-
-            Context.Set<Promo>().Add(result);
-            Context.SaveChanges();
-            // Добавление продуктов
-            bool isSubrangeChanged = false;
-            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out isSubrangeChanged);
-
-            //Установка полей по дереву ProductTree
-            SetPromoByProductTree(result, promoProductTrees);
-            //Установка дат в Mars формате
-            SetPromoMarsDates(result);
-            //Установка полей по дереву ClientTree
-            SetPromoByClientTree(result);
-            //Установка механик
-            SetMechanic(result);
-            SetMechanicIA(result);
-
-            //Установка начального статуса
-            PromoStatusChange psc = Context.Set<PromoStatusChange>().Create<PromoStatusChange>();
-            psc.PromoId = result.Id;
-            psc.StatusId = result.PromoStatusId;
-            psc.UserId = (Guid)user.Id;
-            psc.RoleId = (Guid)user.GetCurrentRole().Id;
-            psc.Date = DateTimeOffset.UtcNow;
-            Context.Set<PromoStatusChange>().Add(psc);
-
-            //Установка времени последнгего присвоения статуса Approved
-            if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved")
-            {
-                result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
-            }
-
-
-            // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
-            if (result.PromoStatus.SystemName.ToLower() != "draft")
-            {
-                // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                CheckSupportInfo(result, promoProductTrees, out filteredProducts);
-                //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                CalculatePromo(result, false, false, false, true);
-            }
-            else
-            {
-                // Добавить запись в таблицу PromoProduct при сохранении.
-                PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Id == result.Id).Id, Context, out string error, true, promoProductTrees);
-                // Создаём инцидент для draft сразу
-                PromoHelper.WritePromoDemandChangeIncident(Context, result);
-            }
-
-            // привязывает дочерние промо
-            if (!string.IsNullOrEmpty(result.LinkedPromoes) && result.IsInExchange)
-            {
-                List<string> LinkedStringIds = model.LinkedPromoes.Split(',').ToList();
-                List<int> LinkedIds = LinkedStringIds.Select(s => int.Parse(s)).ToList();
-                List<Promo> ChildPromoes = Context.Set<Promo>().Where(g => LinkedIds.Contains((int)g.Number) && !g.Disabled).ToList();
-                foreach (var ChildPromo in ChildPromoes)
-                {
-                    ChildPromo.MasterPromoId = result.Id;
-                }
-            }
-
-            result.LastChangedDate = ChangedDate;
-            Context.SaveChanges();
-            if (result.TPMmode == TPMmode.RS)
-            {
-                RSPeriodHelper.CreateRSPeriod(result, Context);
-            }
-            return result;
-        }
+        }              
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
@@ -420,7 +301,8 @@ namespace Module.Frontend.TPM.Controllers
                 model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
 
                 UserInfo user = authorizationManager.GetCurrentUser();
-                string userRole = user.GetCurrentRole().SystemName;
+                RoleInfo role = authorizationManager.GetCurrentRole();
+                string userRole = role.SystemName;
                 bool needToCreateDemandIncident = false;
                 // при изменении StartDate скидываем в Event в Standard promo
                 if (ChangePromo.StartDate != null && userRole != "SupportAdministrator")
@@ -553,7 +435,7 @@ namespace Module.Frontend.TPM.Controllers
                     if (!model.LoadFromTLC)
                     {
                         // Добавление продуктов
-                        promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
+                        promoProductTrees = PromoHelper.AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged, Context);
                     }
 
                     var productQuery = Context.Set<Product>().Where(x => !x.Disabled);
@@ -583,14 +465,14 @@ namespace Module.Frontend.TPM.Controllers
                     if (needRecalculatePromo || statusName.ToLower() == "draft")
                     {
                         //Установка полей по дереву ProductTree
-                        SetPromoByProductTree(model, promoProductTrees);
+                        PromoHelper.SetPromoByProductTree(model, promoProductTrees, Context);
                         //Установка дат в Mars формате
-                        SetPromoMarsDates(model);
+                        PromoHelper.SetPromoMarsDates(model);
                         //Установка полей по дереву ClientTree
-                        SetPromoByClientTree(model);
+                        PromoHelper.SetPromoByClientTree(model, Context);
                         //Установка механик
-                        SetMechanic(model);
-                        SetMechanicIA(model);
+                        PromoHelper.SetMechanic(model, Context);
+                        PromoHelper.SetMechanicIA(model, Context);
 
                         if (statusName.ToLower() == "draft")
                         {
@@ -637,7 +519,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
                         List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                        CheckSupportInfo(model, promoProductTrees, out filteredProducts);
+                        PromoHelper.CheckSupportInfo(model, promoProductTrees, out filteredProducts, Context);
 
                         // в статусе On Approval проверяем изменился ли список фильтруемых продуктов (и соответсвенно если узел остался тот же)
                         // проверяем предыдущий на случай, когда утвердил последний и промо перешло в Approved
@@ -668,7 +550,7 @@ namespace Module.Frontend.TPM.Controllers
                             bool needCalculatePlanMarketingTI = promoCopy.StartDate != model.StartDate || promoCopy.EndDate != model.EndDate;
                             needToCreateDemandIncident = PromoHelper.CheckCreateIncidentCondition(promoCopy, model, patch, isSubrangeChanged);
 
-                            CalculatePromo(model, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
+                            PromoHelper.CalculatePromo(model, Context, (Guid)user.Id, (Guid)role.Id, needCalculatePlanMarketingTI, needResetUpliftCorrections, needResetUpliftCorrectionsPI, false, needToCreateDemandIncident, promoCopy.MarsMechanic.Name, promoCopy.MarsMechanicDiscount, promoCopy.DispatchesStart, promoCopy.PlanPromoUpliftPercent, promoCopy.PlanPromoIncrementalLSV); //TODO: Задача создаётся раньше чем сохраняются изменения промо.
                         }
                         //Сначала проверять заблокированно ли промо, если нет сохранять промо, затем сохранять задачу
                     }
@@ -880,11 +762,14 @@ namespace Module.Frontend.TPM.Controllers
             if (promo == null)
                 return NotFound();
 
+            UserInfo user = authorizationManager.GetCurrentUser();
+            RoleInfo role = authorizationManager.GetCurrentRole();
+
             using (var transaction = Context.Database.BeginTransaction())
             {
                 try
                 {
-                    CalculatePromo(promo, true, false, false);
+                    PromoHelper.CalculatePromo(promo, Context, (Guid)user.Id, (Guid)role.Id, true, false, false);
                     transaction.Commit();
                 }
                 catch (Exception e)
@@ -1626,41 +1511,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
-        }
-
-        /// <summary>
-        /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов
-        /// </summary>
-        /// <param name="promo"></param>
-        private void CalculatePromo(Promo promo, bool needCalculatePlanMarketingTI, bool needResetUpliftCorrections, bool needResetUpliftCorrectionsPI, bool createDemandIncidentCreate = false, bool createDemandIncidentUpdate = false, string oldMarsMechanic = null, double? oldMarsMechanicDiscount = null, DateTimeOffset? oldDispatchesStart = null, double? oldPlanPromoUpliftPercent = null, double? oldPlanPromoIncrementalLSV = null)
-        {
-            UserInfo user = authorizationManager.GetCurrentUser();
-            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
-            RoleInfo role = authorizationManager.GetCurrentRole();
-            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-
-            HandlerData data = new HandlerData();
-            HandlerDataHelper.SaveIncomingArgument("PromoId", promo.Id, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("NeedCalculatePlanMarketingTI", needCalculatePlanMarketingTI, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrections", needResetUpliftCorrections, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("needResetUpliftCorrectionsPI", needResetUpliftCorrectionsPI, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentCreate", createDemandIncidentCreate, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("createDemandIncidentUpdate", createDemandIncidentUpdate, data, visible: false, throwIfNotExists: false);
-
-            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanic", oldMarsMechanic, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("oldMarsMechanicDiscount", oldMarsMechanicDiscount, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("oldDispatchesStart", oldDispatchesStart, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoUpliftPercent", oldPlanPromoUpliftPercent, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("oldPlanPromoIncrementalLSV", oldPlanPromoIncrementalLSV, data, visible: false, throwIfNotExists: false);
-
-
-            bool success = CalculationTaskManager.CreateCalculationTask(CalculationTaskManager.CalculationAction.Uplift, data, Context, promo.Id);
-
-            if (!success)
-                throw new Exception("Promo was blocked for calculation");
-        }
+        }        
 
         /// <summary>
         /// Чтение лога задачи 
@@ -1851,304 +1702,6 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-
-        //Простановка дат в формате Mars
-        public void SetPromoMarsDates(Promo promo)
-        {
-            string stringFormatYP2WD = "{0}P{1:D2}W{2}D{3}";
-
-            if (promo.StartDate != null)
-            {
-                promo.MarsStartDate = (new MarsDate((DateTimeOffset)promo.StartDate)).ToString(stringFormatYP2WD);
-            }
-            if (promo.EndDate != null)
-            {
-                promo.MarsEndDate = (new MarsDate((DateTimeOffset)promo.EndDate)).ToString(stringFormatYP2WD);
-            }
-            if (promo.EndDate != null && promo.StartDate != null)
-            {
-                promo.PromoDuration = (promo.EndDate - promo.StartDate).Value.Days + 1;
-            }
-            else
-            {
-                promo.PromoDuration = null;
-            }
-
-            if (promo.DispatchesStart != null)
-            {
-                promo.MarsDispatchesStart = (new MarsDate((DateTimeOffset)promo.DispatchesStart)).ToString(stringFormatYP2WD);
-            }
-            if (promo.DispatchesEnd != null)
-            {
-                promo.MarsDispatchesEnd = (new MarsDate((DateTimeOffset)promo.DispatchesEnd)).ToString(stringFormatYP2WD);
-            }
-            if (promo.DispatchesStart != null && promo.DispatchesEnd != null)
-            {
-                promo.DispatchDuration = (promo.DispatchesEnd - promo.DispatchesStart).Value.Days + 1;
-            }
-            else
-            {
-                promo.DispatchDuration = null;
-            }
-        }
-
-        /// <summary>
-        /// Установка в промо цвета, бренда и BrandTech на основании дерева продуктов
-        /// </summary>
-        /// <param name="promo"></param>
-        public void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            PromoProductTree product = promoProducts.FirstOrDefault();
-            DateTime dt = DateTime.Now;
-            if (product != null)
-            {
-                //Заполнение Subranges
-                IQueryable<ProductTree> ptQuery = context.Set<ProductTree>().Where(x => x.Type == "root"
-                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
-                IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
-                IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
-                promo.ProductSubrangesList = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
-                promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
-
-                int objectId = product.ProductTreeObjectId;
-                ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
-                if (pt != null)
-                {
-                    Guid? BrandId = null;
-                    Guid? TechId = null;
-                    Brand brandTo = null;
-                    bool end = false;
-                    do
-                    {
-                        if (pt.Type == "Brand")
-                        {
-                            brandTo = context.Set<Brand>().FirstOrDefault(x => x.Name == pt.Name);
-                            if (brandTo != null)
-                            {
-                                BrandId = brandTo.Id;
-                                promo.BrandId = brandTo.Id;
-                            }
-                        }
-                        if (pt.Type == "Technology")
-                        {
-                            var tech = context.Set<Technology>().FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
-                            if (tech != null)
-                            {
-                                TechId = tech.Id;
-                                promo.TechnologyId = tech.Id;
-                            }
-                        }
-                        if (pt.parentId != 1000000)
-                        {
-                            pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
-                        }
-                        else
-                        {
-                            end = true;
-                        }
-                    } while (!end && pt != null);
-
-                    if (brandTo == null)
-                    {
-                        promo.BrandId = null;
-                    }
-
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
-                    if (bt != null)
-                    {
-                        promo.BrandTechId = bt.Id;
-                        var colors = context.Set<Color>().Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
-                        if (colors.Count() == 1)
-                        {
-                            promo.ColorId = colors.First().Id;
-                        }
-                        else
-                        {
-                            promo.ColorId = null;
-                        }
-                    }
-                    else
-                    {
-                        promo.ColorId = null;
-                        promo.BrandTechId = null;
-                    }
-                }
-                else
-                {
-                    promo.ColorId = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Установка значения единого поля для Mechanic
-        /// </summary>
-        /// <param name="promo"></param>
-        public void SetMechanic(Promo promo, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            // нет механики - нет остального
-            if (promo.MarsMechanicId != null)
-            {
-                var mechanic = context.Set<Mechanic>().Find(promo.MarsMechanicId);
-                string result = mechanic.Name;
-
-                if (promo.MarsMechanicTypeId != null)
-                {
-                    var mechanicType = context.Set<MechanicType>().Find(promo.MarsMechanicTypeId);
-                    result += " " + mechanicType.Name;
-                }
-
-                if (promo.MarsMechanicDiscount != null)
-                    result += " " + promo.MarsMechanicDiscount + "%";
-
-                promo.Mechanic = result;
-            }
-        }
-
-        /// <summary>
-        /// Установка значения единого поля для Mechanic IA
-        /// </summary>
-        /// <param name="promo"></param>
-        public void SetMechanicIA(Promo promo, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            string result = null;
-
-            // нет механики - нет остального
-            if (promo.PlanInstoreMechanicId != null)
-            {
-                var mechanic = context.Set<Mechanic>().Find(promo.PlanInstoreMechanicId);
-                result = mechanic.Name;
-
-                if (promo.PlanInstoreMechanicTypeId != null)
-                {
-                    var mechanicType = context.Set<MechanicType>().Find(promo.PlanInstoreMechanicTypeId);
-                    result += " " + mechanicType.Name;
-                }
-
-                if (promo.MarsMechanicDiscount != null)
-                    result += " " + promo.PlanInstoreMechanicDiscount + "%";
-            }
-
-            promo.MechanicIA = result;
-        }
-
-
-        /// <summary>
-        /// Установка промо по дереву клиентов
-        /// </summary>
-        /// <param name="promo"></param>
-        public void SetPromoByClientTree(Promo promo, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            int? ClientTreeId = promo.ClientTreeId;
-            String resultMultiBaseStr = "";
-            if (promo.ClientTreeId != null)
-            {
-
-                IQueryable<ClientTree> ctQuery = context.Set<ClientTree>().Where(x => x.Type == "root"
-               || (DateTime.Compare(x.StartDate, DateTime.Now) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)));
-                ClientTree ct = ctQuery.FirstOrDefault(y => y.ObjectId == promo.ClientTreeId);
-
-
-                int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
-                if (upBaseClientId.HasValue)
-                {
-                    resultMultiBaseStr = upBaseClientId.ToString();
-                }
-                else
-                {
-                    resultMultiBaseStr =
-                        String.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, context));
-                }
-
-            }
-            promo.BaseClientTreeIds = resultMultiBaseStr;
-        }
-
-        /// <summary>
-        /// Поиск базовых клиентов в дереве в корень
-        /// </summary>
-        /// <param name="clientTreeId"></param>
-        /// <returns></returns>
-        private int? RecursiveUpBaseClientsFind(int? clientTreeId, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            if (!clientTreeId.HasValue)
-            {
-                return null;
-            }
-            else
-            {
-                ClientTree ctn = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
-                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
-                if (ctn == null)
-                {
-                    return null;
-                }
-                else if (ctn.IsBaseClient)
-                {
-                    return ctn.ObjectId;
-                }
-                else if (ctn.ObjectId == ctn.parentId)
-                {
-                    return null;
-                }
-                else
-                {
-                    return RecursiveUpBaseClientsFind(ctn.parentId, context);
-                }
-
-            }
-        }
-
-
-        /// <summary>
-        /// Поиск базовых клиентов в дереве назад
-        /// </summary>
-        /// <param name="clientTreeId"></param>
-        /// <returns></returns>
-        private List<int> RecursiveDownBaseClientsFind(int? clientTreeId, DatabaseContext databaseContext = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            if (!clientTreeId.HasValue)
-            {
-                return new List<int>();
-            }
-            else
-            {
-                ClientTree ct = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
-                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
-                if (ct.IsBaseClient)
-                {
-                    return new List<int>() { ct.ObjectId };
-                }
-
-                List<ClientTree> ctChilds = context.Set<ClientTree>().Where(
-                 x =>
-                 //DateTime.Compare(x.StartDate, ct.StartDate) <= 0 && 
-                 x.parentId == ct.ObjectId &&
-                 (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0)).ToList();
-
-                List<int> res = new List<int>();
-                res.AddRange(ctChilds.Where(y => y.IsBaseClient).Select(z => z.ObjectId).ToList());
-
-                foreach (var item in ctChilds.Where(y => !y.IsBaseClient))
-                {
-                    res.AddRange(RecursiveDownBaseClientsFind(item.ObjectId, context));
-                }
-                return res;
-            }
-        }
-
         /// <summary>
         /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
         /// </summary>
@@ -2208,173 +1761,6 @@ namespace Module.Frontend.TPM.Controllers
                 handler.SetParameterData(data);
                 context.LoopHandlers.Add(handler);
                 context.SaveChanges();
-            }
-        }
-
-        /// <summary>
-        /// Добавить продукты из иерархии к промо
-        /// </summary>
-        /// <param name="objectIds">Список ObjectId продуктов в иерархии</param>
-        /// <param name="promo">Промо к которому прикрепляются продукты</param>
-        public List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, out bool isSubrangeChanged, DatabaseContext databaseContext = null)
-        {
-            var context = databaseContext ?? Context;
-
-            // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
-            List<PromoProductTree> currentProducTrees = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
-            List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
-            List<string> newProductTreesIds = new List<string>();
-
-            if (!String.IsNullOrEmpty(objectIds))
-            {
-                newProductTreesIds = objectIds.Split(';').ToList();
-            }
-            List<string> dispatchIds = currentProducTreesIds.Except(newProductTreesIds).ToList();
-            dispatchIds.AddRange(newProductTreesIds.Except(currentProducTreesIds));
-            if (dispatchIds.Count == 0)
-            {
-                isSubrangeChanged = false;
-            }
-            else
-            {
-                isSubrangeChanged = true;
-            }
-
-            // Если Null, значит продукты не менялись
-            if (objectIds != null)
-            {
-                List<int> productTreeObjectIds = new List<int>();
-
-                if (objectIds.Length > 0)
-                {
-                    productTreeObjectIds = objectIds.Split(';').Select(n => Int32.Parse(n)).ToList();
-                }
-
-                // находим прежние записи, если они остались то ислючаем их из нового списка
-                // иначе удаляем
-                //var oldRecords = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled);
-                //PromoProductTree[] oldRecords = new PromoProductTree[currentProducTrees.Count];
-                //currentProducTrees.CopyTo(oldRecords);
-                foreach (var rec in currentProducTrees)
-                {
-                    int index = productTreeObjectIds.IndexOf(rec.ProductTreeObjectId);
-
-                    if (index >= 0)
-                    {
-                        productTreeObjectIds.RemoveAt(index);
-                    }
-                    else
-                    {
-                        rec.DeletedDate = System.DateTime.Now;
-                        rec.Disabled = true;
-                    }
-                }
-
-                // Добавляем новые продукты в промо
-                foreach (int objectId in productTreeObjectIds)
-                {
-                    PromoProductTree promoProductTree = new PromoProductTree()
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductTreeObjectId = objectId,
-                        Promo = promo,
-                        TPMmode = promo.TPMmode
-                    };
-
-                    currentProducTrees.Add(promoProductTree);
-                    context.Set<PromoProductTree>().Add(promoProductTree);
-                }
-            }
-
-            return currentProducTrees.Where(n => !n.Disabled).ToList();
-        }
-
-        /// <summary>
-        /// Проверка TI, COGS и наличия продуктов, попадающих под фильтрация
-        /// </summary>
-        /// <param name="promo">Проверяемое промо</param>
-        /// <param name="promoProductTrees">Список узлов продуктового дерева</param>
-        /// <exception cref="Exception">Исключение генерируется при отсутсвии одного из проверяемых параметров</exception>
-        public void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products, DatabaseContext databaseContext = null, IQueryable<Product> productQuery = null)
-        {
-            DatabaseContext context = databaseContext ?? Context;
-
-            List<string> messagesError = new List<string>();
-            string message = null;
-            bool error;
-            bool isProductListEmpty = false;
-            products = null;
-
-            // проверка на наличие TI
-            IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
-            SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
-            PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
-            if (message != null && error)
-            {
-                messagesError.Add(message);
-                message = null;
-            }
-            else if (message != null)
-            {
-                throw new Exception(message);
-            }
-
-            // проверка на наличие COGS
-            //if (promo.IsLSVBased)
-            //{
-            IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
-            SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
-            PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
-            //}
-            if (message != null)
-            {
-                messagesError.Add(message);
-                message = null;
-            }
-
-            IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
-            simplePromoCOGS = new SimplePromoCOGS(promo);
-            PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
-
-            if (message != null)
-            {
-                messagesError.Add(message);
-                message = null;
-            }
-
-            // проверка на наличие продуктов, попадающих под фильтр (для промо не из TLC)
-            if (!promo.LoadFromTLC)
-            {
-                if (promo.InOut.HasValue && promo.InOut.Value)
-                {
-                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo, productQuery);
-                }
-                else
-                {
-                    isProductListEmpty = PlanProductParametersCalculation.IsProductListEmpty(promo, context, out message, promoProductTrees);
-                }
-                if (message != null)
-                {
-                    messagesError.Add(message);
-                }
-
-                if (isProductListEmpty)
-                {
-                    messagesError.Add("Product list is empty. Please, check assortment matrix or/and Dispath period");
-                }
-            }
-
-            // если что-то не найдено, то генерируем ошибку
-            if (messagesError.Count > 0)
-            {
-                string messageError = "";
-                for (int i = 0; i < messagesError.Count; i++)
-                {
-                    string endString = i == messagesError.Count - 1 ? "" : " ";
-                    messageError += messagesError[i] + endString;
-                }
-
-                throw new Exception(messageError);
             }
         }
 

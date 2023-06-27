@@ -1,6 +1,7 @@
 ﻿using Core.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
@@ -19,12 +20,17 @@ namespace Module.Persist.TPM.Model.TPM
         public DateTimeOffset EndDate { get; set; }
         public DateTimeOffset? ExpirationDate { get; set; }
 
+        public bool IsMLmodel { get; set; }
+        [StringLength(100)]
+        public string TaskStatus { get; set; }
+        public Guid? FileBufferId { get; set; }
+        public Guid? HandlerId { get; set; }
+
         public bool IsSendForApproval  { get; set; }
         public bool IsCMManagerApproved { get; set; }
 
-        [ForeignKey("PromoStatus")]
-        public Guid PromoStatusId { get; set; }
-        public PromoStatus PromoStatus { get; set; }
+        [StringLength(100)]
+        public string RSstatus { get; set; }
 
         [ForeignKey("ClientTree")]
         public int ClientTreeId { get; set; }

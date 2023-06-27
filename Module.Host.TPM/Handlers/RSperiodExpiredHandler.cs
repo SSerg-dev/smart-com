@@ -13,6 +13,7 @@ using Utility.LogWriter;
 using System.Data.Entity;
 using Module.Persist.TPM.PromoStateControl.RoleStateMap;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Persist.TPM.Enum;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -34,8 +35,7 @@ namespace Module.Host.TPM.Handlers
                 {
                     List<RollingScenario> RSperiods = context.Set<RollingScenario>()
                         .Include(g => g.Promoes)
-                        .Include(g => g.PromoStatus)
-                        .Where(g => g.ExpirationDate != null && g.PromoStatus.SystemName != StateNames.APPROVED)
+                        .Where(g => g.ExpirationDate != null && g.RSstatus != RSstateNames.APPROVED)
                         .ToList();
                     foreach (RollingScenario rs in RSperiods)
                     {
