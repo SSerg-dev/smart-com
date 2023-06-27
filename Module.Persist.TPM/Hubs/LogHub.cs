@@ -295,7 +295,7 @@ namespace Module.Persist.TPM
                     contentOfLog = azureLog.Data;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 lastWriteDate = null;
                 contentOfLog = null;

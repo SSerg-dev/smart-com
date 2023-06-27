@@ -332,10 +332,10 @@ namespace Module.Host.TPM.Actions
             }
 
             //Проверка StartDate, EndDate
-            if (importObj.Year == null ) {
-                isError = true;
-                errors.Add(" Year must be fullfilled");
-            }
+            //if (importObj.Year == null ) {
+            //    isError = true;
+            //    errors.Add(" Year must be fullfilled");
+            //}
 
 
             var intersectDatesRATIShoppers = importRATIShoppers.Where(x => 

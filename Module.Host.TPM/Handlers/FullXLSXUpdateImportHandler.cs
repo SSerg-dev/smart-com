@@ -482,7 +482,7 @@ namespace Module.Host.TPM.Handlers
     public class FullXLSXRPAEventImportHandler : FullXLSXImportHandler
     { 
         private Guid rpaId;
-        private Guid roleId;
+        //private Guid roleId;
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {

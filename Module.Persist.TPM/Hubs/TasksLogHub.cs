@@ -321,7 +321,7 @@ namespace Module.Persist.TPM
                 }
                 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 lastWriteDate = null;
                 contentOfLog = null;

@@ -618,7 +618,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             // также используется в промо для проверки, если нет продуктов, то сохранение/редактирование отменяется
             // отдельно т.к. заполнение может оказаться очень долгой операцией
             List<Product> products = null;
-            List<Product> productsCopy = null;
             List<Product> filteredProductList = new List<Product>();
             error = null;
 

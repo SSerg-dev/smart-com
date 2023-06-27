@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 {
@@ -131,7 +132,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                 }
             }            
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(promoRS, Context);
+            ScenarioHelper.CreateScenarioPeriod(promoRS, Context, TPMmode.RS);
             return promoRS;
 
         }
@@ -225,7 +226,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             List<Promo> promoesRS = mapper.Map<List<Promo>>(promoes);
             Context.Set<Promo>().AddRange(promoesRS);
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(promoesRS, Context);
+            ScenarioHelper.CreateScenarioPeriod(promoesRS, Context, TPMmode.RS);
             return promoesRS;
 
         }
@@ -359,7 +360,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             List<PromoSupportPromo> promoSupportPromoesRS = mapper.Map<List<PromoSupportPromo>>(promoSupportPromoes);
             Context.Set<PromoSupportPromo>().AddRange(promoSupportPromoesRS);
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(promoSupportPromoesRS.Select(g => g.Promo).ToList(), Context);
+            ScenarioHelper.CreateScenarioPeriod(promoSupportPromoesRS.Select(g => g.Promo).ToList(), Context, TPMmode.RS);
             return promoSupportPromoesRS;
 
         }
@@ -455,7 +456,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 
             Context.Set<IncrementalPromo>().AddRange(incrementalPromosRS);
             Context.SaveChanges();
-            RSPeriodHelper.CreateRSPeriod(incrementalPromosRS.Select(g => g.Promo).ToList(), Context);
+            ScenarioHelper.CreateScenarioPeriod(incrementalPromosRS.Select(g => g.Promo).ToList(), Context, TPMmode.RS);
             return incrementalPromosRS;
         }
         public static string AddDisableRSPromoFromMLPeriod(List<Promo> promos, DatabaseContext Context)

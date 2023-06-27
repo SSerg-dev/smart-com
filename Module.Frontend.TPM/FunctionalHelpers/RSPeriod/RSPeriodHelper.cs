@@ -37,42 +37,36 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 return startEndModel;
             }
         }
-        public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
-        {
-            List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
-            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
-                .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
+        //public static void CreateRSPeriod(Promo promo, DatabaseContext Context)
+        //{
+        //    List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
+        //    RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+        //        .Include(g => g.Promoes)
+        //        .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
 
-            StartEndModel startEndModel = GetRSPeriod(Context);
-            RollingScenario rollingScenario = new RollingScenario();
-            if (rollingScenarioExist == null)
-            {
-                ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
-                rollingScenario = new RollingScenario
-                {
-                    StartDate = startEndModel.StartDate,
-                    EndDate = startEndModel.EndDate,
-                    RSstatus = RSstateNames.DRAFT,
-                    ClientTree = client,
-                    Promoes = new List<Promo>()
-                };
-                rollingScenario.Promoes.Add(promo);
-                Context.Set<RollingScenario>().Add(rollingScenario);
-            }
-            else
-            {
-                rollingScenarioExist.Promoes.Add(promo);
-            }
-            Context.SaveChanges();
-        }
-        public static void CreateRSPeriod(List<Promo> promoes, DatabaseContext Context)
-        {
-            foreach (Promo promo in promoes)
-            {
-                CreateRSPeriod(promo, Context);
-            }
-        }
+        //    StartEndModel startEndModel = GetRSPeriod(Context);
+        //    RollingScenario rollingScenario = new RollingScenario();
+        //    if (rollingScenarioExist == null)
+        //    {
+        //        ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+        //        rollingScenario = new RollingScenario
+        //        {
+        //            StartDate = startEndModel.StartDate,
+        //            EndDate = startEndModel.EndDate,
+        //            RSstatus = RSstateNames.DRAFT,
+        //            ClientTree = client,
+        //            Promoes = new List<Promo>()
+        //        };
+        //        rollingScenario.Promoes.Add(promo);
+        //        Context.Set<RollingScenario>().Add(rollingScenario);
+        //    }
+        //    else
+        //    {
+        //        rollingScenarioExist.Promoes.Add(promo);
+        //    }
+        //    Context.SaveChanges();
+        //}
+
         public static void DeleteRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
         {
             RollingScenario rollingScenario = Context.Set<RollingScenario>()

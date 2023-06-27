@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Core.Dependency;
+﻿using Core.Dependency;
 using Core.MarsCalendar;
 using Core.Security.Models;
 using Core.Settings;
@@ -7,7 +6,7 @@ using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.FunctionalHelpers.RA;
-using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Persist.TPM.CalculatePromoParametersModule;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Interfaces;
@@ -1031,11 +1030,11 @@ namespace Module.Frontend.TPM.Util
             context.SaveChanges();
             if (result.TPMmode == TPMmode.RS && !result.CalculateML)
             {
-                RSPeriodHelper.CreateRSPeriod(result, context);
+                ScenarioHelper.CreateScenarioPeriod(result, context, TPMmode.RS);
             }
             if (result.TPMmode == TPMmode.RA && !result.CalculateML)
             {
-                RAmodeHelper.CreateRAPeriod(result, context);
+                ScenarioHelper.CreateScenarioPeriod(result, context, TPMmode.RA);
             }
             return result;
         }
