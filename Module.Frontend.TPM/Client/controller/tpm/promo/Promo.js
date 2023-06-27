@@ -1478,7 +1478,7 @@
         this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
 
-        promoeditorcustom.TPMmode = settingStore.findRecord('name', 'mode').data.value;
+        promoeditorcustom.TPMmode = TpmModes.getSelectedMode();
         if (TpmModes.isRsMode(promoeditorcustom.TPMmode)) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;

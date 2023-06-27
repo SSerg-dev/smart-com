@@ -1093,5 +1093,24 @@ namespace Module.Persist.TPM.Utils
             //}
             return query;
         }
+        public static IQueryable<SavedScenario> ApplyFilter(IQueryable<SavedScenario> query, IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null, FilterQueryModes filterMode = FilterQueryModes.Active, string role = "")
+        {
+            if (filterMode == FilterQueryModes.Active)
+            {
+                query = query.Where(x => !x.Disabled);
+            }
+            if (filterMode == FilterQueryModes.Deleted)
+            {
+                query = query.Where(x => x.Disabled);
+            }
+            IEnumerable<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client);
+            if (clientFilter.Any())
+            {
+                hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
+                query = query.Where(x =>
+                    hierarchy.Any(h => h.Id == x.RollingScenario.ClientTree.ObjectId || h.Hierarchy.Contains(x.RollingScenario.ClientTree.ObjectId.ToString())));
+            }
+            return query;
+        }
     }
 }

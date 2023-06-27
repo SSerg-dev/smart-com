@@ -348,5 +348,12 @@ namespace Module.Frontend.TPM.Controllers
             }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult UploadScenario(Guid rollingScenarioId)
+        {
+
+            return InternalServerError(new Exception("Only Customer Marketing Manager approve!"));
+        }
     }
 }

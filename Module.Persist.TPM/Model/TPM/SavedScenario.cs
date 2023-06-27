@@ -21,6 +21,6 @@ namespace Module.Persist.TPM.Model.TPM
         [StringLength(512)]
         public string ScenarioName { get; set; }
 
-        public RollingScenario RollingScenario { get; set; }
+        public virtual RollingScenario RollingScenario { get; set; }
     }
 }

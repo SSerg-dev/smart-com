@@ -535,6 +535,7 @@
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
     <Compile Include="Controllers\RollingScenariosController.cs" />
+    <Compile Include="Controllers\SavedScenariosController.cs" />
     <Compile Include="FunctionalHelpers\HiddenMode\HiddenModeHelper.cs" />
     <Compile Include="FunctionalHelpers\PromoAction\PromoSaveHelper.cs" />
     <Compile Include="FunctionalHelpers\RA\RAmodeHelper.cs" />

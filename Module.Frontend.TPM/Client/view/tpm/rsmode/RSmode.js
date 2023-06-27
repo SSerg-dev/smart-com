@@ -111,6 +111,14 @@
                 tooltip: 'Show Log'
             },
             {
+                itemId: 'uploadscenariobutton',
+                action: 'UploadScenario',
+                disabled: true,
+                glyph: 0xF552,
+                text: 'Upload Scenario',
+                tooltip: 'Upload Scenario'
+            },
+            {
                 itemId: 'deletedbutton',
                 resource: 'Deleted{0}',
                 action: 'Get{0}',
