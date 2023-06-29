@@ -203,7 +203,9 @@
         'MetricsLiveHistory':'Metrics Live History',
         'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction',
         'DiscountRange': 'Discount Range',
-        'DurationRange': 'Duration Range'
+        'DurationRange': 'Duration Range',
+        'ConfirmUploadScenario': 'Confirm Upload Scenario',
+        'SavedScenario': 'Saved Scenario',
     },
 
     'text': {
@@ -1714,6 +1716,12 @@
         'SelectOneFilter': 'Select client'
     },
 
+    'ConfirmUploadScenario': {
+        'ConfirmUploadScenario': 'Upload scenario',
+        'SavedScenario': 'Saved Scenario',
+        'Error': 'Error',
+    },
+
     'COGS': {
         'StartDate': 'StartDate',
         'EndDate': 'EndDate',
@@ -3101,5 +3109,10 @@
         'ClientHierarchy': 'Client',
         'Value': 'Percent',
         'ValueLSV': 'LSV',
-    }
+    },
+    'SavedScenario': {
+        'ScenarioName': 'Scenario Name',
+        'ClientTreeFullPathName': 'Client',
+        'CreateDate': 'Creat eDate',
+    },
 });

@@ -1321,6 +1321,9 @@ namespace Module.Persist.TPM
 
             builder.EntitySet<MetricsLiveHistory>("MetricsLiveHistories");
             builder.Entity<MetricsLiveHistory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MetricsLiveHistory>("MetricsLiveHistories");
+
+            builder.EntitySet<SavedScenario>("SavedScenarios").HasRequiredBinding(e => e.RollingScenario, "RollingScenarios");
+            builder.Entity<SavedScenario>().Collection.Action("UploadSavedScenario");
         }
 
 

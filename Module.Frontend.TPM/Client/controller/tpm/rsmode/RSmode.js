@@ -261,33 +261,7 @@
         });
     },
     onUploadScenarioButtonClick: function (button) {
-        var grid = Ext.ComponentQuery.query('directorygrid[name=RSmodeGrid]')[0];
-        grid.setLoading(l10n.ns('core').value('savingText'));
-        var selected = grid.getSelectionModel().getSelection()[0];
-        $.ajax({
-            dataType: 'json',
-            url: '/odata/RollingScenarios/Calculate?rsId=' + selected.data.RSId,
-            type: 'POST',
-            success: function (response) {
-                var data = Ext.JSON.decode(response.value);
-                if (data.success) {
-                    grid.getStore().load();
-                    grid.setLoading(false);
-                    App.Notify.pushInfo('Calculating task created successfully');
-                    App.System.openUserTasksPanel();
-                }
-                else {
-                    grid.setLoading(false);
-                    App.Notify.pushError(l10n.ns('tpm', 'text').value('failedLoadData'));
-                }
-
-            },
-            error: function (data) {
-                grid.setLoading(false);
-                App.Notify.pushError(data.responseJSON["odata.error"].innererror.message);
-            }
-        });
-
+        Ext.widget('confirmUploadScenario').show();
     },
     getVisibleButton: function (rollingScenarioId) {
         $.ajax({

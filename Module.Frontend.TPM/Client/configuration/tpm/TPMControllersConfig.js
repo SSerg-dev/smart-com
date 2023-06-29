@@ -334,6 +334,7 @@
 
     'tpm.rsmode.RSmode',
     'tpm.rsmode.DeletedRSmode',
+    'tpm.rsmode.ConfirmUploadScenario',
 
     //PromoProductCorrectionPriceIncrease
     'tpm.promoproductcorrectionpriceincrease.PromoProductCorrectionPriceIncrease',    
@@ -344,5 +345,7 @@
     'tpm.metricslivehistory.MetricsLiveHistory',
     'tpm.planpostpromoeffect.PlanPostPromoEffect',
     'tpm.planpostpromoeffect.DeletedPlanPostPromoEffect',
-    'tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect'    
+    'tpm.planpostpromoeffect.HistoricalPlanPostPromoEffect',
+
+    'tpm.savedScenario.SavedScenario',
 ]);
