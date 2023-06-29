@@ -18,6 +18,14 @@
                                 createButton.hide();
                             }
                         }
+
+                        var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
+                        scenarioButton.setDisabled(true);
+
+                        const tpmMode = TpmModes.getSelectedModeId();
+                        if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'CMManager'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
+                            scenarioButton.hide();
+                        }
                     }
                 },
                 'schedulecontainer #shiftprevbutton': {
@@ -83,6 +91,9 @@
                 },
                 'schedulecontainer #schedulefilterdraftbutton': {
                     click: this.onFilterDraftButtonClick
+                },
+                'schedulecontainer #scenariobutton': {
+                    click: this.onSaveScenarioButtonClick
                 },
 
                 'promodetailtabpanel #historybutton': {
@@ -1693,9 +1704,37 @@
                     inputValue: el.data.Name,
                     checked: true,
                     boxLabel: el.data.Name,
+                    objectId: el.data.ObjectId,
                     xtype: 'checkbox'
                 })
             });
+            var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
+            if (scenarioButton) {
+                var parameters = {};
+                    App.Util.makeRequestWithCallback('ClientTrees', 'GetUploadingClients', parameters, function (data2) {
+                        if (data2) {
+                            var result2 = Ext.JSON.decode(data2.httpResponse.data.value);
+                            if (result2.success) {
+                                var uploadingClients = result2.uploadingClients;
+                                var clientsFromConfig = jQuery.map(scheduler.clientsFilterConfig, function (n, i) {
+                                    return (n.objectId.toString());
+                                });
+                                var filteredArray = clientsFromConfig.filter(function (x) {
+                                    return uploadingClients.indexOf(x) < 0;
+                                });
+                                scheduler.clientsAvailableForScenario = filteredArray;
+                                scheduler.uploadingClients = uploadingClients;
+                                if (filteredArray.length > 0) {
+                                    scenarioButton.setDisabled(false);
+                                }
+                                else {
+                                    scenarioButton.setDisabled(true);
+                                }
+                            } else {
+                            }
+                        }
+                    }, function (data) {});
+            }
         });
 
         scheduler.up('panel').down('[presetId=marsweekMonth]').addCls('sch-preset-btn-selected');
@@ -2258,5 +2297,9 @@
                 }
             }
         }
+    },
+    
+    onSaveScenarioButtonClick: function (button) {
+        Ext.widget('selectClientScenario').show();
     }
 });

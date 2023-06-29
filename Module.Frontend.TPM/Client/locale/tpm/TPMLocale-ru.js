@@ -948,7 +948,10 @@
         'ExportTaskError': 'The export task failed. You can see the details of the task here:',
         'AllSelected': 'All selected',
         'Filtered': 'Filtered',
-        'RSmode': 'Scenario List'
+        'RSmode': 'Scenario List',
+        'SaveScenarioTaskCreated': 'Save scenario task was successfully created.',
+        'SaveScenarioTaskError': 'Error occurred during scenario task creation.',
+        'SaveScenarioSelectError': 'Select client to save scenario.'
     },
 
     'Color': {
@@ -1316,6 +1319,13 @@
         'PromoTypes': 'Promo Types',
         'Error': 'Error',
         'SelectOneFilter': 'Select at least one client and type'
+    },
+
+    'SelectClientScenario': {
+        'SaveClientScenario': 'Save scenario',
+        'Clients': 'Clients',
+        'Error': 'Error',
+        'SelectOneFilter': 'Select client'
     },
 
     'COGS': {

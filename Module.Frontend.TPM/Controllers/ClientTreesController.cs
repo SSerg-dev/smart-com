@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
+using Microsoft.Azure.Management.DataFactory;
+using Microsoft.Azure.Management.DataFactory.Models;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -15,6 +20,7 @@ using Persist.Model;
 using Persist.ScriptGenerator.Filter;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -25,6 +31,7 @@ using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Utility.FileWorker;
+using UserInfo = Core.Security.Models.UserInfo;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -602,14 +609,6 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (model.DemandCode != null)
-            {
-                if (model.DemandCode == "" || model.DemandCode == " ")
-                {
-                    model.DemandCode = null;
-                }
-            }
-
             activeTree = GetConstraintedQuery();
             ClientTree parent = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
             string fullPathClientName = model.Name;
@@ -1097,6 +1096,61 @@ namespace Module.Frontend.TPM.Controllers
             else
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
+            }
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetUploadingClients()
+        {
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            IQueryable<JobFlagView> jobs = Context.SqlQuery<JobFlagView>(
+                $@"SELECT Prefix, Value FROM {defaultSchema}.JobFlag WHERE Description LIKE 'Upload client%'").AsQueryable();
+            var uploadingClients = jobs.Where(x => x.Value == 1).Select(x => x.Prefix).ToList();
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, uploadingClients }));
+        }
+
+        [ClaimsAuthorize]
+        public IHttpActionResult SaveScenario(string ClientName, string ObjectId)
+        {
+            UserInfo user = authorizationManager.GetCurrentUser();
+            var email = NotificationsHelper.GetUsersEmail(new List<Guid>() { (Guid)user.Id }, Context).First();
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+
+            var scenarioName = $"{ObjectId}_{DateTime.Now:yyyyMMddhhmmss}";
+            try
+            {
+                var createRunScript = $@"
+                    INSERT INTO [{defaultSchema}].[ScenarioCopyTask]
+                            ([Disabled]
+                            ,[DeletedDate]
+                            ,[ClientPrefix]
+                            ,[ClientObjectId]
+                            ,[Schema]
+                            ,[CreateDate]
+                            ,[ProcessDate]
+                            ,[ScenarioType]
+                            ,[ScenarioName]
+                            ,[Status]
+                            ,[Email])
+                        VALUES
+                            (0
+                            ,NULL
+                            ,'{ClientName}'
+                            ,{ObjectId}
+                            ,'{defaultSchema}'
+                            ,GETDATE()
+                            ,NULL
+                            ,'MEDIUM'
+                            ,'{scenarioName}'
+                            ,'WAITING'
+                            ,'{email ?? "NULL"}')
+                ";
+                Context.ExecuteSqlCommand(createRunScript);
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Create run failure " + ex.Message }));
             }
         }
 

@@ -3604,10 +3604,23 @@
     <Compile Include="Migrations\202306261055558_Add_budgetYear_PromoViewRS.designer.cs">
       <DependentUpon>202306261055558_Add_budgetYear_PromoViewRS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202306280644036_Add-ScenarioCopyTask.cs" />
+    <Compile Include="Migrations\202306280644036_Add-ScenarioCopyTask.designer.cs">
+      <DependentUpon>202306280644036_Add-ScenarioCopyTask.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202306290644396_RA_mode_AccessPoints.cs" />
+    <Compile Include="Migrations\202306290644396_RA_mode_AccessPoints.designer.cs">
+      <DependentUpon>202306290644396_RA_mode_AccessPoints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202306290753413_TPMmode_Partitions.cs" />
+    <Compile Include="Migrations\202306290753413_TPMmode_Partitions.designer.cs">
+      <DependentUpon>202306290753413_TPMmode_Partitions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
     <Compile Include="Model\DTO\ClientDashboardView.cs" />
+    <Compile Include="Model\DTO\JobFlagView.cs" />
     <Compile Include="Model\DTO\PriceListFDM.cs" />
     <Compile Include="Model\DTO\PromoProductCorrectionPriceIncreaseView.cs" />
     <Compile Include="Model\DTO\PromoProductCorrectionView.cs" />
@@ -6770,6 +6783,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202306261055558_Add_budgetYear_PromoViewRS.resx">
       <DependentUpon>202306261055558_Add_budgetYear_PromoViewRS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306280644036_Add-ScenarioCopyTask.resx">
+      <DependentUpon>202306280644036_Add-ScenarioCopyTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306290644396_RA_mode_AccessPoints.resx">
+      <DependentUpon>202306290644396_RA_mode_AccessPoints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202306290753413_TPMmode_Partitions.resx">
+      <DependentUpon>202306290753413_TPMmode_Partitions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

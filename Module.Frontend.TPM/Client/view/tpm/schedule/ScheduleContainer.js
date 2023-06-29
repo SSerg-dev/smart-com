@@ -77,6 +77,11 @@
             glyph: 0xf258,
             text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
+        }, {
+            itemId: 'scenariobutton',
+            glyph: 0xf193,
+            text: l10n.ns('core', 'toptoolbar').value('scenarioButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('scenarioButtonText')
         }, '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',

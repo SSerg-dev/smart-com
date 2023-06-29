@@ -226,7 +226,8 @@
 
     'toptoolbar': {
         'deletedButtonText': 'Удалённые',
-        'filterButtonText': 'Расширенный фильтр'
+        'filterButtonText': 'Расширенный фильтр',
+        'scenarioButtonText': 'Сохранить сценарий'
     },
 
     'filter': {

@@ -1101,7 +1101,10 @@
         'ExportTaskError': 'The export task failed. You can see the details of the task here:',
         'CopyInOutError': 'Unable to copy to different type promo',
         'AllSelected': 'All selected',
-        'Filtered': 'Filtered'
+        'Filtered': 'Filtered',
+        'SaveScenarioTaskCreated': 'Save scenario task was successfully created.',
+        'SaveScenarioTaskError': 'Error occurred during scenario task creation.',
+        'SaveScenarioSelectError': 'Select client to save scenario.'
     },
 
     'Color': {
@@ -1702,6 +1705,13 @@
         'SelectAll': 'Select All',
         'Error': 'Error',
         'SelectOneFilter': 'Select at least one client and type'
+    },
+
+    'SelectClientScenario': {
+        'SaveClientScenario': 'Save scenario',
+        'Clients': 'Clients',
+        'Error': 'Error',
+        'SelectOneFilter': 'Select client'
     },
 
     'COGS': {

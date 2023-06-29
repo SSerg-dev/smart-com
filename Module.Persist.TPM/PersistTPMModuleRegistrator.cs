@@ -670,6 +670,8 @@ namespace Module.Persist.TPM
             builder.Entity<ClientTree>().Collection.Action("UploadLogoFile");
             builder.Entity<ClientTree>().Collection.Action("DownloadLogoFile");
             builder.Entity<ClientTree>().Collection.Action("DeleteLogo");
+            builder.Entity<ClientTree>().Collection.Action("GetUploadingClients");
+            builder.Entity<ClientTree>().Collection.Action("SaveScenario");
             builder.Entity<BaseClientTreeView>().Collection.Action("ExportXLSX");
             builder.Entity<ClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTree>("ClientTrees");
 

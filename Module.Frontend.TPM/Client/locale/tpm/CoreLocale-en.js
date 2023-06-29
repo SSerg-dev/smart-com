@@ -269,7 +269,8 @@
 
     'toptoolbar': {
         'deletedButtonText': 'Deleted',
-        'filterButtonText': 'Extended filter'
+        'filterButtonText': 'Extended filter',
+        'scenarioButtonText': 'Save scenario'
     },
 
     'filter': {

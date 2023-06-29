@@ -145,6 +145,8 @@
     'tpm.schedule.SchedulerViewController',
     'tpm.schedule.ClientPromoTypeFilter',
 
+    'tpm.schedule.SelectClientScenario',
+
     'tpm.demand.Demand',
     'tpm.demand.DeletedDemand',
     'tpm.demand.HistoricalDemand',
