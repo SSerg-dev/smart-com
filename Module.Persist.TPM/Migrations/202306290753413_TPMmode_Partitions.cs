@@ -133,7 +133,24 @@
 				ALTER TABLE [DefaultSchemaSetting].[PromoPriceIncrease] DROP CONSTRAINT [FK_DefaultSchemaSetting.PromoPriceIncrease_DefaultSchemaSetting.Promo_Id]
 				GO
 
-				ALTER TABLE [DefaultSchemaSetting].[CurrentDayIncremental] DROP CONSTRAINT [FK__CurrentDa__Promo__1DF06171]
+				DECLARE @constraint nvarchar(64) = (SELECT 
+					obj_Constraint.NAME
+				FROM   sys.objects obj_table 
+					JOIN sys.objects obj_Constraint 
+						ON obj_table.object_id = obj_Constraint.parent_object_id 
+					JOIN sys.sysconstraints constraints 
+						 ON constraints.constid = obj_Constraint.object_id 
+					JOIN sys.columns columns 
+						 ON columns.object_id = obj_table.object_id 
+						AND columns.column_id = constraints.colid 
+				WHERE obj_table.NAME='CurrentDayIncremental'
+				and obj_table.schema_id = SCHEMA_ID('DefaultSchemaSetting') AND columns.NAME = 'PromoId')
+	
+				Declare @sql nvarchar(max)
+
+				set @sql = 'ALTER TABLE [DefaultSchemaSetting].[CurrentDayIncremental] DROP CONSTRAINT '+ @constraint
+
+				Exec sp_executesql @sql
 				GO
 
 				ALTER TABLE [DefaultSchemaSetting].[PromoSupportPromo] DROP CONSTRAINT [FK_DefaultSchemaSetting.PromoSupportPromo_DefaultSchemaSetting.Promo_PromoId]
