@@ -194,8 +194,8 @@
                 {
                     text: l10n.ns('tpm', 'RSmode').value('ScenarioType'),
                     dataIndex: 'ScenarioType',
-                    falseText: 'RS',
-                    trueText: 'RA',
+                    //falseText: 'RS',
+                    //trueText: 'RA',
                     filter: {
                         type: 'bool',
                         store: [

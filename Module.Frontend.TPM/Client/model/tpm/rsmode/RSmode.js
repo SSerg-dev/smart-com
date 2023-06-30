@@ -5,7 +5,7 @@
     fields: [
         { name: 'Id', hidden: true },
         { name: 'RSId', type: 'int', hidden: false, isDefault: true,},
-        { name: 'ScenarioType', type: 'int', hidden: false, isDefault: true },
+        { name: 'ScenarioType', type: 'string', hidden: false, isDefault: true },
         { name: 'StartDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'EndDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'ExpirationDate', type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },

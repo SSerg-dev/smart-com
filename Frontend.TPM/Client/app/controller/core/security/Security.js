@@ -208,7 +208,7 @@ Ext.define('App.controller.core.security.Security', {
 
         var itemMode = TpmModes.getSelectedMode();
         if (!Ext.isEmpty(itemMode)) {
-            modebutton.setText(itemMode.alias);
+            modebutton.setText(itemMode.text);
         }
         if (!Ext.isEmpty(role) && !Ext.isEmpty(rolebutton)) {
             rolebutton.setText(role.DisplayName);
