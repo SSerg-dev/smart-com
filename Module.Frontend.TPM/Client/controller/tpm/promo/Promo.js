@@ -1478,7 +1478,7 @@
         this.setPromoType(promotype.Name, promoeditorcustom);
         promoeditorcustom.isCreating = true;
 
-        promoeditorcustom.TPMmode = TpmModes.getSelectedMode();
+        promoeditorcustom.TPMmode = TpmModes.getSelectedModeId();
         if (TpmModes.isRsMode(promoeditorcustom.TPMmode)) {
             RSmodeController.getRSPeriod(function (returnValue) {
                 promoeditorcustom.rsStartEnd = returnValue;
@@ -2806,7 +2806,7 @@
         }
         var needRecountUpliftPI = promoActivityStep2.down('#PromoUpliftLockedUpdateCheckboxPI').getValue();
         record.data.NeedRecountUpliftPI = needRecountUpliftPI;
-        record.data.TPMmode = TpmModes.getTpmModeById(window.TPMmode);
+        record.data.TPMmode = TpmModes.getSelectedMode().alias;
         //record.data.PlanPromoBaselineLSV = promoActivityStep2.down('numberfield[name=PlanPromoBaselineLSV]').getValue();
         //record.data.PlanPromoIncrementalLSV = promoActivityStep2.down('numberfield[name=PlanPromoIncrementalLSV]').getValue();
         //record.data.PlanPromoLSV = promoActivityStep2.down('numberfield[name=PlanPromoLSV]').getValue();
