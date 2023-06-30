@@ -50,18 +50,14 @@
             }, {
                 text: l10n.ns('tpm', 'Promo').value('TPMmode'),
                 dataIndex: 'TPMmode',
-                renderer: function (value) {
-                    return value;
-                },
-                xtype: 'booleancolumn',
-                trueText: 'RS',
-                falseText: 'Current',
                 filter: {
-                    type: 'bool',
-                    store: [
-                        [0, 'Current'],
-                        [1, 'RS']
-                    ]
+                    type: 'combo',
+                    valueField: 'id',
+                    displayField: 'alias',
+                    store: {
+                        type: 'modestore'
+                    },
+                    operator: 'eq'
                 }
             }, {    
                 text: l10n.ns('tpm', 'Promo').value('ClientHierarchy'),
