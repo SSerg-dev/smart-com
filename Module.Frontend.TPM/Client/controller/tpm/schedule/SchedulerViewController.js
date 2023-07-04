@@ -1715,15 +1715,15 @@
                         if (data2) {
                             var result2 = Ext.JSON.decode(data2.httpResponse.data.value);
                             if (result2.success) {
-                                var uploadingClients = result2.uploadingClients;
+                                var availableClients = result2.availableClients;
                                 var clientsFromConfig = jQuery.map(scheduler.clientsFilterConfig, function (n, i) {
                                     return (n.objectId.toString());
                                 });
                                 var filteredArray = clientsFromConfig.filter(function (x) {
-                                    return uploadingClients.indexOf(x) < 0;
+                                    return availableClients.indexOf(x) > 0;
                                 });
                                 scheduler.clientsAvailableForScenario = filteredArray;
-                                scheduler.uploadingClients = uploadingClients;
+                                //scheduler.uploadingClients = uploadingClients;
                                 if (filteredArray.length > 0) {
                                     scenarioButton.setDisabled(false);
                                 }

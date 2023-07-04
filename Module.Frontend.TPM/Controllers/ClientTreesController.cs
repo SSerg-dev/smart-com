@@ -32,6 +32,9 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Utility.FileWorker;
 using UserInfo = Core.Security.Models.UserInfo;
+using Module.Persist.TPM.Enum;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
+using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -1106,13 +1109,23 @@ namespace Module.Frontend.TPM.Controllers
             IQueryable<JobFlagView> jobs = Context.SqlQuery<JobFlagView>(
                 $@"SELECT Prefix, Value FROM {defaultSchema}.JobFlag WHERE Description LIKE 'Upload client%'").AsQueryable();
             var uploadingClients = jobs.Where(x => x.Value == 1).Select(x => x.Prefix).ToList();
-            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, uploadingClients }));
+            var availableStatuses = new List<string> { RSstateNames.ON_APPROVAL, RSstateNames.DRAFT };
+            var availableClients = Context.Set<RollingScenario>()
+                .Where(x => !x.Disabled && x.ScenarioType == ScenarioType.RA && availableStatuses.Contains(x.RSstatus))
+                .Select(x => x.ClientTree.ObjectId.ToString())
+                .ToList();
+            availableClients = availableClients.Except(uploadingClients).ToList();
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, availableClients }));
         }
 
         [ClaimsAuthorize]
         public IHttpActionResult SaveScenario(string ClientName, string ObjectId)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
+            var scenario = ScenarioHelper.GetActiveScenario(Int32.Parse(ObjectId), Context);
+
+            if (scenario == null) return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RA scenario not found" }));
+
             var email = NotificationsHelper.GetUsersEmail(new List<Guid>() { (Guid)user.Id }, Context).First();
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 
@@ -1145,6 +1158,15 @@ namespace Module.Frontend.TPM.Controllers
                             ,'WAITING'
                             ,'{email ?? "NULL"}')
                 ";
+                //copy scenario
+                var newSavedScenario = new SavedScenario
+                {
+                    RollingScenario = scenario,
+                    ScenarioName = scenarioName
+                };
+                Context.Set<SavedScenario>().Add(newSavedScenario);
+                Context.SaveChanges();
+                HiddenModeHelper.CopyPromoesToHidden(Context, scenario.Promoes.ToList()); ;
                 Context.ExecuteSqlCommand(createRunScript);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
             }

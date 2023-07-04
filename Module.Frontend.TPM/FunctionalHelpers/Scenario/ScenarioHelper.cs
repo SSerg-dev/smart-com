@@ -90,5 +90,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 rollingScenarioExist.Promoes.Add(promo);
             }
         }
-    }
+
+        public static RollingScenario GetActiveScenario(int clientObjectId, DatabaseContext Context)
+        {
+            List<string> activeStatuses = new List<string> { RSstateNames.DRAFT, RSstateNames.ON_APPROVAL };
+            return Context.Set<RollingScenario>().Include(x => x.Promoes).SingleOrDefault(x => !x.Disabled 
+                        && activeStatuses.Contains(x.RSstatus) 
+                        && x.ClientTree.ObjectId == clientObjectId);
+        }
+    } 
 }
