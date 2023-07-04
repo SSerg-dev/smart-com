@@ -185,6 +185,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.ClientTree);
 
             modelBuilder.Entity<SavedScenario>().HasRequired(g => g.RollingScenario);
+            modelBuilder.Entity<SavedScenario>().HasMany(g => g.Promoes).WithOptional(g => g.SavedScenario);
         }
 
 
@@ -503,6 +504,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.MasterPromo, "DeletedPromoes");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.RollingScenario, "RollingScenarios");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.RollingScenario, "DeletedRollingScenarios");
+            builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.SavedScenario, "SavedScenarios");
+            builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.SavedScenario, "DeletedSavedScenarios");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoProducts, "PromoProducts");
@@ -1279,6 +1282,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.EntitySet<RollingScenario>("RollingScenarios").HasManyBinding(e => e.SavedScenarios, "SavedScenarios");
+            builder.EntitySet<RollingScenario>("DeletedRollingScenarios").HasManyBinding(e => e.SavedScenarios, "SavedScenarios");
             builder.Entity<RollingScenario>().Collection.Action("OnApproval");
             builder.Entity<RollingScenario>().Collection.Action("Approve");
             builder.Entity<RollingScenario>().Collection.Action("Decline");
@@ -1323,6 +1328,9 @@ namespace Module.Persist.TPM
             builder.Entity<MetricsLiveHistory>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<MetricsLiveHistory>("MetricsLiveHistories");
 
             builder.EntitySet<SavedScenario>("SavedScenarios").HasRequiredBinding(e => e.RollingScenario, "RollingScenarios");
+            builder.EntitySet<SavedScenario>("DeletedSavedScenarios").HasRequiredBinding(e => e.RollingScenario, "DeletedRollingScenarios");
+            builder.EntitySet<SavedScenario>("SavedScenarios").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.EntitySet<SavedScenario>("DeletedSavedScenarios").HasManyBinding(e => e.Promoes, "DeletedPromoes");
             builder.Entity<SavedScenario>().Collection.Action("UploadSavedScenario");
         }
 

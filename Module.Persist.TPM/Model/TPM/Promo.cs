@@ -345,6 +345,9 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("RollingScenario")]
         public Guid? RollingScenarioId { get; set; }
         public RollingScenario RollingScenario { get; set; }
+        [ForeignKey("SavedScenario")]
+        public Guid? SavedScenarioId { get; set; }
+        public SavedScenario SavedScenario { get; set; }
         public PromoPriceIncrease PromoPriceIncrease { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }

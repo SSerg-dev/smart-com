@@ -3620,6 +3620,10 @@
     <Compile Include="Migrations\202307040720407_Fix_SavedScenario_Id.designer.cs">
       <DependentUpon>202307040720407_Fix_SavedScenario_Id.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202307041158509_AddPromoesToSavedScenario.cs" />
+    <Compile Include="Migrations\202307041158509_AddPromoesToSavedScenario.designer.cs">
+      <DependentUpon>202307041158509_AddPromoesToSavedScenario.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6799,6 +6803,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202307040720407_Fix_SavedScenario_Id.resx">
       <DependentUpon>202307040720407_Fix_SavedScenario_Id.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202307041158509_AddPromoesToSavedScenario.resx">
+      <DependentUpon>202307041158509_AddPromoesToSavedScenario.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.TPM
 {
@@ -24,5 +21,6 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("RollingScenario")]
         public Guid RollingScenarioId { get; set; }
         public virtual RollingScenario RollingScenario { get; set; }
+        public ICollection<Promo> Promoes { get; set; }
     }
 }

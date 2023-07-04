@@ -20,11 +20,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
             if (tPMmode == TPMmode.RS)
             {
-                CreateRSPeriod(promo, client, Context);
+                CreateRSPeriod(promo, client, Context, ScenarioType.RS);
             }
             if (tPMmode == TPMmode.RA)
             {
-                CreateRAPeriod(promo, client, Context);
+                CreateRAPeriod(promo, client, Context, ScenarioType.RA);
             }
 
             Context.SaveChanges();
@@ -36,7 +36,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 CreateScenarioPeriod(promo, Context, tPMmode);
             }
         }
-        private static void CreateRSPeriod(Promo promo, ClientTree client, DatabaseContext Context)
+        private static void CreateRSPeriod(Promo promo, ClientTree client, DatabaseContext Context, ScenarioType scenarioType)
         {
             List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
             StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
@@ -49,6 +49,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             {
                 RollingScenario rollingScenario = new RollingScenario
                 {
+                    ScenarioType = scenarioType,
                     StartDate = startEndModel.StartDate,
                     EndDate = startEndModel.EndDate,
                     RSstatus = RSstateNames.DRAFT,
@@ -63,7 +64,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 rollingScenarioExist.Promoes.Add(promo);
             }
         }
-        private static void CreateRAPeriod(Promo promo, ClientTree client, DatabaseContext Context)
+        private static void CreateRAPeriod(Promo promo, ClientTree client, DatabaseContext Context, ScenarioType scenarioType)
         {
             List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
             StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
@@ -76,6 +77,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             {
                 RollingScenario rollingScenario = new RollingScenario
                 {
+                    ScenarioType = scenarioType,
                     StartDate = startEndModel.StartDate,
                     EndDate = startEndModel.EndDate,
                     RSstatus = RSstateNames.DRAFT,
