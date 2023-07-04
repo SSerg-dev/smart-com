@@ -603,6 +603,10 @@ namespace Module.Host.TPM.Actions
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     query = query.Where(x => !x.Disabled);
                     break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProductId }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
+                    break;
             }
             return query;
         }
@@ -616,6 +620,10 @@ namespace Module.Host.TPM.Actions
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
                 case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.Promo.Number, x.Product.Id }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
+                    break;
+                case TPMmode.RA:
                     query = query.GroupBy(x => new { x.Promo.Number, x.Product.Id }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     query = query.Where(x => !x.Disabled);
                     break;

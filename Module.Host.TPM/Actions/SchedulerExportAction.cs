@@ -66,15 +66,21 @@ namespace Module.Host.TPM.Actions.Notifications
                     });
                     switch (tPMmode)
                     {
+                        case TPMmode.Current:
+                            query = GetConstraintedQuery(context);
+                            promoes = query.LinqToQuerystring(row).ToList();
+                            break;
                         case TPMmode.RS:
                             IQueryable<PromoRSView> queryRS = GetConstraintedQueryRS(context);
                             queryRS = queryRS.LinqToQuerystring(row);
                             var mapper = configuration.CreateMapper();
                             promoes = queryRS.ToList().ConvertAll(x => mapper.Map<PromoView>(x));
                             break;
-                        case TPMmode.Current:
-                            query = GetConstraintedQuery(context);
-                            promoes = query.LinqToQuerystring(row).ToList();
+                        case TPMmode.RA:
+                            IQueryable<PromoRSView> queryRA = GetConstraintedQueryRS(context);
+                            queryRS = queryRA.LinqToQuerystring(row);
+                            var mapperRA = configuration.CreateMapper();
+                            promoes = queryRS.ToList().ConvertAll(x => mapperRA.Map<PromoView>(x));
                             break;
                         default:
                             query = GetConstraintedQuery(context);

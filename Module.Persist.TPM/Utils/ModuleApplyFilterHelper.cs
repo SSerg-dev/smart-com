@@ -65,6 +65,16 @@ namespace Module.Persist.TPM.Utils
                         query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => g.Disabled);
                     }
                     break;
+                case TPMmode.RA:
+                    if (filterMode == FilterQueryModes.Active)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    }
+                    if (filterMode == FilterQueryModes.Deleted)
+                    {
+                        query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => g.Disabled);
+                    }
+                    break;
             }
             return query;
         }
@@ -147,6 +157,9 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.RS:
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    break;
             }
             return query;
         }
@@ -185,6 +198,9 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.RS:
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    break;
             }
             return query;
         }
@@ -220,6 +236,10 @@ namespace Module.Persist.TPM.Utils
                     }
                     break;
                 case TPMmode.RS:
+                    query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
+                    break;
+                case TPMmode.RA:
                     query = query.Where(x => x.TPMmode != TPMmode.Hidden);
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     break;
@@ -520,7 +540,11 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.Current:
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
-                case TPMmode.RS: //медленно
+                case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProduct.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    query = query.Where(x => !x.Disabled);
+                    break;
+                case TPMmode.RA: //медленно
                     query = query.GroupBy(x => new { x.PromoProduct.Promo.Number, x.PromoProduct.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     query = query.Where(x => !x.Disabled);
                     break;
@@ -569,6 +593,9 @@ namespace Module.Persist.TPM.Utils
                     query = query.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
                     break;
                 case TPMmode.RS:
+                    query = query.Where(x => x.row_number == 1 && !x.Disabled);
+                    break;
+                case TPMmode.RA:
                     query = query.Where(x => x.row_number == 1 && !x.Disabled);
                     break;
             }
@@ -821,6 +848,9 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.RS:
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
                     break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+                    break;
             }
             return query;
         }
@@ -849,6 +879,9 @@ namespace Module.Persist.TPM.Utils
                 case TPMmode.RS:
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
                     break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(f => !f.Disabled);
+                    break;
             }
             return query;
         }
@@ -875,6 +908,9 @@ namespace Module.Persist.TPM.Utils
                     query = query.Where(x => x.TPMmode == TPMmode.Current);
                     break;
                 case TPMmode.RS:
+                    query = query.GroupBy(x => new { x.Promo.Number, x.Product.Id }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
+                    break;
+                case TPMmode.RA:
                     query = query.GroupBy(x => new { x.Promo.Number, x.Product.Id }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     break;
             }

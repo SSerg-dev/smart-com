@@ -61,8 +61,9 @@ namespace Module.Frontend.TPM.Controllers
                     break;
                 case TPMmode.RS:
                     query = query.GroupBy(x => new { x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
-                    //query = query.ToList().AsQueryable();
-                    //var deletedRSPromoes
+                    break;
+                case TPMmode.RA:
+                    query = query.GroupBy(x => new { x.Promo.Number }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                     break;
             }
             return query.Where(q => !q.Disabled);

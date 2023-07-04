@@ -1720,7 +1720,7 @@
                                     return (n.objectId.toString());
                                 });
                                 var filteredArray = clientsFromConfig.filter(function (x) {
-                                    return availableClients.indexOf(x) > 0;
+                                    return availableClients.indexOf(x) >= 0;
                                 });
                                 scheduler.clientsAvailableForScenario = filteredArray;
                                 //scheduler.uploadingClients = uploadingClients;
