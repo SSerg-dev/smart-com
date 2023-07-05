@@ -3,8 +3,8 @@
     alias: 'widget.confirmUploadScenario',
     title: l10n.ns('tpm', 'ConfirmUploadScenario').value('ConfirmUploadScenario'),
 
-    width: 350,
-    minWidth: 350,
+    width: 400,
+    minWidth: 400,
     minHeight: 200,
     height: 200,
     items: [{
@@ -26,8 +26,9 @@
                 flex: 1,
                 items: [
                     {
+                        flex: 1,
                         xtype: 'searchfield',
-                        name: 'SavedScenarioId',
+                        itemId: 'SavedScenarioId',
                         fieldLabel: l10n.ns('tpm', 'ConfirmUploadScenario').value('SavedScenario'),
                         selectorWidget: 'savedScenario',
                         valueField: 'Id',

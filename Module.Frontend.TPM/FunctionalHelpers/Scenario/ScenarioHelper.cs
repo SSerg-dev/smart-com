@@ -10,6 +10,7 @@ using Module.Persist.TPM.Model.SimpleModel;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Frontend.TPM.FunctionalHelpers.RA;
+using System;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 {
@@ -72,7 +73,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
                 .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
-            
+
             if (rollingScenarioExist == null)
             {
                 RollingScenario rollingScenario = new RollingScenario
@@ -96,9 +97,26 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         public static RollingScenario GetActiveScenario(int clientObjectId, DatabaseContext Context)
         {
             List<string> activeStatuses = new List<string> { RSstateNames.DRAFT, RSstateNames.ON_APPROVAL };
-            return Context.Set<RollingScenario>().Include(x => x.Promoes).SingleOrDefault(x => !x.Disabled 
-                        && activeStatuses.Contains(x.RSstatus) 
+            return Context.Set<RollingScenario>().Include(x => x.Promoes).SingleOrDefault(x => !x.Disabled
+                        && activeStatuses.Contains(x.RSstatus)
                         && x.ClientTree.ObjectId == clientObjectId);
         }
-    } 
+        public static ClientTree UploadSavedScenario(Guid savedScenarioId, DatabaseContext Context)
+        {
+            SavedScenario savedScenario = Context.Set<SavedScenario>()
+                .Include(g => g.RollingScenario.ClientTree)
+                .FirstOrDefault(f => f.Id == savedScenarioId);
+            ClientTree clientTree = savedScenario.RollingScenario.ClientTree;
+            RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
+            if (rollingScenario != null)
+            {
+
+            }
+            else
+            {
+
+            }
+            return clientTree;
+        }
+    }
 }

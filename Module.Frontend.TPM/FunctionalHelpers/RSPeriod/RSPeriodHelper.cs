@@ -148,7 +148,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .ForMember(pTo => pTo.PromoProducts, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoOnApprovalIncidents, opt => opt.Ignore())
                     .ForMember(pTo => pTo.CurrentDayIncrementals, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.SavedScenario, opt => opt.Ignore());
                 cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
                     .ForMember(pTo => pTo.Id, opt => opt.Ignore())
                     //.ForMember(pTo => pTo.Disabled, opt => opt.Ignore())

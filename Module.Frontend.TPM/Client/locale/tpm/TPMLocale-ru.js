@@ -1334,6 +1334,8 @@
         'ConfirmUploadScenario': 'Upload scenario',
         'SavedScenario': 'Saved Scenario',
         'Error': 'Error',
+        'Success': 'Upload complete',
+        'SelectSavedScenario': 'Select Saved Scenario',
     },
 
     'COGS': {

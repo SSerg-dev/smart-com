@@ -26,6 +26,7 @@ using Looper.Core;
 using Looper.Parameters;
 using Persist;
 using Persist.Model.Settings;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -350,10 +351,17 @@ namespace Module.Frontend.TPM.Controllers
         }
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult UploadScenario(Guid rollingScenarioId)
+        public IHttpActionResult UploadScenario(Guid savedScenarioId)
         {
-
-            return InternalServerError(new Exception("Only Customer Marketing Manager approve!"));
+            try
+            {
+                ClientTree clientTree = ScenarioHelper.UploadSavedScenario(savedScenarioId, Context);
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client {clientTree.FullPathName} upload" }));
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
+            }
         }
     }
 }

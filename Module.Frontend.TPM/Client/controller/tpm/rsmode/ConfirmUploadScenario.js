@@ -5,7 +5,7 @@
     init: function () {
         this.listen({
             component: {
-                'selectClientScenario #confirm': {
+                'confirmUploadScenario #confirm': {
                     click: this.onConfirmButtonClick
                 },
             }
@@ -13,26 +13,22 @@
     },
 
     onConfirmButtonClick: function (button) {
-        var clientsRadioButtons = button.up('selectClientScenario').down('#clientsRadioGroup');
-        if (clientsRadioButtons.getChecked().length != 0) {
+        var savedScenario = button.up('confirmUploadScenario').query('#SavedScenarioId')[0];
+        var savedScenarioId = savedScenario.getValue();
+        if (savedScenarioId) {
             var parameters = {
-                ClientName: clientsRadioButtons.getChecked()[0].inputValue,
-                ObjectId: clientsRadioButtons.getChecked()[0].objectId
+                savedScenarioId: savedScenarioId
             };
-            button.up('selectClientScenario').setLoading(true);
-            App.Util.makeRequestWithCallback('ClientTrees', 'SaveScenario', parameters, function (data) {
+            button.up('confirmUploadScenario').setLoading(true);
+            App.Util.makeRequestWithCallback('RollingScenarios', 'UploadScenario', parameters, function (data) {
                 if (data) {
                     var result = Ext.JSON.decode(data.httpResponse.data.value);
-                    button.up('selectClientScenario').setLoading(false);
+                    button.up('confirmUploadScenario').setLoading(false);
                     if (result.success) {
-                        App.Notify.pushInfo(l10n.ns('tpm', 'Schedule').value('SaveScenarioTaskCreated'));
+                        App.Notify.pushInfo(l10n.ns('tpm', 'ConfirmUploadScenario').value('Success'));
                         button.up('window').close();
-                        var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
-                        if (scheduler) {
-                            scheduler.baseClientsStore.reload();
-                        }
                     } else {
-                        App.Notify.pushError(l10n.ns('tpm', 'Schedule').value('SaveScenarioTaskError'));
+                        App.Notify.pushError(l10n.ns('tpm', 'ConfirmUploadScenario').value('Error'));
                     }
                 }
             }, function (data) {
@@ -40,7 +36,7 @@
             });
         }
         else {
-            App.Notify.pushError(l10n.ns('tpm', 'Schedule').value('SaveScenarioSelectError'));
+            App.Notify.pushError(l10n.ns('tpm', 'ConfirmUploadScenario').value('SelectSavedScenario'));
         }
     },
 

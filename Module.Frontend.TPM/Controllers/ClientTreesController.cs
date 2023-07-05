@@ -1166,7 +1166,7 @@ namespace Module.Frontend.TPM.Controllers
                 };
                 Context.Set<SavedScenario>().Add(newSavedScenario);
                 Context.SaveChanges();
-                HiddenModeHelper.CopyPromoesToHidden(Context, scenario.Promoes.ToList()); ;
+                HiddenModeHelper.CopyPromoesToHidden(Context, scenario.Promoes.ToList(), newSavedScenario); ;
                 Context.ExecuteSqlCommand(createRunScript);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
             }
