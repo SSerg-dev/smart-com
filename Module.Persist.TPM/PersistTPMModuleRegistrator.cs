@@ -1292,6 +1292,7 @@ namespace Module.Persist.TPM
             builder.Entity<RollingScenario>().Collection.Action("GetCanceled");
             builder.Entity<RollingScenario>().Collection.Action("MassApprove");
             builder.Entity<RollingScenario>().Collection.Action("UploadScenario");
+            builder.Entity<RollingScenario>().Collection.Action("GetStatusScenario");
             builder.Entity<HistoricalCompetitorPromo>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCompetitorPromo>("HistoricalCompetitorPromoes");
 
             builder.EntitySet<PromoProductCorrectionView>("PromoProductCorrectionViews");

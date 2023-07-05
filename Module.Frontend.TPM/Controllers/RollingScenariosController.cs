@@ -363,5 +363,18 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetStatusScenario(Guid savedScenarioId)
+        {
+            try
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client  upload" }));
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
+            }
+        }
     }
 }
