@@ -3628,6 +3628,10 @@
     <Compile Include="Migrations\202307051319121_Add_AP_GetStatusScenario.designer.cs">
       <DependentUpon>202307051319121_Add_AP_GetStatusScenario.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202307061145298_Add_RA_END_APPROVE.cs" />
+    <Compile Include="Migrations\202307061145298_Add_RA_END_APPROVE.designer.cs">
+      <DependentUpon>202307061145298_Add_RA_END_APPROVE.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6813,6 +6817,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202307051319121_Add_AP_GetStatusScenario.resx">
       <DependentUpon>202307051319121_Add_AP_GetStatusScenario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202307061145298_Add_RA_END_APPROVE.resx">
+      <DependentUpon>202307061145298_Add_RA_END_APPROVE.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

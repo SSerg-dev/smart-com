@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.SimpleModel;
@@ -67,49 +68,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         //    Context.SaveChanges();
         //}
 
-        public static void DeleteRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
-        {
-            RollingScenario rollingScenario = Context.Set<RollingScenario>()
-                                            .Include(g => g.Promoes)
-                                            .FirstOrDefault(g => g.Id == rollingScenarioId);
-            rollingScenario.IsSendForApproval = false;
-            rollingScenario.Disabled = true;
-            rollingScenario.DeletedDate = DateTimeOffset.Now;
-            rollingScenario.RSstatus = RSstateNames.CANCELLED;
-            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g => g.TPMmode == TPMmode.RS));
-            Context.SaveChanges();
-        }
-        public static void OnApprovalRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
-        {
-            RollingScenario RS = Context.Set<RollingScenario>()
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
-            RS.IsSendForApproval = true;
-            RS.RSstatus = RSstateNames.ON_APPROVAL;
-            DateTimeOffset today = DateTimeOffset.Now;
-            DateTimeOffset expirationDate = new DateTimeOffset(today.Year, today.Month, today.Day, 23, 0, 0, new TimeSpan(0, 0, 0));
-            RS.ExpirationDate = expirationDate.AddDays(14);
-            Context.SaveChanges();
-        }
         public static void MassApproveRSPeriod(List<RollingScenario> rollingScenarios, DatabaseContext Context)
         {
 
         }
-        public static void ApproveRSPeriod(Guid rollingScenarioId, DatabaseContext Context)
-        {
-            RollingScenario RS = Context.Set<RollingScenario>()
-                    .Include(g => g.Promoes)
-                    .FirstOrDefault(g => g.Id == rollingScenarioId);
-            List<Guid> PromoRSIds = RS.Promoes.Select(f => f.Id).ToList();
-            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
-            {
-                throw new System.Web.HttpException("there is a blocked Promo");
-            }
-            RS.IsCMManagerApproved = true;
-            RS.RSstatus = RSstateNames.APPROVED;
-            CopyBackPromoes(RS.Promoes.ToList(), Context);
-            Context.Set<Promo>().RemoveRange(RS.Promoes);
-            Context.SaveChanges();
-        }
+
 
         public static void CopyBackPromoes(List<Promo> promoesRS, DatabaseContext Context)
         {
@@ -579,7 +542,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             }
             else
             {
-                DeleteRSPeriod(rollingScenarioExist.Id, Context);
+                ScenarioHelper.DeleteScenarioPeriod(rollingScenarioExist.Id, Context);
                 CreateMLRSperiod(clientId, bufferId, Context);
             }
             Context.SaveChanges();

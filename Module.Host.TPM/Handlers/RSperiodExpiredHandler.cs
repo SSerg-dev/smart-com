@@ -1,19 +1,16 @@
 ﻿using Looper.Core;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
+using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using ProcessingHost.Handlers;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility.LogWriter;
-using System.Data.Entity;
-using Module.Persist.TPM.PromoStateControl.RoleStateMap;
-using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
-using Module.Persist.TPM.Enum;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -41,7 +38,7 @@ namespace Module.Host.TPM.Handlers
                     {
                         if (rs.ExpirationDate < DateTimeOffset.Now)
                         {
-                            RSPeriodHelper.DeleteRSPeriod(rs.Id, context);
+                            ScenarioHelper.DeleteScenarioPeriod(rs.Id, context);
                         }
                     }
                 }

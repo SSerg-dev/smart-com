@@ -102,7 +102,7 @@ namespace Module.Frontend.TPM.Controllers
                     try
                     {
 
-                        RSPeriodHelper.DeleteRSPeriod(rollingScenarioId, Context);
+                        ScenarioHelper.DeleteScenarioPeriod(rollingScenarioId, Context);
 
                         transaction.Commit();
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
@@ -203,7 +203,7 @@ namespace Module.Frontend.TPM.Controllers
 
             if (role.SystemName == "KeyAccountManager" || role.SystemName == "Administrator")
             {
-                RSPeriodHelper.OnApprovalRSPeriod(rollingScenarioId, Context);
+                ScenarioHelper.OnApprovalScenarioPeriod(rollingScenarioId, Context);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             else
@@ -229,7 +229,7 @@ namespace Module.Frontend.TPM.Controllers
                     try
                     {
 
-                        RSPeriodHelper.ApproveRSPeriod(rollingScenarioId, Context);
+                        ScenarioHelper.ApproveScenarioPeriod(rollingScenarioId, Context);
 
                         transaction.Commit();
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));

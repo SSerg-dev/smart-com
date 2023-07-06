@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
-using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.Entity;
-using Module.Frontend.TPM.FunctionalHelpers.Scenario;
+using System.Linq;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
 {
@@ -112,7 +109,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore())
                     .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.MapFrom(f => f.ProductCorrectionPriceIncreases.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
-                    //.AfterMap((src, dest) => dest.PromoProduct = dest.PromoPriceIncrease.Promo.PromoProducts.FirstOrDefault(g=>g.ZREP == dest.ZREP)); не работает не видит сущности EF6
+                //.AfterMap((src, dest) => dest.PromoProduct = dest.PromoPriceIncrease.Promo.PromoProducts.FirstOrDefault(g=>g.ZREP == dest.ZREP)); не работает не видит сущности EF6
                 cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
@@ -131,7 +128,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
                     PromoProduct promoProduct = promoRS.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
                     promoProductPriceIncrease.PromoProductId = promoProduct.Id;
                 }
-            }            
+            }
             Context.SaveChanges();
             ScenarioHelper.CreateScenarioPeriod(promoRS, Context, TPMmode.RS);
             return promoRS;
@@ -469,7 +466,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSmode
             DateTimeOffset? endPeriod = promos.Select(g => g.EndDate).Min();
             var client = promos.FirstOrDefault().ClientTreeId;
             List<Promo> promosToDeleteRS = Context.Set<Promo>().Where(g => g.ClientTreeId == client && g.DispatchesStart > startPeriod && g.EndDate < endPeriod && string.IsNullOrEmpty(g.MLPromoId)).ToList();
-            string numbers = string.Join(",", promosToDeleteRS.Select(g=>g.Number).ToList());
+            string numbers = string.Join(",", promosToDeleteRS.Select(g => g.Number).ToList());
             EditToPromoRS(Context, promosToDeleteRS, true, DateTimeOffset.Now);
             return numbers;
         }

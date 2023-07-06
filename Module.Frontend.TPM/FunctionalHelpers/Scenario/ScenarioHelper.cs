@@ -12,6 +12,8 @@ using Module.Persist.TPM.Model.Interfaces;
 using Module.Frontend.TPM.FunctionalHelpers.RA;
 using System;
 using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
+using Persist.Model.Settings;
+using Module.Persist.TPM.Utils;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 {
@@ -170,6 +172,56 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             Context.SaveChanges();
             savedScenario.RollingScenarioId = rollingScenario.Id;
             HiddenModeHelper.CopyPromoesFromHiddenToRA(Context, promos, rollingScenario);
+            Context.SaveChanges();
+        }
+        public static void OnApprovalScenarioPeriod(Guid rollingScenarioId, DatabaseContext Context)
+        {
+            RollingScenario RS = Context.Set<RollingScenario>()
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+            RS.IsSendForApproval = true;
+            RS.RSstatus = RSstateNames.ON_APPROVAL;
+            DateTimeOffset expirationDate = TimeHelper.TodayEndDay();
+            if (RS.ScenarioType == ScenarioType.RS)
+            {
+                RS.ExpirationDate = expirationDate.AddDays(14);
+            }
+            if (RS.ScenarioType == ScenarioType.RA)
+            {
+                string weeks = Context.Set<Setting>().Where(g => g.Name == "RA_END_APPROVE_WEEKS").FirstOrDefault().Value;
+                if (Int32.TryParse(weeks, out int intweeks))
+                {
+                    RS.ExpirationDate = expirationDate.AddDays(intweeks * 7);
+                }
+            }
+
+            Context.SaveChanges();
+        }
+        public static void DeleteScenarioPeriod(Guid rollingScenarioId, DatabaseContext Context)
+        {
+            RollingScenario rollingScenario = Context.Set<RollingScenario>()
+                                            .Include(g => g.Promoes)
+                                            .FirstOrDefault(g => g.Id == rollingScenarioId);
+            rollingScenario.IsSendForApproval = false;
+            rollingScenario.Disabled = true;
+            rollingScenario.DeletedDate = DateTimeOffset.Now;
+            rollingScenario.RSstatus = RSstateNames.CANCELLED;
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes);
+            Context.SaveChanges();
+        }
+        public static void ApproveScenarioPeriod(Guid rollingScenarioId, DatabaseContext Context)
+        {
+            RollingScenario RS = Context.Set<RollingScenario>()
+                    .Include(g => g.Promoes)
+                    .FirstOrDefault(g => g.Id == rollingScenarioId);
+            List<Guid> PromoRSIds = RS.Promoes.Select(f => f.Id).ToList();
+            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
+            {
+                throw new System.Web.HttpException("there is a blocked Promo");
+            }
+            RS.IsCMManagerApproved = true;
+            RS.RSstatus = RSstateNames.APPROVED;
+            RSPeriodHelper.CopyBackPromoes(RS.Promoes.ToList(), Context);
+            Context.Set<Promo>().RemoveRange(RS.Promoes);
             Context.SaveChanges();
         }
     }
