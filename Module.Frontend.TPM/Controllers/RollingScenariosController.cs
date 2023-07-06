@@ -369,7 +369,16 @@ namespace Module.Frontend.TPM.Controllers
         {
             try
             {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client  upload" }));
+                ScenarioHelper.StatusScenarioResult statusScenarioResult = ScenarioHelper.GetStatusScenario(savedScenarioId, Context);
+                if (statusScenarioResult != null)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client {statusScenarioResult.ClientName} present scenario id {statusScenarioResult.RSId}, confirmation delete this Scenario!" }));
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false}));
+                }
+                
             }
             catch (Exception e)
             {

@@ -567,7 +567,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
         public static void RemoveOldCreateNewRSPeriodML(int clientId, Guid bufferId, DatabaseContext Context)
         {
-            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
                 .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled);
@@ -588,7 +588,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         {
             List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
             StartEndModel startEndModel = GetRSPeriod(Context);
-            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
             RollingScenario rollingScenario = new RollingScenario
             {
                 StartDate = startEndModel.StartDate,

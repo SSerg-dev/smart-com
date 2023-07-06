@@ -11,6 +11,7 @@ using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Frontend.TPM.FunctionalHelpers.RA;
 using System;
+using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 {
@@ -18,14 +19,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
     {
         public static void CreateScenarioPeriod(Promo promo, DatabaseContext Context, TPMmode tPMmode)
         {
-            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == promo.ClientTreeId && g.EndDate == null);
             if (tPMmode == TPMmode.RS)
             {
                 CreateRSPeriod(promo, client, Context, ScenarioType.RS);
             }
             if (tPMmode == TPMmode.RA)
             {
-                CreateRAPeriod(promo, client, Context, ScenarioType.RA);
+                CreateRAPeriod(promo, client, Context, ScenarioType.RA, true);
             }
 
             Context.SaveChanges();
@@ -65,14 +66,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 rollingScenarioExist.Promoes.Add(promo);
             }
         }
-        private static void CreateRAPeriod(Promo promo, ClientTree client, DatabaseContext Context, ScenarioType scenarioType)
+        private static RollingScenario CreateRAPeriod(Promo promo, ClientTree client, DatabaseContext Context, ScenarioType scenarioType, bool withPromo)
         {
             List<string> outStatuses = new List<string> { RSstateNames.WAITING, RSstateNames.APPROVED };
             StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
 
             RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == promo.ClientTreeKeyId && !g.Disabled && !outStatuses.Contains(g.RSstatus));
+                .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled && !outStatuses.Contains(g.RSstatus));
 
             if (rollingScenarioExist == null)
             {
@@ -85,12 +86,20 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                     ClientTree = client,
                     Promoes = new List<Promo>()
                 };
-                rollingScenario.Promoes.Add(promo);
+                if (withPromo)
+                {
+                    rollingScenario.Promoes.Add(promo);
+                }
                 Context.Set<RollingScenario>().Add(rollingScenario);
+                return rollingScenario;
             }
             else
             {
-                rollingScenarioExist.Promoes.Add(promo);
+                if (withPromo)
+                {
+                    rollingScenarioExist.Promoes.Add(promo);
+                }
+                return rollingScenarioExist;
             }
         }
 
@@ -105,18 +114,63 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         {
             SavedScenario savedScenario = Context.Set<SavedScenario>()
                 .Include(g => g.RollingScenario.ClientTree)
+                .Include(g => g.Promoes)
                 .FirstOrDefault(f => f.Id == savedScenarioId);
             ClientTree clientTree = savedScenario.RollingScenario.ClientTree;
             RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
             if (rollingScenario != null)
             {
-
+                DeleteRAPeriod(rollingScenario.Id, Context);
+                RestoreRAPeriod(savedScenario, Context, clientTree);
             }
             else
             {
-
+                RestoreRAPeriod(savedScenario, Context, clientTree);
             }
             return clientTree;
+        }
+        public static StatusScenarioResult GetStatusScenario(Guid savedScenarioId, DatabaseContext Context)
+        {
+            SavedScenario savedScenario = Context.Set<SavedScenario>()
+                .Include(g => g.RollingScenario.ClientTree)
+                .FirstOrDefault(f => f.Id == savedScenarioId);
+            ClientTree clientTree = savedScenario.RollingScenario.ClientTree;
+            RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
+            if (rollingScenario != null)
+            {
+                return new StatusScenarioResult
+                {
+                    ClientName = clientTree.FullPathName,
+                    RSId = (int)rollingScenario.RSId
+                };
+            }
+            return null;
+        }
+        public class StatusScenarioResult
+        {
+            public string ClientName { get; set; }
+            public int RSId { get; set; }
+        }
+        public static void DeleteRAPeriod(Guid rollingScenarioId, DatabaseContext Context)
+        {
+            RollingScenario rollingScenario = Context.Set<RollingScenario>()
+                                            .Include(g => g.Promoes)
+                                            .FirstOrDefault(g => g.Id == rollingScenarioId);
+            rollingScenario.IsSendForApproval = false;
+            rollingScenario.Disabled = true;
+            rollingScenario.DeletedDate = DateTimeOffset.Now;
+            rollingScenario.RSstatus = RSstateNames.CANCELLED;
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g => g.TPMmode == TPMmode.RA));
+            Context.SaveChanges();
+        }
+        public static void RestoreRAPeriod(SavedScenario savedScenario, DatabaseContext Context, ClientTree clientTree)
+        {
+            List<Promo> promos = savedScenario.Promoes.ToList();
+            RollingScenario rollingScenario = CreateRAPeriod(null, clientTree, Context, ScenarioType.RA, false);
+            Context.SaveChanges();
+            savedScenario.RollingScenarioId = rollingScenario.Id;
+            HiddenModeHelper.CopyPromoesFromHiddenToRA(Context, promos, rollingScenario);
+            Context.SaveChanges();
         }
     }
 }
