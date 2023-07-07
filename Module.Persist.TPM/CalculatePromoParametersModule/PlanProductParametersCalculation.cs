@@ -153,6 +153,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                             product.PromoProducts.Add(newPromoProduct);
                             needReturnToOnApprovalStatus = true;
                             // PriceIncrease
+                            if (promo.PromoPriceIncrease.PromoProductPriceIncreases == null)
+                            {
+                                promo.PromoPriceIncrease.PromoProductPriceIncreases = new List<PromoProductPriceIncrease>();
+                            }
                             promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(new PromoProductPriceIncrease
                             {
                                 PromoProduct = newPromoProduct,
