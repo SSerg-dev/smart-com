@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Data;
+using History.Mongo;
+using Module.Persist.TPM.Model.History;
+using DocumentStoreHolder = Module.Persist.TPM.MongoDB.DocumentStoreHolder;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
 {
@@ -251,6 +255,24 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             List<Promo> promoesRA = mapper.Map<List<Promo>>(promoes);
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
+
+            var user = Context.AuthManager.GetCurrentUser();
+            var role = Context.AuthManager.GetCurrentRole();
+            var source = "Created from RA scenaio " + rollingScenario.RSId.ToString();
+
+            var newDocs = promoesRA.Select(p => new HistoricalPromo()
+            {
+                _Id = new Guid().ToString(),
+                _ObjectId = p.Id,
+                _Operation = "Created",
+                _Role = role.SystemName,
+                _User = user.Login,
+                _EditDate = DateTimeOffset.Now,
+                Source = source
+            });
+            var collection = DocumentStoreHolder.GetCollection<HistoricalPromo>();
+            collection.InsertMany(newDocs);
+
             return promoesRA;
 
         }

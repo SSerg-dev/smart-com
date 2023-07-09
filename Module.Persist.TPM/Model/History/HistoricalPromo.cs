@@ -283,5 +283,6 @@ namespace Module.Persist.TPM.Model.History {
         public bool? IsInExchange { get; set; }
         public string LinkedPromoes { get; set; }
         public string MasterPromoNumber { get; set; }
+        public string Source { get; set; }
     }
 }

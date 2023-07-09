@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Module.Persist.TPM.Model.History;
+using MongoDB.Driver;
 
 namespace Module.Persist.TPM.MongoDB
 {
@@ -52,6 +54,24 @@ namespace Module.Persist.TPM.MongoDB
                     collection.InsertOne(historyObject);
                 }
             }
+        }
+
+        public void DeletePromoesHistory<T>(IList<string> promoIds) where T : BaseHistoricalEntity<Guid>
+        {
+            var collection = DocumentStoreHolder.GetCollection<T>();
+            List<Guid> promoGuids = promoIds.Select(s=>Guid.Parse(s)).ToList();
+            var filter = Builders<T>.Filter.In("_ObjectId", promoGuids);
+
+            collection.DeleteMany(filter);
+        }
+
+        public void MergePromoesHistory<T>(string oldPromoId, string newPromoId) where T : BaseHistoricalEntity<Guid>
+        {
+            var collection = DocumentStoreHolder.GetCollection<T>();
+            var filter = Builders<T>.Filter.Eq("_ObjectId", new Guid(oldPromoId));
+            var update = Builders<T>.Update.Set("_ObjectId", newPromoId);
+
+            collection.UpdateMany(filter, update);
         }
 
         //Создание исторической сущности для Create/Edit

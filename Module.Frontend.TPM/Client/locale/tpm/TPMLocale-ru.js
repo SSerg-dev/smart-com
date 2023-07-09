@@ -849,7 +849,8 @@
         'PromoClientPPEW1': 'Promo Client PPE W1',
         'PromoClientPPEW2': 'Promo Client PPE W2',
         'PromoBasicProducts': 'Promo Basic Products',
-        'PromoTypesGlyph': 'Promo Types Glyph'
+        'PromoTypesGlyph': 'Promo Types Glyph',
+        'Source': 'Source'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],

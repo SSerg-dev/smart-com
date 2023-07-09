@@ -68,6 +68,13 @@
                         },
                         operator: 'eq'
                     }
+                }, {
+                    text: l10n.ns('tpm', 'HistoricalPromo').value('Source'),
+                    dataIndex: 'Source',
+                    filter: {
+                        type: 'string',
+                        operator: 'eq'
+                    }
                 }
             ]
         }

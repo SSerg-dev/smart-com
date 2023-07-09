@@ -999,6 +999,7 @@
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'PriceIncrease',
         'MLPromoId': 'MLPromo',
+        'Source': 'Source'
     },
     'HistoricalPromo': ['.tpm.Promo', '.core.BaseHistoryEntity'],
     'DeletedPromo': ['.tpm.Promo', '.core.BaseDeletedEntity'],
