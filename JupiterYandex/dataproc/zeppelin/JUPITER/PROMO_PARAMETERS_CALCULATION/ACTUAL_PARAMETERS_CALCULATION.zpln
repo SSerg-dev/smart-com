@@ -3,7 +3,7 @@
     {
       "text": "%md\n####Notebook \"ACTUAL_PARAMETERS_CALCULATION\". \n####*Main night actual parameters recalculation notebook. Get actual parameters for promo, promoproduct*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "tableHide": true,
@@ -35,18 +35,18 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_2073124901",
+      "jobName": "paragraph_1688646605415_1459507033",
       "id": "20220811-123004_1411750556",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
       "focus": true,
-      "$$hashKey": "object:7470"
+      "$$hashKey": "object:6059"
     },
     {
       "title": "Function checks whether we in notebook or python",
       "text": "%pyspark\ndef is_notebook() -> bool:\n    try:\n        shell = get_ipython().__class__.__name__\n        if shell == 'ZMQInteractiveShell':\n            return True   # Jupyter notebook or qtconsole\n        elif shell == 'TerminalInteractiveShell':\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -73,16 +73,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_1363053439",
+      "jobName": "paragraph_1688646605415_1697089279",
       "id": "paragraph_1660554861938_314618819",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7471"
+      "$$hashKey": "object:6060"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json\nimport subprocess",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -109,16 +109,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_1035290614",
+      "jobName": "paragraph_1688646605415_1396895827",
       "id": "20220811-123004_618106294",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7472"
+      "$$hashKey": "object:6061"
     },
     {
       "text": "%pyspark\ndatesDimSchema = StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])\n\ninputLogMessageSchema = StructType([\n  StructField(\"logMessage\", StringType(), False)\n])",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -145,16 +145,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_934103233",
+      "jobName": "paragraph_1688646605415_603509234",
       "id": "20220811-123004_644564687",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7473"
+      "$$hashKey": "object:6062"
     },
     {
       "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": '\n '\"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_\", '\n '\"ProcessDate\": \"2023-01-09\", \"Schema\": \"Jupiter\", \"HandlerId\": '\n '\"f18a98f9-3b2e-449a-ba96-e247d63d5b7c\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py\")\n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py\") \n sc.addPyFile(\"hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py\")  ",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -180,16 +180,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_774162000",
+      "jobName": "paragraph_1688646605415_580244400",
       "id": "paragraph_1660554908442_1434817015",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7474"
+      "$$hashKey": "object:6063"
     },
     {
       "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nsc = SparkContext.getOrCreate();\n\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nSETTING_PROCESS_DIR = es.SETTING_PROCESS_DIR\nSETTING_OUTPUT_DIR = es.SETTING_OUTPUT_DIR\n\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\nhandlerId=es.input_params.get(\"HandlerId\")\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')\n\nimport SUPPORT_FUNCTIONS as sp",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -221,16 +221,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_608135800",
+      "jobName": "paragraph_1688646605415_746764641",
       "id": "20220811-123004_424311855",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7475"
+      "$$hashKey": "object:6064"
     },
     {
       "text": "%pyspark\nDIRECTORY = SETTING_RAW_DIR + '/SOURCES/'\n\n# PROMO_PATH = DIRECTORY + 'JUPITER/Promo.PARQUET'\n# PROMOPRODUCT_PATH = DIRECTORY + 'JUPITER/PromoProduct.PARQUET'\n# PROMOSUPPORTPROMO_PATH = DIRECTORY + 'JUPITER/PromoSupportPromo.PARQUET'\n\nPROMO_PATH = SETTING_PROCESS_DIR + '/Promo/Promo.parquet'\nPROMOPRODUCT_PATH = SETTING_PROCESS_DIR + '/PromoProduct/PromoProduct.parquet'\nPROMOSUPPORTPROMO_PATH = SETTING_PROCESS_DIR + '/PromoSupportPromo/PromoSupportPromo.parquet'\n\n# input promo to compare values after calculation\nINPUT_PROMO_PATH = DIRECTORY + 'JUPITER/Promo'\n\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\nPRODUCT_PATH = DIRECTORY + 'JUPITER/Product'\nPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'\nPROMOPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/PromoProductTree'\nPRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'\nBASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'\nSHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'\nCLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'\nCLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'\nDATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'\nCORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'\nINCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\nCOGS_PATH = DIRECTORY + 'JUPITER/COGS'\nCOGSTn_PATH = DIRECTORY + 'JUPITER/PlanCOGSTn'\nTI_PATH = DIRECTORY + 'JUPITER/TradeInvestment'\nACTUALCOGS_PATH = DIRECTORY + 'JUPITER/ActualCOGS'\nACTUALCOGSTn_PATH = DIRECTORY + 'JUPITER/ActualCOGSTn'\nACTUALTI_PATH = DIRECTORY + 'JUPITER/ActualTradeInvestment'\nBTL_PATH = DIRECTORY + 'JUPITER/BTL'\nBTLPROMO_PATH = DIRECTORY + 'JUPITER/BTLPromo'\nPROMOSUPPORT_PATH = DIRECTORY + 'JUPITER/PromoSupport'\nBUDGETITEM_PATH = DIRECTORY + 'JUPITER/BudgetItem'\nBUDGETSUBITEM_PATH = DIRECTORY + 'JUPITER/BudgetSubItem'\nASSORTMENTMARTIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'\nBRANDTECH_PATH = DIRECTORY + 'JUPITER/BrandTech'\nCHANGESINCIDENTS_PATH = DIRECTORY + 'JUPITER/ChangesIncident'\nRATISHOPPER_PATH = DIRECTORY + 'JUPITER/RATIShopper'\n\nFILTERED_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'\n\nINPUT_FILE_LOG_PATH = SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'\n# OUTPUT_LOG_PATH =  SETTING_PROCESS_DIR + '/Logs/'\n# OUTPUT_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + '.csv'\n# OUTPUT_TEMP_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + 'temp.csv'\n\nPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/Promo/Promo.CSV'\nPROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/PromoProduct/PromoProduct.CSV'\nPROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH = SETTING_OUTPUT_DIR + '/PromoSupportPromo/PromoSupportPromo.CSV'\n\n# DEBUG OUTPUT\n# OUTPUT_SOURCE_PROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromo/SourcePromo.csv'\n# OUTPUT_PROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/Promo/Promo.csv'\n# OUTPUT_SOURCE_PROMOPRODUCT_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromoProduct/SourcePromoProduct.csv'\n# OUTPUT_PROMOPRODUCT_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/PromoProduct/PromoProduct.csv'\n# OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/SourcePromoSupportPromo/SourcePromoSupportPromo.csv'\n# OUTPUT_PROMOSUPPORTPROMO_PATH = '/dbfs/' + SETTING_OUTPUT_DIR + '/Actual/PromoSupportPromo/PromoSupportPromo.csv'",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -257,17 +257,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_2034314159",
+      "jobName": "paragraph_1688646605415_1288338305",
       "id": "20220811-123004_400393776",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7476"
+      "$$hashKey": "object:6065"
     },
     {
       "title": "Load raw entities schemas from json files to map",
       "text": "%pyspark\nSCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'\nschemas_map = sp.getSchemasMap(SCHEMAS_DIR)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -294,16 +294,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_1217355767",
+      "jobName": "paragraph_1688646605415_1795739120",
       "id": "paragraph_1660555260465_1606094102",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7477"
+      "$$hashKey": "object:6066"
     },
     {
-      "text": "%pyspark\npromoDF = spark.read.format(\"parquet\").load(PROMO_PATH) \npromoSupportPromoDF = spark.read.format(\"parquet\").load(PROMOSUPPORTPROMO_PATH)\npromoProductDF = spark.read.format(\"parquet\").load(PROMOPRODUCT_PATH)\n\npriceListDF = spark.read.csv(PRICELIST_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ninputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\nproductDF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproduct01DF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductTree\"])\npromoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF = spark.read.csv(BASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF = spark.read.csv(SHARES_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTree\"]).withColumn(\"DemandCode\", when(col(\"DemandCode\")==\"\\0\",lit(None)).otherwise(col(\"DemandCode\")))\nclientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeHierarchyView\"])\ndatesDF = spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF = spark.read.csv(CORRECTION_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF = spark.read.csv(BTL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF = spark.read.csv(BTLPROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF = spark.read.csv(INCREMENTAL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF = spark.read.csv(COGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF = spark.read.csv(COGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF = spark.read.csv(TI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsDF = spark.read.csv(ACTUALCOGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsTnDF = spark.read.csv(ACTUALCOGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualTiDF = spark.read.csv(ACTUALTI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualTradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF = spark.read.csv(PROMOSUPPORT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF = spark.read.csv(BUDGETITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF = spark.read.csv(BUDGETSUBITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF = spark.read.csv(ASSORTMENTMARTIX_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF = spark.read.csv(BRANDTECH_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nchangesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF = spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
+      "text": "%pyspark\npromoDF = spark.read.format(\"parquet\").load(PROMO_PATH) \npromoSupportPromoDF = spark.read.format(\"parquet\").load(PROMOSUPPORTPROMO_PATH)\npromoProductDF = spark.read.format(\"parquet\").load(PROMOPRODUCT_PATH)\n\npriceListDF = spark.read.csv(PRICELIST_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType())).withColumn(\"FuturePriceMarker\",col(\"FuturePriceMarker\").cast(BooleanType()))\npromoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ninputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Promo\"])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(BooleanType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(BooleanType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(BooleanType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(BooleanType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(BooleanType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(BooleanType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(BooleanType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(BooleanType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(BooleanType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(BooleanType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(BooleanType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(BooleanType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(BooleanType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(BooleanType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(BooleanType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(BooleanType()))\nproductDF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproduct01DF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nproductTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductTree\"])\npromoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbaselineDF = spark.read.csv(BASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nsharesDF = spark.read.csv(SHARES_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nclientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTree\"]).withColumn(\"DemandCode\", when(col(\"DemandCode\")==\"\\0\",lit(None)).otherwise(col(\"DemandCode\")))\nclientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeHierarchyView\"])\ndatesDF = spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\ncorrectionDF = spark.read.csv(CORRECTION_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlDF = spark.read.csv(BTL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTL\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbtlPromoDF = spark.read.csv(BTLPROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BTLPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nincrementalDF = spark.read.csv(INCREMENTAL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsDF = spark.read.csv(COGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ncogsTnDF = spark.read.csv(COGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\ntiDF = spark.read.csv(TI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsDF = spark.read.csv(ACTUALCOGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualCogsTnDF = spark.read.csv(ACTUALCOGSTn_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nactualTiDF = spark.read.csv(ACTUALTI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ActualTradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\npromoSupportDF = spark.read.csv(PROMOSUPPORT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoSupport\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetItemDF = spark.read.csv(BUDGETITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbudgetSubItemDF = spark.read.csv(BUDGETSUBITEM_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BudgetSubItem\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nassortmentMatrixDF = spark.read.csv(ASSORTMENTMARTIX_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nbrandTechDF = spark.read.csv(BRANDTECH_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nchangesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\nratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"RATIShopper\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\n\nfilteredPromoDF = spark.read.format(\"parquet\").load(FILTERED_PROMO_PATH)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-09T04:00:10+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -335,16 +335,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662251_1507014562",
+      "jobName": "paragraph_1688646605415_1600015265",
       "id": "20220811-123004_268370752",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7478"
+      "$$hashKey": "object:6067"
     },
     {
       "text": "%pyspark\ntry:\n inputLogMessageDF = spark.read.format(\"csv\").option(\"delimiter\",\"\\u0001\").option(\"header\",\"true\").load(INPUT_FILE_LOG_PATH)\n print('Log has been already made')\nexcept:\n inputLogMessageDF = spark.createDataFrame(sc.emptyRDD(), inputLogMessageSchema)\n print('Init log')\n  \n\n",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -376,16 +376,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1592945633",
+      "jobName": "paragraph_1688646605415_732219823",
       "id": "20220811-123004_1935569230",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7479"
+      "$$hashKey": "object:6068"
     },
     {
       "text": "%md\n####*Date transformation*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -415,16 +415,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1037399607",
+      "jobName": "paragraph_1688646605415_1872831161",
       "id": "20220811-123004_968871950",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7480"
+      "$$hashKey": "object:6069"
     },
     {
       "text": "%pyspark\npriceListDF = priceListDF\\\n  .withColumn('StartDate', date_add(to_date(priceListDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(priceListDF.EndDate, 'yyyy-MM-dd'), 1))\n\nbaselineDF = baselineDF\\\n  .withColumn('StartDate', date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1))\n\nassortmentMatrixDF = assortmentMatrixDF\\\n  .withColumn('StartDate', date_add(to_date(assortmentMatrixDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(assortmentMatrixDF.EndDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('CreateDate', date_add(to_date(assortmentMatrixDF.CreateDate, 'yyyy-MM-dd'), 1))\n\ntiDF = tiDF\\\n  .withColumn('StartDate', date_add(to_date(tiDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(tiDF.EndDate, 'yyyy-MM-dd'), 1))\n\ncogsDF = cogsDF\\\n  .withColumn('StartDate', date_add(to_date(cogsDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsDF.EndDate, 'yyyy-MM-dd'), 1))\n\ncogsTnDF = cogsTnDF\\\n  .withColumn('StartDate', date_add(to_date(cogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsTnDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualTiDF = actualTiDF\\\n  .withColumn('StartDate', date_add(to_date(actualTiDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualTiDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualCogsDF = actualCogsDF\\\n  .withColumn('StartDate', date_add(to_date(actualCogsDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualCogsDF.EndDate, 'yyyy-MM-dd'), 1))\n\nactualCogsTnDF = actualCogsTnDF\\\n  .withColumn('StartDate', date_add(to_date(actualCogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(actualCogsTnDF.EndDate, 'yyyy-MM-dd'), 1))",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -451,16 +451,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1029654050",
+      "jobName": "paragraph_1688646605415_16573758",
       "id": "20220811-123004_1118321935",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7481"
+      "$$hashKey": "object:6070"
     },
     {
       "text": "%md\n####*Prepare dataframes for calculation*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -490,16 +490,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_838233034",
+      "jobName": "paragraph_1688646605415_961487103",
       "id": "20220811-123004_893043481",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7482"
+      "$$hashKey": "object:6071"
     },
     {
       "text": "%pyspark\nfilteredPromoDF = filteredPromoDF.dropDuplicates()\n\n# promoProduct\npromoProductCols = promoProductDF.columns\nallCalcActualPromoProductDF = promoProductDF.where(col('Disabled') == 'False')\nallCalcActualPromoProductIdsDF = allCalcActualPromoProductDF.select(col('Id'))\ndisabledPromoProductDF = promoProductDF.join(allCalcActualPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])\n\n# print('promoProducts count:', promoProductDF.count())\n# print('notDisabledPromoProducts count:', allCalcActualPromoProductDF.count())\n# print('disabledPromoProducts count:', disabledPromoProductDF.count())\n\n# promo\ncalcActualPromoDF = promoDF.where(col('Disabled') == 'False')\n\n# all promo\npromoCols = promoDF.columns\nallCalcActualPromoDF = promoDF.where(col('Disabled') == 'false')\nallCalcActualPromoIdsDF = allCalcActualPromoDF.select(col('Id'))\ndisabledPromoDF = promoDF.join(allCalcActualPromoIdsDF, 'Id', 'left_anti').select(promoDF['*'])\n\n# print('promoDF count:', promoDF.count())\n# print('notDisabledPromoDF count:', allCalcActualPromoDF.count())\n# print('disabledPromoDF count:', disabledPromoDF.count())\n\n# priceList\nactualParamsPriceListDF = priceListDF\\\n  .where(col('Disabled') == 'False')\\\n  .where(col('FuturePriceMarker') == 'False')\\\n  .select(\\\n           to_date(col('StartDate'), 'yyyy-MM-dd').alias('priceStartDate')\n          ,to_date(col('EndDate'), 'yyyy-MM-dd').alias('priceEndDate')\n          ,col('ProductId').alias('priceProductId')\n          ,col('Price').cast(DecimalType(30,6))\n          ,col('ClientTreeId').alias('priceClientTreeId')\n         )\n\n# incremental\nactualParamsIncrementalDF = incrementalDF\\\n  .where(col('Disabled') == 'False')\\\n  .select(\\\n           col('PromoId').alias('incrementalPromoId')\n          ,col('ProductId').alias('incrementalProductId')\n          ,col('PlanPromoIncrementalCases')\n         )\n\n# support\npromoSupportDF = promoSupportDF.where(col('Disabled') == 'False')\npromoSupportPromoCols = promoSupportPromoDF.columns\nactivePromoSupportPromoDF = promoSupportPromoDF.where(col('Disabled') == 'False').select(promoSupportPromoCols)\nactivePromoSupportPromoIdsDF = activePromoSupportPromoDF.select(col('Id'))\ndisabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoIdsDF, 'Id', 'left_anti').select(promoSupportPromoCols)\n\n# print('promoSupportPromoDF count:', promoSupportPromoDF.count())\n# print('activePromoSupportPromoDF count:', activePromoSupportPromoDF.count())\n# print('disabledPromoSupportPromoDF count:', disabledPromoSupportPromoDF.count())\n\n# btl\nbtlDF = btlDF.where(col('Disabled') == 'False')\nbtlPromoDF = btlPromoDF.where(col('Disabled') == 'False')\n\n# AM\nassortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'False')\n\n# COGS, TI, BrandTech\nbrandTechDF = brandTechDF.where(col('Disabled') == 'false')\ntiDF = tiDF.where(col('Disabled') == 'false')\ncogsDF = cogsDF.where(col('Disabled') == 'false')\ncogsTnDF = cogsTnDF.where(col('Disabled') == 'false')\n\nactualTiDF = actualTiDF.where(col('Disabled') == 'false')\nactualCogsDF = actualCogsDF.where(col('Disabled') == 'false')\nactualCogsTnDF = actualCogsTnDF.where(col('Disabled') == 'false')\n\nactiveChangesIncidentsDF = changesIncidentsDF\\\n  .withColumn('ItemId', upper(col('ItemId')))\\\n  .where(col('ProcessDate').isNull())\n\nactualCogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualTiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualTradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))",
       "user": "anonymous",
-      "dateUpdated": "2023-05-23T09:19:46+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -526,16 +526,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_216403034",
+      "jobName": "paragraph_1688646605415_80642342",
       "id": "20220811-123004_896401649",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7483"
+      "$$hashKey": "object:6072"
     },
     {
       "text": "%pyspark\n#status list for actual parameters recalculation\nactualParametersStatuses = ['Finished']\n\n# notCheckPromoStatusList = ['Draft','Cancelled','Deleted','Closed']\nnotCheckPromoStatusList = ['Cancelled','Deleted']",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -562,16 +562,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_923003732",
+      "jobName": "paragraph_1688646605415_763380717",
       "id": "20220811-123004_1922472434",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7484"
+      "$$hashKey": "object:6073"
     },
     {
-      "text": "%pyspark\nlightPromoDF = promoDF\\\n  .where((col('Disabled') == 'False'))\\\n  .select(\\\n           col('Id').alias('promoIdCol')\n          ,col('Number').alias('promoNumber')\n          ,col('BrandTechId').alias('promoBrandTechId')\n          ,col('PromoStatusId').alias('promoStatusId')\n          ,col('StartDate').alias('promoStartDate')\n          ,col('EndDate').alias('promoEndDate')\n          ,col('DispatchesStart').alias('promoDispatchesStart')\n          ,col('ClientTreeKeyId').alias('promoClientTreeKeyId')\n          ,col('ClientTreeId').alias('promoClientTreeId')\n          ,col('IsOnInvoice').alias('promoIsOnInvoice')\n          ,col('InOut').alias('promoInOut')\n          ,col('LoadFromTLC').alias('promoLoadFromTLC')\n          ,col('PlanPromoBaselineLSV')\n          ,col('ActualPromoBaselineLSV')\n          ,col('ActualPromoLSVSO')\n          ,col('ActualPromoPostPromoEffectLSV')\n         )\n\nlightPromoDF = lightPromoDF\\\n  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId == clientTreeDF.Id, 'inner')\\\n  .select(\\\n           lightPromoDF['*']\n          ,to_date(clientTreeDF.EndDate, 'yyyy-MM-dd').alias('ctEndDate')\n          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')\n          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')\n          )\\\n  .where(col('ctEndDate').isNull())\\\n  .drop('ctEndDate')\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\\\n  .select(\\\n           calcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('LoadFromTLC') == 'False'))\n\nactualPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('promoLoadFromTLC') == 'False'))\n\nfinCloPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(['Finished','Closed'])) & (col('promoLoadFromTLC') == 'False'))\n\nactualsLoadPromoDF = actualPromoProductDF\\\n  .select(\\\n           actualPromoProductDF.promoIdCol\n          ,actualPromoProductDF.promoNumber\n          ,actualPromoProductDF.ActualProductPCQty\n         )\n\nfinCloLoadActualsPromoDF = finCloPromoProductDF\\\n  .select(\\\n           finCloPromoProductDF.promoIdCol\n          ,finCloPromoProductDF.promoNumber\n          ,finCloPromoProductDF.ActualProductPCQty\n         )\n\nactualsLoadPromoIdDF = actualsLoadPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\nfinCloLoadActualsPromoIdDF = finCloLoadActualsPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\ncalcActualPromoProductDF = actualPromoProductDF\\\n  .join(actualsLoadPromoIdDF, 'promoIdCol', 'inner')\\\n  .select(actualPromoProductDF['*'])\n\ncalcActualPromoProductIdsDF = calcActualPromoProductDF.select(col('Id'))\nnotCalcActualPromoProductDF = allCalcActualPromoProductDF.join(calcActualPromoProductIdsDF, 'Id', 'left_anti').select(allCalcActualPromoProductDF['*'])\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(actualsLoadPromoIdDF, actualsLoadPromoIdDF.promoIdCol == calcActualPromoDF.Id, 'inner')\\\n  .select(calcActualPromoDF['*'])\n\ncalcActualPromoProductDF = calcActualPromoProductDF\\\n  .join(productDF, productDF.Id == calcActualPromoProductDF.ProductId, 'left')\\\n  .select(\\\n           calcActualPromoProductDF['*']\n          ,productDF.UOM_PC2Case\n          ,productDF.CaseVolume\n          ,productDF.PCVolume\n         )\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(lightPromoDF, lightPromoDF.promoNumber == calcActualPromoDF.Number, 'inner')\\\n  .select(\\\n           calcActualPromoDF['*']\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\n# print(allCalcActualPromoProductDF.count())\n# print(calcActualPromoProductDF.count())\n# print(notCalcActualPromoProductDF.count())\n# print(calcActualPromoDF.count())",
+      "text": "%pyspark\nlightPromoDF = promoDF\\\n  .where((col('Disabled') == 'False'))\\\n  .select(\\\n           col('Id').alias('promoIdCol')\n          ,col('Number').alias('promoNumber')\n          ,col('BrandTechId').alias('promoBrandTechId')\n          ,col('PromoStatusId').alias('promoStatusId')\n          ,col('StartDate').alias('promoStartDate')\n          ,col('EndDate').alias('promoEndDate')\n          ,col('DispatchesStart').alias('promoDispatchesStart')\n          ,col('ClientTreeKeyId').alias('promoClientTreeKeyId')\n          ,col('ClientTreeId').alias('promoClientTreeId')\n          ,col('IsOnInvoice').alias('promoIsOnInvoice')\n          ,col('InOut').alias('promoInOut')\n          ,col('LoadFromTLC').alias('promoLoadFromTLC')\n          ,col('PlanPromoBaselineLSV')\n          ,col('ActualPromoBaselineLSV')\n          ,col('ActualPromoLSVSO')\n          ,col('ActualPromoPostPromoEffectLSV')\n         )\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\\\n  .select(\\\n           calcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('LoadFromTLC') == 'False'))\n\nactualPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(*actualParametersStatuses)) & (col('promoLoadFromTLC') == 'False'))\n\nfinCloPromoProductDF = allCalcActualPromoProductDF\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoProductDF.PromoId, 'left')\\\n  .join(promoStatusDF, promoStatusDF.Id == lightPromoDF.promoStatusId, 'left')\\\n  .select(\\\n           allCalcActualPromoProductDF['*']\n          ,lightPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\\\n  .where((col('promoStatusSystemName').isin(['Finished','Closed'])) & (col('promoLoadFromTLC') == 'False'))\n\nactualsLoadPromoDF = actualPromoProductDF\\\n  .select(\\\n           actualPromoProductDF.promoIdCol\n          ,actualPromoProductDF.promoNumber\n          ,actualPromoProductDF.ActualProductPCQty\n         )\n\nfinCloLoadActualsPromoDF = finCloPromoProductDF\\\n  .select(\\\n           finCloPromoProductDF.promoIdCol\n          ,finCloPromoProductDF.promoNumber\n          ,finCloPromoProductDF.ActualProductPCQty\n         )\n\nactualsLoadPromoIdDF = actualsLoadPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\nfinCloLoadActualsPromoIdDF = finCloLoadActualsPromoDF\\\n  .groupBy(['promoIdCol','promoNumber'])\\\n  .agg(sum('ActualProductPCQty').alias('sumActualProductPCQtyByPromo'))\\\n  .where((~col('sumActualProductPCQtyByPromo').isNull()) | (col('sumActualProductPCQtyByPromo') != 0))\\\n  .orderBy('promoNumber')\n\ncalcActualPromoProductDF = actualPromoProductDF\\\n  .join(actualsLoadPromoIdDF, 'promoIdCol', 'inner')\\\n  .select(actualPromoProductDF['*'])\n\ncalcActualPromoProductIdsDF = calcActualPromoProductDF.select(col('Id'))\nnotCalcActualPromoProductDF = allCalcActualPromoProductDF.join(calcActualPromoProductIdsDF, 'Id', 'left_anti').select(allCalcActualPromoProductDF['*'])\n\ncalcActualPromoDF = calcActualPromoDF\\\n  .join(actualsLoadPromoIdDF, actualsLoadPromoIdDF.promoIdCol == calcActualPromoDF.Id, 'inner')\\\n  .select(calcActualPromoDF['*'])\n\ncalcActualPromoProductDF = calcActualPromoProductDF\\\n  .join(productDF, productDF.Id == calcActualPromoProductDF.ProductId, 'left')\\\n  .select(\\\n           calcActualPromoProductDF['*']\n          ,productDF.UOM_PC2Case\n          ,productDF.CaseVolume\n          ,productDF.PCVolume\n         )\n\n\n# print(allCalcActualPromoProductDF.count())\n# print(calcActualPromoProductDF.count())\n# print(notCalcActualPromoProductDF.count())\n# print(calcActualPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-09T04:00:32+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -598,16 +598,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1598091637",
+      "jobName": "paragraph_1688646605415_1253255577",
       "id": "20220811-123004_1901429482",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7485"
+      "$$hashKey": "object:6074"
     },
     {
       "text": "%pyspark\nimport ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS as actual_product_params_calculation_process\ncalcActualPromoProductDF,allCalcActualPromoDF,logPricePromoDF = actual_product_params_calculation_process.run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCalcActualPromoDF,promoProductCols)\n",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -639,16 +639,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_2052467920",
+      "jobName": "paragraph_1688646605415_1786507775",
       "id": "20220811-123004_303343058",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7486"
+      "$$hashKey": "object:6075"
     },
     {
       "text": "%md\n####*Promo support calculation*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -678,16 +678,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1647007475",
+      "jobName": "paragraph_1688646605415_706310845",
       "id": "20220811-123004_1463305961",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7487"
+      "$$hashKey": "object:6076"
     },
     {
-      "text": "%pyspark\nallCalcActualPromoDF = allCalcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == allCalcActualPromoDF.PromoStatusId, 'left')\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoDF.Id, 'left')\\\n  .select(\\\n           allCalcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n          ,lightPromoDF.promoClientPostPromoEffectW1\n          ,lightPromoDF.promoClientPostPromoEffectW2\n         )\n\ncalcActualSupportPromoDF = allCalcActualPromoDF\\\n  .where(~col('promoStatusSystemName').isin(*notCheckPromoStatusList))\n\ncalcActualSupportPromoIdsDF = calcActualSupportPromoDF.select(col('Id'))\nnotCalcActualSupportPromoDF = allCalcActualPromoDF.join(calcActualSupportPromoIdsDF, 'Id', 'left_anti').select(allCalcActualPromoDF['*'])",
+      "text": "%pyspark\nallCalcActualPromoDF = allCalcActualPromoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == allCalcActualPromoDF.PromoStatusId, 'left')\\\n  .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcActualPromoDF.Id, 'left')\\\n  .select(\\\n           allCalcActualPromoDF['*']\n          ,promoStatusDF.SystemName.alias('promoStatusSystemName')\n         )\n\ncalcActualSupportPromoDF = allCalcActualPromoDF\\\n  .where(~col('promoStatusSystemName').isin(*notCheckPromoStatusList))\n\ncalcActualSupportPromoIdsDF = calcActualSupportPromoDF.select(col('Id'))\nnotCalcActualSupportPromoDF = allCalcActualPromoDF.join(calcActualSupportPromoIdsDF, 'Id', 'left_anti').select(allCalcActualPromoDF['*'])",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-09T04:00:41+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -714,16 +714,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1201952137",
+      "jobName": "paragraph_1688646605415_1838021614",
       "id": "20220811-123004_287775989",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7488"
+      "$$hashKey": "object:6077"
     },
     {
       "text": "%pyspark\nimport ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS as actual_support_params_calculation_process\ncalcActualSupportPromoDF,allPromoSupportPromoDF = actual_support_params_calculation_process.run(promoSupportDF,activePromoSupportPromoDF,calcActualSupportPromoDF,btlDF,btlPromoDF,budgetItemDF,budgetSubItemDF,promoSupportPromoCols)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -755,16 +755,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1348223860",
+      "jobName": "paragraph_1688646605415_861457726",
       "id": "20220811-123004_1287163625",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7489"
+      "$$hashKey": "object:6078"
     },
     {
       "text": "%md\n####*Actual promo parameters calculation*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -794,16 +794,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_121676078",
+      "jobName": "paragraph_1688646605415_80181459",
       "id": "20220811-123004_2067110041",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7490"
+      "$$hashKey": "object:6079"
     },
     {
       "text": "%pyspark\nallCalcActualPromoDF = calcActualSupportPromoDF.union(notCalcActualSupportPromoDF)\n\nallCalcActualPromoDF = allCalcActualPromoDF\\\n  .join(brandTechDF, brandTechDF.Id == allCalcActualPromoDF.BrandTechId, 'left')\\\n  .join(actualCogsCiIdsDF, actualCogsCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .join(actualCogsTnCiIdsDF, actualCogsTnCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .join(actualTiCiIdsDF, actualTiCiIdsDF.Id == allCalcActualPromoDF.Id, 'left')\\\n  .select(\\\n           allCalcActualPromoDF['*']\n          ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')\n          ,actualCogsCiIdsDF.Id.alias('acogsId')\n          ,actualCogsCiIdsDF.Id.alias('acogstnId')\n          ,actualTiCiIdsDF.Id.alias('atiId')\n         )\\\n  .withColumn('UseActualCOGS', when(~col('acogstnId').isNull(), True).otherwise(col('UseActualCOGS')))\\\n  .withColumn('UseActualTI', when(~col('atiId').isNull(), True).otherwise(col('UseActualTI')))\\\n  .dropDuplicates()\n\ncalcActualPromoDF = allCalcActualPromoDF\\\n  .join(finCloLoadActualsPromoIdDF, finCloLoadActualsPromoIdDF.promoIdCol == allCalcActualPromoDF.Id, 'inner')\\\n  .where((col('promoStatusSystemName') == 'Finished') | ~col('acogstnId').isNull() | ~col('atiId').isNull())\n\ncalcActualPromoIdsDF = calcActualPromoDF.select(col('Id'))\nnotCalcActualPromoDF = allCalcActualPromoDF.join(calcActualPromoIdsDF, 'Id', 'left_anti').select(allCalcActualPromoDF['*'])",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -830,16 +830,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_378158641",
+      "jobName": "paragraph_1688646605415_1540535235",
       "id": "20220811-123004_1857000984",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7491"
+      "$$hashKey": "object:6080"
     },
     {
       "text": "%pyspark\n# display(calcActualPromoDF.select(col('Number'),col('promoStatusSystemName'),col('UseActualCOGS'),col('UseActualTI'),col('acogstnId'),col('atiId')))",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -866,16 +866,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1985794094",
+      "jobName": "paragraph_1688646605415_1401202720",
       "id": "20220811-123004_1195835276",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7492"
+      "$$hashKey": "object:6081"
     },
     {
       "text": "%pyspark\nimport ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS as actual_promo_params_calculation_process\ncalcActualPromoDF,logCOGS,logTI,logCOGSTn,logActualCOGS,logActualTI,logActualCOGSTn = actual_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPromoDF,promoDF,actualCogsDF,actualCogsTnDF,actualTiDF)\n\n",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -907,16 +907,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1369773599",
+      "jobName": "paragraph_1688646605415_1434956551",
       "id": "20220811-123004_1333915211",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7493"
+      "$$hashKey": "object:6082"
     },
     {
       "text": "%md\n####*Result*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -946,16 +946,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1093994586",
+      "jobName": "paragraph_1688646605415_840747287",
       "id": "20220811-123004_413619826",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7494"
+      "$$hashKey": "object:6083"
     },
     {
       "text": "%pyspark\n# promoproduct\nnotCalcActualPromoProductDF = notCalcActualPromoProductDF.select(promoProductCols)\ncalcActualPromoProductDF = calcActualPromoProductDF.select(promoProductCols)\nallCalcActualPromoProductDF = calcActualPromoProductDF.union(notCalcActualPromoProductDF)\nresultPromoProductDF = allCalcActualPromoProductDF.union(disabledPromoProductDF)\nresultPromoProductDF.drop('$QCCount')\n# ---\n\n# promo\nnotCalcActualPromoDF = notCalcActualPromoDF.select(promoCols)\ncalcActualPromoDF = calcActualPromoDF.select(promoCols)\nallCalcActualPromoDF = calcActualPromoDF.union(notCalcActualPromoDF)\nresultPromoDF = allCalcActualPromoDF.union(disabledPromoDF)\nresultPromoDF = resultPromoDF.drop('$QCCount')\n# ---\n\n# promosuportpromo\nresultPromoSupportPromoDF = allPromoSupportPromoDF.union(disabledPromoSupportPromoDF)\n# ---",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -982,16 +982,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1458826343",
+      "jobName": "paragraph_1688646605415_1475889714",
       "id": "20220811-123004_170531880",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7495"
+      "$$hashKey": "object:6084"
     },
     {
       "text": "%md\n####*Set last changed date*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1021,16 +1021,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_894775701",
+      "jobName": "paragraph_1688646605415_540580412",
       "id": "20220811-123004_2053122174",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7496"
+      "$$hashKey": "object:6085"
     },
     {
       "text": "%pyspark\ndef isDemandFinanceChanged(value):\n  return array_contains(value, 'PlanPromoLSV') | array_contains(value, 'PlanPromoIncrementalLSV') | array_contains(value, 'PlanPromoUpliftPercent') | \\\n        array_contains(value, 'ActualPromoLSV') | array_contains(value, 'ActualPromoIncrementalLSV') | array_contains(value, 'ActualPromoUpliftPercent') | \\\n        array_contains(value, 'ActualPromoLSVByCompensation')\n\ninputPromoDF = inputPromoDF.drop('#QCCount')\n\ncompareConditions = [when(inputPromoDF[c] != resultPromoDF[c], lit(c)).otherwise(\"\") for c in inputPromoDF.columns if c not in  ('Id',\"StartDate\",\"EndDate\",\"DispatchesStart\",\"DispatchesEnd\")]\n\ntimestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')\nselect_expr = [col(\"Id\"), *[resultPromoDF[c] for c in resultPromoDF.columns if c != 'Id'], array_remove(array(*compareConditions), \"\").alias(\"changedColumns\")]\nresultPromoDF = inputPromoDF\\\n  .join(resultPromoDF, \"Id\")\\\n  .select(*select_expr)\\\n  .withColumn('isChanged', size(col('changedColumns')) > 0)\\\n  .withColumn('isDemandFinanceChanged', isDemandFinanceChanged(col('changedColumns')))\\\n  .withColumn('LastChangedDate', when(col('isChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\")).otherwise(col('LastChangedDate')))\\\n  .withColumn('LastChangedDateDemand', when(col('isDemandFinanceChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\"))\\\n              .otherwise(col('LastChangedDateDemand')))\\\n  .withColumn('LastChangedDateFinance', when(col('isDemandFinanceChanged') == True, unix_timestamp(lit(timestamp),'yyyy-MM-dd HH:mm:ss').cast(\"timestamp\"))\\\n              .otherwise(col('LastChangedDateFinance')))\\\n  .drop('isChanged', 'isDemandFinanceChanged', 'changedColumns')",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1057,16 +1057,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1317446073",
+      "jobName": "paragraph_1688646605415_135077538",
       "id": "20220811-123004_978543311",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7497"
+      "$$hashKey": "object:6086"
     },
     {
       "text": "%pyspark\n# print(resultPromoProductDF.count())\n# print(resultPromoDF.count())\n# print(resultPromoSupportPromoDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1093,16 +1093,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_84851315",
+      "jobName": "paragraph_1688646605415_1033588574",
       "id": "20220811-123004_409315121",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7498"
+      "$$hashKey": "object:6087"
     },
     {
       "text": "%pyspark\ntry:\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMO_PARAMETERS_CALCULATION_RESULT_PATH])\n   subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\",PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH])\nexcept Exception as e:\n   print(e)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1129,17 +1129,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_822698010",
+      "jobName": "paragraph_1688646605415_1387123177",
       "id": "20220811-123004_1114907465",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7499"
+      "$$hashKey": "object:6088"
     },
     {
       "title": "Save results",
       "text": "%pyspark\n# resultPromoProductDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoDF.write.mode(\"overwrite\").parquet(PROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n# resultPromoSupportPromoDF.coalesce(6).write.mode(\"overwrite\").parquet(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH)\n\nresultPromoProductDF.fillna(False,subset=['Disabled',\n'AverageMarker'])\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"AverageMarker\",col(\"AverageMarker\").cast(IntegerType()))\\\n.repartition(1)\\\n.write.csv(PROMOPRODUCT_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultPromoDF.fillna(False,subset=['Disabled',\n'LoadFromTLC',\n'InOutExcludeAssortmentMatrixProductsButtonPressed',\n'IsGrowthAcceleration',\n'IsOnInvoice',\n'IsApolloExport',\n'DeviationCoefficient',\n'UseActualTI',\n'UseActualCOGS',\n'IsSplittable',\n'IsLSVBased',\n'IsInExchange',\n'NeedRecountUplift',\n'IsAutomaticallyApproved',\n'IsCMManagerApproved',\n'IsDemandPlanningApproved',\n'IsDemandFinanceApproved',\n'Calculating',\n'InOut',\n'ManualInputSumInvoice',\n'IsGAManagerApproved'\n]).withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\\\n.withColumn(\"LoadFromTLC\",col(\"LoadFromTLC\").cast(IntegerType()))\\\n.withColumn(\"InOutExcludeAssortmentMatrixProductsButtonPressed\",col(\"InOutExcludeAssortmentMatrixProductsButtonPressed\").cast(IntegerType()))\\\n.withColumn(\"IsGrowthAcceleration\",col(\"IsGrowthAcceleration\").cast(IntegerType()))\\\n.withColumn(\"IsOnInvoice\",col(\"IsOnInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsApolloExport\",col(\"IsApolloExport\").cast(IntegerType()))\\\n.withColumn(\"DeviationCoefficient\",col(\"DeviationCoefficient\").cast(IntegerType()))\\\n.withColumn(\"UseActualTI\",col(\"UseActualTI\").cast(IntegerType()))\\\n.withColumn(\"UseActualCOGS\",col(\"UseActualCOGS\").cast(IntegerType()))\\\n.withColumn(\"IsSplittable\",col(\"IsSplittable\").cast(IntegerType()))\\\n.withColumn(\"IsLSVBased\",col(\"IsLSVBased\").cast(IntegerType()))\\\n.withColumn(\"IsInExchange\",col(\"IsInExchange\").cast(IntegerType()))\\\n.withColumn(\"NeedRecountUplift\",col(\"NeedRecountUplift\").cast(IntegerType()))\\\n.withColumn(\"IsAutomaticallyApproved\",col(\"IsAutomaticallyApproved\").cast(IntegerType()))\\\n.withColumn(\"IsCMManagerApproved\",col(\"IsCMManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandPlanningApproved\",col(\"IsDemandPlanningApproved\").cast(IntegerType()))\\\n.withColumn(\"IsDemandFinanceApproved\",col(\"IsDemandFinanceApproved\").cast(IntegerType()))\\\n.withColumn(\"Calculating\",col(\"Calculating\").cast(IntegerType()))\\\n.withColumn(\"InOut\",col(\"InOut\").cast(IntegerType()))\\\n.withColumn(\"ManualInputSumInvoice\",col(\"ManualInputSumInvoice\").cast(IntegerType()))\\\n.withColumn(\"IsGAManagerApproved\",col(\"IsGAManagerApproved\").cast(IntegerType()))\\\n.withColumn(\"MechanicComment\", when(col(\"MechanicComment\").contains(\"\\\"\"),concat(lit(\"'\"),col(\"MechanicComment\"),lit(\"'\"))).otherwise(col(\"MechanicComment\")))\\\n.repartition(1)\\\n.write.csv(PROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\",\nescape=\"\",\nquote=\"\",\n)\n\nresultPromoSupportPromoDF\\\n.repartition(1)\\\n.write.csv(PROMOSUPPORTPROMO_PARAMETERS_CALCULATION_RESULT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1172,16 +1172,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_2106248466",
+      "jobName": "paragraph_1688646605415_1519305128",
       "id": "20220811-123004_959238305",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7500"
+      "$$hashKey": "object:6089"
     },
     {
       "text": "%md\n####*Logging*",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1211,16 +1211,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1246049794",
+      "jobName": "paragraph_1688646605415_554570672",
       "id": "20220811-123004_407406673",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7501"
+      "$$hashKey": "object:6090"
     },
     {
       "text": "%pyspark\nlogPromoProductDF = logPricePromoDF\\\n  .join(logCOGS, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logCOGSTn, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logTI, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualCOGS, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualCOGSTn, 'promoNumber', 'full')\n\nlogPromoProductDF = logPromoProductDF\\\n  .join(logActualTI, 'promoNumber', 'full')\n\ntitleMessage = '[INFO]: ACTUAL PARAMETERS CALCULATION'\ntitleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\nlogMessageDF = logPromoProductDF\\\n  .select(concat(lit('[WARNING]: Promo №:'), col('promoNumber'),\\\n                 when(col('nullPriceMessage').isNull(), '').otherwise(concat(lit(' There\\'re no price for ZREP: '), col('nullPriceMessage'))),\\\n                 when(col('zeroPriceMessage').isNull(), '').otherwise(concat(lit('.\\r\\n There\\'re zero price for ZREP: '), col('zeroPriceMessage'))),\\\n                 when(col('COGSMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('COGSMessage'))),\\\n                 when(col('COGSTnMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('COGSTnMessage'))),\\\n                 when(col('TIMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('TIMessage'))),\\\n                 when(col('ActualCOGSMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualCOGSMessage'))),\\\n                 when(col('ActualCOGSTnMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualCOGSTnMessage'))),\\\n                 when(col('ActualTIMessage').isNull(), '').otherwise(concat(lit('.\\r\\n '), col('ActualTIMessage'))),\\\n                 (lit('.\\r\\n'))\n                ).alias('logMessage'))\\\n  .where((col('logMessage') != \"\") & ~(col('logMessage').isNull()))\n\noutputLogMessageDF = inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1247,16 +1247,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_2120696953",
+      "jobName": "paragraph_1688646605415_2015556450",
       "id": "20220811-123004_765589574",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7502"
+      "$$hashKey": "object:6091"
     },
     {
       "text": "%pyspark\nsc.setCheckpointDir(\"tmp\")\n\noutputLogMessageDF\\\n.checkpoint(eager=True)\\\n.repartition(1)\\\n.write.csv(INPUT_FILE_LOG_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\n)\n\n# subprocess.call([\"hadoop\", \"fs\", \"-mv\", OUTPUT_TEMP_FILE_LOG_PATH, OUTPUT_LOG_PATH])\n# subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\", OUTPUT_TEMP_FILE_LOG_PATH])\n\n  ",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1288,16 +1288,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1458855397",
+      "jobName": "paragraph_1688646605415_1239625829",
       "id": "20220811-123004_1311566032",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7503"
+      "$$hashKey": "object:6092"
     },
     {
       "text": "%pyspark\nprint('ACTUAL_PARAMETERS_CALCULATION_DONE')",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1328,16 +1328,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_675807607",
+      "jobName": "paragraph_1688646605416_1387269195",
       "id": "paragraph_1660894172186_932724280",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7504"
+      "$$hashKey": "object:6093"
     },
     {
       "text": "%pyspark\n# promoProductDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMOPRODUCT_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoProductDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMOPRODUCT_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1364,16 +1364,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_327192313",
+      "jobName": "paragraph_1688646605416_843212682",
       "id": "20220811-123004_299536492",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7505"
+      "$$hashKey": "object:6094"
     },
     {
       "text": "%pyspark\n# promoDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1400,16 +1400,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1966830021",
+      "jobName": "paragraph_1688646605416_1538615679",
       "id": "20220811-123004_1301059590",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7506"
+      "$$hashKey": "object:6095"
     },
     {
       "text": "%pyspark\n# promoSupportPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_SOURCE_PROMOSUPPORTPROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')\n# resultPromoSupportPromoDF.orderBy('Id').toPandas().to_csv(OUTPUT_PROMOSUPPORTPROMO_PATH, encoding='utf-8',index=False,sep = '\\u0001')",
       "user": "anonymous",
-      "dateUpdated": "2023-05-10T09:41:02+0000",
+      "dateUpdated": "2023-07-06T12:30:05+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1436,15 +1436,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1683711662252_1603929896",
+      "jobName": "paragraph_1688646605416_2090721799",
       "id": "20220811-123004_1867332153",
-      "dateCreated": "2023-05-10T09:41:02+0000",
+      "dateCreated": "2023-07-06T12:30:05+0000",
       "status": "READY",
-      "$$hashKey": "object:7507"
+      "$$hashKey": "object:6096"
     }
   ],
   "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION",
-  "id": "2HYTXAPPN",
+  "id": "2J3TXHJCY",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},

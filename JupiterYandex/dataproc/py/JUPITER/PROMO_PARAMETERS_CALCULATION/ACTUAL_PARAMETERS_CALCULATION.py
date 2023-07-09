@@ -155,7 +155,7 @@ promoDF = spark.read.format("parquet").load(PROMO_PATH)
 promoSupportPromoDF = spark.read.format("parquet").load(PROMOSUPPORTPROMO_PATH)
 promoProductDF = spark.read.format("parquet").load(PROMOPRODUCT_PATH)
 
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=schemas_map["PromoStatus"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 inputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
@@ -365,6 +365,17 @@ lightPromoDF = promoDF\
           ,col('ActualPromoPostPromoEffectLSV')
          )
 
+lightPromoDF = lightPromoDF\
+  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId == clientTreeDF.Id, 'inner')\
+  .select(\
+           lightPromoDF['*']
+          ,to_date(clientTreeDF.EndDate, 'yyyy-MM-dd').alias('ctEndDate')
+          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')
+          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')
+          )\
+  .where(col('ctEndDate').isNull())\
+  .drop('ctEndDate')
+
 calcActualPromoDF = calcActualPromoDF\
   .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\
   .select(\
@@ -439,6 +450,14 @@ calcActualPromoProductDF = calcActualPromoProductDF\
           ,productDF.PCVolume
          )
 
+calcActualPromoDF = calcActualPromoDF\
+  .join(lightPromoDF, lightPromoDF.promoNumber == calcActualPromoDF.Number, 'inner')\
+  .select(\
+           calcActualPromoDF['*']
+          ,lightPromoDF.promoClientPostPromoEffectW1
+          ,lightPromoDF.promoClientPostPromoEffectW2
+         )
+
 # print(allCalcActualPromoProductDF.count())
 # print(calcActualPromoProductDF.count())
 # print(notCalcActualPromoProductDF.count())
@@ -455,6 +474,8 @@ allCalcActualPromoDF = allCalcActualPromoDF\
   .select(\
            allCalcActualPromoDF['*']
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
+          ,lightPromoDF.promoClientPostPromoEffectW1
+          ,lightPromoDF.promoClientPostPromoEffectW2
          )
 
 calcActualSupportPromoDF = allCalcActualPromoDF\
