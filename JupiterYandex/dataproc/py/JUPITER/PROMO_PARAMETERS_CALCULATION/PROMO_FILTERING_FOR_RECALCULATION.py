@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T10%3A41%3A30.682977%2B00%3A00_", '
+ '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T00%3A35%3A25.509187%2B00%3A00_", '
  '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
- '"cd1af820-17b8-4f46-9a2b-d7ad8fb270bb"}']
+ '"d34bcd1f-fa5c-49a2-8e2b-73fffc5768eb"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -492,8 +492,9 @@ promoByProductTreeCiDF = productTreeCiDF\
   .where(promoFilterDF.InOut == 'false')\
   .select(promoFilterDF.Id, promoFilterDF.Number)\
   .dropDuplicates()
-  
+
 #####*Get promo numbers filtered by plan post promo effect incidents*
+
 
 ppeCiDF = ppeCiIdsDF\
   .join(planPostPromoEffectDF, 'Id', 'inner')\
@@ -832,7 +833,7 @@ promoNumbersByProductTreeCiDF = promoByProductTreeCiDF.select(col('Number')).wit
 promoNumbersByProductTreeCiDF = promoNumbersByProductTreeCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
-
+  
 promoNumbersByPpeCiDF = promoByPPECiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Plan Post Promo Effect incidents: '))
 promoNumbersByPpeCiDF = promoNumbersByPpeCiDF\
   .groupBy('Title')\

@@ -13,7 +13,7 @@ import datetime, time
 import os
 import json
 
-def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols, planPostPromoEffectDF):
+def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols,planPostPromoEffectDF):
     sc = SparkContext.getOrCreate();
     spark = SparkSession(sc)
     
@@ -136,7 +136,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
       .groupBy(cols)\
       .agg(count('*').cast(DecimalType(30,6)).alias('promoDaysInWeek'))
     #  ---
-
+    
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .join(planPostPromoEffectDF, 
            [\
@@ -237,12 +237,13 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
                calcPlanPromoProductDF['*']
               ,planParamsIncrementalDF.PlanPromoIncrementalCases.cast(DecimalType(30,6))
              )
+
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .withColumn('PlanProductPostPromoEffectW1', when(col('PlanPostPromoEffectW1').isNull(), 0)\
                   .otherwise(col('PlanPostPromoEffectW1')).cast(DecimalType(30,6)))\
       .withColumn('PlanProductPostPromoEffectW2', when(col('PlanPostPromoEffectW2').isNull(), 0)\
                   .otherwise(col('PlanPostPromoEffectW2')).cast(DecimalType(30,6)))
-    
+
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .withColumn('PlanProductIncrementalLSV', when(col('promoInOut') == 'False', col('PlanProductBaselineLSV') * col('productUpliftPercent') / 100.0)\
                                                             .otherwise(col('PlanPromoIncrementalCases') * col('Price')).cast(DecimalType(30,6)))\

@@ -3,7 +3,7 @@
     {
       "text": "%md\n####Notebook \"PROMO_FILTERING_FOR_RECALCULATION\". \n####*Get promoes filtering by changes incidents*.\n###### *Developer: [LLC Smart-Com](http://smartcom.software/), andrey.philushkin@effem.com*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:51+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "tableHide": true,
@@ -35,19 +35,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_41939725",
+      "jobName": "paragraph_1688646607812_553028787",
       "id": "20220810-113330_1807397363",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:51+0000",
-      "dateFinished": "2023-04-16T08:55:51+0000",
-      "status": "FINISHED",
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
       "focus": true,
-      "$$hashKey": "object:23701"
+      "$$hashKey": "object:892"
     },
     {
       "text": "%pyspark\ndef is_notebook() -> bool:\n    try:\n        shell = get_ipython().__class__.__name__\n        if shell == 'ZMQInteractiveShell':\n            return True   # Jupyter notebook or qtconsole\n        elif shell == 'TerminalInteractiveShell':\n            return False  # Terminal running IPython\n        else:\n            return False  # Other type (?)\n    except NameError:\n        return False      # Probably standard Python interpreter",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:51+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -73,18 +71,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1221649572",
+      "jobName": "paragraph_1688646607812_314633555",
       "id": "paragraph_1660132597099_1824680518",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:51+0000",
-      "dateFinished": "2023-04-16T08:55:51+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23702"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:893"
     },
     {
       "text": "%pyspark\nfrom pyspark.sql import SQLContext, DataFrame, Row, Window\nfrom pyspark.sql import SparkSession\nfrom pyspark.context import SparkContext\nfrom pyspark.sql.types import *\nfrom pyspark.sql.functions import *\nimport pyspark.sql.functions as F\nimport pandas as pd\nimport datetime, time\nimport os\nimport json\nimport subprocess\n",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:51+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -111,18 +107,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1546834489",
+      "jobName": "paragraph_1688646607812_1832860560",
       "id": "20220810-113330_500009667",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:51+0000",
-      "dateFinished": "2023-04-16T08:55:51+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23703"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:894"
     },
     {
       "text": "%pyspark\ndatesDimSchema = StructType([\n  StructField(\"OriginalDate\", DateType(), False),\n  StructField(\"MarsYear\", IntegerType(), False),\n  StructField(\"MarsPeriod\", IntegerType(), False),\n  StructField(\"MarsWeek\",  IntegerType(), False),\n  StructField(\"MarsDay\", IntegerType(),  False),\n  StructField(\"MarsPeriodName\", StringType(), False),\n  StructField(\"MarsPeriodFullName\",  StringType(), False),\n  StructField(\"MarsWeekName\", StringType(),  False),\n  StructField(\"MarsWeekFullName\", StringType(), False),\n  StructField(\"MarsDayName\", StringType(), False),\n  StructField(\"MarsDayFullName\",  StringType(), False),\n  StructField(\"CalendarYear\", IntegerType(),  False),\n  StructField(\"CalendarMonth\", IntegerType(), False),\n  StructField(\"CalendarDay\", IntegerType(), False),\n  StructField(\"CalendarDayOfYear\",  IntegerType(), False),\n  StructField(\"CalendarMonthName\", StringType(),  False),\n  StructField(\"CalendarMonthFullName\", StringType(), False),\n  StructField(\"CalendarYearWeek\", IntegerType(), False),\n  StructField(\"CalendarWeek\",  IntegerType(), False)\n])\n\ninputLogMessageSchema = StructType([\n  StructField(\"logMessage\", StringType(), False)\n])",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:51+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -149,19 +143,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_489953623",
+      "jobName": "paragraph_1688646607812_1502872136",
       "id": "20220810-113330_677056882",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:51+0000",
-      "dateFinished": "2023-04-16T08:55:52+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23704"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:895"
     },
     {
       "title": "Set notebook args(for testing purposes only)",
       "text": "%pyspark\nif is_notebook():\n sys.argv=['','{\"MaintenancePathPrefix\": '\n '\"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T00%3A35%3A25.509187%2B00%3A00_\", '\n '\"ProcessDate\": \"2023-04-16\", \"Schema\": \"Jupiter\", \"HandlerId\": '\n '\"d34bcd1f-fa5c-49a2-8e2b-73fffc5768eb\"}']\n \n sc.addPyFile(\"hdfs:///SRC/SHARED/EXTRACT_SETTING.py\")\n sc.addPyFile(\"hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py\")",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:52+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -188,19 +180,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1768768979",
+      "jobName": "paragraph_1688646607812_896524436",
       "id": "paragraph_1660132953861_1696933688",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:52+0000",
-      "dateFinished": "2023-04-16T08:55:52+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23705"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:896"
     },
     {
       "text": "%pyspark\nspark = SparkSession.builder.appName('Jupiter - PySpark').getOrCreate()\nsc = SparkContext.getOrCreate();\n\nimport EXTRACT_SETTING as es\n\nSETTING_RAW_DIR = es.SETTING_RAW_DIR\nDATE_DIR=es.DATE_DIR\n\nEXTRACT_ENTITIES_AUTO_PATH = f'{es.HDFS_PREFIX}{es.MAINTENANCE_PATH_PREFIX}EXTRACT_ENTITIES_AUTO.csv'\nprocessDate=es.processDate\npipelineRunId=es.pipelineRunId\nhandlerId=es.input_params.get(\"HandlerId\")\n\nprint(f'EXTRACT_ENTITIES_AUTO_PATH={EXTRACT_ENTITIES_AUTO_PATH}')\n\nimport SUPPORT_FUNCTIONS as sp",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:52+0000",
-      "progress": 100,
+      "dateUpdated": "2023-07-06T12:30:07+0000",
+      "progress": 0,
       "config": {
         "editorSetting": {
           "language": "python",
@@ -231,18 +221,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_969246832",
+      "jobName": "paragraph_1688646607813_1426708098",
       "id": "20220810-113330_824588436",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:52+0000",
-      "dateFinished": "2023-04-16T08:55:52+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23706"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:897"
     },
     {
       "text": "%pyspark\nschema = es.input_params.get(\"Schema\")",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:52+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -269,18 +257,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1004322817",
+      "jobName": "paragraph_1688646607813_1806305952",
       "id": "20220810-113330_449807321",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:52+0000",
-      "dateFinished": "2023-04-16T08:55:53+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23707"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:898"
     },
     {
-      "text": "%pyspark\r\nDIRECTORY = SETTING_RAW_DIR + '/SOURCES/'\r\n\r\nPROMO_PATH = DIRECTORY + 'JUPITER/Promo'\r\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\r\nPRODUCT_PATH = DIRECTORY + 'JUPITER/Product'\r\nBRANDTECH_PATH = DIRECTORY + 'JUPITER/BrandTech'\r\nPROMOPRODUCT_PATH = DIRECTORY + 'JUPITER/PromoProduct'\r\nCLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'\r\nPROMOPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/PromoProductTree'\r\nCHANGESINCIDENTS_PATH = DIRECTORY + 'JUPITER/ChangesIncident'\r\nPRODUCTCHANGEINCIDENTS_PATH = DIRECTORY + 'JUPITER/ProductChangeIncident'\r\n\r\nDATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'\r\n\r\nASSORTMENTMATRIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'\r\nPRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'\r\nBASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'\r\nINCREASEBASELINE_PATH = DIRECTORY + 'JUPITER/IncreaseBaseLine'\r\nSHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'\r\nCLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'\r\nPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'\r\nINCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'\r\nCOGS_PATH = DIRECTORY + 'JUPITER/COGS'\r\nCOGSTN_PATH = DIRECTORY + 'JUPITER/PlanCOGSTn'\r\nTI_PATH = DIRECTORY + 'JUPITER/TradeInvestment'\r\nCORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'\r\n\r\nBLOCKEDPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'\r\nBLOCKEDPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.CSV'\r\n\r\nBLOCKEDINCREASEPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'\r\nBLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.CSV'\r\n\r\n\r\nCHANGESINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ChangesIncident/ChangesIncident.CSV'\r\nPRODUCTCHANGEINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ProductChangeIncident/ProductChangeIncident.CSV'\r\n\r\nINPUT_FILE_LOG_PATH = es.SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'\r\n# OUTPUT_LOG_PATH =  es.SETTING_PROCESS_DIR + '/Logs/'\r\n# OUTPUT_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + '.csv'\r\n# OUTPUT_TEMP_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + 'temp.csv'",
+      "text": "%pyspark\r\nDIRECTORY = SETTING_RAW_DIR + '/SOURCES/'\r\n\r\nPROMO_PATH = DIRECTORY + 'JUPITER/Promo'\r\nPROMOSTATUS_PATH = DIRECTORY + 'JUPITER/PromoStatus'\r\nPRODUCT_PATH = DIRECTORY + 'JUPITER/Product'\r\nBRANDTECH_PATH = DIRECTORY + 'JUPITER/BrandTech'\r\nPROMOPRODUCT_PATH = DIRECTORY + 'JUPITER/PromoProduct'\r\nCLIENTHIERARCHY_PATH = DIRECTORY + 'JUPITER/ClientTreeHierarchyView'\r\nPROMOPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/PromoProductTree'\r\nCHANGESINCIDENTS_PATH = DIRECTORY + 'JUPITER/ChangesIncident'\r\nPRODUCTCHANGEINCIDENTS_PATH = DIRECTORY + 'JUPITER/ProductChangeIncident'\r\n\r\nDATESDIM_PATH = DIRECTORY + 'UNIVERSALCATALOG/MARS_UNIVERSAL_CALENDAR.csv'\r\n\r\nASSORTMENTMATRIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'\r\nPRICELIST_PATH = DIRECTORY + 'JUPITER/PriceList'\r\nBASELINE_PATH = DIRECTORY + 'JUPITER/BaseLine'\r\nINCREASEBASELINE_PATH = DIRECTORY + 'JUPITER/IncreaseBaseLine'\r\nSHARES_PATH = DIRECTORY + 'JUPITER/ClientTreeBrandTech'\r\nCLIENTTREE_PATH = DIRECTORY + 'JUPITER/ClientTree'\r\nPRODUCTTREE_PATH = DIRECTORY + 'JUPITER/ProductTree'\r\nINCREMENTAL_PATH = DIRECTORY + 'JUPITER/IncrementalPromo'\r\nCOGS_PATH = DIRECTORY + 'JUPITER/COGS'\r\nCOGSTN_PATH = DIRECTORY + 'JUPITER/PlanCOGSTn'\r\nTI_PATH = DIRECTORY + 'JUPITER/TradeInvestment'\r\nCORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'\r\nPLANPOSTPROMOEFFECT_PATH = DIRECTORY + 'JUPITER/PlanPostPromoEffect'\r\n\r\nBLOCKEDPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'\r\nBLOCKEDPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.CSV'\r\n\r\nBLOCKEDINCREASEPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'\r\nBLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.CSV'\r\n\r\n\r\nCHANGESINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ChangesIncident/ChangesIncident.CSV'\r\nPRODUCTCHANGEINCIDENTS_OUTPUT_PATH = es.SETTING_OUTPUT_DIR + '/ProductChangeIncident/ProductChangeIncident.CSV'\r\n\r\nINPUT_FILE_LOG_PATH = es.SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'\r\n# OUTPUT_LOG_PATH =  es.SETTING_PROCESS_DIR + '/Logs/'\r\n# OUTPUT_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + '.csv'\r\n# OUTPUT_TEMP_FILE_LOG_PATH = OUTPUT_LOG_PATH + handlerId + 'temp.csv'",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:53+0000",
+      "dateUpdated": "2023-07-08T21:26:18+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -307,19 +293,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_458479602",
+      "jobName": "paragraph_1688646607813_2140889634",
       "id": "20220810-113330_1797622225",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:53+0000",
-      "dateFinished": "2023-04-16T08:55:53+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23708"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:899"
     },
     {
       "title": "Load raw entities schemas from json files to map",
       "text": "%pyspark\nSCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'\nschemas_map = sp.getSchemasMap(SCHEMAS_DIR)",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T10:26:27+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -351,18 +335,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2093746097",
+      "jobName": "paragraph_1688646607813_1196572869",
       "id": "paragraph_1660198152320_1236962199",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T09:19:14+0000",
-      "dateFinished": "2023-04-16T09:19:14+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23709"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:900"
     },
     {
-      "text": "%pyspark\r\npromoDF = spark.read.csv(PROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Promo\"])\\\r\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\r\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\r\npromoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nproductDF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nbrandTechDF = spark.read.csv(BRANDTECH_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\npromoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProduct\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nclientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeHierarchyView\"])\r\npromoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nchangesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nproductChangeIncidentsDF = spark.read.csv(PRODUCTCHANGEINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductChangeIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nassortmentMatrixDF = spark.read.csv(ASSORTMENTMATRIX_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\npriceListDF = spark.read.csv(PRICELIST_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nbaselineDF = spark.read.csv(BASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nincreaseBaselineDF = spark.read.csv(INCREASEBASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nsharesDF = spark.read.csv(SHARES_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nclientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTree\"])\r\nproductTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductTree\"])\r\ncorrectionDF = spark.read.csv(CORRECTION_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nincrementalDF = spark.read.csv(INCREMENTAL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ncogsDF = spark.read.csv(COGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ncogsTnDF = spark.read.csv(COGSTN_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ntiDF = spark.read.csv(TI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ndatesDF = spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\r\n\r\n#test\r\nprint(schemas_map[\"PriceList\"])",
+      "text": "%pyspark\r\npromoDF = spark.read.csv(PROMO_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Promo\"])\\\r\n.withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\\\r\n.withColumn(\"InOut\",col(\"InOut\").cast(BooleanType()))\r\npromoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoStatus\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nproductDF = spark.read.csv(PRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"Product\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nbrandTechDF = spark.read.csv(BRANDTECH_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\npromoProductDF = spark.read.csv(PROMOPRODUCT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProduct\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nclientHierarchyDF = spark.read.csv(CLIENTHIERARCHY_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeHierarchyView\"])\r\npromoProductTreeDF = spark.read.csv(PROMOPRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductTree\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nchangesIncidentsDF = spark.read.csv(CHANGESINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ChangesIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nproductChangeIncidentsDF = spark.read.csv(PRODUCTCHANGEINCIDENTS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductChangeIncident\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nassortmentMatrixDF = spark.read.csv(ASSORTMENTMATRIX_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"AssortmentMatrix\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\npriceListDF = spark.read.csv(PRICELIST_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PriceList\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType())).withColumn(\"FuturePriceMarker\",col(\"FuturePriceMarker\").cast(BooleanType()))\r\nbaselineDF = spark.read.csv(BASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nincreaseBaselineDF = spark.read.csv(INCREASEBASELINE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"BaseLine\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nsharesDF = spark.read.csv(SHARES_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTreeBrandTech\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nclientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ClientTree\"])\r\nproductTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"ProductTree\"])\r\ncorrectionDF = spark.read.csv(CORRECTION_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PromoProductsCorrection\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\nplanPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanPostPromoEffect\"])\r\nincrementalDF = spark.read.csv(INCREMENTAL_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"IncrementalPromo\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ncogsDF = spark.read.csv(COGS_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"COGS\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ncogsTnDF = spark.read.csv(COGSTN_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"PlanCOGSTn\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ntiDF = spark.read.csv(TI_PATH,sep=\"\\u0001\",header=True,schema=schemas_map[\"TradeInvestment\"]).withColumn(\"Disabled\",col(\"Disabled\").cast(BooleanType()))\r\ndatesDF = spark.read.format(\"csv\").option(\"delimiter\",\"|\").option(\"header\",\"true\").schema(datesDimSchema).load(DATESDIM_PATH)\r\n\r\n#test\r\nprint(schemas_map[\"PriceList\"])",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:54+0000",
+      "dateUpdated": "2023-07-09T03:53:10+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -394,18 +376,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2143243236",
+      "jobName": "paragraph_1688646607813_1068299244",
       "id": "20220810-113330_453367110",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:54+0000",
-      "dateFinished": "2023-04-16T08:55:54+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23710"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:901"
     },
     {
       "text": "%pyspark\n",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:54+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -431,18 +411,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1681635299029_1224991750",
+      "jobName": "paragraph_1688646607813_654567149",
       "id": "paragraph_1681635299029_1224991750",
-      "dateCreated": "2023-04-16T08:54:59+0000",
-      "dateStarted": "2023-04-16T08:55:54+0000",
-      "dateFinished": "2023-04-16T08:55:54+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23711"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:902"
     },
     {
       "text": "%pyspark\ntry:\n#   dbutils.fs.ls(INPUT_FILE_LOG_PATH)\n inputLogMessageDF = spark.read.format(\"csv\").option(\"delimiter\",\"\\u0001\").option(\"header\",\"true\").load(INPUT_FILE_LOG_PATH)\n print('Log has been already made')\nexcept:\n inputLogMessageDF = spark.createDataFrame(sc.emptyRDD(), inputLogMessageSchema)\n print('Init log')\n  \n",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:55+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -474,18 +452,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_799319199",
+      "jobName": "paragraph_1688646607813_2101509667",
       "id": "20220810-113330_468171818",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:55+0000",
-      "dateFinished": "2023-04-16T08:55:55+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23712"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:903"
     },
     {
       "text": "%pyspark\nnotCheckPromoStatusList = ['Draft', 'Cancelled', 'Deleted', 'Closed', 'Started', 'Finished']\nactualCogsTiRecalculationPromoStatusList = ['Finished', 'Closed']",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:55+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -512,18 +488,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1301142720",
+      "jobName": "paragraph_1688646607813_1140224260",
       "id": "20220810-113330_2102408644",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:55+0000",
-      "dateFinished": "2023-04-16T08:55:55+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23713"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:904"
     },
     {
       "text": "%pyspark\npromoFilterDF = promoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == promoDF.PromoStatusId, 'inner')\\\n  .select(\\\n           promoDF.Id\n          ,promoDF.Disabled\n          ,promoDF.Number\n          ,promoDF.BrandTechId\n          ,promoDF.ClientTreeKeyId\n          ,promoDF.ClientTreeId\n          ,promoDF.InOut\n          ,date_add(to_date(promoDF.DispatchesStart, 'yyyy-MM-dd'), 1).alias('DispatchesStart')\n          ,date_add(to_date(promoDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')\n          ,date_add(to_date(promoDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')\n          ,promoStatusDF.SystemName.alias('promoStatusName')\n         )\\\n  .where((~col('promoStatusName').isin(*notCheckPromoStatusList)) & (col('Disabled') == 'False'))\n\nactualCogsTiRecalculationPromoDF = promoDF\\\n  .join(promoStatusDF, promoStatusDF.Id == promoDF.PromoStatusId, 'inner')\\\n  .select(\\\n           promoDF.Id\n          ,promoDF.Disabled\n          ,promoDF.Number\n          ,promoStatusDF.SystemName.alias('promoStatusName')\n         )\\\n  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False'))\n\npromoFilterDF = promoFilterDF\\\n  .join(brandTechDF, brandTechDF.Id == promoFilterDF.BrandTechId, 'left')\\\n  .select(\\\n           promoFilterDF['*']\n          ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')\n         )\\\n\nactivePromoProductDF = promoProductDF.where(col('Disabled') == 'false')\nactiveClientTreeDF = clientTreeDF.where(col('EndDate').isNull())\n\nactiveClientTreeList = activeClientTreeDF.collect()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:55+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -548,34 +522,18 @@
         "msg": []
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=45",
-              "$$hashKey": "object:25888"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1621344290",
+      "jobName": "paragraph_1688646607813_220887446",
       "id": "20220810-113330_981221566",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:55+0000",
-      "dateFinished": "2023-04-16T08:55:56+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23714"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:905"
     },
     {
-      "text": "%pyspark\nactiveChangesIncidentsDF = changesIncidentsDF\\\n  .withColumn('ItemId', upper(col('ItemId')))\\\n  .where(col('ProcessDate').isNull())\n\nprocessChangesIncidentsDF = changesIncidentsDF\\\n  .where(~col('ProcessDate').isNull())\\\n  .drop('#QCCount')\n\nassortmentMatrixCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'AssortmentMatrix').select(activeChangesIncidentsDF.ItemId.alias('Id'))\npriceListCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PriceList').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nbaselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'BaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nincreaseBaselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'IncreaseBaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nsharesCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTreeBrandTech').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nclientTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nproductTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ProductTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncorrectionCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoProductsCorrection').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nincrementalCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'IncrementalPromo').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'COGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PlanCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ntiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'TradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualTiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualTradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))\npromoScenarioIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoScenario').select(activeChangesIncidentsDF.ItemId.alias('Id'))\n\nprint('total incidents count:', activeChangesIncidentsDF.count())\nprint('assortmentMatrix incidents count:', assortmentMatrixCiIdsDF.count())\nprint('priceList incidents count:', priceListCiIdsDF.count())\nprint('baseline incidents count:', baselineCiIdsDF.count())\nprint('increase baseline incidents count:', increaseBaselineCiIdsDF.count())\nprint('shares incidents count:', sharesCiIdsDF.count())\nprint('clientTree incidents count:', clientTreeCiIdsDF.count())\nprint('productTree incidents count:', productTreeCiIdsDF.count())\nprint('correction incidents count:', correctionCiIdsDF.count())\nprint('incremental incidents count:', incrementalCiIdsDF.count())\nprint('cogs incidents count:', cogsCiIdsDF.count())\nprint('cogstn incidents count:', cogsTnCiIdsDF.count())\nprint('ti incidents count:', tiCiIdsDF.count())\nprint('actual cogs incidents count:', actualCogsCiIdsDF.count())\nprint('actual cogstn incidents count:', actualCogsTnCiIdsDF.count())\nprint('actual ti incidents count:', actualTiCiIdsDF.count())\nprint('promo scenario incidents count:', promoScenarioIdsDF.count())",
+      "text": "%pyspark\nactiveChangesIncidentsDF = changesIncidentsDF\\\n  .withColumn('ItemId', upper(col('ItemId')))\\\n  .where(col('ProcessDate').isNull())\n\nprocessChangesIncidentsDF = changesIncidentsDF\\\n  .where(~col('ProcessDate').isNull())\\\n  .drop('#QCCount')\n\nassortmentMatrixCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'AssortmentMatrix').select(activeChangesIncidentsDF.ItemId.alias('Id'))\npriceListCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PriceList').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nbaselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'BaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nincreaseBaselineCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'IncreaseBaseLine').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nsharesCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTreeBrandTech').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nclientTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ClientTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nproductTreeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'ProductTree').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncorrectionCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoProductsCorrection').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nincrementalCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'IncrementalPromo').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'COGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ncogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PlanCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\ntiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'TradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGS').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualCogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nactualTiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualTradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))\npromoScenarioIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoScenario').select(activeChangesIncidentsDF.ItemId.alias('Id'))\nppeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PlanPostPromoEffect').select(activeChangesIncidentsDF.ItemId.alias('Id'))\n\nprint('total incidents count:', activeChangesIncidentsDF.count())\nprint('assortmentMatrix incidents count:', assortmentMatrixCiIdsDF.count())\nprint('priceList incidents count:', priceListCiIdsDF.count())\nprint('baseline incidents count:', baselineCiIdsDF.count())\nprint('increase baseline incidents count:', increaseBaselineCiIdsDF.count())\nprint('shares incidents count:', sharesCiIdsDF.count())\nprint('clientTree incidents count:', clientTreeCiIdsDF.count())\nprint('productTree incidents count:', productTreeCiIdsDF.count())\nprint('correction incidents count:', correctionCiIdsDF.count())\nprint('incremental incidents count:', incrementalCiIdsDF.count())\nprint('cogs incidents count:', cogsCiIdsDF.count())\nprint('cogstn incidents count:', cogsTnCiIdsDF.count())\nprint('ti incidents count:', tiCiIdsDF.count())\nprint('actual cogs incidents count:', actualCogsCiIdsDF.count())\nprint('actual cogstn incidents count:', actualCogsTnCiIdsDF.count())\nprint('actual ti incidents count:', actualTiCiIdsDF.count())\nprint('promo scenario incidents count:', promoScenarioIdsDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:55:56+0000",
+      "dateUpdated": "2023-07-08T21:26:56+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -605,98 +563,18 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=46",
-              "$$hashKey": "object:25946"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=47",
-              "$$hashKey": "object:25947"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=48",
-              "$$hashKey": "object:25948"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=49",
-              "$$hashKey": "object:25949"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=50",
-              "$$hashKey": "object:25950"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=51",
-              "$$hashKey": "object:25951"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=52",
-              "$$hashKey": "object:25952"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=53",
-              "$$hashKey": "object:25953"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=54",
-              "$$hashKey": "object:25954"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=55",
-              "$$hashKey": "object:25955"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=56",
-              "$$hashKey": "object:25956"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=57",
-              "$$hashKey": "object:25957"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=58",
-              "$$hashKey": "object:25958"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=59",
-              "$$hashKey": "object:25959"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=60",
-              "$$hashKey": "object:25960"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=61",
-              "$$hashKey": "object:25961"
-            },
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=62",
-              "$$hashKey": "object:25962"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1901613603",
+      "jobName": "paragraph_1688646607813_152047797",
       "id": "20220810-113330_258350418",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:55:56+0000",
-      "dateFinished": "2023-04-16T08:56:21+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23715"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:906"
     },
     {
       "text": "%pyspark\nactiveProductChangeIncidentsDF = productChangeIncidentsDF\\\n  .where(col('RecalculationProcessDate').isNull())\n\nprocessProductChangeIncidentsDF = productChangeIncidentsDF\\\n  .where(~col('RecalculationProcessDate').isNull())\\\n  .drop('#QCCount')\n\nprint('total product incidents count:', activeProductChangeIncidentsDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:56:21+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -726,34 +604,18 @@
         ]
       },
       "apps": [],
-      "runtimeInfos": {
-        "jobUrl": {
-          "propertyName": "jobUrl",
-          "label": "SPARK JOB",
-          "tooltip": "View in Spark web UI",
-          "group": "spark",
-          "values": [
-            {
-              "jobUrl": "https://ui-c9q0pukbr2ivf12r83k8-rc1a-dataproc-d-7iwhlzolmxzce6fz-38347.dataproc-ui.yandexcloud.net/jobs/job?id=63",
-              "$$hashKey": "object:26084"
-            }
-          ],
-          "interpreterSettingId": "spark"
-        }
-      },
+      "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1446295850",
+      "jobName": "paragraph_1688646607813_1223994563",
       "id": "20220810-113330_700905080",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:56:21+0000",
-      "dateFinished": "2023-04-16T08:56:21+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23716"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:907"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by assortment matrix  changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:56:21+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -783,18 +645,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1699285840",
+      "jobName": "paragraph_1688646607813_688556888",
       "id": "20220810-113330_1430522001",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:56:21+0000",
-      "dateFinished": "2023-04-16T08:56:21+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23717"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:908"
     },
     {
       "text": "%pyspark\nassortmentMatrixCiDF = assortmentMatrixCiIdsDF\\\n  .join(assortmentMatrixDF, 'Id', 'inner')\\\n  .select(\\\n           assortmentMatrixDF.ClientTreeId\n          ,date_add(to_date(assortmentMatrixDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')\n          ,date_add(to_date(assortmentMatrixDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')\n         )\n\npromoByAssortmentMatrixCiDF = assortmentMatrixCiDF\\\n  .join(promoFilterDF,\n        [\\\n          assortmentMatrixCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId\n         ,assortmentMatrixCiDF.StartDate <= promoFilterDF.DispatchesStart\n         ,assortmentMatrixCiDF.EndDate >= promoFilterDF.DispatchesStart\n        ]\\\n        ,'inner')\\\n  .where(promoFilterDF.InOut == 'false')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:56:21+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -821,18 +681,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1613986628",
+      "jobName": "paragraph_1688646607813_1598665649",
       "id": "20220810-113330_224779063",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:56:21+0000",
-      "dateFinished": "2023-04-16T08:56:22+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23718"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:909"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by pricelist changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:56:22+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -862,18 +720,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_96641157",
+      "jobName": "paragraph_1688646607813_639923969",
       "id": "20220810-113330_852937540",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:56:22+0000",
-      "dateFinished": "2023-04-16T08:56:22+0000",
-      "status": "FINISHED",
-      "$$hashKey": "object:23719"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:910"
     },
     {
       "text": "%pyspark\npriceListCiDF = priceListCiIdsDF\\\n  .join(priceListDF, 'Id', 'inner')\\\n  .select(\\\n           priceListDF.ClientTreeId\n          ,priceListDF.FuturePriceMarker \n          ,date_add(to_date(priceListDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')\n          ,date_add(to_date(priceListDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')\n         )\n\npromoByPriceListCiDF = priceListCiDF\\\n  .where(priceListCiDF.FuturePriceMarker == 'false')\\\n  .join(promoFilterDF,\n        [\\\n          priceListCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId\n         ,priceListCiDF.StartDate <= promoFilterDF.DispatchesStart\n         ,priceListCiDF.EndDate >= promoFilterDF.DispatchesStart\n        ]\\\n        ,'inner')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n\npromoByIncreasePriceListCiDF = priceListCiDF\\\n  .where(priceListCiDF.FuturePriceMarker == 'true')\\\n  .join(promoFilterDF,\n        [\\\n          priceListCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId\n         ,priceListCiDF.StartDate <= promoFilterDF.DispatchesStart\n         ,priceListCiDF.EndDate >= promoFilterDF.DispatchesStart\n        ]\\\n        ,'inner')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:56:22+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -905,18 +761,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2864472",
+      "jobName": "paragraph_1688646607813_800114556",
       "id": "20220810-113330_742235728",
-      "dateCreated": "2023-04-06T19:43:49+0000",
-      "dateStarted": "2023-04-16T08:56:22+0000",
-      "dateFinished": "2023-04-16T08:56:22+0000",
-      "status": "ERROR",
-      "$$hashKey": "object:23720"
+      "dateCreated": "2023-07-06T12:30:07+0000",
+      "status": "READY",
+      "$$hashKey": "object:911"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by baseline changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -946,16 +800,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_716068512",
+      "jobName": "paragraph_1688646607813_1361206024",
       "id": "20220810-113330_1506286534",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23721"
+      "$$hashKey": "object:912"
     },
     {
       "text": "%pyspark\n@udf\ndef getDemandCode(objectId):\n  c = [x for x in activeClientTreeList if x.ObjectId == objectId]\n  if len(c) == 0:\n    return ''\n  while (len(c) != 0) & (c[0].Type != 'root') & ((c[0].DemandCode == '') | (c[0].DemandCode is None)):\n    c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n    if len(c) == 0: \n      break\n  if len(c) == 0:\n    return ''\n  else:\n    return c[0].DemandCode",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -982,16 +836,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1043990539",
+      "jobName": "paragraph_1688646607813_54636876",
       "id": "20220810-113330_2060967851",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23722"
+      "$$hashKey": "object:913"
     },
     {
       "text": "%pyspark\nbaselineCiDF = baselineCiIdsDF\\\n  .join(baselineDF, 'Id', 'inner')\\\n  .select(\\\n           baselineDF.ProductId\n          ,baselineDF.DemandCode\n          ,date_add(to_date(baselineDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')\n         )\n\nincreaseBaselineCiDF = increaseBaselineCiIdsDF\\\n  .join(increaseBaselineDF, 'Id', 'inner')\\\n  .select(\\\n           increaseBaselineDF.ProductId\n          ,increaseBaselineDF.DemandCode\n          ,date_add(to_date(increaseBaselineDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')\n         )\n\n#baselineCiDF = baselineCiDF.union(increaseBaselineCiDF)\n\nbaselineCiDF = baselineCiDF\\\n  .join(datesDF, datesDF.OriginalDate == baselineCiDF.StartDate, 'inner')\\\n  .select(\\\n          baselineCiDF['*']\n         ,datesDF.MarsWeekFullName\n         )\n\nincreaseBaselineCiDF = increaseBaselineCiDF\\\n  .join(datesDF, datesDF.OriginalDate == increaseBaselineCiDF.StartDate, 'inner')\\\n  .select(\\\n          increaseBaselineCiDF['*']\n         ,datesDF.MarsWeekFullName\n         )\n\npromoDemandDF = promoFilterDF\\\n  .select(\\\n           col('Id').alias('promoId')\n          ,col('Number').alias('promoNumber')\n          ,col('BrandTechId').alias('promoBrandTechId')\n          ,promoFilterDF.StartDate.alias('promoStartDate')\n          ,promoFilterDF.EndDate.alias('promoEndDate')\n          ,promoFilterDF.DispatchesStart.alias('promoDispatchesStart')\n          ,col('ClientTreeKeyId').alias('promoClientTreeKeyId')\n          ,col('ClientTreeId').alias('promoClientTreeId')\n          ,col('InOut').alias('promoInOut')\n         )\n\npromoDemandDF = promoDemandDF\\\n  .withColumn('productDemandCode', lit(getDemandCode(col('promoClientTreeId'))))\n\ntempList = promoDemandDF.collect()\nnewPromoDemandDF = spark.createDataFrame(tempList, promoDemandDF.schema)\n\n# join with promoProduct to get ZREP\npromoProductDemandDF = newPromoDemandDF\\\n  .join(promoProductDF, promoProductDF.PromoId == newPromoDemandDF.promoId, 'inner')\\\n  .select(\\\n           newPromoDemandDF['*']\n          ,promoProductDF.ProductId\n         )\n\npromoSplittedByWeekDF = promoProductDemandDF\\\n  .join(datesDF, \n        [\\\n          datesDF.OriginalDate >= promoProductDemandDF.promoStartDate\n         ,datesDF.OriginalDate <= promoProductDemandDF.promoEndDate\n        ], \n        'inner')\\\n  .select(\\\n          promoProductDemandDF.promoId\n         ,promoProductDemandDF.promoNumber\n         ,promoProductDemandDF.promoStartDate\n         ,promoProductDemandDF.promoEndDate\n         ,promoProductDemandDF.productDemandCode\n         ,promoProductDemandDF.ProductId\n         ,promoProductDemandDF.promoInOut\n         ,datesDF.MarsWeekFullName\n         ,datesDF.MarsDay\n         )\n\ncols = promoSplittedByWeekDF.columns\ncols.remove('MarsDay')\n\npromoSplittedByWeekDF = promoSplittedByWeekDF\\\n  .groupBy(cols)\\\n  .agg(count('*').cast(DecimalType(30,6)).alias('promoDaysInWeek'))\n\npromoByBaselineCiDF = baselineCiDF\\\n  .join(promoSplittedByWeekDF,\n        [\\\n          promoSplittedByWeekDF.productDemandCode == baselineCiDF.DemandCode\n         ,promoSplittedByWeekDF.ProductId == baselineCiDF.ProductId\n         ,promoSplittedByWeekDF.MarsWeekFullName == baselineCiDF.MarsWeekFullName\n        ])\\\n  .where(promoSplittedByWeekDF.promoInOut == 'false')\\\n  .select(promoSplittedByWeekDF.promoId.alias('Id'), promoSplittedByWeekDF.promoNumber.alias('Number'))\\\n  .dropDuplicates()\n \npromoByIncreaseBaselineCiDF = increaseBaselineCiDF\\\n  .join(promoSplittedByWeekDF,\n        [\\\n          promoSplittedByWeekDF.productDemandCode == increaseBaselineCiDF.DemandCode\n         ,promoSplittedByWeekDF.ProductId == increaseBaselineCiDF.ProductId\n         ,promoSplittedByWeekDF.MarsWeekFullName == increaseBaselineCiDF.MarsWeekFullName\n        ])\\\n  .where(promoSplittedByWeekDF.promoInOut == 'false')\\\n  .select(promoSplittedByWeekDF.promoId.alias('Id'), promoSplittedByWeekDF.promoNumber.alias('Number'))\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:31:14+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1018,16 +872,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1112263106",
+      "jobName": "paragraph_1688646607813_1480363600",
       "id": "20220810-113330_2120202078",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23723"
+      "$$hashKey": "object:914"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by shares changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1057,16 +911,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_23008533",
+      "jobName": "paragraph_1688646607813_790738582",
       "id": "20220810-113330_1045457371",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23724"
+      "$$hashKey": "object:915"
     },
     {
       "text": "%pyspark\nsharesCiDF = sharesCiIdsDF\\\n  .join(sharesDF, 'Id', 'inner')\\\n  .select(\\\n           sharesDF.ClientTreeId\n          ,sharesDF.BrandTechId\n         )\n\npromoBySharesCiDF = sharesCiDF\\\n  .join(promoFilterDF,\n        [\\\n          promoFilterDF.ClientTreeKeyId == sharesCiDF.ClientTreeId\n         ,promoFilterDF.BrandTechId == sharesCiDF.BrandTechId\n        ]\\\n        ,'inner')\\\n  .where(promoFilterDF.InOut == 'false')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1093,16 +947,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1854829652",
+      "jobName": "paragraph_1688646607813_430453728",
       "id": "20220810-113330_668943356",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23725"
+      "$$hashKey": "object:916"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by clienttree changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1132,16 +986,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2078518581",
+      "jobName": "paragraph_1688646607813_1849323477",
       "id": "20220810-113330_1664215595",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23726"
+      "$$hashKey": "object:917"
     },
     {
       "text": "%pyspark\nclientTreeCiDF = clientTreeCiIdsDF\\\n  .join(clientTreeDF, 'Id', 'inner')\\\n  .select(\\\n           clientTreeDF.ObjectId\n         )\n\npromoByClientTreeCiDF = clientTreeCiDF\\\n  .join(promoFilterDF,\n        [\\\n          promoFilterDF.ClientTreeId == clientTreeDF.ObjectId\n        ]\\\n        ,'inner')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1168,16 +1022,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_436255732",
+      "jobName": "paragraph_1688646607813_184387290",
       "id": "20220810-113330_1616335956",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23727"
+      "$$hashKey": "object:918"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by producttree changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1207,16 +1061,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_713737028",
+      "jobName": "paragraph_1688646607813_698201685",
       "id": "20220810-113330_1567946548",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23728"
+      "$$hashKey": "object:919"
     },
     {
       "text": "%pyspark\nproductTreeCiDF = productTreeCiIdsDF\\\n  .join(productTreeDF, 'Id', 'inner')\\\n  .select(\\\n           productTreeDF.ObjectId\n         )\n\npromoByProductTreeCiDF = productTreeCiDF\\\n  .join(promoProductTreeDF, promoProductTreeDF.ProductTreeObjectId == productTreeCiDF.ObjectId, 'inner')\\\n  .join(promoFilterDF, promoFilterDF.Id == promoProductTreeDF.PromoId, 'inner')\\\n  .where(promoFilterDF.InOut == 'false')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1243,25 +1097,99 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_885465264",
+      "jobName": "paragraph_1688646607813_235342068",
       "id": "20220810-113330_6922181",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23729"
+      "$$hashKey": "object:920"
+    },
+    {
+      "text": "%md\n#####*Get promo numbers filtered by plan post promo effect incidents*",
+      "user": "anonymous",
+      "dateUpdated": "2023-07-08T21:30:51+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "<console>:24: \u001b[31merror: \u001b[0mnot found: value #####*\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n       ^\n<console>:24: \u001b[31merror: \u001b[0mnot found: value promo\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n                 ^\n<console>:24: \u001b[31merror: \u001b[0mnot found: value filtered\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n                               ^\n<console>:24: \u001b[31merror: \u001b[0mnot found: value plan\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n                                           ^\n<console>:24: \u001b[31merror: \u001b[0mnot found: value promo\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n                                                     ^\n<console>:24: \u001b[31merror: \u001b[0mnot found: value incidents\n       #####*Get promo numbers filtered by plan post promo effect incidents*\n                                                                  ^\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1688851788084_112909915",
+      "id": "paragraph_1688851788084_112909915",
+      "dateCreated": "2023-07-08T21:29:48+0000",
+      "dateStarted": "2023-07-08T21:30:44+0000",
+      "dateFinished": "2023-07-08T21:30:44+0000",
+      "status": "ERROR",
+      "$$hashKey": "object:921"
+    },
+    {
+      "text": "%pyspark\n\nppeCiDF = ppeCiIdsDF\\\n  .join(planPostPromoEffectDF, 'Id', 'inner')\\\n  .select(\\\n           planPostPromoEffectDF.BrandTechId\n         )\n\npromoByPPECiDF = ppeCiDF\\\n  .join(promoFilterDF, promoFilterDF.BrandTechId == promoProductDF.BrandTechId, 'inner')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n",
+      "user": "anonymous",
+      "dateUpdated": "2023-07-08T21:29:57+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1688851792270_468739231",
+      "id": "paragraph_1688851792270_468739231",
+      "dateCreated": "2023-07-08T21:29:52+0000",
+      "status": "READY",
+      "$$hashKey": "object:922"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by correction changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-08T21:30:07+0000",
       "progress": 0,
       "config": {
+        "tableHide": true,
         "editorSetting": {
           "language": "markdown",
           "editOnDblClick": true
         },
         "editorMode": "ace/mode/markdown",
         "colWidth": 12,
-        "editorHide": true,
+        "editorHide": false,
         "fontSize": 9,
         "results": {},
         "enabled": true
@@ -1282,16 +1210,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1815288749",
+      "jobName": "paragraph_1688646607813_1456781317",
       "id": "20220810-113330_1818582353",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23730"
+      "$$hashKey": "object:923"
     },
     {
       "text": "%pyspark\ncorrectionCiDF = correctionCiIdsDF\\\n  .join(correctionDF, 'Id', 'inner')\\\n  .select(\\\n           correctionDF.PromoProductId\n         )\n\npromoByCorrectionCiDF = correctionCiDF\\\n  .join(promoProductDF, promoProductDF.Id == correctionCiDF.PromoProductId, 'inner')\\\n  .join(promoFilterDF, promoFilterDF.Id == promoProductDF.PromoId, 'inner')\\\n  .where(promoFilterDF.InOut == 'false')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1318,16 +1246,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2125038228",
+      "jobName": "paragraph_1688646607813_393678315",
       "id": "20220810-113330_910836093",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23731"
+      "$$hashKey": "object:924"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by incremental changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1357,16 +1285,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1176010535",
+      "jobName": "paragraph_1688646607813_1403314983",
       "id": "20220810-113330_1283317207",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23732"
+      "$$hashKey": "object:925"
     },
     {
       "text": "%pyspark\nincrementalCiDF = incrementalCiIdsDF\\\n  .join(incrementalDF, 'Id', 'inner')\\\n  .select(\\\n           incrementalDF.PromoId\n         )\n\npromoByIncrementalCiDF = incrementalCiDF\\\n  .join(promoFilterDF, promoFilterDF.Id == incrementalCiDF.PromoId, 'inner')\\\n  .where(promoFilterDF.InOut == 'true')\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1393,16 +1321,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1417340436",
+      "jobName": "paragraph_1688646607813_1031711656",
       "id": "20220810-113330_2548778",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23733"
+      "$$hashKey": "object:926"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by cogs changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1432,16 +1360,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1631476513",
+      "jobName": "paragraph_1688646607813_343082170",
       "id": "20220810-113330_1181728426",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23734"
+      "$$hashKey": "object:927"
     },
     {
       "text": "%pyspark\ncogsDF = cogsDF\\\n  .withColumn('StartDate', date_add(to_date(cogsDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsDF.EndDate, 'yyyy-MM-dd'), 1))\ncogsTnDF = cogsTnDF\\\n  .withColumn('StartDate', date_add(to_date(cogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(cogsTnDF.EndDate, 'yyyy-MM-dd'), 1))\n\ncogsClientDF = cogsDF\\\n  .join(clientTreeDF, clientTreeDF.Id == cogsDF.ClientTreeId, 'inner')\\\n  .join(brandTechDF, brandTechDF.Id == cogsDF.BrandTechId, 'inner')\\\n  .select(\\\n           cogsDF.Id\n          ,cogsDF.StartDate.alias('cogsStartDate')\n          ,cogsDF.EndDate.alias('cogsEndDate')\n          ,cogsDF.LSVpercent\n          ,clientTreeDF.ObjectId.alias('cogsClientTreeObjectId')\n          ,brandTechDF.BrandsegTechsub.alias('cbtName')\n         )\ncogsTnClientDF = cogsTnDF\\\n  .join(clientTreeDF, clientTreeDF.Id == cogsTnDF.ClientTreeId, 'inner')\\\n  .join(brandTechDF, brandTechDF.Id == cogsTnDF.BrandTechId, 'inner')\\\n  .select(\\\n           cogsTnDF.Id\n          ,cogsTnDF.StartDate.alias('cogsStartDate')\n          ,cogsTnDF.EndDate.alias('cogsEndDate')\n          ,cogsTnDF.TonCost\n          ,clientTreeDF.ObjectId.alias('cogsClientTreeObjectId')\n          ,brandTechDF.BrandsegTechsub.alias('cbtName')\n         )\n\ncogsClientList = cogsClientDF.collect()\ncogsCiIdsList = [row.Id for row in cogsCiIdsDF.collect()]\n\ncogsTnClientList = cogsTnClientDF.collect()\ncogsTnCiIdsList = [row.Id for row in cogsTnCiIdsDF.collect()]",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1468,16 +1396,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_24856781",
+      "jobName": "paragraph_1688646607813_1560701311",
       "id": "20220810-113330_575295155",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23735"
+      "$$hashKey": "object:928"
     },
     {
       "text": "%pyspark\n@udf\ndef isPromoFilteredByGogs(objectId, brandTechName, dispatchesStart):\n  c = [x for x in activeClientTreeList if x.ObjectId == objectId]\n  cogs = []\n  while (len(cogs) == 0) & (len(c) != 0) & (c[0].Type != 'root'):\n    cogs = [x for x in cogsClientList if x.cogsClientTreeObjectId == c[0].ObjectId and x.cbtName == brandTechName\\\n                                         and x.cogsStartDate <= dispatchesStart and x.cogsEndDate >= dispatchesStart]\n    c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n  \n  if len(cogs) == 0:\n    while (len(cogs) == 0) & (len(c) != 0) & (c[0].Type != 'root'):\n      cogs = [x for x in cogsClientList if x.cogsClientTreeObjectId == c[0].ObjectId and x.cbtName is None\\\n                                         and x.cogsStartDate <= dispatchesStart and x.cogsEndDate >= dispatchesStart]\n      c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n      \n  isFiltered = False\n  \n  if len(cogs) == 0:\n    return False\n  else:\n    for item in cogs:\n      if item.Id in cogsCiIdsList:\n        isFiltered = True\n    return isFiltered",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1504,16 +1432,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1945404823",
+      "jobName": "paragraph_1688646607813_1674947344",
       "id": "20220810-113330_16493640",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23736"
+      "$$hashKey": "object:929"
     },
     {
       "text": "%pyspark\n@udf\ndef isPromoFilteredByCogsTn(objectId, brandTechName, dispatchesStart):\n  c = [x for x in activeClientTreeList if x.ObjectId == int(objectId)]\n  cogs = []\n  while (len(cogs) == 0) & (len(c) != 0) & (c[0].Type != 'root'):\n    cogs = [x for x in cogsTnClientList if x.cogsClientTreeObjectId == c[0].ObjectId and x.cbtName == brandTechName\\\n                                         and x.cogsStartDate <= dispatchesStart and x.cogsEndDate >= dispatchesStart]\n    c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n  \n  if len(cogs) == 0:\n    while (len(cogs) == 0) & (len(c) != 0) & (c[0].Type != 'root'):\n      cogs = [x for x in cogsTnClientList if x.cogsClientTreeObjectId == c[0].ObjectId and x.cbtName is None\\\n                                         and x.cogsStartDate <= dispatchesStart and x.cogsEndDate >= dispatchesStart]\n      c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n      \n  isFiltered = False\n  \n  if len(cogs) == 0:\n    return False\n  else:\n    for item in cogs:\n      if item.Id in cogsTnCiIdsList:\n        isFiltered = True\n    return isFiltered",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1540,16 +1468,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_648520421",
+      "jobName": "paragraph_1688646607813_1654373948",
       "id": "20220810-113330_936054729",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23737"
+      "$$hashKey": "object:930"
     },
     {
       "text": "%pyspark\npromoByCogsCiDF = promoFilterDF\\\n  .withColumn('isFilteredByGogs', lit(isPromoFilteredByGogs(col('ClientTreeId'), col('promoBrandTechName'), col('DispatchesStart'))))\\\n  .where(col('isFilteredByGogs') == True)\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n\npromoByCogsTnCiDF = promoFilterDF\\\n  .withColumn('isFilteredByGogs', lit(isPromoFilteredByCogsTn(col('ClientTreeId'), col('promoBrandTechName'), col('DispatchesStart'))))\\\n  .where(col('isFilteredByGogs') == True)\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1576,16 +1504,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_303951045",
+      "jobName": "paragraph_1688646607813_367406173",
       "id": "20220810-113330_216690036",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23738"
+      "$$hashKey": "object:931"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by ti changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1615,16 +1543,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_73969087",
+      "jobName": "paragraph_1688646607813_603454315",
       "id": "20220810-113330_2082833804",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23739"
+      "$$hashKey": "object:932"
     },
     {
       "text": "%pyspark\ntiDF = tiDF\\\n  .withColumn('StartDate', date_add(to_date(tiDF.StartDate, 'yyyy-MM-dd'), 1))\\\n  .withColumn('EndDate', date_add(to_date(tiDF.EndDate, 'yyyy-MM-dd'), 1))\n\ntiClientNullBtDF = tiDF\\\n  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\\\n  .select(\\\n           tiDF.Id\n          ,tiDF.StartDate.alias('tiStartDate')\n          ,tiDF.EndDate.alias('tiEndDate')\n          ,tiDF.SizePercent\n          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')\n         )\\\n  .withColumn('tibtName', lit(None).cast(StringType()))\n\ntiClientNotNullBtDF = tiDF\\\n  .join(clientTreeDF, clientTreeDF.Id == tiDF.ClientTreeId, 'inner')\\\n  .join(brandTechDF, brandTechDF.Id == tiDF.BrandTechId, 'inner')\\\n  .select(\\\n           tiDF.Id\n          ,tiDF.StartDate.alias('tiStartDate')\n          ,tiDF.EndDate.alias('tiEndDate')\n          ,tiDF.SizePercent\n          ,clientTreeDF.ObjectId.alias('tiClientTreeObjectId')\n          ,brandTechDF.BrandsegTechsub.alias('tibtName')\n         )\n\ntiClientList = tiClientNullBtDF.union(tiClientNotNullBtDF).collect()\ntiCiIdsList = [row.Id for row in tiCiIdsDF.collect()]",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1651,16 +1579,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_920370055",
+      "jobName": "paragraph_1688646607813_1729338168",
       "id": "20220810-113330_568455084",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23740"
+      "$$hashKey": "object:933"
     },
     {
       "text": "%pyspark\n@udf\ndef isPromoFilteredByTi(objectId, brandTechName, startDate):\n  c = [x for x in activeClientTreeList if x.ObjectId == objectId]\n  ti = []\n  while (len(ti) == 0) & (len(c) != 0) & (c[0].Type != 'root'):\n    ti = [x for x in tiClientList if x.tiClientTreeObjectId == c[0].ObjectId and (x.tibtName == brandTechName or x.tibtName is None)\\\n                                     and x.tiStartDate <= startDate and x.tiEndDate >= startDate]\n    c = [x for x in activeClientTreeList if x.ObjectId == c[0].parentId]\n    \n  isFiltered = False  \n    \n  if len(ti) == 0:\n    return False\n  else:\n    for item in ti:\n      if item.Id in tiCiIdsList:\n        isFiltered = True\n    return isFiltered",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1687,16 +1615,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_551954900",
+      "jobName": "paragraph_1688646607813_966466898",
       "id": "20220810-113330_1320880414",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23741"
+      "$$hashKey": "object:934"
     },
     {
       "text": "%pyspark\npromoByTiCiDF = promoFilterDF\\\n  .withColumn('isFilteredByTi', lit(isPromoFilteredByTi(col('ClientTreeId'), col('promoBrandTechName'), col('DispatchesStart'))))\\\n  .where(col('isFilteredByTi') == True)\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1723,16 +1651,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1878978618",
+      "jobName": "paragraph_1688646607813_1301419044",
       "id": "20220810-113330_291851376",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23742"
+      "$$hashKey": "object:935"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by actual cogs changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1762,16 +1690,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_990099864",
+      "jobName": "paragraph_1688646607813_1452985014",
       "id": "20220810-113330_1102881333",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23743"
+      "$$hashKey": "object:936"
     },
     {
       "text": "%pyspark\npromoByActualCogsCiDF = actualCogsTiRecalculationPromoDF\\\n  .join(actualCogsCiIdsDF, actualCogsCiIdsDF.Id == actualCogsTiRecalculationPromoDF.Id, 'inner')\\\n  .where(~actualCogsCiIdsDF.Id.isNull())\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n\npromoByActualCogsTnCiDF = actualCogsTiRecalculationPromoDF\\\n  .join(actualCogsTnCiIdsDF, actualCogsTnCiIdsDF.Id == actualCogsTiRecalculationPromoDF.Id, 'inner')\\\n  .where(~actualCogsTnCiIdsDF.Id.isNull())\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n\npromoByActualCogsCiDF.show()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1803,16 +1731,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1966289568",
+      "jobName": "paragraph_1688646607813_1007405986",
       "id": "20220810-113330_1871620385",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23744"
+      "$$hashKey": "object:937"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by actual ti changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1842,16 +1770,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_603613322",
+      "jobName": "paragraph_1688646607813_857534001",
       "id": "20220810-113330_2045488695",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23745"
+      "$$hashKey": "object:938"
     },
     {
       "text": "%pyspark\npromoByActualTiCiDF = actualCogsTiRecalculationPromoDF\\\n  .join(actualTiCiIdsDF, actualTiCiIdsDF.Id == actualCogsTiRecalculationPromoDF.Id, 'inner')\\\n  .where(~actualTiCiIdsDF.Id.isNull())\\\n  .select(promoFilterDF.Id, promoFilterDF.Number)\\\n  .dropDuplicates()\n\npromoByActualTiCiDF.show()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1883,16 +1811,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_249741100",
+      "jobName": "paragraph_1688646607813_2112933520",
       "id": "20220810-113330_1121352630",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23746"
+      "$$hashKey": "object:939"
     },
     {
       "text": "%md\n#####*Get promo numbers filtered by product changes incidents*",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1922,16 +1850,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_2112447695",
+      "jobName": "paragraph_1688646607813_180784657",
       "id": "20220810-113330_1717552339",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23747"
+      "$$hashKey": "object:940"
     },
     {
       "text": "%pyspark\npromoByProductCiDF = promoFilterDF\\\n  .join(promoProductTreeDF, promoProductTreeDF.PromoId == promoFilterDF.Id, 'inner')\\\n  .join(productTreeDF, productTreeDF.ObjectId == promoProductTreeDF.ProductTreeObjectId, 'inner')\\\n  .select(\\\n           promoFilterDF.Id.alias('promoId')\n          ,promoFilterDF.ClientTreeKeyId\n          ,promoFilterDF.DispatchesStart\n          ,promoFilterDF.Disabled.alias('pptDisabled')\n          ,promoFilterDF.Number.alias('pNumber')\n          ,productTreeDF.EndDate\n          ,promoFilterDF.InOut\n          ,lower(productTreeDF.FilterQuery).alias('FilterQuery')\n         )\\\n  .where((col('pptDisabled') == 'false') & (col('EndDate').isNull()))\n\ninoutPromoByProductCiDF = promoByProductCiDF.where(col('InOut') == 'true')\nnotInoutPromoByProductCiDF = promoByProductCiDF.where(col('InOut') == 'false')\n\nlowerCaseProductDF = productDF.select(*[lower(col(c)).name(c) for c in productDF.columns])\nlowerCaseProductDF = lowerCaseProductDF.toDF(*[c.lower() for c in lowerCaseProductDF.columns])",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1958,16 +1886,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_295679196",
+      "jobName": "paragraph_1688646607813_1915287948",
       "id": "20220810-113330_2088943256",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23748"
+      "$$hashKey": "object:941"
     },
     {
       "text": "%pyspark\r\npromoByProductCiList = notInoutPromoByProductCiDF.collect()\r\n\r\nfilteredArray = []\r\nlowerCaseProductDF.registerTempTable(\"product\")\r\n\r\nfilteredProductSchema = StructType([\r\n  StructField(\"Id\", StringType(), False),\r\n  StructField(\"Number\", IntegerType(), False),\r\n  StructField(\"fPromoId\", StringType(), False),\r\n])\r\n\r\nfor i, item in enumerate(promoByProductCiList):\r\n#   print(i, item.pNumber, item.promoId)\r\n  productFilter = item.FilterQuery.replace('['+schema.lower()+'].[', '').replace('].[', '.').replace('[', '').replace(']', '').replace('*', 'id')\r\n  filteredIdsList = spark.sql(productFilter).collect()\r\n#   print(productFilter)\r\n#   print(filteredIdsList)\r\n  for productId in filteredIdsList:\r\n    filteredArray.append([productId[0], item.pNumber, item.promoId])\r\n    \r\nfilteredProductDF = spark.createDataFrame(filteredArray, filteredProductSchema)",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -1994,16 +1922,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1653143356",
+      "jobName": "paragraph_1688646607813_2039616013",
       "id": "20220810-113330_1488727337",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23749"
+      "$$hashKey": "object:942"
     },
     {
       "text": "%pyspark\nprint(filteredProductDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2035,16 +1963,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1815419802",
+      "jobName": "paragraph_1688646607813_215400116",
       "id": "20220810-113330_700900931",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23750"
+      "$$hashKey": "object:943"
     },
     {
       "text": "%pyspark\nactiveAssortmentMatrixDF = assortmentMatrixDF.where(col('Disabled') == 'false')\n\nfilteredProductDF = filteredProductDF.withColumn('Id', upper(filteredProductDF.Id))\n\ncols = filteredProductDF.columns\n\nresultFilteredProductDF = filteredProductDF\\\n  .join(activeAssortmentMatrixDF, activeAssortmentMatrixDF.ProductId == filteredProductDF.Id, 'inner')\\\n  .select(filteredProductDF['*'])\\\n  .dropDuplicates()",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2071,16 +1999,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1303286956",
+      "jobName": "paragraph_1688646607813_890024581",
       "id": "20220810-113330_833079028",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23751"
+      "$$hashKey": "object:944"
     },
     {
       "text": "%pyspark\nprint(resultFilteredProductDF.count())",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2112,16 +2040,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1280814954",
+      "jobName": "paragraph_1688646607813_1254408441",
       "id": "20220810-113330_1480116262",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23752"
+      "$$hashKey": "object:945"
     },
     {
       "text": "%pyspark\nnotInoutPromoByProductCiDF = resultFilteredProductDF\\\n  .join(activeProductChangeIncidentsDF, activeProductChangeIncidentsDF.ProductId == resultFilteredProductDF.Id, 'inner')\\\n  .select(resultFilteredProductDF.fPromoId.alias('Id'), resultFilteredProductDF.Number)\\\n  .dropDuplicates()\n\ninoutPromoByProductCiDF = inoutPromoByProductCiDF\\\n  .join(activePromoProductDF, activePromoProductDF.PromoId == inoutPromoByProductCiDF.promoId, 'inner')\\\n  .join(activeProductChangeIncidentsDF, activeProductChangeIncidentsDF.ProductId == activePromoProductDF.ProductId, 'inner')\\\n  .select(inoutPromoByProductCiDF.promoId.alias('Id'), inoutPromoByProductCiDF.pNumber.alias('Number'))\\\n  .dropDuplicates()\n\npromoByProductCiDF = notInoutPromoByProductCiDF.union(inoutPromoByProductCiDF)",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2148,16 +2076,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_296692398",
+      "jobName": "paragraph_1688646607813_575627435",
       "id": "20220810-113330_1632920429",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23753"
+      "$$hashKey": "object:946"
     },
     {
-      "text": "%pyspark\ntitleMessage = '[INFO]: PROMO FILTERING'\ntitleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\npromoNumbersByAssortmentMatrixCiDF = promoByAssortmentMatrixCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Assortment matrix incidents: '))\npromoNumbersByAssortmentMatrixCiDF = promoNumbersByAssortmentMatrixCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByPriceListCiDF = promoByPriceListCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Pricelist incidents: '))\npromoNumbersByPriceListCiDF = promoNumbersByPriceListCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByIncreasePriceListCiDF = promoByIncreasePriceListCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Pricelist incidents: '))\npromoNumbersByIncreasePriceListCiDF = promoNumbersByIncreasePriceListCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByBaselineCiDF = promoByBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Baseline incidents: '))\npromoNumbersByBaselineCiDF = promoNumbersByBaselineCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n  \npromoNumbersByIncreaseBaselineCiDF = promoByIncreaseBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Baseline incidents: '))\npromoNumbersByIncreaseBaselineCiDF = promoNumbersByIncreaseBaselineCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersBySharesCiDF = promoBySharesCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Shares incidents: '))\npromoNumbersBySharesCiDF = promoNumbersBySharesCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByClientTreeCiDF = promoByClientTreeCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by ClientTree incidents: '))\npromoNumbersByClientTreeCiDF = promoNumbersByClientTreeCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByProductTreeCiDF = promoByProductTreeCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by ProductTree incidents: '))\npromoNumbersByProductTreeCiDF = promoNumbersByProductTreeCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCorrectionCiDF = promoByCorrectionCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Correction incidents: '))\npromoNumbersByCorrectionCiDF = promoNumbersByCorrectionCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByIncrementalCiDF = promoByIncrementalCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Incremental incidents: '))\npromoNumbersByIncrementalCiDF = promoNumbersByIncrementalCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCogsCiDF = promoByCogsCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by COGS incidents: '))\npromoNumbersByCogsCiDF = promoNumbersByCogsCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCogsTnCiDF = promoByCogsTnCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by COGSTn incidents: '))\npromoNumbersByCogsTnCiDF = promoNumbersByCogsTnCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByTiCiDF = promoByTiCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by TI incidents: '))\npromoNumbersByTiCiDF = promoNumbersByTiCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualCogsCiDF = promoByActualCogsCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual COGS incidents: '))\npromoNumbersByActualCogsCiDF = promoNumbersByActualCogsCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualCogsTnCiDF = promoByActualCogsTnCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual COGSTn incidents: '))\npromoNumbersByActualCogsTnCiDF = promoNumbersByActualCogsTnCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualTiCiDF = promoByActualTiCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual TI incidents: '))\npromoNumbersByActualTiCiDF = promoNumbersByActualTiCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByProductCiDF = promoByProductCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Product incidents: '))\npromoNumbersByProductCiDF = promoNumbersByProductCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\\\n  .union(promoNumbersByIncreasePriceListCiDF)\\\n  .union(promoNumbersByPriceListCiDF)\\\n  .union(promoNumbersByIncreaseBaselineCiDF)\\\n  .union(promoNumbersByBaselineCiDF)\\\n  .union(promoNumbersBySharesCiDF)\\\n  .union(promoNumbersByClientTreeCiDF)\\\n  .union(promoNumbersByProductTreeCiDF)\\\n  .union(promoNumbersByCorrectionCiDF)\\\n  .union(promoNumbersByIncrementalCiDF)\\\n  .union(promoNumbersByCogsCiDF)\\\n  .union(promoNumbersByCogsTnCiDF)\\\n  .union(promoNumbersByTiCiDF)\\\n  .union(promoNumbersByActualCogsCiDF)\\\n  .union(promoNumbersByActualCogsTnCiDF)\\\n  .union(promoNumbersByActualTiCiDF)\\\n  .union(promoNumbersByProductCiDF)\n\nlogMessageDF = promoNumbersFilteredByCiDF\\\n  .withColumn('logMessage', concat(col('Title'), col('Number')))\\\n  .drop('Title', 'Number')\n\noutputLogMessageDF = inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)\n\npromoByCiDF = promoByAssortmentMatrixCiDF\\\n  .union(promoByPriceListCiDF)\\\n  .union(promoByBaselineCiDF)\\\n  .union(promoBySharesCiDF)\\\n  .union(promoByClientTreeCiDF)\\\n  .union(promoByProductTreeCiDF)\\\n  .union(promoByCorrectionCiDF)\\\n  .union(promoByIncrementalCiDF)\\\n  .union(promoByCogsCiDF)\\\n  .union(promoByCogsTnCiDF)\\\n  .union(promoByTiCiDF)\\\n  .union(promoByActualCogsCiDF)\\\n  .union(promoByActualCogsTnCiDF)\\\n  .union(promoByActualTiCiDF)\\\n  .union(promoByProductCiDF)\n\nincreasePromoByCiDF = promoByIncreaseBaselineCiDF\\\n  .union(promoByIncreasePriceListCiDF)\n\nblockedPromoDF = promoByCiDF\\\n  .select(col('Id').alias('PromoId'))\\\n  .withColumn('HandlerId', lit(handlerId))\n\nblockedPromoDF = blockedPromoDF.dropDuplicates()\n\nblockedIncreasePromoDF = increasePromoByCiDF\\\n  .select(col('Id').alias('PromoId'))\\\n  .withColumn('HandlerId', lit(handlerId))\n\nblockedIncreasePromoDF = blockedIncreasePromoDF.dropDuplicates()\n\nactiveChangesIncidentsDF = activeChangesIncidentsDF\\\n  .withColumn('Disabled', lit(True))\\\n  .drop('#QCCount')\n\nactiveProductChangeIncidentsDF = activeProductChangeIncidentsDF\\\n  .withColumn('Disabled', lit(True))\\\n  .drop('#QCCount')\n\nresultChangesIncidentsDF = activeChangesIncidentsDF.union(processChangesIncidentsDF)\nresultProductChangeIncidentsDF = activeProductChangeIncidentsDF.union(processProductChangeIncidentsDF)\n\n\n",
+      "text": "%pyspark\ntitleMessage = '[INFO]: PROMO FILTERING'\ntitleLogMessageDF = spark.createDataFrame([(titleMessage,)], inputLogMessageSchema)\n\npromoNumbersByAssortmentMatrixCiDF = promoByAssortmentMatrixCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Assortment matrix incidents: '))\npromoNumbersByAssortmentMatrixCiDF = promoNumbersByAssortmentMatrixCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByPriceListCiDF = promoByPriceListCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Pricelist incidents: '))\npromoNumbersByPriceListCiDF = promoNumbersByPriceListCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByIncreasePriceListCiDF = promoByIncreasePriceListCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Pricelist incidents: '))\npromoNumbersByIncreasePriceListCiDF = promoNumbersByIncreasePriceListCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByBaselineCiDF = promoByBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Baseline incidents: '))\npromoNumbersByBaselineCiDF = promoNumbersByBaselineCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n  \npromoNumbersByIncreaseBaselineCiDF = promoByIncreaseBaselineCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Increase Baseline incidents: '))\npromoNumbersByIncreaseBaselineCiDF = promoNumbersByIncreaseBaselineCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersBySharesCiDF = promoBySharesCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Shares incidents: '))\npromoNumbersBySharesCiDF = promoNumbersBySharesCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByClientTreeCiDF = promoByClientTreeCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by ClientTree incidents: '))\npromoNumbersByClientTreeCiDF = promoNumbersByClientTreeCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByProductTreeCiDF = promoByProductTreeCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by ProductTree incidents: '))\npromoNumbersByProductTreeCiDF = promoNumbersByProductTreeCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n  \npromoNumbersByPpeCiDF = promoByPPECiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Plan Post Promo Effect incidents: '))\npromoNumbersByPpeCiDF = promoNumbersByPpeCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCorrectionCiDF = promoByCorrectionCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Correction incidents: '))\npromoNumbersByCorrectionCiDF = promoNumbersByCorrectionCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByIncrementalCiDF = promoByIncrementalCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Incremental incidents: '))\npromoNumbersByIncrementalCiDF = promoNumbersByIncrementalCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCogsCiDF = promoByCogsCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by COGS incidents: '))\npromoNumbersByCogsCiDF = promoNumbersByCogsCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByCogsTnCiDF = promoByCogsTnCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by COGSTn incidents: '))\npromoNumbersByCogsTnCiDF = promoNumbersByCogsTnCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByTiCiDF = promoByTiCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by TI incidents: '))\npromoNumbersByTiCiDF = promoNumbersByTiCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualCogsCiDF = promoByActualCogsCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual COGS incidents: '))\npromoNumbersByActualCogsCiDF = promoNumbersByActualCogsCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualCogsTnCiDF = promoByActualCogsTnCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual COGSTn incidents: '))\npromoNumbersByActualCogsTnCiDF = promoNumbersByActualCogsTnCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByActualTiCiDF = promoByActualTiCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Actual TI incidents: '))\npromoNumbersByActualTiCiDF = promoNumbersByActualTiCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersByProductCiDF = promoByProductCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Product incidents: '))\npromoNumbersByProductCiDF = promoNumbersByProductCiDF\\\n  .groupBy('Title')\\\n  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))\n\npromoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\\\n  .union(promoNumbersByIncreasePriceListCiDF)\\\n  .union(promoNumbersByPriceListCiDF)\\\n  .union(promoNumbersByIncreaseBaselineCiDF)\\\n  .union(promoNumbersByBaselineCiDF)\\\n  .union(promoNumbersBySharesCiDF)\\\n  .union(promoNumbersByClientTreeCiDF)\\\n  .union(promoNumbersByProductTreeCiDF)\\\n  .union(promoNumbersByPpeCiDF)\\\n  .union(promoNumbersByCorrectionCiDF)\\\n  .union(promoNumbersByIncrementalCiDF)\\\n  .union(promoNumbersByCogsCiDF)\\\n  .union(promoNumbersByCogsTnCiDF)\\\n  .union(promoNumbersByTiCiDF)\\\n  .union(promoNumbersByActualCogsCiDF)\\\n  .union(promoNumbersByActualCogsTnCiDF)\\\n  .union(promoNumbersByActualTiCiDF)\\\n  .union(promoNumbersByProductCiDF)\n\nlogMessageDF = promoNumbersFilteredByCiDF\\\n  .withColumn('logMessage', concat(col('Title'), col('Number')))\\\n  .drop('Title', 'Number')\n\noutputLogMessageDF = inputLogMessageDF\\\n  .union(titleLogMessageDF)\\\n  .union(logMessageDF)\n\npromoByCiDF = promoByAssortmentMatrixCiDF\\\n  .union(promoByPriceListCiDF)\\\n  .union(promoByBaselineCiDF)\\\n  .union(promoBySharesCiDF)\\\n  .union(promoByClientTreeCiDF)\\\n  .union(promoByProductTreeCiDF)\\\n  .union(promoByPPECiDF)\\\n  .union(promoByCorrectionCiDF)\\\n  .union(promoByIncrementalCiDF)\\\n  .union(promoByCogsCiDF)\\\n  .union(promoByCogsTnCiDF)\\\n  .union(promoByTiCiDF)\\\n  .union(promoByActualCogsCiDF)\\\n  .union(promoByActualCogsTnCiDF)\\\n  .union(promoByActualTiCiDF)\\\n  .union(promoByProductCiDF)\n\nincreasePromoByCiDF = promoByIncreaseBaselineCiDF\\\n  .union(promoByIncreasePriceListCiDF)\n\nblockedPromoDF = promoByCiDF\\\n  .select(col('Id').alias('PromoId'))\\\n  .withColumn('HandlerId', lit(handlerId))\n\nblockedPromoDF = blockedPromoDF.dropDuplicates()\n\nblockedIncreasePromoDF = increasePromoByCiDF\\\n  .select(col('Id').alias('PromoId'))\\\n  .withColumn('HandlerId', lit(handlerId))\n\nblockedIncreasePromoDF = blockedIncreasePromoDF.dropDuplicates()\n\nactiveChangesIncidentsDF = activeChangesIncidentsDF\\\n  .withColumn('Disabled', lit(True))\\\n  .drop('#QCCount')\n\nactiveProductChangeIncidentsDF = activeProductChangeIncidentsDF\\\n  .withColumn('Disabled', lit(True))\\\n  .drop('#QCCount')\n\nresultChangesIncidentsDF = activeChangesIncidentsDF.union(processChangesIncidentsDF)\nresultProductChangeIncidentsDF = activeProductChangeIncidentsDF.union(processProductChangeIncidentsDF)\n\n\n",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:34:28+0000",
+      "dateUpdated": "2023-07-08T21:32:04+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2184,17 +2112,17 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1469667712",
+      "jobName": "paragraph_1688646607813_1619131562",
       "id": "20220810-113330_1881250975",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23754"
+      "$$hashKey": "object:947"
     },
     {
       "title": "Save results",
       "text": "%pyspark\nblockedPromoDF.write.mode(\"overwrite\").parquet(BLOCKEDPROMO_OUTPUT_PATH)\nblockedPromoDF\\\n.repartition(1)\\\n.write.csv(BLOCKEDPROMO_OUTPUT_PATH_CSV,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\"\n)\n\nblockedIncreasePromoDF.write.mode(\"overwrite\").parquet(BLOCKEDINCREASEPROMO_OUTPUT_PATH)\nblockedIncreasePromoDF\\\n.repartition(1)\\\n.write.csv(BLOCKEDINCREASEPROMO_OUTPUT_PATH_CSV,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\"\n)\n\n\n#resultChangesIncidentsDF.write.mode(\"overwrite\").parquet(CHANGESINCIDENTS_OUTPUT_PATH)\n#resultProductChangeIncidentsDF.write.mode(\"overwrite\").parquet(PRODUCTCHANGEINCIDENTS_OUTPUT_PATH)\n\nresultChangesIncidentsDF=resultChangesIncidentsDF\\\n.na.fill({\"Disabled\":False})\\\n.withColumn(\"Disabled\",col(\"Disabled\").cast(IntegerType()))\n\nresultChangesIncidentsDF\\\n.repartition(1)\\\n.write.csv(CHANGESINCIDENTS_OUTPUT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)\n\nresultProductChangeIncidentsDF\\\n.repartition(1)\\\n.write.csv(PRODUCTCHANGEINCIDENTS_OUTPUT_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\ntimestampFormat=\"yyyy-MM-dd HH:mm:ss\"\n)\n\n",
       "user": "anonymous",
-      "dateUpdated": "2023-04-16T08:34:59+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2226,16 +2154,16 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_173204539",
+      "jobName": "paragraph_1688646607813_1539837510",
       "id": "paragraph_1660216357449_1381238890",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23755"
+      "$$hashKey": "object:948"
     },
     {
       "text": "%pyspark\nsc.setCheckpointDir(\"tmp\")\n\noutputLogMessageDF\\\n.checkpoint(eager=True)\\\n.repartition(1)\\\n.write.csv(INPUT_FILE_LOG_PATH,\nsep=\"\\u0001\",\nheader=True,\nmode=\"overwrite\",\nemptyValue=\"\",\n)\n\n#subprocess.call([\"hadoop\", \"fs\", \"-mv\", OUTPUT_TEMP_FILE_LOG_PATH, OUTPUT_LOG_PATH])\n#subprocess.call([\"hadoop\", \"fs\", \"-rm\", \"-r\", OUTPUT_TEMP_FILE_LOG_PATH])",
       "user": "anonymous",
-      "dateUpdated": "2023-04-06T19:43:49+0000",
+      "dateUpdated": "2023-07-06T12:30:07+0000",
       "progress": 0,
       "config": {
         "editorSetting": {
@@ -2257,15 +2185,15 @@
       "apps": [],
       "runtimeInfos": {},
       "progressUpdateIntervalMs": 500,
-      "jobName": "paragraph_1680810229859_1772130794",
+      "jobName": "paragraph_1688646607813_1051460417",
       "id": "paragraph_1661163051034_1265806109",
-      "dateCreated": "2023-04-06T19:43:49+0000",
+      "dateCreated": "2023-07-06T12:30:07+0000",
       "status": "READY",
-      "$$hashKey": "object:23756"
+      "$$hashKey": "object:949"
     }
   ],
   "name": "JUPITER/PROMO_PARAMETERS_CALCULATION/PROMO_FILTERING_FOR_RECALCULATION",
-  "id": "2HYW9B2N9",
+  "id": "2J4X8CG2V",
   "defaultInterpreterGroup": "spark",
   "version": "0.9.0",
   "noteParams": {},
@@ -2276,5 +2204,6 @@
     "looknfeel": "default",
     "personalizedMode": "false"
   },
-  "info": {}
+  "info": {},
+  "path": "/JUPITER/PROMO_PARAMETERS_CALCULATION/PROMO_FILTERING_FOR_RECALCULATION"
 }
