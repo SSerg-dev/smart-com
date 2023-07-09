@@ -132,7 +132,7 @@ def create_dag_config_copy_from_db(parameters:dict, clients):
           "emails":clients[0]["Email"],
           "drop_files_if_errors":True,
           "copy_mode":COPY_MODE_DATABASE,
-          "source_path":f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{clients[0]["ClientObjectId"]}_{pendulum.now().strftime("%Y%m%d%H%M%S")}/',
+          "source_path":f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{clients[0]["ScenarioType"]}/{clients[0]["ScenarioName"]}/',
           "Id":clients[0]["Id"],		  
          }
     return conf
@@ -156,6 +156,15 @@ def create_dag_config_copy_from_adls(parameters:dict, db_conf:dict,clients):
         conf_list.append(conf)
         
     return conf_list
+
+@task
+def generate_entity_list(parameters:dict, db_conf:dict,clients):
+    raw_path=parameters['RawPath']
+    dst_dir=parameters['DstDir']
+    entities = []
+    for client in clients:
+        entity = {'SrcPath':f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}/*','DstPath':f'https://marsanalyticsdevadls.dfs.core.windows.net/raw/FILES/RUSSIA_PETCARE_JUPITER//{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}'}
+    return entities
   
   
 with DAG(
@@ -185,8 +194,10 @@ with DAG(
                                                                     wait_for_completion = True,
                                                                      trigger_dag_id="jupiter_client_promo_copy",
                                                                     ).expand(conf=create_dag_config_copy_from_adls)
- 
- 
-       
 
-    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls 
+    copy_entities = BashOperator.partial(task_id="copy_entity",
+                                      do_xcom_push=True,
+                                     ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
+                                             )
+ 
+    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls >> copy_entities
