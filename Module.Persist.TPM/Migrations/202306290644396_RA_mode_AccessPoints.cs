@@ -94,6 +94,12 @@
                 (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'UploadSavedScenario' AND Resource = 'SavedScenarios')),
                 (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'UploadScenario' AND Resource = 'RollingScenarios'))
             GO
+
+                DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'GAManager');
+                INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
+                (RoleId, AccessPointId) values
+                (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetRSPeriod'))
+                GO
         ";
     }
 }

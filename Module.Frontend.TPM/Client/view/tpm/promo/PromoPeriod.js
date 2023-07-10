@@ -447,7 +447,7 @@
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
-                            debugger;
+                            
                             if (newValue /*&& field.isValid()*/) {
                                 var budgetYearCombo = field.up('promoeditorcustom').down('promobudgetyear').down('combobox');
                                 var budgetYearComboStore = budgetYearCombo.getStore();
