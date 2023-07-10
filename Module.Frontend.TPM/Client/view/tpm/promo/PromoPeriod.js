@@ -67,7 +67,7 @@
                                 var budgetYearComboStore = budgetYearCombo.getStore();
                                 var userRole = App.UserInfo.getCurrentRole()['SystemName'];
                                 var isOffInvoice = Ext.getCmp('OffInvoice').getValue();
-
+                                
                                 var newStore = new Ext.data.Store({
                                     fields: ['year']
                                 });
@@ -102,6 +102,18 @@
                                     }
                                     else {
                                         budgetYearCombo.setValue(year);
+                                    }
+                                    if (TpmModes.isRsRaMode()) {
+                                        var newStore = new Ext.data.Store({
+                                            fields: ['year']
+                                        });
+                                        var promoeditorcustom = field.up('promoeditorcustom');
+                                        if (promoeditorcustom.rsStartEnd) {
+                                            year = promoeditorcustom.rsStartEnd.BudgetYear;
+                                            newStore.add({ year: year });
+                                            budgetYearComboStore.loadData(newStore.getRange(), false);
+                                            budgetYearCombo.setValue(year);
+                                        }
                                     }
                                 }
 
@@ -435,7 +447,7 @@
                         change: function (field, newValue, oldValue) {
                             var validDates = false;
                             var panel = field.up('promoperiod');
-
+                            debugger;
                             if (newValue /*&& field.isValid()*/) {
                                 var budgetYearCombo = field.up('promoeditorcustom').down('promobudgetyear').down('combobox');
                                 var budgetYearComboStore = budgetYearCombo.getStore();
@@ -473,6 +485,18 @@
                                     }
                                     else {
                                         budgetYearCombo.setValue(year);
+                                    }
+                                    if (TpmModes.isRsRaMode()) {
+                                        var newStore = new Ext.data.Store({
+                                            fields: ['year']
+                                        });
+                                        var promoeditorcustom = field.up('promoeditorcustom');
+                                        if (promoeditorcustom.rsStartEnd) {
+                                            year = promoeditorcustom.rsStartEnd.BudgetYear;
+                                            newStore.add({ year: year });
+                                            budgetYearComboStore.loadData(newStore.getRange(), false);
+                                            budgetYearCombo.setValue(year);
+                                        }
                                     }
                                 }
 
