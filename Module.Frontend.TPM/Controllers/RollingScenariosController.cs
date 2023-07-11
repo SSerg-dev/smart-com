@@ -372,7 +372,7 @@ namespace Module.Frontend.TPM.Controllers
                 ScenarioHelper.StatusScenarioResult statusScenarioResult = ScenarioHelper.GetStatusScenario(savedScenarioId, Context);
                 if (statusScenarioResult != null)
                 {
-                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client {statusScenarioResult.ClientName} present scenario id {statusScenarioResult.RSId}, confirmation delete this Scenario!" }));
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"The client {statusScenarioResult.ClientName} has an active RA scenario id № {statusScenarioResult.RSId}. Change the active scenario to Cancelled?" }));
                 }
                 else
                 {
