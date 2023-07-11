@@ -7,10 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Core.Data;
-using History.Mongo;
-using Module.Persist.TPM.Model.History;
-using DocumentStoreHolder = Module.Persist.TPM.MongoDB.DocumentStoreHolder;
+using Core.History;
+using Module.Persist.TPM.MongoDB;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
 {
@@ -253,28 +251,19 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                 );
             var mapper = configuration.CreateMapper();
             List<Promo> promoesRA = mapper.Map<List<Promo>>(promoes);
+            var promoRAIds = promoesRA.Select(p => p.Id).ToList();
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
 
-            var user = Context.AuthManager.GetCurrentUser();
-            var role = Context.AuthManager.GetCurrentRole();
-            var source = "Created from RA scenaio " + rollingScenario.RSId.ToString();
-
-            var newDocs = promoesRA.Select(p => new HistoricalPromo()
-            {
-                _Id = new Guid().ToString(),
-                _ObjectId = p.Id,
-                _Operation = "Created",
-                _Role = role.SystemName,
-                _User = user.Login,
-                _EditDate = DateTimeOffset.Now,
-                Source = source
-            });
-            var collection = DocumentStoreHolder.GetCollection<HistoricalPromo>();
-            collection.InsertMany(newDocs);
-
+            var mongoHelper = new MongoHelper<Guid>();
+            mongoHelper.WriteScenarioPromoes(
+                rollingScenario.RSId.ToString(),
+                promoRAIds,
+                Context.AuthManager.GetCurrentUser(),
+                Context.AuthManager.GetCurrentRole(),
+                OperationType.Created
+            );
             return promoesRA;
-
         }
     }
 }

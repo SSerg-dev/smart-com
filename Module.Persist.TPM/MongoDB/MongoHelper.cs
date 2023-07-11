@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Core.KeyVault;
+using Core.Settings;
 using Module.Persist.TPM.Model.History;
 using MongoDB.Driver;
 
@@ -17,6 +19,16 @@ namespace Module.Persist.TPM.MongoDB
     public class MongoHelper<TKey>
     {
         private readonly IHistoricalEntityFactory<TKey> HistoricalEntityFactory;
+
+        public MongoHelper()
+        {
+            var dbName = KeyStorageManager.GetKeyVault().GetSecret("MongoDBName", "");
+            var uri = KeyStorageManager.GetKeyVault().GetSecret("MongoUrl", "");
+            double ttlSec = AppSettingsManager.GetSetting<double>("MongoTTLSec", 63113904);
+
+            DocumentStoreHolder.GetConnection(uri, ttlSec);
+            DocumentStoreHolder.GetDatabase(dbName);
+        }
 
         public MongoHelper(string uri, string dbName, double ttlSec, IHistoricalEntityFactory<TKey> historicalEntityFactory)
         {
@@ -370,6 +382,25 @@ namespace Module.Persist.TPM.MongoDB
             }
 
             return null;
+        }
+
+        public void WriteScenarioPromoes(string rollingScenarioId, IList<Guid> promoIds, UserInfo user, RoleInfo role, OperationType operation)
+        {
+            var source = "Created from RA scenario " + rollingScenarioId;
+            var newDocs = promoIds.Select(promoId => new
+            {
+                _id = Guid.NewGuid().ToString(),
+                _t = typeof(HistoricalPromo).Name,
+                _ObjectId = promoId,
+                _Operation = operation.ToString(),
+                _Role = role.SystemName,
+                _User = user.Login,
+                _EditDate = DateTimeOffset.Now,
+                Source = source
+            }).ToList();
+
+            var collection = DocumentStoreHolder.GetCollection(typeof(HistoricalPromo).Name.ToLower());
+            collection.InsertMany(newDocs);
         }
     }
 }

@@ -11,7 +11,9 @@ using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Frontend.TPM.FunctionalHelpers.RA;
 using System;
+using Core.History;
 using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
+using Module.Persist.TPM.MongoDB;
 using Persist.Model.Settings;
 using Module.Persist.TPM.Utils;
 
@@ -223,6 +225,18 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             RSPeriodHelper.CopyBackPromoes(RS.Promoes.ToList(), Context);
             Context.Set<Promo>().RemoveRange(RS.Promoes);
             Context.SaveChanges();
+
+            if (PromoRSIds.Count > 0)
+            {
+                var mongoHelper = new MongoHelper<Guid>();
+                mongoHelper.WriteScenarioPromoes(
+                    rollingScenarioId.ToString(),
+                    PromoRSIds,
+                    Context.AuthManager.GetCurrentUser(),
+                    Context.AuthManager.GetCurrentRole(),
+                    OperationType.Created
+                );
+            }
         }
     }
 }
