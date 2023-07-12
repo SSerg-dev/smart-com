@@ -172,7 +172,7 @@
         'DiscountRange': 'Discount Range',
         'DurationRange': 'Duration Range',
         'ConfirmUploadScenario': 'Confirm Upload Scenario',
-        'SavedScenario': 'Saved Scenario',
+        'SavedScenario': 'Scenario DataLake',
     },
 
     'text': {
@@ -2244,6 +2244,6 @@
     'SavedScenario': {
         'ScenarioName': 'Scenario Name',
         'ClientTreeFullPathName': 'Client',
-        'CreateDate': 'Creat eDate',
+        'CreateDate': 'Save Date',
     },
 });

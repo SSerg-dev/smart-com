@@ -27,6 +27,10 @@
                 SET @RoleId = (SELECT [Id] FROM [{defaultSchema}].[Role] where SystemName='KeyAccountManager');
 				INSERT INTO [{defaultSchema}].[AccessPointRole] (RoleId, AccessPointId) values
 				(@RoleId, (SELECT [Id] FROM [{defaultSchema}].[AccessPoint] where [Resource]='ClientTrees' and [Action]='SaveScenario'))
+
+                SET @RoleId = (SELECT [Id] FROM [{defaultSchema}].[Role] where SystemName='FunctionalExpert');
+				INSERT INTO [{defaultSchema}].[AccessPointRole] (RoleId, AccessPointId) values
+				(@RoleId, (SELECT [Id] FROM [{defaultSchema}].[AccessPoint] where [Resource]='ClientTrees' and [Action]='SaveScenario'))
 				";
             Sql(SqlString);
             SqlString1 = SqlString1.Replace("DefaultSchemaSetting", defaultSchema);
@@ -100,6 +104,30 @@
                 (RoleId, AccessPointId) values
                 (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='Promoes' and [Action]='GetRSPeriod'))
                 GO
+
+            DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='FunctionalExpert');
+
+            INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
+                ([Id],[RoleId],[AccessPointId])
+            VALUES
+                (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSavedScenarios' AND Resource = 'SavedScenarios')),
+                (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'UploadSavedScenario' AND Resource = 'SavedScenarios')),
+                (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'UploadScenario' AND Resource = 'RollingScenarios'))
+            GO
+
+			DECLARE @RoleId uniqueidentifier = (SELECT[Id] FROM [DefaultSchemaSetting].[Role] where SystemName = 'FunctionalExpert' and [Disabled] = 0);
+			   INSERT INTO[DefaultSchemaSetting].[AccessPointRole]
+			   (RoleId, AccessPointId) values
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetRollingScenarios' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='MassApprove' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetCanceled' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='OnApproval' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='GetVisibleButton' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Decline' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Approve' and [Disabled] = 0)),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='DeletedRollingScenarios' and [Action]='GetDeletedRollingScenarios')),
+			   (@RoleId, (SELECT[Id] FROM [DefaultSchemaSetting].[AccessPoint] where [Resource]='RollingScenarios' and [Action]='Calculate'))
+			GO
         ";
     }
 }

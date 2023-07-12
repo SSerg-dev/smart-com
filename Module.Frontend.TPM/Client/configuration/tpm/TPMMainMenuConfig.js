@@ -224,7 +224,8 @@
             'KeyAccountManager',
             'DemandPlanning',
             'DemandFinance',
-            'CMManager'],
+            'CMManager',
+            'FunctionalExpert'],
         widget: 'rsmode'
     },
     {

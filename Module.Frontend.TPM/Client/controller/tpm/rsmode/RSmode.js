@@ -115,7 +115,11 @@
 
     },
     onRsGridAfterrender: function (grid) {
-
+        var uploadscenariobutton = Ext.ComponentQuery.query('#uploadscenariobutton')[0];
+        
+        if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode()) {
+            uploadscenariobutton.hide();
+        }
         this.onGridAfterrender(grid);
     },
     onOnApprovalButtonClick: function (button) {

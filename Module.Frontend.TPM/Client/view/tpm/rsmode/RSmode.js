@@ -112,8 +112,6 @@
             },
             {
                 itemId: 'uploadscenariobutton',
-                action: 'UploadScenario',
-                disabled: false,
                 glyph: 0xF552,
                 text: 'Upload Scenario',
                 tooltip: 'Upload Scenario'

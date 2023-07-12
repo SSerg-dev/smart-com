@@ -23,7 +23,7 @@
                         scenarioButton.setDisabled(true);
 
                         const tpmMode = TpmModes.getSelectedModeId();
-                        if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'CMManager'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
+                        if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
                             scenarioButton.hide();
                         }
                     }

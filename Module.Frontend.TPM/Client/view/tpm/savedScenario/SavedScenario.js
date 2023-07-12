@@ -84,10 +84,6 @@
             },
             items: [
                 {
-                    text: l10n.ns('tpm', 'SavedScenario').value('ScenarioName'),
-                    dataIndex: 'ScenarioName'
-                },
-                {
                     text: l10n.ns('tpm', 'SavedScenario').value('ClientTreeFullPathName'),
                     dataIndex: 'ClientTreeFullPathName',
                     minWidth: 200,
@@ -113,6 +109,10 @@
                     text: l10n.ns('tpm', 'SavedScenario').value('CreateDate'),
                     dataIndex: 'CreateDate',
                     renderer: Ext.util.Format.dateRenderer('d.m.Y')
+                },
+                {
+                    text: l10n.ns('tpm', 'SavedScenario').value('ScenarioName'),
+                    dataIndex: 'ScenarioName'
                 },
             ]
         }
