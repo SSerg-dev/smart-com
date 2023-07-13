@@ -48,6 +48,6 @@ resource "yandex_compute_instance" "kafka-proxy" {
         kafkaUser = var.kafka.user
         kafkaPass = var.kafka.pass
     })
-    user-data = file("kafka-proxy-config.yaml")
+    user-data = var.kafka-proxy.user-data
   }
 }
