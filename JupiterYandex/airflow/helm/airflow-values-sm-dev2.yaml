@@ -1,0 +1,55 @@
+USER-SUPPLIED VALUES:
+# dags:
+  # gitSync:
+    # enabled: false
+executor: KubernetesExecutor
+images:
+  airflow:
+    pullPolicy: IfNotPresent
+    # pullPolicy: Always
+    repository: cr.yandex/crp6bkh5g1c7e3664c0s/yac-cr-nprd-tpm-jupiter-00001
+    tag: airflow-jupiter-dev2-v1.0.0
+loadExamples: false
+rbac.create: true
+redis.enabled: false
+scheduler:
+  extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 30
+    periodSeconds: 180
+    timeoutSeconds: 40
+serviceaccount.create: true
+webserver:
+  extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+  service:
+    annotations:
+      yandex.cloud/load-balancer-type: internal
+      yandex.cloud/subnet-id: e2li862uij2tuvrt6usn
+    loadBalancerIP: null
+    loadBalancerSourceRanges: []
+    ports:
+    - name: airflow-ui
+      port: "8080"
+    type: LoadBalancer
+    
+logs:
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClassName: csi-s3 
+    
+workers:
+  extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ] 
+
+dagProcessor:
+  extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+
+triggerer:
+  extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]    
+
