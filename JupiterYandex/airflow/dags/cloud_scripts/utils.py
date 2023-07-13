@@ -1,8 +1,8 @@
 import re
 
 def get_project_path():
-    projectName = '[project_name_to_replace]'
-    systemName = '[system_name_to_replace]'
+    projectName = '${ProjectName}'
+    systemName = '${Environment}'
     
     if re.match('\[(.*?)\]', projectName) or re.match('\[(.*?)\]', systemName):
         return ''
