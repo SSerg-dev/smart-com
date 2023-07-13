@@ -145,15 +145,12 @@ sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_ma
 clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
 productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductTree"])
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-planPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep="\u0001",header=True,schema=schemas_map["PlanPostPromoEffect"])
+planPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep="\u0001",header=True,schema=schemas_map["PlanPostPromoEffect"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 incrementalDF = spark.read.csv(INCREMENTAL_PATH,sep="\u0001",header=True,schema=schemas_map["IncrementalPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 cogsDF = spark.read.csv(COGS_PATH,sep="\u0001",header=True,schema=schemas_map["COGS"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 cogsTnDF = spark.read.csv(COGSTN_PATH,sep="\u0001",header=True,schema=schemas_map["PlanCOGSTn"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 tiDF = spark.read.csv(TI_PATH,sep="\u0001",header=True,schema=schemas_map["TradeInvestment"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
-
-#test
-print(schemas_map["PriceList"])
 
 
 
