@@ -212,7 +212,8 @@
                     { xtype: 'singlelinedisplayfield', name: 'CreatorLogin', fieldLabel: l10n.ns('tpm', 'Promo').value('CreatorLogin'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'InvoiceType', fieldLabel: l10n.ns('tpm', 'Promo').value('InvoiceType'), hidden: true },
                     { xtype: 'singlelinedisplayfield', name: 'LinkedPromoes', fieldLabel: l10n.ns('tpm', 'Promo').value('LinkedPromoes'), hidden: true },
-                    { xtype: 'singlelinedisplayfield', name: 'MasterPromoNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('MasterPromoNumber'), hidden: true }
+                    { xtype: 'singlelinedisplayfield', name: 'MasterPromoNumber', fieldLabel: l10n.ns('tpm', 'Promo').value('MasterPromoNumber'), hidden: true },
+                    { xtype: 'singlelinedisplayfield', name: 'Source', fieldLabel: l10n.ns('tpm', 'Promo').value('Source'), hidden: true }
                 ]
             }]
         }]

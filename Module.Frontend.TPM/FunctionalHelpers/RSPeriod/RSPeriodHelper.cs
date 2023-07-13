@@ -74,8 +74,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
         }
 
 
-        public static void CopyBackPromoes(List<Promo> promoesRS, DatabaseContext Context)
+        public static IList<Guid> CopyBackPromoes(List<Promo> promoesRS, DatabaseContext Context)
         {
+            var promoIds = new List<Guid>();
             var cfgPromoBack = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Promo, Promo>()
@@ -484,6 +485,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     //promoesRS.Remove(promoRS); - нельзя сделать
                     Context.Set<Promo>().Remove(promoRS); // не отследит EF
                                                           //ChangeStatusOnApproval(Context, promo);
+                    promoIds.Add(promo.Id);
                 }
                 else // новый
                 {
@@ -511,6 +513,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     }
                     promoRS.PromoStatusId = promoStatusOnApproval;
                     //ChangeStatusOnApproval(Context, promoRS);
+                    promoIds.Add(promoRS.Id);
                 }
 
 
@@ -519,6 +522,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             }
 
             Context.SaveChanges();
+            return promoIds;
         }
         public static void MoveFromRSChangesIncident(DbSet<ChangesIncident> changesIncidents, string directoryName, Guid id, Guid oldId)
         {

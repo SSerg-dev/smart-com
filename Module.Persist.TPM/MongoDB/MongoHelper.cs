@@ -19,12 +19,14 @@ namespace Module.Persist.TPM.MongoDB
     public class MongoHelper<TKey>
     {
         private readonly IHistoricalEntityFactory<TKey> HistoricalEntityFactory;
+        private string colName;
 
         public MongoHelper()
         {
             var dbName = KeyStorageManager.GetKeyVault().GetSecret("MongoDBName", "");
             var uri = KeyStorageManager.GetKeyVault().GetSecret("MongoUrl", "");
             double ttlSec = AppSettingsManager.GetSetting<double>("MongoTTLSec", 63113904);
+            colName = AppSettingsManager.GetSetting<string>("MongoColName", "historicals");
 
             DocumentStoreHolder.GetConnection(uri, ttlSec);
             DocumentStoreHolder.GetDatabase(dbName);
@@ -399,7 +401,7 @@ namespace Module.Persist.TPM.MongoDB
                 Source = source
             }).ToList();
 
-            var collection = DocumentStoreHolder.GetCollection(typeof(HistoricalPromo).Name.ToLower());
+            var collection = DocumentStoreHolder.GetCollection(colName);
             collection.InsertMany(newDocs);
         }
     }

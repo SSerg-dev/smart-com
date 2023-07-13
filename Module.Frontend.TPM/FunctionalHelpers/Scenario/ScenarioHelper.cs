@@ -222,19 +222,19 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             }
             RS.IsCMManagerApproved = true;
             RS.RSstatus = RSstateNames.APPROVED;
-            RSPeriodHelper.CopyBackPromoes(RS.Promoes.ToList(), Context);
+            var newPromoIds = RSPeriodHelper.CopyBackPromoes(RS.Promoes.ToList(), Context);
             Context.Set<Promo>().RemoveRange(RS.Promoes);
             Context.SaveChanges();
 
-            if (PromoRSIds.Count > 0)
+            if (newPromoIds.Count > 0)
             {
                 var mongoHelper = new MongoHelper<Guid>();
                 mongoHelper.WriteScenarioPromoes(
                     rollingScenarioId.ToString(),
-                    PromoRSIds,
+                    newPromoIds,
                     Context.AuthManager.GetCurrentUser(),
                     Context.AuthManager.GetCurrentRole(),
-                    OperationType.Created
+                    OperationType.Updated
                 );
             }
         }

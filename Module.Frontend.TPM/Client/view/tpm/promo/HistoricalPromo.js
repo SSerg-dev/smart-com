@@ -244,6 +244,10 @@
             xtype: 'singlelinedisplayfield',
             name: 'ActualPromoLSVSO',
             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVSO'),
+        }, {
+            xtype: 'singlelinedisplayfield',
+            name: 'Source',
+            fieldLabel: l10n.ns('tpm', 'Promo').value('Source'),
         }]
     }]
 });
