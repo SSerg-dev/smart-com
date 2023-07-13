@@ -14,7 +14,7 @@ rbac.create: true
 redis.enabled: false
 scheduler:
   extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
-  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "airflow-dags-pvc"} } ]  
   livenessProbe:
     failureThreshold: 5
     initialDelaySeconds: 30
@@ -23,7 +23,7 @@ scheduler:
 serviceaccount.create: true
 webserver:
   extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
-  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "airflow-dags-pvc"} } ]  
   service:
     annotations:
       yandex.cloud/load-balancer-type: internal
@@ -43,13 +43,13 @@ logs:
     
 workers:
   extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
-  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ] 
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "airflow-dags-pvc"} } ] 
 
 dagProcessor:
   extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
-  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]  
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "airflow-dags-pvc"} } ]  
 
 triggerer:
   extraVolumeMounts:  [ { "name" : "airflow-dags", "mountPath" : "/opt/airflow/dags" } ]
-  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "dags-s3-pvc-static"} } ]    
+  extraVolumes: [ {"name" : "airflow-dags", "persistentVolumeClaim" : {"claimName": "airflow-dags-pvc"} } ]    
 
