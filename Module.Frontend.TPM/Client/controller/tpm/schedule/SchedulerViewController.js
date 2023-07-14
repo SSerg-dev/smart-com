@@ -723,7 +723,7 @@
         e.stopEvent();
         var status = rec.get('PromoStatusSystemName').toLowerCase();
         var promoStore = me.getPromoStore();
-        var mode = this.getTPMmode();
+        var modeId = TpmModes.getSelectedModeId();
         var isDeletable = status == 'draft' || status == 'draftpublished';
         var isEditable = false;
         var isPlannable = false;
