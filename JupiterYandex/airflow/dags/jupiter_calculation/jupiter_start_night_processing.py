@@ -64,7 +64,7 @@ def get_parameters(**kwargs):
     schema = dag_run.conf.get('schema')
     upload_date = kwargs['logical_date'].strftime("%Y-%m-%d %H:%M:%S")
 
-    raw_path = Variable.get("RawPath")
+    raw_path = Variable.get("/jupiter/dev1/RawPath")
     process_path = Variable.get("ProcessPath")
     output_path = Variable.get("OutputPath")
     white_list = Variable.get("WhiteList",default_var=None)
