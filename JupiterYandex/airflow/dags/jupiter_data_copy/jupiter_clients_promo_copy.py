@@ -195,9 +195,9 @@ with DAG(
                                                                      trigger_dag_id="jupiter_client_promo_copy",
                                                                     ).expand(conf=create_dag_config_copy_from_adls)
 
-    copy_entities = BashOperator.partial(task_id="copy_entity",
-                                      do_xcom_push=True,
-                                     ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
-                                             )
+    #copy_entities = BashOperator.partial(task_id="copy_entity",
+    #                                  do_xcom_push=True,
+    #                                 ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
+    #                                         )
  
-    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls >> copy_entities
+    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls# >> copy_entities
