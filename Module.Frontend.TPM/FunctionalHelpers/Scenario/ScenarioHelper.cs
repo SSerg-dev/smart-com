@@ -230,7 +230,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             {
                 var mongoHelper = new MongoHelper<Guid>();
                 mongoHelper.WriteScenarioPromoes(
-                    rollingScenarioId.ToString(),
+                    RS.RSId.ToString(),
                     newPromoIds,
                     Context.AuthManager.GetCurrentUser(),
                     Context.AuthManager.GetCurrentRole(),
