@@ -386,9 +386,8 @@ namespace Module.Persist.TPM.MongoDB
             return null;
         }
 
-        public void WriteScenarioPromoes(string rollingScenarioId, IList<Guid> promoIds, UserInfo user, RoleInfo role, OperationType operation)
+        public void WriteScenarioPromoes(string source, IList<Guid> promoIds, UserInfo user, RoleInfo role, OperationType operation)
         {
-            var source = "Created from RA scenario " + rollingScenarioId;
             var newDocs = promoIds.Select(promoId => new
             {
                 _id = Guid.NewGuid().ToString(),

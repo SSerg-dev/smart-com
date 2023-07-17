@@ -255,9 +255,10 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
 
+            var source = string.Format("{0} Scenario {1}", rollingScenario.ScenarioType.ToString(), rollingScenario.RSId);
             var mongoHelper = new MongoHelper<Guid>();
             mongoHelper.WriteScenarioPromoes(
-                rollingScenario.RSId.ToString(),
+                source,
                 promoRAIds,
                 Context.AuthManager.GetCurrentUser(),
                 Context.AuthManager.GetCurrentRole(),

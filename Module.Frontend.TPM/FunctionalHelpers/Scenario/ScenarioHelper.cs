@@ -228,9 +228,10 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 
             if (newPromoIds.Count > 0)
             {
+                var source = string.Format("{0} Scenario {1}", RS.ScenarioType.ToString(), RS.RSId);
                 var mongoHelper = new MongoHelper<Guid>();
                 mongoHelper.WriteScenarioPromoes(
-                    RS.RSId.ToString(),
+                    source,
                     newPromoIds,
                     Context.AuthManager.GetCurrentUser(),
                     Context.AuthManager.GetCurrentRole(),
