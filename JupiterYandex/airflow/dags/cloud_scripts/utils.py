@@ -1,8 +1,8 @@
 #from airflow.exceptions import AirflowException
 
 class ProjectPathHelper:
-    PROJECT_NAME=""
-    SYSTEM_NAME=""
+    PROJECT_NAME="${ProjectName}"
+    SYSTEM_NAME="${Environment}"
 
     def getPath():
         #exception will raise only if deploy pipeline won't process this file
