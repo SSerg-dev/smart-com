@@ -83,7 +83,7 @@ namespace Module.Persist.TPM.MongoDB
         {
             var collection = DocumentStoreHolder.GetCollection<T>();
             var filter = Builders<T>.Filter.Eq("_ObjectId", new Guid(oldPromoId));
-            var update = Builders<T>.Update.Set("_ObjectId", newPromoId);
+            var update = Builders<T>.Update.Set("_ObjectId", new Guid(newPromoId));
 
             collection.UpdateMany(filter, update);
         }
