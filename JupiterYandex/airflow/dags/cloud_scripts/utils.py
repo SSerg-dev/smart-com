@@ -1,10 +1,15 @@
-import re
+#from airflow.exceptions import AirflowException
 
-def get_project_path():
-    projectName = '${ProjectName}'
-    systemName = '${Environment}'
+class ProjectPathHelper:
+    PROJECT_NAME=""
+    SYSTEM_NAME=""
+
+    def getPath():
+        #exception will raise only if deploy pipeline won't process this file
+        raise AirflowException("Failed to initialize project path")
+        return f"{ProjectPathHelper.PROJECT_NAME}/{ProjectPathHelper.SYSTEM_NAME}/"
     
-    if re.match('\[(.*?)\]', projectName) or re.match('\[(.*?)\]', systemName):
-        return ''
-    else:
-        return f"{projectName}/{systemName}/"
+    def getDagId():
+        #exception will raise only if deploy pipeline won't process this file
+        raise AirflowException("Failed to initialize project path")
+        return f"{ProjectPathHelper.PROJECT_NAME}_{ProjectPathHelper.SYSTEM_NAME}_"

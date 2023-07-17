@@ -14,6 +14,7 @@ from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.hooks.base_hook import BaseHook
 from airflow.providers.hashicorp.hooks.vault import VaultHook
+from cloud_scripts.utils import ProjectPathHelper
 
 import uuid
 from io import StringIO
@@ -26,6 +27,9 @@ import pandas as pd
 import glob
 import os
 import base64
+
+PROJECT_PATH=ProjectPathHelper.getPath()
+DAG_ID=ProjectPathHelper.getDagId()
 
 MSSQL_CONNECTION_NAME = 'odbc_jupiter'
 HDFS_CONNECTION_NAME = 'webhdfs_default'
@@ -63,8 +67,11 @@ def get_parameters(**kwargs):
     
     schema = dag_run.conf.get('schema')
     upload_date = kwargs['logical_date'].strftime("%Y-%m-%d %H:%M:%S")
+    
+    print(PROJECT_PATH)
+    print(DAG_ID)
 
-    raw_path = Variable.get("/jupiter/dev1/RawPath")
+    raw_path = Variable.get(PROJECT_PATH + "RawPath")
     process_path = Variable.get("ProcessPath")
     output_path = Variable.get("OutputPath")
     white_list = Variable.get("WhiteList",default_var=None)
