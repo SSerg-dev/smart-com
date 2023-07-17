@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T00%3A35%3A25.509187%2B00%3A00_", '
- '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
- '"d34bcd1f-fa5c-49a2-8e2b-73fffc5768eb"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-07-13_manual__2023-07-13T14%3A31%3A58.337289%2B00%3A00_", '
+ '"ProcessDate": "2023-07-13", "Schema": "Jupiter", "HandlerId": '
+ '"a822371a-9f2a-4925-833e-9562a4e496ee"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -500,7 +500,7 @@ ppeCiDF = ppeCiIdsDF\
          )
 
 promoByPPECiDF = ppeCiDF\
-  .join(promoFilterDF, promoFilterDF.BrandTechId == promoProductDF.BrandTechId, 'inner')\
+  .join(promoFilterDF, promoFilterDF.BrandTechId == ppeCiDF.BrandTechId, 'inner')\
   .select(promoFilterDF.Id, promoFilterDF.Number)\
   .dropDuplicates()
 

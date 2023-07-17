@@ -140,12 +140,12 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .join(planPostPromoEffectDF, 
            [\
-             planPostPromoEffectDF.BrandTech_code == calcPlanPromoProductDF.BrandsegTech_code
+             planPostPromoEffectDF.BrandTechId == calcPlanPromoProductDF.promoBrandTechId
             ,planPostPromoEffectDF.Size == calcPlanPromoProductDF.Size
-            ,calcPlanPromoProductDF.PromoDuration >= planPostPromoEffectDF.MinDuration
-            ,calcPlanPromoProductDF.PromoDuration <= planPostPromoEffectDF.MaxDuration
-            ,calcPlanPromoProductDF.MarsMechanicDiscount >= planPostPromoEffectDF.MinDiscount
-            ,calcPlanPromoProductDF.MarsMechanicDiscount <= planPostPromoEffectDF.MaxDiscount
+            ,calcPlanPromoProductDF.promoPromoDuration >= planPostPromoEffectDF.MinDuration
+            ,calcPlanPromoProductDF.promoPromoDuration <= planPostPromoEffectDF.MaxDuration
+            ,calcPlanPromoProductDF.promoMarsMechanicDiscount >= planPostPromoEffectDF.MinDiscount
+            ,calcPlanPromoProductDF.promoMarsMechanicDiscount <= planPostPromoEffectDF.MaxDiscount
            ],
            'left')\
       .select(\
