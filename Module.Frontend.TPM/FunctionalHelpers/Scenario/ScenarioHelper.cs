@@ -239,5 +239,77 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 );
             }
         }
+        public static void RemoveOldCreateNewRSPeriodML(int clientId, Guid bufferId, DatabaseContext Context)
+        {
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+                .Include(g => g.Promoes)
+                .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RS);
+
+
+            if (rollingScenarioExist == null)
+            {
+                CreateMLRSperiod(clientId, bufferId, Context);
+            }
+            else
+            {
+                DeleteScenarioPeriod(rollingScenarioExist.Id, Context);
+                CreateMLRSperiod(clientId, bufferId, Context);
+            }
+            Context.SaveChanges();
+        }
+        private static void CreateMLRSperiod(int clientId, Guid bufferId, DatabaseContext Context)
+        {
+            List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
+            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
+            RollingScenario rollingScenario = new RollingScenario
+            {
+                StartDate = startEndModel.StartDate,
+                EndDate = startEndModel.EndDate,
+                RSstatus = RSstateNames.WAITING,
+                ClientTree = client,
+                IsMLmodel = true,
+                FileBufferId = bufferId,
+                ScenarioType = ScenarioType.RS
+            };
+            Context.Set<RollingScenario>().Add(rollingScenario);
+        }
+        public static void RemoveOldCreateNewRAPeriodML(int clientId, Guid bufferId, DatabaseContext Context)
+        {
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
+            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+                .Include(g => g.Promoes)
+                .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RA);
+
+
+            if (rollingScenarioExist == null)
+            {
+                CreateMLRAperiod(clientId, bufferId, Context);
+            }
+            else
+            {
+                DeleteScenarioPeriod(rollingScenarioExist.Id, Context);
+                CreateMLRAperiod(clientId, bufferId, Context);
+            }
+            Context.SaveChanges();
+        }
+        private static void CreateMLRAperiod(int clientId, Guid bufferId, DatabaseContext Context)
+        {
+            List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
+            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+            ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
+            RollingScenario rollingScenario = new RollingScenario
+            {
+                StartDate = startEndModel.StartDate,
+                EndDate = startEndModel.EndDate,
+                RSstatus = RSstateNames.WAITING,
+                ClientTree = client,
+                IsMLmodel = true,
+                FileBufferId = bufferId,
+                ScenarioType = ScenarioType.RA
+            };
+            Context.Set<RollingScenario>().Add(rollingScenario);
+        }
     }
 }

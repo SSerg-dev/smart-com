@@ -420,6 +420,7 @@
     <Compile Include="Handlers\NightProcessingWaitHandler.cs" />
     <Compile Include="Handlers\Notifications\ProductSyncFailNotificationHandler.cs" />
     <Compile Include="Handlers\ExportHandler.cs" />
+    <Compile Include="Handlers\PrepareNightCalculateHandler.cs" />
     <Compile Include="Handlers\ProcessMLCalendarHandler.cs" />
     <Compile Include="Handlers\ReapprovingHandler.cs" />
     <Compile Include="Handlers\RollingVolumeQTYRecalculationHandler.cs" />

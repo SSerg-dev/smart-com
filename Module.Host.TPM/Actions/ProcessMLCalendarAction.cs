@@ -58,7 +58,7 @@ namespace Module.Host.TPM.Actions
                 TimeSpan timespanm = times[2] - TimeNow;
 
                 string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
-                Guid interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN").Id;
+                Guid interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RS").Id;
                 FileCollectInterfaceSetting fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
                 string sourceFilesPath = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath);
                 CSVProcessInterfaceSetting cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
@@ -164,7 +164,7 @@ namespace Module.Host.TPM.Actions
 
                                 promo.MLPromoId = buffer.FileName + "_" + firstInputML.PromoId;
                                 HandlerLogger.Write(true, string.Format("Promo {0} processing has started", promo.MLPromoId), "Message");
-                                promo = PromoHelper.SavePromo(promo, context, user, role);
+                                //promo = PromoHelper.SavePromo(promo, context, user, role);
                                 rollingScenario.Promoes.Add(promo);
                             }
                         }

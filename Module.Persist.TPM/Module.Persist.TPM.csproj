@@ -3636,6 +3636,10 @@
     <Compile Include="Migrations\202307180930393_Change_Add_ML_RSRA.designer.cs">
       <DependentUpon>202307180930393_Change_Add_ML_RSRA.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202307191139247_Add_PrepareNightCalculateHandler.cs" />
+    <Compile Include="Migrations\202307191139247_Add_PrepareNightCalculateHandler.designer.cs">
+      <DependentUpon>202307191139247_Add_PrepareNightCalculateHandler.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6827,6 +6831,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202307180930393_Change_Add_ML_RSRA.resx">
       <DependentUpon>202307180930393_Change_Add_ML_RSRA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202307191139247_Add_PrepareNightCalculateHandler.resx">
+      <DependentUpon>202307191139247_Add_PrepareNightCalculateHandler.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

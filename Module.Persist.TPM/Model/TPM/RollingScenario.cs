@@ -30,6 +30,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public bool IsSendForApproval  { get; set; }
         public bool IsCMManagerApproved { get; set; }
+        public bool IsCreateMLpromo { get; set; }
 
         [StringLength(100)]
         public string RSstatus { get; set; }

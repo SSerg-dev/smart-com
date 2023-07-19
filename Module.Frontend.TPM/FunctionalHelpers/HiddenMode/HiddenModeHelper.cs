@@ -48,33 +48,33 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             Context.SaveChanges();
             return promoes;
         }
-        public static List<Promo> SetCurrentPromoes(DatabaseContext Context, List<Promo> promoes)
+        public static List<Promo> SetTypePromoes(DatabaseContext Context, List<Promo> promoes, TPMmode tPMmode)
         {
             foreach (Promo promo in promoes)
             {
-                promo.TPMmode = TPMmode.Current;
+                promo.TPMmode = tPMmode;
                 foreach (PromoProductTree promoProductTree in promo.PromoProductTrees)
                 {
-                    promoProductTree.TPMmode = TPMmode.Current;
+                    promoProductTree.TPMmode = tPMmode;
                 }
                 foreach (BTLPromo bTLPromo in promo.BTLPromoes)
                 {
-                    bTLPromo.TPMmode = TPMmode.Current;
+                    bTLPromo.TPMmode = tPMmode;
                 }
                 foreach (IncrementalPromo incrementalPromo in promo.IncrementalPromoes)
                 {
-                    incrementalPromo.TPMmode = TPMmode.Current;
+                    incrementalPromo.TPMmode = tPMmode;
                 }
                 foreach (PromoSupportPromo supportPromo in promo.PromoSupportPromoes)
                 {
-                    supportPromo.TPMmode = TPMmode.Current;
+                    supportPromo.TPMmode = tPMmode;
                 }
                 foreach (PromoProduct promoProduct in promo.PromoProducts)
                 {
-                    promoProduct.TPMmode = TPMmode.Current;
+                    promoProduct.TPMmode = tPMmode;
                     foreach (PromoProductsCorrection promoProductsCorrection in promoProduct.PromoProductsCorrections)
                     {
-                        promoProductsCorrection.TPMmode = TPMmode.Current;
+                        promoProductsCorrection.TPMmode = tPMmode;
                     }
                 }
             }

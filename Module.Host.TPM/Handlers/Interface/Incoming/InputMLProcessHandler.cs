@@ -2,6 +2,7 @@
 using Core.Settings;
 using Looper.Core;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Utils;
@@ -36,15 +37,15 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 {
                     // настройки
                     string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
-                    Guid interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN").Id;
-                    FileCollectInterfaceSetting fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
-                    string sourceFilesPath = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath);
-                    CSVProcessInterfaceSetting cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
-                                        
+                    Guid interfaceIdRS = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RS").Id;
+                    FileCollectInterfaceSetting fileCollectInterfaceSettingRS = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceIdRS);
+                    string sourceFilesPathRS = Path.Combine(filesDir, fileCollectInterfaceSettingRS.SourcePath);
+                    CSVProcessInterfaceSetting cSVProcessInterfaceSettingRS = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceIdRS);
+
                     // загружаем новые в FileBuffer
-                    IEnumerable<string> files = Directory.EnumerateFiles(sourceFilesPath, fileCollectInterfaceSetting.SourceFileMask, SearchOption.TopDirectoryOnly);
+                    IEnumerable<string> files = Directory.EnumerateFiles(sourceFilesPathRS, fileCollectInterfaceSettingRS.SourceFileMask, SearchOption.TopDirectoryOnly);
                     IEnumerable<string> fileNames = files.Select(g => Path.GetFileName(g)).OrderBy(f => f);
-                    List<FileBuffer> fileBuffers = context.FileBuffers.Where(g => g.InterfaceId == interfaceId).ToList();
+                    List<FileBuffer> fileBuffers = context.FileBuffers.Where(g => g.InterfaceId == interfaceIdRS).ToList();
                     IEnumerable<string> fBufferNames = fileBuffers.Select(g => g.FileName).OrderBy(f => f);
                     IEnumerable<string> NotPresents = fileNames.Except(fBufferNames);
                     List<FileBuffer> fileBuffersAdd = new List<FileBuffer>();
@@ -58,7 +59,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                             CreateDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now),
                             FileName = filename,
                             HandlerId = info.HandlerId,
-                            InterfaceId = interfaceId,
+                            InterfaceId = interfaceIdRS,
                             UserId = null,
                             ProcessDate = null,
                             Status = Interfaces.Core.Model.Consts.ProcessResult.None
@@ -70,21 +71,22 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     // создаем RS периоды
                     foreach (FileBuffer buffer in fileBuffersAdd)
                     {
-                        string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
-                        List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSetting.Delimiter);
+                        string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRS.SourcePath, buffer.FileName);
+                        List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSettingRS.Delimiter);
                         List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
                         foreach (int client in inputMlClients)
                         {
-                            RSPeriodHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
+                            ScenarioHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
                         }
                         if (inputMlClients.Count == 0)
                         {
-                            handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}",  buffer.FileName), "Error");
+                            handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}", buffer.FileName), "Error");
                             data.SetValue<bool>("HasErrors", true);
                             logger.Error(new Exception(string.Format("Empty file or error format, filename: {0}", buffer.FileName)));
                         }
                     }
                     context.SaveChanges();
+                    ReadMLRA(context, info, data, handlerLogger);
                 }
             }
             catch (Exception e)
@@ -108,6 +110,60 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     handlerLogger.UploadToBlob();
                 }
             }
+        }
+        private void ReadMLRA(DatabaseContext context, HandlerInfo info, ExecuteData data, LogWriter handlerLogger)
+        {
+            // настройки
+            string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
+            Guid interfaceIdRA = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RA").Id;
+            FileCollectInterfaceSetting fileCollectInterfaceSettingRA = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceIdRA);
+            string sourceFilesPathRA = Path.Combine(filesDir, fileCollectInterfaceSettingRA.SourcePath);
+            CSVProcessInterfaceSetting cSVProcessInterfaceSettingRA = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceIdRA);
+
+            // загружаем новые в FileBuffer
+            IEnumerable<string> files = Directory.EnumerateFiles(sourceFilesPathRA, fileCollectInterfaceSettingRA.SourceFileMask, SearchOption.TopDirectoryOnly);
+            IEnumerable<string> fileNames = files.Select(g => Path.GetFileName(g)).OrderBy(f => f);
+            List<FileBuffer> fileBuffers = context.FileBuffers.Where(g => g.InterfaceId == interfaceIdRA).ToList();
+            IEnumerable<string> fBufferNames = fileBuffers.Select(g => g.FileName).OrderBy(f => f);
+            IEnumerable<string> NotPresents = fileNames.Except(fBufferNames);
+            List<FileBuffer> fileBuffersAdd = new List<FileBuffer>();
+
+            foreach (string filename in NotPresents)
+            {
+                string file = files.FirstOrDefault(g => Path.GetFileName(g) == filename);
+                FileBuffer fileBuffer = new FileBuffer()
+                {
+                    Id = Guid.NewGuid(),
+                    CreateDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now),
+                    FileName = filename,
+                    HandlerId = info.HandlerId,
+                    InterfaceId = interfaceIdRA,
+                    UserId = null,
+                    ProcessDate = null,
+                    Status = Interfaces.Core.Model.Consts.ProcessResult.None
+                };
+                fileBuffersAdd.Add(fileBuffer);
+            }
+            context.FileBuffers.AddRange(fileBuffersAdd);
+            context.SaveChanges();
+            // создаем RS периоды
+            foreach (FileBuffer buffer in fileBuffersAdd)
+            {
+                string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRA.SourcePath, buffer.FileName);
+                List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSettingRA.Delimiter);
+                List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
+                foreach (int client in inputMlClients)
+                {
+                    ScenarioHelper.RemoveOldCreateNewRAPeriodML(client, buffer.Id, context);
+                }
+                if (inputMlClients.Count == 0)
+                {
+                    handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}", buffer.FileName), "Error");
+                    data.SetValue<bool>("HasErrors", true);
+                    logger.Error(new Exception(string.Format("Empty file or error format, filename: {0}", buffer.FileName)));
+                }
+            }
+            context.SaveChanges();
         }
     }
 }
