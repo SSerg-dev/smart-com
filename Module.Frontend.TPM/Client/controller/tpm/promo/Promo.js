@@ -3822,6 +3822,9 @@
         if (promoeditorcustom.TPMmode == 1 && promoeditorcustom.TPMmode == 2) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
+                if (item.xtype == 'button' && ['btn_sendForApproval', 'btn_approve']) {
+                    item.setVisible(false);
+                }
                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
                     item.setDisabled(true);
                 }
