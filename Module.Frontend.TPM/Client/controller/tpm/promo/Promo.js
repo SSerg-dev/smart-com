@@ -2328,7 +2328,7 @@
             promoeditorcustom.down('panel[name=promoBudgets_step4]').down('numberfield[name=PlanAddTIMarketingApproved]').setReadOnly(false);
         }
 
-        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
+        if (!record.data.IsPriceIncrease || TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
@@ -3819,10 +3819,10 @@
         }
 
         //вырубает кнопки в RS режиме
-        if (promoeditorcustom.TPMmode == 1 && promoeditorcustom.TPMmode == 2) {
+        if (TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
-                if (item.xtype == 'button' && ['btn_sendForApproval', 'btn_approve']) {
+                if (item.xtype == 'button' && ['btn_sendForApproval', 'btn_approve'].indexOf(item.itemId) > -1) {
                     item.setVisible(false);
                 }
                 if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
@@ -3860,7 +3860,7 @@
             promoeditorcustom.down('#btn_recalculatePromo').hide();
         }
 
-        if (!record.data.IsPriceIncrease || promoeditorcustom.TPMmode == 1 || promoeditorcustom.TPMmode == 2) {
+        if (!record.data.IsPriceIncrease || TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
             var planPromoUpliftPercentPI = promoActivityStep2.down('[name=PlanPromoUpliftPercentPI]');
             var promoUpliftLockedUpdateCheckboxPI = promoActivityStep2.down('checkbox[itemId=PromoUpliftLockedUpdateCheckboxPI]');
             planPromoUpliftPercentPI.setReadOnly(true);
