@@ -49,5 +49,6 @@ resource "yandex_compute_instance" "kafka-proxy" {
         kafkaPass = var.kafka.pass
     })
     user-data = var.kafka-proxy.user-data
+    ssh-keys = var.kafka-proxy.ssh-keys
   }
 }

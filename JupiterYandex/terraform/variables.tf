@@ -189,6 +189,7 @@ variable "kafka-proxy" {
         sa-name = string
         image = string
         user-data = string
+        ssh-keys = string
     })
 }
 
