@@ -6129,7 +6129,7 @@
                 instoreMechanicId.setDisabled(false);
                 actualMechanicId.setDisabled(false);
 
-                if (promoeditorcustom.TPMmode == 0) {
+                if (TpmModes.isProdMode(promoeditorcustom.TPMmode)) {
                     var panelGA = promoMechanics.down('[name=panelGA]');
                     panelGA.setDisabled(false);
                 }

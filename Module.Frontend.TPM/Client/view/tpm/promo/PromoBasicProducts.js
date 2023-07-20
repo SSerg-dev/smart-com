@@ -492,7 +492,7 @@
                                         splitPublishBtn.setDisabled(true);
                                     }
                                     //Activate button "Send for approval"
-                                    if (promoEditorCustom.TPMmode == 0) {
+                                    if (TpmModes.isProdMode(promoEditorCustom.TPMmode)) {
                                         var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                                         sendForApproval.setDisabled(false);
                                     }
@@ -561,7 +561,7 @@
                         App.Notify.pushError(data.message);
                     })
                 //Activate button "Send for approval"
-                if (promoEditorCustom.TPMmode == 0) {
+                if (TpmModes.isProdMode(promoEditorCustom.TPMmode)) {
                     var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                     sendForApproval.setDisabled(false);
                 }
