@@ -68,13 +68,6 @@
                         },
                         operator: 'eq'
                     }
-                }, {
-                    text: l10n.ns('tpm', 'HistoricalPromo').value('Source'),
-                    dataIndex: 'Source',
-                    filter: {
-                        type: 'string',
-                        operator: 'eq'
-                    }
                 }
             ]
         }
@@ -244,10 +237,6 @@
             xtype: 'singlelinedisplayfield',
             name: 'ActualPromoLSVSO',
             fieldLabel: l10n.ns('tpm', 'Promo').value('ActualPromoLSVSO'),
-        }, {
-            xtype: 'singlelinedisplayfield',
-            name: 'Source',
-            fieldLabel: l10n.ns('tpm', 'Promo').value('Source'),
         }]
     }]
 });
