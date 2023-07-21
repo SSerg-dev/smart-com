@@ -321,6 +321,19 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
       .withColumn('calcPlanProductPostPromoEffectVolumeW2', when(col('calcPlanProductPostPromoEffectVolumeW2').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectVolumeW2')))\
       .drop('tempPlanPromoIncrementalLSV','tempPlanPromoBaselineLSV')
 
+    sumPlanProductParamsList = sumPlanProductParamsList.select(\
+               col('promoNumber')
+              ,col('calcPlanPromoIncrementalLSV')
+              ,col('calcPlanPromoBaselineLSV')
+              ,col('calcPlanProductIncrementalVolume')
+              ,col('calcPlanProductBaselineVolume')
+              ,col('calcPlanPromoLSV')
+              ,col('calcPlanProductPostPromoEffectLSVW1')
+              ,col('calcPlanProductPostPromoEffectLSVW2')
+              ,col('calcPlanProductPostPromoEffectVolumeW1')
+              ,col('calcPlanProductPostPromoEffectVolumeW2')
+             )
+
     sumPlanProductParamsList = sumPlanProductParamsList.collect()
 
     planParSchema = StructType([
