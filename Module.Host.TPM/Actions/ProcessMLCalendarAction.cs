@@ -1,10 +1,12 @@
 ﻿using Core.Security.Models;
 using Core.Settings;
 using Interfaces.Implementation.Action;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Enum;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -58,11 +60,10 @@ namespace Module.Host.TPM.Actions
                 TimeSpan timespanm = times[2] - TimeNow;
 
                 string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
-                Guid interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RS").Id;
-                FileCollectInterfaceSetting fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
-                string sourceFilesPath = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath);
-                CSVProcessInterfaceSetting cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
-                StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(context);
+                Guid interfaceId = Guid.Empty;
+                FileCollectInterfaceSetting fileCollectInterfaceSetting = null;
+                CSVProcessInterfaceSetting cSVProcessInterfaceSetting = null;
+                StartEndModel startEndModel = null;
                 UserInfo user = null;
                 RoleInfo role = null;
                 RollingScenario rollingScenario = new RollingScenario();
@@ -89,11 +90,41 @@ namespace Module.Host.TPM.Actions
                 {
                     HandlerLogger.Write(true, "Missing RS Period", "Message");
                 }
+                else
+                {
+                    if (rollingScenario.ScenarioType == ScenarioType.RS)
+                    {
+                        interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RS").Id;
+                        fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
+                        cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
+                        startEndModel = RSPeriodHelper.GetRSPeriod(context);
+                    }
+                    if (rollingScenario.ScenarioType == ScenarioType.RA)
+                    {
+                        interfaceId = context.Interfaces.FirstOrDefault(g => g.Name == "ML_CALENDAR_ANAPLAN_RA").Id;
+                        fileCollectInterfaceSetting = context.FileCollectInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
+                        cSVProcessInterfaceSetting = context.CSVProcessInterfaceSettings.FirstOrDefault(g => g.InterfaceId == interfaceId);
+                        startEndModel = RAmodeHelper.GetRAPeriod();
+                    }
+                }
                 FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
 
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
                 List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSetting.Delimiter);
                 List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
+
+                Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
+                Event Event = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo");
+                Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
+                List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+                List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+                List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+                List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
+                List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
+                List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+                List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
+
                 using (var transaction = context.Database.BeginTransaction())
                 {
                     try
@@ -101,11 +132,11 @@ namespace Module.Host.TPM.Actions
                         foreach (int inputMlId in inputMlIds)
                         {
                             InputML firstInputML = inputMLs.FirstOrDefault(g => g.PromoId == inputMlId);
-                            Promo promo = PromoHelper.CreateRSDefaultPromo(context);
+                            Promo promo = PromoHelper.CreateMLDefaultPromo(context, PromoTypesId, Event, PromoStatusId);
 
-                            promo.BudgetYear = TimeHelper.ThisStartYear().Year;
+                            promo.BudgetYear = startEndModel.BudgetYear;
 
-                            ClientTree clientTree = context.Set<ClientTree>().Where(x => x.EndDate == null && x.ObjectId == firstInputML.FormatCode).FirstOrDefault();
+                            ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == firstInputML.FormatCode).FirstOrDefault();
                             promo.ClientHierarchy = clientTree.FullPathName;
                             promo.ClientTreeId = clientTree.ObjectId;
                             promo.ClientTreeKeyId = clientTree.Id;
@@ -145,10 +176,10 @@ namespace Module.Host.TPM.Actions
                                 List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
                                 promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
 
-                                Mechanic mechanic = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
+                                Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
                                 promo.MarsMechanicId = mechanic.Id;
                                 promo.MarsMechanicDiscount = firstInputML.DiscountMars;
-                                Mechanic mechanicInstore = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
+                                Mechanic mechanicInstore = mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
                                 promo.PlanInstoreMechanicId = mechanicInstore.Id;
                                 promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
 
@@ -157,14 +188,15 @@ namespace Module.Host.TPM.Actions
                                 promo.PlanPromoUpliftPercentPI = firstInputML.PlannedUplift;
                                 promo.CalculateML = true;
 
-                                PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(context, mechanic, products.FirstOrDefault(), firstInputML.DiscountMars);
+                                PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(mechanic, products.FirstOrDefault(), firstInputML.DiscountMars, productTrees, brands, technologies);
                                 promo.Name = returnName.Name;
                                 promo.ProductHierarchy = returnName.ProductTree.FullPathName;
                                 promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
 
                                 promo.MLPromoId = buffer.FileName + "_" + firstInputML.PromoId;
                                 HandlerLogger.Write(true, string.Format("Promo {0} processing has started", promo.MLPromoId), "Message");
-                                //promo = PromoHelper.SavePromo(promo, context, user, role);
+                                promo.TPMmode = TPMmode.Hidden;
+                                promo = PromoHelper.SaveMLPromo(promo, context, user, role, mechanics, mechanicTypes, clientTrees, productTrees, brands, technologies, brandTeches, colors);
                                 rollingScenario.Promoes.Add(promo);
                             }
                         }
@@ -172,6 +204,7 @@ namespace Module.Host.TPM.Actions
                         {
                             throw new ArgumentException();
                         }
+                        context.SaveChanges();
                         transaction.Commit();
                     }
                     catch (ArgumentException)
@@ -193,13 +226,13 @@ namespace Module.Host.TPM.Actions
                 {
                     rollingScenario.RSstatus = RSstateNames.CALCULATING;
                     rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
-                    HandlerLogger.Write(true, string.Format("RS period: {0}. {1} added promo", rollingScenario.RSId, rollingScenario.Promoes.Count), "Message");
+                    HandlerLogger.Write(true, string.Format("Scenario: {0}. {1} added promo", rollingScenario.RSId, rollingScenario.Promoes.Count), "Message");
                 }
                 else
                 {
                     rollingScenario.RSstatus = RSstateNames.WAITING;
                     rollingScenario.TaskStatus = TaskStatusNames.ERROR;
-                    HandlerLogger.Write(true, string.Format("RS period: {0}. No added promo", rollingScenario.RSId), "Message");
+                    HandlerLogger.Write(true, string.Format("Scenario: {0}. No added promo", rollingScenario.RSId), "Message");
                 }
                 buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                 buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Complete;
@@ -212,10 +245,21 @@ namespace Module.Host.TPM.Actions
                         HandlerId = HandlerId,
                         ClientId = (int)rollingScenario.Promoes.FirstOrDefault().ClientTreeId
                     };
-                    string numbers = RSmodeHelper.AddDisableRSPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
-                    if (!string.IsNullOrEmpty(numbers))
+                    if (rollingScenario.ScenarioType == ScenarioType.RS)
                     {
-                        HandlerLogger.Write(true, string.Format("RS period: {0}. {1} mark to delete RS promo", rollingScenario.RSId, numbers), "Message");
+                        string numbers = RSmodeHelper.AddDisableRSPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
+                        if (!string.IsNullOrEmpty(numbers))
+                        {
+                            HandlerLogger.Write(true, string.Format("RS period: {0}. {1} mark to delete RS promo", rollingScenario.RSId, numbers), "Message");
+                        }
+                    }
+                    if (rollingScenario.ScenarioType == ScenarioType.RA)
+                    {
+                        string numbers = RAmodeHelper.AddDisableRAPromoFromMLPeriod(rollingScenario.Promoes.ToList(), context);
+                        if (!string.IsNullOrEmpty(numbers))
+                        {
+                            HandlerLogger.Write(true, string.Format("RA period: {0}. {1} mark to delete RA promo", rollingScenario.RSId, numbers), "Message");
+                        }
                     }
                     CloudTask cloudTask = new CloudTask
                     {

@@ -466,5 +466,15 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
             ScenarioHelper.CreateScenarioPeriod(incrementalPromosRA.Select(g => g.Promo).ToList(), Context, TPMmode.RA);
             return incrementalPromosRA;
         }
+        public static string AddDisableRAPromoFromMLPeriod(List<Promo> promos, DatabaseContext Context)
+        {
+            DateTimeOffset? startPeriod = promos.Select(g => g.DispatchesStart).Min();
+            DateTimeOffset? endPeriod = promos.Select(g => g.EndDate).Min();
+            var client = promos.FirstOrDefault().ClientTreeId;
+            List<Promo> promosToDeleteRA = Context.Set<Promo>().Where(g => g.ClientTreeId == client && g.DispatchesStart > startPeriod && g.EndDate < endPeriod && string.IsNullOrEmpty(g.MLPromoId)).ToList();
+            string numbers = string.Join(",", promosToDeleteRA.Select(g => g.Number).ToList());
+            EditToPromoRA(Context, promosToDeleteRA, true, DateTimeOffset.Now);
+            return numbers;
+        }
     }
 }

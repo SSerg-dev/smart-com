@@ -140,12 +140,13 @@ namespace Module.Frontend.TPM.Controllers
             model.DeviationCoefficient /= 100;
             try
             {
+                List<ClientTree> clientTrees = Context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
                 //Установка полей по дереву ProductTree
                 //SetPromoByProductTree(model);
                 //Установка дат в Mars формате
                 PromoHelper.SetPromoMarsDates(model);
                 //Установка полей по дереву ClientTree
-                PromoHelper.SetPromoByClientTree(model, Context);
+                PromoHelper.SetPromoByClientTree(model, clientTrees);
 
                 await Context.SaveChangesAsync();
             }
@@ -485,15 +486,23 @@ namespace Module.Frontend.TPM.Controllers
                     //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
                     if (needRecalculatePromo || statusName.ToLower() == "draft")
                     {
+                        List<Mechanic> mechanics = Context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+                        List<MechanicType> mechanicTypes = Context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+                        List<ClientTree> clientTrees = Context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                        List<ProductTree> productTrees = Context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+                        List<Brand> brands = Context.Set<Brand>().Where(g => !g.Disabled).ToList();
+                        List<Technology> technologies = Context.Set<Technology>().Where(g => !g.Disabled).ToList();
+                        List<BrandTech> brandTeches = Context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+                        List<Color> colors = Context.Set<Color>().Where(g => !g.Disabled).ToList();
                         //Установка полей по дереву ProductTree
-                        PromoHelper.SetPromoByProductTree(model, promoProductTrees, Context);
+                        PromoHelper.SetPromoByProductTree(model, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
                         //Установка дат в Mars формате
                         PromoHelper.SetPromoMarsDates(model);
                         //Установка полей по дереву ClientTree
-                        PromoHelper.SetPromoByClientTree(model, Context);
+                        PromoHelper.SetPromoByClientTree(model, clientTrees);
                         //Установка механик
-                        PromoHelper.SetMechanic(model, Context);
-                        PromoHelper.SetMechanicIA(model, Context);
+                        PromoHelper.SetMechanic(model, mechanics, mechanicTypes);
+                        PromoHelper.SetMechanicIA(model, mechanics, mechanicTypes);
 
                         if (statusName.ToLower() == "draft")
                         {

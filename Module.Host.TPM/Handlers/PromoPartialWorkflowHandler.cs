@@ -41,6 +41,14 @@ namespace Module.Host.TPM.Handlers
                     var promoNumbers = promoNumbersRecalculatingString.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var promoes = new List<Promo>();
 
+                    List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+                    List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+                    List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                    List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+                    List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
+                    List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
+                    List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+                    List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
                     foreach (var promoNumber in promoNumbers)
                     {
                         int number;
@@ -74,13 +82,13 @@ namespace Module.Host.TPM.Handlers
                             {
                                 handlerLogger.Write(true, String.Format("Calculation of promo number {0}", promo.Number), "Message");
 
-								bool isSubrangeChanged = false;
+                                bool isSubrangeChanged = false;
                                 List<PromoProductTree> promoProductTrees = PromoHelper.AddProductTrees(promo.ProductTreeObjectIds, promo, out isSubrangeChanged, context);
-                                PromoHelper.SetPromoByProductTree(promo, promoProductTrees, context);
+                                PromoHelper.SetPromoByProductTree(promo, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
                                 PromoHelper.SetPromoMarsDates(promo);
-                                PromoHelper.SetPromoByClientTree(promo, context);
-                                PromoHelper.SetMechanic(promo, context);
-                                PromoHelper.SetMechanicIA(promo, context);
+                                PromoHelper.SetPromoByClientTree(promo, clientTrees);
+                                PromoHelper.SetMechanic(promo, mechanics, mechanicTypes);
+                                PromoHelper.SetMechanicIA(promo, mechanics, mechanicTypes);
 
                                 try
                                 {

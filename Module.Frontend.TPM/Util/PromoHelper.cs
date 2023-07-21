@@ -686,17 +686,8 @@ namespace Module.Frontend.TPM.Util
             };
             return promo;
         }
-        public static Promo CreateRSDefaultPromo(DatabaseContext context)
+        public static Promo CreateMLDefaultPromo(DatabaseContext context, Guid PromoTypesId, Event Event, Guid PromoStatusId)
         {
-            int dayspromo = 4;
-            DateTimeOffset startD = TimeHelper.TodayStartDay();
-            DateTimeOffset endD = startD.AddDays(dayspromo);
-            DateTimeOffset startP = startD.AddDays(14);
-            DateTimeOffset endP = endD.AddDays(14);
-            Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
-            Guid EventId = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo").Id;
-            Guid MechanicId = context.Set<Mechanic>().FirstOrDefault(g => g.SystemName == "Other" && g.PromoTypesId == PromoTypesId).Id;
-            Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
             Promo promo = new Promo
             {
                 TPMmode = TPMmode.RS,
@@ -713,16 +704,11 @@ namespace Module.Frontend.TPM.Util
                 ClientTreeId = 5000004,
                 ClientTreeKeyId = 19,
                 DeviationCoefficient = 10,
-                DispatchesStart = startD,
-                DispatchesEnd = endD,
-                StartDate = startP,
-                EndDate = endP,
-                EventId = EventId,
+                EventId = Event.Id,
+                EventName = Event.Name,
                 Id = Guid.NewGuid(),
                 InOutProductIds = "to change!!! 8af37b51-e73d-ea11-a86c-000d3a46085b;a5f37b51-e73d-ea11-a86c-000d3a46085b;",
                 IsApolloExport = true,
-                MarsMechanicDiscount = 20,
-                MarsMechanicId = MechanicId,
                 Name = "Unpublish Promo",
                 NeedRecountUplift = true,
                 ProductHierarchy = "Kitekat > Dry",
@@ -799,31 +785,31 @@ namespace Module.Frontend.TPM.Util
 
             return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
         }
-        public static ReturnName GetNamePromo(DatabaseContext context, Mechanic mechanic, Product product, double MarsMechanicDiscount)
+        public static ReturnName GetNamePromo(Mechanic mechanic, Product product, double MarsMechanicDiscount, List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies)
         {
             // доработать если нужен тип VP
             var promoNameProductTreeAbbreviations = "";
             ProductTree productTreeTech = new ProductTree();
             if (product != null)
             {
-                Brand brand = context.Set<Brand>().FirstOrDefault(g => g.Brand_code == product.Brand_code);
+                Brand brand = brands.FirstOrDefault(g => g.Brand_code == product.Brand_code);
 
                 Technology technology = new Technology();
                 string compositname;
                 if (string.IsNullOrEmpty(product.SubBrand_code))
                 {
-                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
+                    technology = technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
                     compositname = technology.Name;
                 }
                 else
                 {
-                    technology = context.Set<Technology>().FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
+                    technology = technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
                     compositname = technology.Name + " " + technology.SubBrand;
                 }
 
-                ProductTree productTreeBrand = context.Set<ProductTree>().FirstOrDefault(g => g.BrandId == brand.Id);
+                ProductTree productTreeBrand = productTrees.FirstOrDefault(g => g.BrandId == brand.Id);
 
-                productTreeTech = context.Set<ProductTree>().FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
+                productTreeTech = productTrees.FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
                 promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
             }
 
@@ -968,18 +954,27 @@ namespace Module.Frontend.TPM.Util
 
             context.Set<Promo>().Add(result);
             context.SaveChanges();
+
+            List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+            List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+            List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+            List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+            List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
+            List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
+            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
             // Добавление продуктов
             List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
 
             //Установка полей по дереву ProductTree
-            SetPromoByProductTree(result, promoProductTrees, context);
+            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
             //Установка дат в Mars формате
             SetPromoMarsDates(result);
             //Установка полей по дереву ClientTree
-            SetPromoByClientTree(result, context);
+            SetPromoByClientTree(result, clientTrees);
             //Установка механик
-            SetMechanic(result, context);
-            SetMechanicIA(result, context);
+            SetMechanic(result, mechanics, mechanicTypes);
+            SetMechanicIA(result, mechanics, mechanicTypes);
 
             //Установка начального статуса
             PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -996,22 +991,24 @@ namespace Module.Frontend.TPM.Util
                 result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
             }
 
-
-            // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
-            if (result.PromoStatus.SystemName.ToLower() != "draft" && !result.CalculateML)
+            if (!result.CalculateML)
             {
-                // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                CheckSupportInfo(result, promoProductTrees, out filteredProducts, context);
-                //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
-                CalculatePromo(result, context, (Guid)user.Id, (Guid)role.Id, false, false, false, true);
-            }
-            else
-            {
-                // Добавить запись в таблицу PromoProduct при сохранении.
-                PlanProductParametersCalculation.SetPromoProduct(context.Set<Promo>().First(x => x.Id == result.Id).Id, context, out string error, true, promoProductTrees);
-                // Создаём инцидент для draft сразу
-                WritePromoDemandChangeIncident(context, result);
+                // Для draft не проверяем и не считаем && если у промо есть признак InOut, то Uplift считать не нужно.
+                if (result.PromoStatus.SystemName.ToLower() != "draft")
+                {
+                    // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
+                    List<Product> filteredProducts; // продукты, подобранные по фильтрам
+                    CheckSupportInfo(result, promoProductTrees, out filteredProducts, context);
+                    //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
+                    CalculatePromo(result, context, (Guid)user.Id, (Guid)role.Id, false, false, false, true);
+                }
+                else
+                {
+                    // Добавить запись в таблицу PromoProduct при сохранении.
+                    PlanProductParametersCalculation.SetPromoProduct(context.Set<Promo>().First(x => x.Id == result.Id).Id, context, out string error, true, promoProductTrees);
+                    // Создаём инцидент для draft сразу
+                    WritePromoDemandChangeIncident(context, result);
+                }
             }
 
             // привязывает дочерние промо
@@ -1050,7 +1047,7 @@ namespace Module.Frontend.TPM.Util
             List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
             List<string> newProductTreesIds = new List<string>();
 
-            if (!String.IsNullOrEmpty(objectIds))
+            if (!string.IsNullOrEmpty(objectIds))
             {
                 newProductTreesIds = objectIds.Split(';').ToList();
             }
@@ -1117,22 +1114,22 @@ namespace Module.Frontend.TPM.Util
         /// Установка в промо цвета, бренда и BrandTech на основании дерева продуктов
         /// </summary>
         /// <param name="promo"></param>
-        public static void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, DatabaseContext context)
+        public static void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies, List<BrandTech> brandTeches, List<Color> colors)
         {
             PromoProductTree product = promoProducts.FirstOrDefault();
             DateTime dt = DateTime.Now;
             if (product != null)
             {
                 //Заполнение Subranges
-                IQueryable<ProductTree> ptQuery = context.Set<ProductTree>().Where(x => x.Type == "root"
+                IEnumerable<ProductTree> ptQuery = productTrees.Where(x => x.Type == "root"
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
                 IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
-                IQueryable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
+                IEnumerable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
                 promo.ProductSubrangesList = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Name));
                 promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
 
                 int objectId = product.ProductTreeObjectId;
-                ProductTree pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
+                ProductTree pt = productTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
                 if (pt != null)
                 {
                     Guid? BrandId = null;
@@ -1143,7 +1140,7 @@ namespace Module.Frontend.TPM.Util
                     {
                         if (pt.Type == "Brand")
                         {
-                            brandTo = context.Set<Brand>().FirstOrDefault(x => x.Name == pt.Name);
+                            brandTo = brands.FirstOrDefault(x => x.Name == pt.Name);
                             if (brandTo != null)
                             {
                                 BrandId = brandTo.Id;
@@ -1152,7 +1149,7 @@ namespace Module.Frontend.TPM.Util
                         }
                         if (pt.Type == "Technology")
                         {
-                            var tech = context.Set<Technology>().FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
+                            var tech = technologies.FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
                             if (tech != null)
                             {
                                 TechId = tech.Id;
@@ -1161,7 +1158,7 @@ namespace Module.Frontend.TPM.Util
                         }
                         if (pt.parentId != 1000000)
                         {
-                            pt = context.Set<ProductTree>().FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
+                            pt = productTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
                         }
                         else
                         {
@@ -1174,14 +1171,14 @@ namespace Module.Frontend.TPM.Util
                         promo.BrandId = null;
                     }
 
-                    BrandTech bt = context.Set<BrandTech>().FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
+                    BrandTech bt = brandTeches.FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
                     if (bt != null)
                     {
                         promo.BrandTechId = bt.Id;
-                        var colors = context.Set<Color>().Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
-                        if (colors.Count() == 1)
+                        var color = colors.Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
+                        if (color.Count() == 1)
                         {
-                            promo.ColorId = colors.First().Id;
+                            promo.ColorId = color.First().Id;
                         }
                         else
                         {
@@ -1243,13 +1240,13 @@ namespace Module.Frontend.TPM.Util
         /// Установка промо по дереву клиентов
         /// </summary>
         /// <param name="promo"></param>
-        public static void SetPromoByClientTree(Promo promo, DatabaseContext context)
+        public static void SetPromoByClientTree(Promo promo, List<ClientTree> clientTrees)
         {
             int? ClientTreeId = promo.ClientTreeId;
             string resultMultiBaseStr = "";
             if (promo.ClientTreeId != null)
             {
-                int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, context);
+                int? upBaseClientId = RecursiveUpBaseClientsFind(ClientTreeId, clientTrees);
                 if (upBaseClientId.HasValue)
                 {
                     resultMultiBaseStr = upBaseClientId.ToString();
@@ -1257,7 +1254,7 @@ namespace Module.Frontend.TPM.Util
                 else
                 {
                     resultMultiBaseStr =
-                        string.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, context));
+                        string.Join("|", RecursiveDownBaseClientsFind(promo.ClientTreeId, clientTrees));
                 }
 
             }
@@ -1268,7 +1265,7 @@ namespace Module.Frontend.TPM.Util
         /// </summary>
         /// <param name="clientTreeId"></param>
         /// <returns></returns>
-        private static int? RecursiveUpBaseClientsFind(int? clientTreeId, DatabaseContext context)
+        private static int? RecursiveUpBaseClientsFind(int? clientTreeId, List<ClientTree> clientTrees)
         {
             if (!clientTreeId.HasValue)
             {
@@ -1276,7 +1273,7 @@ namespace Module.Frontend.TPM.Util
             }
             else
             {
-                ClientTree ctn = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
+                ClientTree ctn = clientTrees.FirstOrDefault(x => x.ObjectId == clientTreeId &&
                  (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
                 if (ctn == null)
                 {
@@ -1292,7 +1289,7 @@ namespace Module.Frontend.TPM.Util
                 }
                 else
                 {
-                    return RecursiveUpBaseClientsFind(ctn.parentId, context);
+                    return RecursiveUpBaseClientsFind(ctn.parentId, clientTrees);
                 }
 
             }
@@ -1304,7 +1301,7 @@ namespace Module.Frontend.TPM.Util
         /// </summary>
         /// <param name="clientTreeId"></param>
         /// <returns></returns>
-        private static List<int> RecursiveDownBaseClientsFind(int? clientTreeId, DatabaseContext context)
+        private static List<int> RecursiveDownBaseClientsFind(int? clientTreeId, List<ClientTree> clientTrees)
         {
             if (!clientTreeId.HasValue)
             {
@@ -1312,14 +1309,14 @@ namespace Module.Frontend.TPM.Util
             }
             else
             {
-                ClientTree ct = context.Set<ClientTree>().FirstOrDefault(x => x.ObjectId == clientTreeId &&
+                ClientTree ct = clientTrees.FirstOrDefault(x => x.ObjectId == clientTreeId &&
                  (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, DateTime.Now) > 0));
                 if (ct.IsBaseClient)
                 {
                     return new List<int>() { ct.ObjectId };
                 }
 
-                List<ClientTree> ctChilds = context.Set<ClientTree>().Where(
+                List<ClientTree> ctChilds = clientTrees.Where(
                  x =>
                  //DateTime.Compare(x.StartDate, ct.StartDate) <= 0 && 
                  x.parentId == ct.ObjectId &&
@@ -1330,7 +1327,7 @@ namespace Module.Frontend.TPM.Util
 
                 foreach (var item in ctChilds.Where(y => !y.IsBaseClient))
                 {
-                    res.AddRange(RecursiveDownBaseClientsFind(item.ObjectId, context));
+                    res.AddRange(RecursiveDownBaseClientsFind(item.ObjectId, clientTrees));
                 }
                 return res;
             }
@@ -1339,17 +1336,17 @@ namespace Module.Frontend.TPM.Util
         /// Установка значения единого поля для Mechanic
         /// </summary>
         /// <param name="promo"></param>
-        public static void SetMechanic(Promo promo, DatabaseContext context)
+        public static void SetMechanic(Promo promo, List<Mechanic> mechanics, List<MechanicType> mechanicTypes)
         {
             // нет механики - нет остального
             if (promo.MarsMechanicId != null)
             {
-                var mechanic = context.Set<Mechanic>().Find(promo.MarsMechanicId);
+                var mechanic = mechanics.FirstOrDefault(g => g.Id == promo.MarsMechanicId);
                 string result = mechanic.Name;
 
                 if (promo.MarsMechanicTypeId != null)
                 {
-                    var mechanicType = context.Set<MechanicType>().Find(promo.MarsMechanicTypeId);
+                    var mechanicType = mechanicTypes.FirstOrDefault(g => g.Id == promo.MarsMechanicTypeId);
                     result += " " + mechanicType.Name;
                 }
 
@@ -1364,19 +1361,19 @@ namespace Module.Frontend.TPM.Util
         /// Установка значения единого поля для Mechanic IA
         /// </summary>
         /// <param name="promo"></param>
-        public static void SetMechanicIA(Promo promo, DatabaseContext context)
+        public static void SetMechanicIA(Promo promo, List<Mechanic> mechanics, List<MechanicType> mechanicTypes)
         {
             string result = null;
 
             // нет механики - нет остального
             if (promo.PlanInstoreMechanicId != null)
             {
-                var mechanic = context.Set<Mechanic>().Find(promo.PlanInstoreMechanicId);
+                var mechanic = mechanics.FirstOrDefault(g => g.Id == promo.PlanInstoreMechanicId);
                 result = mechanic.Name;
 
                 if (promo.PlanInstoreMechanicTypeId != null)
                 {
-                    var mechanicType = context.Set<MechanicType>().Find(promo.PlanInstoreMechanicTypeId);
+                    var mechanicType = mechanicTypes.FirstOrDefault(g => g.Id == promo.PlanInstoreMechanicTypeId);
                     result += " " + mechanicType.Name;
                 }
 
@@ -1499,6 +1496,72 @@ namespace Module.Frontend.TPM.Util
 
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
+        }
+        public static Promo SaveMLPromo(Promo model, DatabaseContext context, UserInfo user, RoleInfo role, List<Mechanic> mechanics, List<MechanicType> mechanicTypes, List<ClientTree> clientTrees,
+            List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies, List<BrandTech> brandTeches, List<Color> colors)
+        {
+            model.DeviationCoefficient /= 100;
+            // делаем UTC +3
+            model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
+            model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
+            model.DispatchesStart = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesStart);
+            model.DispatchesEnd = ChangeTimeZoneUtil.ResetTimeZone(model.DispatchesEnd);
+
+            DateTimeOffset? ChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.Now);
+
+            string userRole = role.SystemName;
+
+            string message;
+
+            PromoStateContext promoStateContext = new PromoStateContext(context, null);
+            bool status = promoStateContext.ChangeState(model, userRole, out message);
+
+            if (!status)
+            {
+                throw new Exception(message);
+            }
+
+            Promo proxy = new Promo();
+            Promo result = AutomapperProfiles.PromoCopy(model, proxy);
+
+            if (result.CreatorId == null)
+            {
+                result.CreatorId = user.Id;
+                result.CreatorLogin = user.Login;
+            }
+
+            //context.Set<Promo>().Add(result);
+            //context.SaveChanges();
+            // Добавление продуктов
+            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
+
+            //Установка полей по дереву ProductTree
+            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
+            //Установка дат в Mars формате
+            SetPromoMarsDates(result);
+            //Установка полей по дереву ClientTree
+            SetPromoByClientTree(result, clientTrees);
+            //Установка механик
+            SetMechanic(result, mechanics, mechanicTypes);
+            SetMechanicIA(result, mechanics, mechanicTypes);
+
+            //Установка начального статуса
+            PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
+            psc.PromoId = result.Id;
+            psc.StatusId = result.PromoStatusId;
+            psc.UserId = user.Id;
+            psc.RoleId = role.Id;
+            psc.Date = DateTimeOffset.UtcNow;
+            context.Set<PromoStatusChange>().Add(psc);
+
+            //Установка времени последнгего присвоения статуса Approved
+            if (result.PromoStatus != null && result.PromoStatus.SystemName == "Approved")
+            {
+                result.LastApprovedDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.UtcNow);
+            }
+
+            result.LastChangedDate = ChangedDate;
+            return result;
         }
     }
 }
