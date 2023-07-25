@@ -398,16 +398,6 @@ namespace Module.Host.TPM.Actions
                 isError = true;
                 errors.Add(importObj.DiscountRangeId + " is not valid discount range");
             }
-            if (importObj.PlanPostPromoEffectW1 < 0)
-            {
-                isError = true;
-                errors.Add("Plan Post Promo Effect W1 must be more than 0");
-            }
-            if (importObj.PlanPostPromoEffectW2 < 0)
-            {
-                isError = true;
-                errors.Add("Plan Post Promo Effect W2 must be more than 0");
-            }
 
             var sizes = products.Where(x => x.Brandsegtech == importObj.BrandsegTechsub).Select(x => x.Size).Distinct();
             if (!sizes.Contains(importObj.Size))
