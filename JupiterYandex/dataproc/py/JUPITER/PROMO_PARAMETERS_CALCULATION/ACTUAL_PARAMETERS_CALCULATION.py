@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-01-09", "Schema": "Jupiter", "HandlerId": '
- '"f18a98f9-3b2e-449a-ba96-e247d63d5b7c"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-07-17_scheduled__2023-07-16T21%3A20%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-07-17", "Schema": "Jupiter", "HandlerId": '
+ '"4db45a0a-d88a-496f-9e1b-0d4bbbef98ee"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -155,7 +155,7 @@ promoDF = spark.read.format("parquet").load(PROMO_PATH)
 promoSupportPromoDF = spark.read.format("parquet").load(PROMOSUPPORTPROMO_PATH)
 promoProductDF = spark.read.format("parquet").load(PROMOPRODUCT_PATH)
 
-priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 promoStatusDF = spark.read.csv(PROMOSTATUS_PATH,sep="\u0001",header=True,schema=schemas_map["PromoStatus"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 inputPromoDF = spark.read.csv(INPUT_PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
@@ -365,17 +365,6 @@ lightPromoDF = promoDF\
           ,col('ActualPromoPostPromoEffectLSV')
          )
 
-lightPromoDF = lightPromoDF\
-  .join(clientTreeDF, lightPromoDF.promoClientTreeKeyId == clientTreeDF.Id, 'inner')\
-  .select(\
-           lightPromoDF['*']
-          ,to_date(clientTreeDF.EndDate, 'yyyy-MM-dd').alias('ctEndDate')
-          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')
-          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')
-          )\
-  .where(col('ctEndDate').isNull())\
-  .drop('ctEndDate')
-
 calcActualPromoDF = calcActualPromoDF\
   .join(promoStatusDF, promoStatusDF.Id == calcActualPromoDF.PromoStatusId, 'left')\
   .select(\
@@ -450,13 +439,6 @@ calcActualPromoProductDF = calcActualPromoProductDF\
           ,productDF.PCVolume
          )
 
-calcActualPromoDF = calcActualPromoDF\
-  .join(lightPromoDF, lightPromoDF.promoNumber == calcActualPromoDF.Number, 'inner')\
-  .select(\
-           calcActualPromoDF['*']
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
-         )
 
 # print(allCalcActualPromoProductDF.count())
 # print(calcActualPromoProductDF.count())
@@ -474,8 +456,6 @@ allCalcActualPromoDF = allCalcActualPromoDF\
   .select(\
            allCalcActualPromoDF['*']
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
          )
 
 calcActualSupportPromoDF = allCalcActualPromoDF\

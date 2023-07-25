@@ -48,6 +48,14 @@ datesDimSchema = StructType([
   StructField("CalendarWeek",  IntegerType(), False)
 ])
 
+rangeSchema = StructType([
+  StructField("Id", StringType(), False),
+  StructField("Name", StringType(), False),
+  StructField("MinValue", IntegerType(), False),
+  StructField("MaxValue",  IntegerType(), False),
+  StructField("#QCCount", IntegerType(), False)
+])
+
 inputLogMessageSchema = StructType([
   StructField("logMessage", StringType(), False)
 ]);
@@ -60,9 +68,9 @@ outputProductChangeIncidentsSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-07-14_manual__2023-07-14T03%3A27%3A24.305007%2B00%3A00_", '
- '"ProcessDate": "2023-07-14", "Schema": "Jupiter", "HandlerId": '
- '"8fb96841-be0a-4675-a405-512b5c69c486"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-07-17_scheduled__2023-07-16T21%3A20%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-07-17", "Schema": "Jupiter", "HandlerId": '
+ '"4db45a0a-d88a-496f-9e1b-0d4bbbef98ee"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -167,6 +175,8 @@ INPUT_FILE_LOG_PATH = es.SETTING_PROCESS_DIR + '/Logs/' + handlerId + '.csv'
 SCHEMAS_DIR=SETTING_RAW_DIR + '/SCHEMAS/'
 schemas_map = sp.getSchemasMap(SCHEMAS_DIR)
 
+print(schemas_map)
+
 priceListDF = spark.read.csv(PRICELIST_PATH,sep="\u0001",header=True,schema=schemas_map["PriceList"]).withColumn("Disabled",col("Disabled").cast(BooleanType())).withColumn("FuturePriceMarker",col("FuturePriceMarker").cast(BooleanType()))
 promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map["Promo"])\
 .withColumn("Disabled",col("Disabled").cast(BooleanType()))\
@@ -223,8 +233,8 @@ brandTechDF = spark.read.csv(BRANDTECH_PATH,sep="\u0001",header=True,schema=sche
 serviceInfoDF = spark.read.csv(SERVICEINFO_PATH,sep="\u0001",header=True,schema=schemas_map["ServiceInfo"])
 ratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep="\u0001",header=True,schema=schemas_map["RATIShopper"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 planPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep="\u0001",header=True,schema=schemas_map["PlanPostPromoEffect"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
-discountRangeDF = spark.read.csv(DISCOUNTRANGE_PATH,sep="\u0001",header=True,schema=schemas_map["Range"])
-durationRangeDF = spark.read.csv(DURATIONRANGE_PATH,sep="\u0001",header=True,schema=schemas_map["Range"])
+discountRangeDF = spark.read.csv(DISCOUNTRANGE_PATH,sep="\u0001",header=True,schema=rangeSchema)
+durationRangeDF = spark.read.csv(DURATIONRANGE_PATH,sep="\u0001",header=True,schema=rangeSchema)
 
 filteredPromoDF = spark.read.format("parquet").load(FILTERED_PROMO_PATH)
 filteredIncreasePromoDF = spark.read.format("parquet").load(FILTERED_INCREASE_PROMO_PATH)

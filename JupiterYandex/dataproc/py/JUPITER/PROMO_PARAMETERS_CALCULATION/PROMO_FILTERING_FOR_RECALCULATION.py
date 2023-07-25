@@ -248,6 +248,7 @@ print('actual cogs incidents count:', actualCogsCiIdsDF.count())
 print('actual cogstn incidents count:', actualCogsTnCiIdsDF.count())
 print('actual ti incidents count:', actualTiCiIdsDF.count())
 print('promo scenario incidents count:', promoScenarioIdsDF.count())
+print('plan ppe incidents count:', ppeCiIdsDF.count())
 
 activeProductChangeIncidentsDF = productChangeIncidentsDF\
   .where(col('RecalculationProcessDate').isNull())
@@ -496,11 +497,17 @@ promoByProductTreeCiDF = productTreeCiDF\
 ppeCiDF = ppeCiIdsDF\
   .join(planPostPromoEffectDF, 'Id', 'inner')\
   .select(\
+           planPostPromoEffectDF.ClientTreeId,
            planPostPromoEffectDF.BrandTechId
          )
 
 promoByPPECiDF = ppeCiDF\
-  .join(promoFilterDF, promoFilterDF.BrandTechId == ppeCiDF.BrandTechId, 'inner')\
+    .join(promoFilterDF,
+            [\
+              ppeCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId
+             ,ppeCiDF.BrandTechId == promoFilterDF.BrandTechId
+            ]\
+            ,'inner')\
   .select(promoFilterDF.Id, promoFilterDF.Number)\
   .dropDuplicates()
 

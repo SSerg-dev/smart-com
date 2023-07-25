@@ -345,10 +345,10 @@ namespace Module.Frontend.TPM.Controllers
             {
                 Id = Guid.NewGuid(),
                 ConfigurationName = "PROCESSING",
-                Description = "Загрузка импорта из файла " + typeof(ImportCOGSTn).Name,
+                Description = "Загрузка импорта из файла " + typeof(ImportPPE).Name,
                 Name = "Module.Host.TPM.Handlers." + importHandler,
                 ExecutionPeriod = null,
-                RunGroup = typeof(ImportCOGSTn).Name,
+                RunGroup = typeof(ImportPPE).Name,
                 CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 LastExecutionDate = null,
                 NextExecutionDate = null,
