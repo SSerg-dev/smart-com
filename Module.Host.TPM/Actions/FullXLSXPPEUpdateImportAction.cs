@@ -427,21 +427,13 @@ namespace Module.Host.TPM.Actions
         protected int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
             IList<PlanPostPromoEffect> toCreate = new List<PlanPostPromoEffect>();
-            var query = GetQuery(context).ToList();
-
             var pPEChangeIncidents = new List<PlanPostPromoEffect>();
-
             var toHisCreate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-
-            var importCOGS = sourceRecords.Cast<ImportPPE>();
-            var clientTrees = context.Set<ClientTree>().ToList();
-            var brandTeches = context.Set<BrandTech>().ToList();
 
             if (!HasErrors)
             {
                 foreach (ImportPPE newRecord in sourceRecords)
                 {
-                    var bt = context.Set<BrandTech>().FirstOrDefault(x => x.BrandsegTechsub == newRecord.BrandsegTechsub);
                     var toSave = new PlanPostPromoEffect()
                     {
                         ClientTreeId = newRecord.ClientTreeId,
@@ -453,10 +445,12 @@ namespace Module.Host.TPM.Actions
                         PlanPostPromoEffectW2 = newRecord.PlanPostPromoEffectW2
                     };
                     var existPPE = context.Set<PlanPostPromoEffect>().FirstOrDefault(x => 
-                        x.ClientTreeId == toSave.ClientTreeId 
+                        !x.Disabled
+                        && x.ClientTreeId == toSave.ClientTreeId 
                         && x.BrandTechId == toSave.BrandTechId
                         && x.DurationRangeId == toSave.DurationRangeId
                         && x.DiscountRangeId == toSave.DiscountRangeId
+                        && x.Size == toSave.Size
                     );
                     if (existPPE != null)
                     {
@@ -496,12 +490,6 @@ namespace Module.Host.TPM.Actions
         protected virtual IEnumerable<IEntity<Guid>> BeforeInsert(IEnumerable<IEntity<Guid>> records, DatabaseContext context)
         {
             return records;
-        }
-
-        private IEnumerable<PlanPostPromoEffect> GetQuery(DatabaseContext context)
-        {
-            var query = context.Set<PlanPostPromoEffect>().AsNoTracking();
-            return query.ToList();
         }
     }
 }
