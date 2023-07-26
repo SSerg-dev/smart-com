@@ -94,7 +94,8 @@ BEGIN TRANSACTION
 	DECLARE @promoStatusId UNIQUEIDENTIFIER;
 	SELECT @promoStatusId = Id FROM Jupiter.PromoStatus WHERE LOWER(SystemName) = LOWER(@statusName) AND [Disabled] = 'FALSE';
 
-	---------- ïîèñê êëèåíòà è çàïèñü áàçîâûõ ----------
+	---------- Ð¿Ð¾Ð¸ÑÐº ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð° Ð¸ Ð·Ð°Ð¿Ð¸ÑÑŒ Ð±Ð°Ð·Ð¾Ð²Ñ‹Ñ… ----------
+	---------- Ð¿Ð¾Ð¸ÑÐº ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð° Ð¸ Ð·Ð°Ð¿Ð¸ÑÑŒ Ð±Ð°Ð·Ð¾Ð²Ñ‹Ñ… ----------
 	DECLARE @baseClientTreeId INT;
 	DECLARE @clientTreeObjectId INT;
 	DECLARE @clietnFullPath NVARCHAR(255);
@@ -108,7 +109,7 @@ BEGIN TRANSACTION
 	END
 	print(@isBaseClient)
 	
-		-------ôîðìèðóåì èìÿ ïðîìî è èùåì âûáðàííûé óçåë â äåðåâå ïðîäóêòîâ -------
+		-------Ñ„Ð¾Ñ€Ð¼Ð¸Ñ€ÑƒÐµÐ¼ Ð¸Ð¼Ñ Ð¿Ñ€Ð¾Ð¼Ð¾ Ð¸ Ð¸Ñ‰ÐµÐ¼ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ñ‹Ð¹ ÑƒÐ·ÐµÐ» Ð² Ð´ÐµÑ€ÐµÐ²Ðµ Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¾Ð² -------
 	DECLARE @promoName NVARCHAR(255);
 	DECLARE @productFullPath NVARCHAR(255);
 	DECLARE @productObjectId int;
@@ -121,11 +122,11 @@ BEGIN TRANSACTION
 			WHERE TechnologyId = @techId AND parentId = @productObjectId AND [EndDate] IS NULL;
 	END
 
-	-----------èùåì öâåò----------------
+	-----------Ð¸Ñ‰ÐµÐ¼ Ñ†Ð²ÐµÑ‚----------------
 	DECLARE @colorId UNIQUEIDENTIFIER;
 	SELECT @colorId = Id FROM Jupiter.Color Where BrandTechId = @brandTechId AND [Disabled] = 'FALSE';
 
-	-----------èùåì ñîáûòèå-------------
+	-----------Ð¸Ñ‰ÐµÐ¼ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ-------------
 	DECLARE @eventId UNIQUEIDENTIFIER;
 	DECLARE @eventNameBD NVARCHAR(255);
 	
@@ -133,22 +134,22 @@ BEGIN TRANSACTION
 		SELECT @eventId = Id, @eventNameBD = [name] FROM Jupiter.[Event] Where LOWER([Name]) = LOWER(@eventName) AND [Disabled] = 'FALSE';	
 	END
 	ELSE BEGIN
-		print(N'Ïðèìåíåíî ñòàíäàðíîå ñîáûòèå')
+		print(N'ÐŸÑ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¾ ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ð½Ð¾Ðµ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ')
 		SELECT @eventId = Id, @eventNameBD = [name] FROM Jupiter.[Event] Where LOWER([Name]) = 'standard promo' AND [Disabled] = 'FALSE';
 	END
 
 	IF(@eventId IS NULL) BEGIN
-		print(N'Ïðîìî ¹' + CAST(@number AS NVARCHAR) + N' ñîáûòèå ' + @eventName + N' íå íàéäåíî');
-		print(N'Ïðèìåíåíî ñòàíäàðíîå ñîáûòèå')
+		print(N'ÐŸÑ€Ð¾Ð¼Ð¾ â„–' + CAST(@number AS NVARCHAR) + N' ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ ' + @eventName + N' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾');
+		print(N'ÐŸÑ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¾ ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ð½Ð¾Ðµ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ')
 		SELECT @eventId = Id, @eventNameBD = [name] FROM Jupiter.[Event] Where LOWER([Name]) = 'standard promo' AND [Disabled] = 'FALSE';	
 	END
 	
 		
-		--Òèï ïðîìî
+		--Ð¢Ð¸Ð¿ Ð¿Ñ€Ð¾Ð¼Ð¾
 	DECLARE @promoTypeId UNIQUEIDENTIFIER;
 	Select TOP (1) @promoTypeId = id FROM Jupiter.[PromoTypes] WHERE SystemName = 'Regular';
 
-	-----------èùåì ìåõàíèêè-------------
+	-----------Ð¸Ñ‰ÐµÐ¼ Ð¼ÐµÑ…Ð°Ð½Ð¸ÐºÐ¸-------------
 	DECLARE @mechanicId UNIQUEIDENTIFIER;
 	DECLARE @mechanicName NVARCHAR(255);
 	DECLARE @promoMechanicName NVARCHAR(255);
@@ -164,7 +165,7 @@ BEGIN TRANSACTION
 	END
 
 	IF(@mechanicId IS NULL) BEGIN
-		print(N'Ïðîìî ¹' + CAST(@number AS NVARCHAR) + N' ìåõàíèêà ' + @planMarsMechanicName + N' íå íàéäåíà');
+		print(N'ÐŸÑ€Ð¾Ð¼Ð¾ â„–' + CAST(@number AS NVARCHAR) + N' Ð¼ÐµÑ…Ð°Ð½Ð¸ÐºÐ° ' + @planMarsMechanicName + N' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð°');
 	END
 	ELSE BEGIN
 		SET @promoName = CONCAT(@promoName, ' ', @mechanicName, ' ', @planMarsMechanicDiscount, '%');
@@ -173,7 +174,7 @@ BEGIN TRANSACTION
 										  IIF(@planMarsMechanicDiscount IS NOT NULL, CONCAT(@planMarsMechanicDiscount, '%'), ''));
 	END
 	
-	--çàïîëíåíèå Actual Discount In Store
+	--Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Actual Discount In Store
 	DECLARE @actualInstoreMechanicId UNIQUEIDENTIFIER;
 	DECLARE @actualInstoreMechanicTypeId UNIQUEIDENTIFIER;
 	DECLARE @actualInStoreMechanicDiscount INT;
@@ -184,18 +185,18 @@ BEGIN TRANSACTION
 	IF(LEN(@actualMarsMechanicType) > 1) BEGIN
 		SELECT @actualInstoreMechanicTypeId = Id, @actualInStoreMechanicDiscount = Discount FROM Jupiter.MechanicType 
 			WHERE LOWER(NAME) = LOWER(@actualMarsMechanicType) AND [Disabled] = 'FALSE';
-		print(N'Ïðèñóòñòâóåò ActualInStoreMarsMechanicType')
+		print(N'ÐŸÑ€Ð¸ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ ActualInStoreMarsMechanicType')
 	END
 	ELSE BEGIN
 		SET @actualInStoreMechanicDiscount = @actualMarsMechanicDiscount;
-		print(N'Îòñóòñòâóåò ActualInStoreMarsMechanicType')
+		print(N'ÐžÑ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ ActualInStoreMarsMechanicType')
 	END
 	
-	--------êîððåêòèðîâêà baseline--------
+	--------ÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð¸Ñ€Ð¾Ð²ÐºÐ° baseline--------
 	DECLARE @correctPlanPromoBaselineLSV FLOAT = @planPromoBaselineLSV * ((DATEDIFF (DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1) / 7.0);
 	DECLARE @correctActualPromoBaselineLSV FLOAT = @actualPromoBaselineLSV * ((DATEDIFF (DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1) / 7.0);
 
-		------êòî-òî äîëæåí áûòü ñîçäàòåëåì-----
+		------ÐºÑ‚Ð¾-Ñ‚Ð¾ Ð´Ð¾Ð»Ð¶ÐµÐ½ Ð±Ñ‹Ñ‚ÑŒ ÑÐ¾Ð·Ð´Ð°Ñ‚ÐµÐ»ÐµÐ¼-----
 	DECLARE @creatorId UNIQUEIDENTIFIER;
 	Select TOP (1) @creatorId = [User].Id FROM Jupiter.[User] Where LOWER([User].Name) = LOWER(@creatorName) AND [User].Disabled = 'FALSE';
 
@@ -373,8 +374,8 @@ BEGIN TRANSACTION
 			1 --#93
 		)
 
-			------âûáèðàåì óçåë â äåðåâå ïðîäóêòîâ-----
-		------ñïèñîê Subrange ÷åðåç ; áåç ïðîáåëîâ!!-------
+			------Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ ÑƒÐ·ÐµÐ» Ð² Ð´ÐµÑ€ÐµÐ²Ðµ Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¾Ð²-----
+		------ÑÐ¿Ð¸ÑÐ¾Ðº Subrange Ñ‡ÐµÑ€ÐµÐ· ; Ð±ÐµÐ· Ð¿Ñ€Ð¾Ð±ÐµÐ»Ð¾Ð²!!-------
 	IF(CHARINDEX(';', @subrangeName) > 0) BEGIN
 		DECLARE @subrange NVARCHAR(255)
 		DECLARE @pos INT
