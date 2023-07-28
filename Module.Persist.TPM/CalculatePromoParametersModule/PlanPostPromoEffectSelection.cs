@@ -20,7 +20,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 .Include(f => f.BrandTech)
                 .Where(g => g.ClientTreeId == clientTree.Id &&
                 g.DurationRangeId == durationRange.Id &&
-                g.DiscountRangeId == discountRange.Id)
+                g.DiscountRangeId == discountRange.Id &&
+                !g.Disabled)
                 .ToList();
             planPostPromoEffects = planPostPromoEffects.Where(g => filterProducts.Select(a => a.BrandsegTech_code).Contains(g.BrandTech.BrandTech_code) &&
                 filterProducts.Select(a => a.Size).Contains(g.Size)).ToList();
