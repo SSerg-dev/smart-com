@@ -112,12 +112,12 @@ namespace Module.Frontend.TPM.Controllers
                 string demandCode = GetDemandCode(c, context);
                 brandTeches.ForEach(bt =>
                 {
-                    int shareRecordCounnt = context.Set<ClientTreeBrandTech>()
+                    int shareRecordCount = context.Set<ClientTreeBrandTech>()
                                 .Where(s => s.ClientTreeId == c.Id
                                             && s.BrandTechId == bt.Id
                                             && s.ParentClientTreeDemandCode == demandCode
                                             && !s.Disabled).Count();
-                    if (shareRecordCounnt == 0)
+                    if (shareRecordCount == 0 && !String.IsNullOrEmpty(demandCode))
                     {
                         context.Set<ClientTreeBrandTech>().Add(new ClientTreeBrandTech()
                         {
@@ -141,11 +141,7 @@ namespace Module.Frontend.TPM.Controllers
         {
             if (clientTree == null)
                 return "";
-            if (clientTree.DemandCode == null)
-            {
-                return "";
-            }
-            if (!string.IsNullOrEmpty(clientTree.DemandCode.Trim()))
+            if (!string.IsNullOrEmpty(clientTree.DemandCode))
                 return clientTree.DemandCode;
 
             return GetDemandCode(GetParent(clientTree, context), context);

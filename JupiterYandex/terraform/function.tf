@@ -20,7 +20,7 @@ resource "yandex_function" "function-stop" {
     user_hash          = "v3"
     entrypoint         = "stop.sh"
     memory             = "128"
-    execution_timeout  = "300"
+    execution_timeout  = "500"
     service_account_id = yandex_iam_service_account.function-sa.id
     environment = {
         folder_id = yandex_resourcemanager_folder.folder.id
@@ -56,7 +56,7 @@ resource "yandex_function" "function-start" {
     user_hash          = "v1"
     entrypoint         = "start.sh"
     memory             = "128"
-    execution_timeout  = "300"
+    execution_timeout  = "500"
     service_account_id = yandex_iam_service_account.function-sa.id
     environment = {
         folder_id = yandex_resourcemanager_folder.folder.id
