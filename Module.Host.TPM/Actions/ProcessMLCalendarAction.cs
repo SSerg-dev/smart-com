@@ -226,6 +226,7 @@ namespace Module.Host.TPM.Actions
                 {
                     rollingScenario.RSstatus = RSstateNames.CALCULATING;
                     rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
+                    rollingScenario.IsCreateMLpromo = true;
                     HandlerLogger.Write(true, string.Format("Scenario: {0}. {1} added promo", rollingScenario.RSId, rollingScenario.Promoes.Count), "Message");
                 }
                 else
