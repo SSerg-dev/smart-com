@@ -641,13 +641,13 @@ namespace Module.Frontend.TPM.Controllers
 
             result.ObjectId = new int();
             Context.Set<ClientTree>().Add(result);
+            var resultSaveChanges = await Context.SaveChangesAsync();
 
             if (result.DemandCode != null && result.DemandCode != "")
             {
                 await CreateCoefficientSI2SOHandler(null, result.DemandCode, 1);
             }
 
-            var resultSaveChanges = await Context.SaveChangesAsync();
             if (resultSaveChanges > 0)
             {
                 await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
@@ -755,13 +755,13 @@ namespace Module.Frontend.TPM.Controllers
                 Context.Entry(currentRecord).CurrentValues.SetValues(model);
                 UpdateFullPathClientTree(currentRecord, Context.Set<ClientTree>());
                 Context.Set<ClientTree>().Add(oldRecord);
+                var resultSaveChanges = await Context.SaveChangesAsync();
 
                 if (currentRecord.DemandCode != null && currentRecord.DemandCode != "")
                 {
                     await CreateCoefficientSI2SOHandler(null, currentRecord.DemandCode, 1);
                 }
 
-                var resultSaveChanges = await Context.SaveChangesAsync();
                 if (resultSaveChanges > 0)
                 {
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
