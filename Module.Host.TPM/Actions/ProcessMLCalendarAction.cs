@@ -139,6 +139,7 @@ namespace Module.Host.TPM.Actions
                     {
                         foreach (int inputMlId in inputMlIds)
                         {
+                            int errorcount = 0;
                             InputML firstInputML = inputMLs.FirstOrDefault(g => g.PromoId == inputMlId);
                             Promo promo = PromoHelper.CreateMLDefaultPromo(context, PromoTypesId, Event, PromoStatusId);
 
@@ -172,10 +173,12 @@ namespace Module.Host.TPM.Actions
                             if (((DateTimeOffset)promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate) && promo.BudgetYear == startEndModel.BudgetYear)
                             {
                                 HandlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", inputMlId, promo.StartDate), "Warning");
+                                errorcount++;
                             }
-                            else if (promo.StartDate > promo.EndDate || promo.DispatchesStart > promo.DispatchesEnd)
+                            if (promo.StartDate > promo.EndDate || promo.DispatchesStart > promo.DispatchesEnd)
                             {
                                 HandlerLogger.Write(true, string.Format("ML Promo: {0} the start date is greater than the end date", inputMlId), "Warning");
+                                errorcount++;
                             }
                             if (rollingScenario.ScenarioType == ScenarioType.RA)
                             {
@@ -183,9 +186,10 @@ namespace Module.Host.TPM.Actions
                                 if (inputMLRA.Year != startEndModel.BudgetYear)
                                 {
                                     HandlerLogger.Write(true, string.Format("ML Promo: {0} wrong Year", inputMlId), "Warning");
+                                    errorcount++;
                                 }
                             }
-                            else
+                            if (errorcount == 0)
                             {
 
                                 List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
