@@ -227,7 +227,6 @@ namespace Module.Persist.TPM.Model.TPM
         public double? ActualProductQtySO { get; set; }
         [NotMapped] // для определения baseline
         public bool FuturePriceMarker { get; set; }
-
         public Guid PromoProductId { get; set; }
         public PromoProduct PromoProduct { get; set; }
         public Guid PromoPriceIncreaseId { get; set; }
