@@ -67,6 +67,7 @@ namespace Module.Host.TPM.Actions
                 UserInfo user = null;
                 RoleInfo role = null;
                 RollingScenario rollingScenario = new RollingScenario();
+                List<InputML> inputMLs = new List<InputML>();
                 if (RsId == 0)
                 {
                     var authorizationManager = new SystemAuthorizationManager();
@@ -110,7 +111,14 @@ namespace Module.Host.TPM.Actions
                 FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
 
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
-                List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSetting.Delimiter);
+                if (rollingScenario.ScenarioType == ScenarioType.RS)
+                {
+                    inputMLs.AddRange(PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSetting.Delimiter));
+                }
+                if (rollingScenario.ScenarioType == ScenarioType.RA)
+                {
+                    inputMLs.AddRange(PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSetting.Delimiter));
+                }
                 List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
 
                 Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
@@ -168,6 +176,14 @@ namespace Module.Host.TPM.Actions
                             else if (promo.StartDate > promo.EndDate || promo.DispatchesStart > promo.DispatchesEnd)
                             {
                                 HandlerLogger.Write(true, string.Format("ML Promo: {0} the start date is greater than the end date", inputMlId), "Warning");
+                            }
+                            if (rollingScenario.ScenarioType == ScenarioType.RA)
+                            {
+                                InputMLRA inputMLRA = (InputMLRA)firstInputML;
+                                if (inputMLRA.Year != startEndModel.BudgetYear)
+                                {
+                                    HandlerLogger.Write(true, string.Format("ML Promo: {0} wrong Year", inputMlId), "Warning");
+                                }
                             }
                             else
                             {

@@ -72,7 +72,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     foreach (FileBuffer buffer in fileBuffersAdd)
                     {
                         string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRS.SourcePath, buffer.FileName);
-                        List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSettingRS.Delimiter);
+                        List<InputMLRS> inputMLs = PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSettingRS.Delimiter);
                         List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
                         foreach (int client in inputMlClients)
                         {
@@ -150,7 +150,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
             foreach (FileBuffer buffer in fileBuffersAdd)
             {
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRA.SourcePath, buffer.FileName);
-                List<InputML> inputMLs = PromoHelper.GetInputML(pathfile, cSVProcessInterfaceSettingRA.Delimiter);
+                List<InputMLRA> inputMLs = PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSettingRA.Delimiter);
                 List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
                 foreach (int client in inputMlClients)
                 {

@@ -719,13 +719,13 @@ namespace Module.Frontend.TPM.Util
             };
             return promo;
         }
-        public static List<InputML> GetInputML(string pathfile, string delimiter)
+        public static List<InputMLRS> GetInputMLRS(string pathfile, string delimiter)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
-            List<InputML> inputMLs = Lines
+            List<InputMLRS> inputMLs = Lines
                    .Skip(1)
                    .Select(x => x.Split(char.Parse(delimiter)))
-                   .Select(x => new InputML
+                   .Select(x => new InputMLRS
                    {
                        PromoId = int.Parse(x[0]),
                        PPG = x[1],
@@ -743,6 +743,34 @@ namespace Module.Frontend.TPM.Util
                        Source = x[13],
                        BaseLSV = double.Parse(x[14], CultureInfo.InvariantCulture),
                        TotalLSV = double.Parse(x[15], CultureInfo.InvariantCulture),
+                   })
+                   .Where(g => g.Source == "optimizer")
+                   .ToList();
+            return inputMLs;
+        }
+        public static List<InputMLRA> GetInputMLRA(string pathfile, string delimiter)
+        {
+            var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            List<InputMLRA> inputMLs = Lines
+                   .Skip(1)
+                   .Select(x => x.Split(char.Parse(delimiter)))
+                   .Select(x => new InputMLRA
+                   {
+                       PromoId = int.Parse(x[0]),
+                       PPG = x[1],
+                       Format = x[2],
+                       ZREP = int.Parse(x[3]),
+                       StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                       EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                       MechanicMars = x[6],
+                       DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                       MechInstore = x[8],
+                       InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                       PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                       PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                       FormatCode = int.Parse(x[12]),
+                       Source = x[13],
+                       Year = int.Parse(x[14], CultureInfo.InvariantCulture),
                    })
                    .Where(g => g.Source == "optimizer")
                    .ToList();

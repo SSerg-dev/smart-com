@@ -297,7 +297,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         private static void CreateMLRAperiod(int clientId, Guid bufferId, DatabaseContext Context)
         {
             List<PromoStatus> promoStatuses = Context.Set<PromoStatus>().Where(g => !g.Disabled).ToList();
-            StartEndModel startEndModel = RSPeriodHelper.GetRSPeriod(Context);
+            StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
             RollingScenario rollingScenario = new RollingScenario
             {

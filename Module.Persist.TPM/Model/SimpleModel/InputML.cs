@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.SimpleModel
 {
-    public class InputML
+    public abstract class InputML
     {
         [Display(Name = "Promo ID")]
         public int PromoId { get; set; }
@@ -37,9 +37,18 @@ namespace Module.Persist.TPM.Model.SimpleModel
         public int FormatCode { get; set; }
         [Display(Name = "Source")]
         public string Source { get; set; }
+
+    }
+    public class InputMLRS: InputML
+    {
         [Display(Name = "BaseLSV")]
         public double BaseLSV { get; set; }
         [Display(Name = "TotalLSV")]
         public double TotalLSV { get; set; }
+    }
+    public class InputMLRA: InputML
+    {
+        [Display(Name = "Year")]
+        public int Year { get; set; }
     }
 }
