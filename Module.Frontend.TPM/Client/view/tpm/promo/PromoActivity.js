@@ -982,7 +982,7 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                             name: 'PlanPromoPostPromoEffectLSVPI',
                                             windowType: 'promoactivitydetailsinfopi',
                                             fieldLabel: l10n.ns('tpm', 'Promo').value('PromoPostPromoEffectLSV'),
-                                            dataIndexes: ['PlanProductPostPromoEffectLSV', 'PlanProductPostPromoEffectW1', 'PlanProductPostPromoEffectW2'],
+                                            dataIndexes: ['PlanProductPostPromoEffectLSV'],
                                             blockMillion: false, // если true - то преобразовывать в миллионы
                                             originValue: null, // настоящее значение
                                             valueToRaw: function (value) {

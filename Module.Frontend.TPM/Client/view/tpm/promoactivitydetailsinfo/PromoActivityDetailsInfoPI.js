@@ -240,18 +240,6 @@
                 dataIndex: 'ActualProductUpliftPercent',
                 hidden: true,
                 extraOperator: 'gte_lt',
-            }, {
-                xtype: 'numbercolumn',
-                format: '0.0000',
-                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectW1'),
-                dataIndex: 'PlanProductPostPromoEffectW1',
-                hidden: true
-            }, {
-                xtype: 'numbercolumn',
-                format: '0.0000',
-                text: l10n.ns('tpm', 'PromoProduct').value('PlanProductPostPromoEffectW2'),
-                dataIndex: 'PlanProductPostPromoEffectW2',
-                hidden: true
             }]
         }
     }, {
