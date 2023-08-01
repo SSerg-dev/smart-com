@@ -144,9 +144,9 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
             ,planPostPromoEffectDF.BrandTechId == calcPlanPromoProductDF.promoBrandTechId
             ,planPostPromoEffectDF.Size == calcPlanPromoProductDF.Size
             ,calcPlanPromoProductDF.promoPromoDuration >= planPostPromoEffectDF.MinDuration
-            ,calcPlanPromoProductDF.promoPromoDuration <= planPostPromoEffectDF.MaxDuration
+            ,calcPlanPromoProductDF.promoPromoDuration < planPostPromoEffectDF.MaxDuration
             ,calcPlanPromoProductDF.promoMarsMechanicDiscount >= planPostPromoEffectDF.MinDiscount
-            ,calcPlanPromoProductDF.promoMarsMechanicDiscount <= planPostPromoEffectDF.MaxDiscount
+            ,calcPlanPromoProductDF.promoMarsMechanicDiscount < planPostPromoEffectDF.MaxDiscount
            ],
            'left')\
       .select(\
@@ -320,7 +320,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
       .withColumn('calcPlanProductPostPromoEffectVolumeW1', when(col('calcPlanProductPostPromoEffectVolumeW1').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectVolumeW1')))\
       .withColumn('calcPlanProductPostPromoEffectVolumeW2', when(col('calcPlanProductPostPromoEffectVolumeW2').isNull(), 0).otherwise(col('calcPlanProductPostPromoEffectVolumeW2')))\
       .drop('tempPlanPromoIncrementalLSV','tempPlanPromoBaselineLSV')
-
+    
     sumPlanProductParamsList = sumPlanProductParamsList.select(\
                col('promoNumber')
               ,col('calcPlanPromoIncrementalLSV')
