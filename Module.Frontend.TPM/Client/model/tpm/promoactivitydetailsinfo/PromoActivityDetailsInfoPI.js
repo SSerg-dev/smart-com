@@ -41,8 +41,6 @@
         { name: 'PlanProductPostPromoEffectQty', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'ActualProductLSVByCompensation', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'SumInvoiceProduct', type: 'float', hidden: false, isDefault: false, useNull: true },
-        { name: 'PlanProductPostPromoEffectVolumeW1', type: 'float', hidden: false, isDefault: false, useNull: true },
-        { name: 'PlanProductPostPromoEffectVolumeW2', type: 'float', hidden: false, isDefault: false, useNull: true },
     ],
     proxy: {
         type: 'breeze',
