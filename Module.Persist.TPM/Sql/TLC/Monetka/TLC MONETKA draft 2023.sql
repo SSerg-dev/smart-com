@@ -295,10 +295,10 @@ BEGIN TRANSACTION
 			@brandTechId, --#5
 			@promoStatusId, --#6
 			@promoName, --#7
-            convert(datetime, @startDate, 5), --#8
-            convert(datetime, @endDate, 5), --#9
-            convert(datetime, @dispatchesStart, 5), --#10
-            convert(datetime, @dispatchesEnd, 5), --#11
+			TODATETIMEOFFSET(convert(datetimeoffset, @startDate, 5), 180), --#8
+			TODATETIMEOFFSET(convert(datetimeoffset, @endDate, 5), 180), --#9
+			TODATETIMEOFFSET(convert(datetime, @dispatchesStart, 5), 180), --#10
+			TODATETIMEOFFSET(convert(datetime, @dispatchesEnd, 5), 180), --#11
             @colorId, --#12
             @eventId, --#13
             @mechanicId, --#14
@@ -334,7 +334,7 @@ BEGIN TRANSACTION
 			@actualPromoUpliftPercent, --#49
 			@actualPromoUpliftPercent, --#50
 			@actualPromoBaselineLSV * ((DATEDIFF (DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1) / 7.0), --#52
-			1, --#57
+			0, --#57
 			
 			DATEDIFF(DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1, --#61
 			DATEDIFF(DAY, convert(datetime, @dispatchesStart, 5), convert(datetime, @dispatchesEnd, 5)) + 1, --#62
