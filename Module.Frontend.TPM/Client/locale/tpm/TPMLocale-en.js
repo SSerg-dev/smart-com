@@ -3095,7 +3095,7 @@
 
     'RSmode': {
         'RSId': 'Scenario ID',
-        'ScenarioType': 'Scenario Type',
+        'ScenarioType': 'Type',
         'ClientTreeFullPathName': 'Client',
         'ExpirationDate': 'Expiration Date',
         'StartDate': 'Start Date',
