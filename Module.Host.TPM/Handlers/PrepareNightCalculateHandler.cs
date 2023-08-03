@@ -41,11 +41,11 @@ namespace Module.Host.TPM.Handlers
                     {
                         if (rs.ScenarioType == ScenarioType.RS)
                         {
-                            HiddenModeHelper.SetTypePromoes(context, rs.Promoes.ToList(), TPMmode.RS);
+                            HiddenModeHelper.SetTypePromoes(rs.Promoes.ToList(), TPMmode.RS);
                         }
                         if (rs.ScenarioType == ScenarioType.RA)
                         {
-                            HiddenModeHelper.SetTypePromoes(context, rs.Promoes.ToList(), TPMmode.RA);
+                            HiddenModeHelper.SetTypePromoes(rs.Promoes.ToList(), TPMmode.RA);
                         }
                     }
                     context.SaveChanges();

@@ -48,38 +48,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             Context.SaveChanges();
             return promoes;
         }
-        public static List<Promo> SetTypePromoes(DatabaseContext Context, List<Promo> promoes, TPMmode tPMmode)
+        public static List<Promo> SetTypePromoes(List<Promo> promoes, TPMmode tPMmode)
         {
             foreach (Promo promo in promoes)
             {
                 promo.TPMmode = tPMmode;
-                foreach (PromoProductTree promoProductTree in promo.PromoProductTrees)
-                {
-                    promoProductTree.TPMmode = tPMmode;
-                }
-                foreach (BTLPromo bTLPromo in promo.BTLPromoes)
-                {
-                    bTLPromo.TPMmode = tPMmode;
-                }
-                foreach (IncrementalPromo incrementalPromo in promo.IncrementalPromoes)
-                {
-                    incrementalPromo.TPMmode = tPMmode;
-                }
-                foreach (PromoSupportPromo supportPromo in promo.PromoSupportPromoes)
-                {
-                    supportPromo.TPMmode = tPMmode;
-                }
-                foreach (PromoProduct promoProduct in promo.PromoProducts)
-                {
-                    promoProduct.TPMmode = tPMmode;
-                    foreach (PromoProductsCorrection promoProductsCorrection in promoProduct.PromoProductsCorrections)
-                    {
-                        promoProductsCorrection.TPMmode = tPMmode;
-                    }
-                }
             }
 
-            Context.SaveChanges();
             return promoes;
         }
         public static List<Promo> CopyPromoesToHidden(DatabaseContext Context, List<Promo> promoes, SavedScenario savedScenario, bool disabled = false, DateTimeOffset? deleteddate = null)

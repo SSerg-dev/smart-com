@@ -18,6 +18,7 @@ using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Globalization;
 using System.IO;
@@ -722,6 +723,15 @@ namespace Module.Frontend.TPM.Util
         public static List<InputMLRS> GetInputMLRS(string pathfile, string delimiter)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            List<string> firstline = Lines.Take(1).Select(x => x.Split(char.Parse(delimiter))).FirstOrDefault().ToList();
+            List<string> columns = new List<string> { "Promo ID", "PPG", "Format", "ZREP", "StartDate", "EndDate", "Mechanic (Mars)", "Discount (Mars)", "Mech (Instore)", "Instore Discount", "Planned Uplift", "PlanInStore Shelf Price", "FormatCode", "Source", "BaseLSV", "TotalLSV" };
+            for (int i = 0; i < columns.Count; i++)
+            {
+                if (columns[i] != firstline[i])
+                {
+                    return new List<InputMLRS>();
+                }
+            }
             List<InputMLRS> inputMLs = Lines
                    .Skip(1)
                    .Select(x => x.Split(char.Parse(delimiter)))
@@ -751,6 +761,16 @@ namespace Module.Frontend.TPM.Util
         public static List<InputMLRA> GetInputMLRA(string pathfile, string delimiter)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            List<string> firstline = Lines.Take(1).Select(x => x.Split(char.Parse(delimiter))).FirstOrDefault().ToList();
+            List<string> columns = new List<string> { "Promo ID", "PPG", "Format", "ZREP", "StartDate", "EndDate", "Mechanic (Mars)", "Discount (Mars)", "Mech (Instore)", "Instore Discount", "Planned Uplift", "PlanInStore Shelf Price", "FormatCode", "Source", "Year" };
+            for (int i = 0; i < columns.Count; i++)
+            {
+                if (columns[i] != firstline[i])
+                {
+                    return new List<InputMLRA>();
+                }
+            }
+            
             List<InputMLRA> inputMLs = Lines
                    .Skip(1)
                    .Select(x => x.Split(char.Parse(delimiter)))

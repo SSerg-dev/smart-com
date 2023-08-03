@@ -1,54 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Module.Persist.TPM.Model.SimpleModel
 {
     public abstract class InputML
     {
-        [Display(Name = "Promo ID")]
+        [DisplayName("Promo ID")]
         public int PromoId { get; set; }
-        [Display(Name = "PPG")]
+        [DisplayName("PPG")]
         public string PPG { get; set; }
-        [Display(Name = "Format")]
+        [DisplayName("Format")]
         public string Format { get; set; }
-        [Display(Name = "ZREP")]
+        [DisplayName("ZREP")]
         public int ZREP { get; set; }
-        [Display(Name = "StartDate")]
+        [DisplayName("StartDate")]
         public DateTimeOffset StartDate { get; set; }
-        [Display(Name = "EndDate")]
+        [DisplayName("EndDate")]
         public DateTimeOffset EndDate { get; set; }
-        [Display(Name = "Mechanic(Mars)")]
+        [DisplayName("Mechanic(Mars)")]
         public string MechanicMars { get; set; }
-        [Display(Name = "Discount(Mars)")]
+        [DisplayName("Discount(Mars)")]
         public double DiscountMars { get; set; }
-        [Display(Name = "Mech(Instore)")]
+        [DisplayName("Mech(Instore)")]
         public string MechInstore { get; set; }
-        [Display(Name = "Instore Discount")]
+        [DisplayName("Instore Discount")]
         public double InstoreDiscount { get; set; }
-        [Display(Name = "Planned Uplift")]
+        [DisplayName("Planned Uplift")]
         public double PlannedUplift { get; set; }
-        [Display(Name = "PlanInStore Shelf Price")]
+        [DisplayName("PlanInStore Shelf Price")]
         public double PlanInStoreShelfPrice { get; set; }
-        [Display(Name = "FormatCode")]
+        [DisplayName("FormatCode")]
         public int FormatCode { get; set; }
-        [Display(Name = "Source")]
+        [DisplayName("Source")]
         public string Source { get; set; }
 
     }
-    public class InputMLRS: InputML
+    public class InputMLRS : InputML
     {
-        [Display(Name = "BaseLSV")]
+        [DisplayName("BaseLSV")]
         public double BaseLSV { get; set; }
-        [Display(Name = "TotalLSV")]
+        [DisplayName("TotalLSV")]
         public double TotalLSV { get; set; }
     }
-    public class InputMLRA: InputML
+    public class InputMLRA : InputML
     {
-        [Display(Name = "Year")]
+        [DisplayName("Year")]
         public int Year { get; set; }
     }
 }
