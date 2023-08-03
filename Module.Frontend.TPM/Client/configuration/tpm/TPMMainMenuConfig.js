@@ -219,12 +219,17 @@
         rsMode: true,
         raMode: true,
         currentMode: false,
-        roles: ['Administrator',
-            'SupportAdministrator',
-            'KeyAccountManager',
-            'DemandPlanning',
-            'DemandFinance',
-            'CMManager'],
+        roles: [UserRoles.Administrator,
+            UserRoles.SupportAdministrator,
+            UserRoles.KeyAccountManager,
+            UserRoles.DemandPlanning,
+            UserRoles.DemandFinance,
+            UserRoles.CMManager,
+            UserRoles.CustomerMarketing,
+            UserRoles.FunctionalExpert,
+            UserRoles.GrowthAccelerationManager,
+            UserRoles.SuperReader
+        ],
         widget: 'rsmode'
     },
     {
