@@ -12,8 +12,11 @@
             component: {
                 'schedulecontainer': {
                     afterrender: function () {
-                        var createButton = Ext.ComponentQuery.query('#createbutton')[0];
+                        var createButton = Ext.ComponentQuery.query('#createbuttonall')[0];
                         if (createButton) {
+                            if (App.UserInfo.getCurrentRole().SystemName === UserRoles.CustomerMarketingManager || App.UserInfo.getCurrentRole().SystemName === UserRoles.CustomerMarketing) {
+                                createButton.hide();
+                            } else
                             if (!this.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === createButton.action; })) {
                                 createButton.hide();
                             }
