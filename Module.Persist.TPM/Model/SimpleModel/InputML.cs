@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Module.Persist.TPM.Model.SimpleModel
@@ -46,5 +47,15 @@ namespace Module.Persist.TPM.Model.SimpleModel
     {
         [DisplayName("Year")]
         public int Year { get; set; }
+    }
+    public class ReturnInputMLRS
+    {
+        public List<InputMLRS> InputMLRSs { get; set; }
+        public string Error { get; set; }
+    }
+    public class ReturnInputMLRA
+    {
+        public List<InputMLRA> InputMLRAs { get; set; }
+        public string Error { get; set; }
     }
 }

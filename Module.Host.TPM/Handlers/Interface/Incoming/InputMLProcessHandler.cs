@@ -1,10 +1,12 @@
 ﻿using Core.Security.Models;
 using Core.Settings;
 using Looper.Core;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.SimpleModel;
+using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Persist.Model.Interface;
@@ -21,6 +23,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
 {
     public class InputMLProcessHandler : BaseHandler
     {
+        FileBuffer buffererr = null;
         public override void Action(HandlerInfo info, ExecuteData data)
         {
             LogWriter handlerLogger = null;
@@ -49,6 +52,9 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     IEnumerable<string> fBufferNames = fileBuffers.Select(g => g.FileName).OrderBy(f => f);
                     IEnumerable<string> NotPresents = fileNames.Except(fBufferNames);
                     List<FileBuffer> fileBuffersAdd = new List<FileBuffer>();
+                    StartEndModel startEndModelRS = RSPeriodHelper.GetRSPeriod(context);
+                    StartEndModel startEndModelRA = RAmodeHelper.GetRAPeriod();
+                    List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
 
                     foreach (string filename in NotPresents)
                     {
@@ -71,22 +77,32 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     // создаем RS периоды
                     foreach (FileBuffer buffer in fileBuffersAdd)
                     {
+                        buffererr = buffer;
                         string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRS.SourcePath, buffer.FileName);
-                        List<InputMLRS> inputMLs = PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSettingRS.Delimiter);
+                        ReturnInputMLRS returnInputMLRS = PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSettingRS.Delimiter, startEndModelRS, clientTrees);
+                        List<InputMLRS> inputMLs = returnInputMLRS.InputMLRSs;
                         List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
-                        foreach (int client in inputMlClients)
+                        if (inputMlClients.Count > 0)
                         {
-                            ScenarioHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
+                            foreach (int client in inputMlClients)
+                            {
+                                ScenarioHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
+                            }
                         }
-                        if (inputMlClients.Count == 0)
+                        else
                         {
+                            if (!string.IsNullOrEmpty(returnInputMLRS.Error))
+                            {
+                                handlerLogger.Write(true, returnInputMLRS.Error, "Error");
+                                throw new Exception(returnInputMLRS.Error);
+                            }
                             handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}", buffer.FileName), "Error");
                             data.SetValue<bool>("HasErrors", true);
                             logger.Error(new Exception(string.Format("Empty file or error format, filename: {0}", buffer.FileName)));
                         }
                     }
                     context.SaveChanges();
-                    ReadMLRA(context, info, data, handlerLogger);
+                    ReadMLRA(context, info, data, handlerLogger, startEndModelRA, clientTrees);
                 }
             }
             catch (Exception e)
@@ -97,6 +113,15 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 if (handlerLogger != null)
                 {
                     handlerLogger.Write(true, e.ToString(), "Error");
+                }
+                using (DatabaseContext context = new DatabaseContext())
+                {
+                    FileBuffer buffer = context.FileBuffers.FirstOrDefault(g => g.Id == buffererr.Id);
+                    if (buffer != null)
+                    {
+                        buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Error;
+                        context.SaveChanges();
+                    }
                 }
             }
             finally
@@ -111,7 +136,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 }
             }
         }
-        private void ReadMLRA(DatabaseContext context, HandlerInfo info, ExecuteData data, LogWriter handlerLogger)
+        private void ReadMLRA(DatabaseContext context, HandlerInfo info, ExecuteData data, LogWriter handlerLogger, StartEndModel startEndModelRA, List<ClientTree> clientTrees)
         {
             // настройки
             string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
@@ -149,15 +174,25 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
             // создаем RS периоды
             foreach (FileBuffer buffer in fileBuffersAdd)
             {
+                buffererr = buffer;
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRA.SourcePath, buffer.FileName);
-                List<InputMLRA> inputMLs = PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSettingRA.Delimiter);
+                ReturnInputMLRA returnInputMLRA = PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSettingRA.Delimiter, startEndModelRA, clientTrees);
+                List<InputMLRA> inputMLs = returnInputMLRA.InputMLRAs;
                 List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
-                foreach (int client in inputMlClients)
+                if (inputMlClients.Count > 0)
                 {
-                    ScenarioHelper.RemoveOldCreateNewRAPeriodML(client, buffer.Id, context);
+                    foreach (int client in inputMlClients)
+                    {
+                        ScenarioHelper.RemoveOldCreateNewRAPeriodML(client, buffer.Id, context);
+                    }
                 }
-                if (inputMlClients.Count == 0)
+                else
                 {
+                    if (!string.IsNullOrEmpty(returnInputMLRA.Error))
+                    {
+                        handlerLogger.Write(true, returnInputMLRA.Error, "Error");
+                        throw new Exception(returnInputMLRA.Error);
+                    }
                     handlerLogger.Write(true, string.Format("Empty file or error format, filename: {0}", buffer.FileName), "Error");
                     data.SetValue<bool>("HasErrors", true);
                     logger.Error(new Exception(string.Format("Empty file or error format, filename: {0}", buffer.FileName)));

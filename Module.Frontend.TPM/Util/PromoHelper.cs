@@ -720,7 +720,7 @@ namespace Module.Frontend.TPM.Util
             };
             return promo;
         }
-        public static List<InputMLRS> GetInputMLRS(string pathfile, string delimiter)
+        public static ReturnInputMLRS GetInputMLRS(string pathfile, string delimiter, StartEndModel startEndModelRS, List<ClientTree> clientTrees)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
             List<string> firstline = Lines.Take(1).Select(x => x.Split(char.Parse(delimiter))).FirstOrDefault().ToList();
@@ -729,7 +729,7 @@ namespace Module.Frontend.TPM.Util
             {
                 if (columns[i] != firstline[i])
                 {
-                    return new List<InputMLRS>();
+                    return new ReturnInputMLRS { InputMLRSs = new List<InputMLRS>(), Error =  "Incorrect set of columns" };
                 }
             }
             List<InputMLRS> inputMLs = Lines
@@ -756,9 +756,41 @@ namespace Module.Frontend.TPM.Util
                    })
                    .Where(g => g.Source == "optimizer")
                    .ToList();
-            return inputMLs;
+            ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == inputMLs.FirstOrDefault().FormatCode).FirstOrDefault();
+            ClientDispatchDays clientDispatchDays = GetClientDispatchDays(clientTree);
+            foreach (InputMLRS input in inputMLs)
+            {
+                DateTimeOffset DispatchesStart = DateTimeOffset.Now;
+                DateTimeOffset DispatchesEnd = DateTimeOffset.Now;
+                if (clientDispatchDays.IsStartAdd)
+                {
+                    DispatchesStart = input.StartDate.AddDays(clientDispatchDays.StartDays);
+                }
+                else
+                {
+                    DispatchesStart = input.StartDate.AddDays(-clientDispatchDays.StartDays);
+                }
+                if (clientDispatchDays.IsEndAdd)
+                {
+                    DispatchesEnd = input.EndDate.AddDays(clientDispatchDays.EndDays);
+                }
+                else
+                {
+                    DispatchesEnd = input.EndDate.AddDays(-clientDispatchDays.EndDays);
+                }
+                if ((DispatchesStart < startEndModelRS.StartDate || startEndModelRS.EndDate < input.EndDate))
+                {
+                    return new ReturnInputMLRS { InputMLRSs = new List<InputMLRS>(), Error = string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", input.PromoId, input.StartDate) };
+                }
+                if (input.StartDate > input.EndDate || DispatchesStart > DispatchesEnd)
+                {
+                    return new ReturnInputMLRS { InputMLRSs = new List<InputMLRS>(), Error = string.Format("ML Promo: {0} the start date is greater than the end date", input.PromoId) };
+                }
+            }
+
+            return new ReturnInputMLRS { InputMLRSs = inputMLs, Error = "" };
         }
-        public static List<InputMLRA> GetInputMLRA(string pathfile, string delimiter)
+        public static ReturnInputMLRA GetInputMLRA(string pathfile, string delimiter, StartEndModel startEndModelRA, List<ClientTree> clientTrees)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
             List<string> firstline = Lines.Take(1).Select(x => x.Split(char.Parse(delimiter))).FirstOrDefault().ToList();
@@ -767,10 +799,10 @@ namespace Module.Frontend.TPM.Util
             {
                 if (columns[i] != firstline[i])
                 {
-                    return new List<InputMLRA>();
+                    return new ReturnInputMLRA { InputMLRAs = new List<InputMLRA>(), Error = "Incorrect set of columns" };
                 }
             }
-            
+
             List<InputMLRA> inputMLs = Lines
                    .Skip(1)
                    .Select(x => x.Split(char.Parse(delimiter)))
@@ -794,7 +826,42 @@ namespace Module.Frontend.TPM.Util
                    })
                    .Where(g => g.Source == "optimizer")
                    .ToList();
-            return inputMLs;
+            ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == inputMLs.FirstOrDefault().FormatCode).FirstOrDefault();
+            ClientDispatchDays clientDispatchDays = GetClientDispatchDays(clientTree);
+            foreach (InputMLRA input in inputMLs)
+            {
+                DateTimeOffset DispatchesStart = DateTimeOffset.Now;
+                DateTimeOffset DispatchesEnd = DateTimeOffset.Now;
+                if (clientDispatchDays.IsStartAdd)
+                {
+                    DispatchesStart = input.StartDate.AddDays(clientDispatchDays.StartDays);
+                }
+                else
+                {
+                    DispatchesStart = input.StartDate.AddDays(-clientDispatchDays.StartDays);
+                }
+                if (clientDispatchDays.IsEndAdd)
+                {
+                    DispatchesEnd = input.EndDate.AddDays(clientDispatchDays.EndDays);
+                }
+                else
+                {
+                    DispatchesEnd = input.EndDate.AddDays(-clientDispatchDays.EndDays);
+                }
+                if (DispatchesStart < startEndModelRA.StartDate || startEndModelRA.EndDate < input.EndDate)
+                {
+                    return new ReturnInputMLRA { InputMLRAs = new List<InputMLRA>(), Error = string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", input.PromoId, input.StartDate) };
+                }
+                if (input.Year != startEndModelRA.BudgetYear)
+                {
+                    return new ReturnInputMLRA { InputMLRAs = new List<InputMLRA>(), Error = string.Format("ML Promo: {0} is not in the RS period, budgetyear: {1}", input.PromoId, input.Year) };
+                }
+                if (input.StartDate > input.EndDate || DispatchesStart > DispatchesEnd)
+                {
+                    return new ReturnInputMLRA { InputMLRAs = new List<InputMLRA>(), Error = string.Format("ML Promo: {0} the start date is greater than the end date", input.PromoId) };
+                }
+            }
+            return new ReturnInputMLRA { InputMLRAs = inputMLs, Error = "" };
         }
         public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, ProductTree productTree, double MarsMechanicDiscount)
         {

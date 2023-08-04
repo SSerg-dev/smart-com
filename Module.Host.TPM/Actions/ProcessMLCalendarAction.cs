@@ -108,19 +108,6 @@ namespace Module.Host.TPM.Actions
                         startEndModel = RAmodeHelper.GetRAPeriod();
                     }
                 }
-                FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
-
-                string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
-                if (rollingScenario.ScenarioType == ScenarioType.RS)
-                {
-                    inputMLs.AddRange(PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSetting.Delimiter));
-                }
-                if (rollingScenario.ScenarioType == ScenarioType.RA)
-                {
-                    inputMLs.AddRange(PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSetting.Delimiter));
-                }
-                List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
-
                 Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
                 Event Event = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo");
                 Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
@@ -132,6 +119,18 @@ namespace Module.Host.TPM.Actions
                 List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
                 List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
                 List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
+
+                FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
+                string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
+                if (rollingScenario.ScenarioType == ScenarioType.RS)
+                {
+                    inputMLs.AddRange(PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSetting.Delimiter, startEndModel, clientTrees).InputMLRSs);
+                }
+                if (rollingScenario.ScenarioType == ScenarioType.RA)
+                {
+                    inputMLs.AddRange(PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSetting.Delimiter, startEndModel, clientTrees).InputMLRAs);
+                }
+                List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
 
                 using (var transaction = context.Database.BeginTransaction())
                 {
@@ -170,9 +169,14 @@ namespace Module.Host.TPM.Actions
                             {
                                 promo.DispatchesEnd = firstInputML.EndDate.AddDays(-clientDispatchDays.EndDays);
                             }
-                            if (((DateTimeOffset)promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate) && promo.BudgetYear == startEndModel.BudgetYear)
+                            if ((DateTimeOffset)promo.DispatchesStart < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)promo.EndDate)
                             {
                                 HandlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, startdate: {1:yyyy-MM-dd HH:mm:ss}", inputMlId, promo.StartDate), "Warning");
+                                errorcount++;
+                            }
+                            if (promo.BudgetYear != startEndModel.BudgetYear)
+                            {
+                                HandlerLogger.Write(true, string.Format("ML Promo: {0} is not in the RS period, budgetyear: {1}", inputMlId, promo.BudgetYear), "Warning");
                                 errorcount++;
                             }
                             if (promo.StartDate > promo.EndDate || promo.DispatchesStart > promo.DispatchesEnd)
