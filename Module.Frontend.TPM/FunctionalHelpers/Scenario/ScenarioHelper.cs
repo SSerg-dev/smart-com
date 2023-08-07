@@ -16,6 +16,7 @@ using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
 using Module.Persist.TPM.MongoDB;
 using Persist.Model.Settings;
 using Module.Persist.TPM.Utils;
+using Persist.Model.Interface;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 {
@@ -239,22 +240,29 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 );
             }
         }
-        public static void RemoveOldCreateNewRSPeriodML(int clientId, Guid bufferId, DatabaseContext Context)
+        public static void RemoveOldCreateNewRSPeriodML(int clientId, FileBuffer buffer, DatabaseContext Context)
         {
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
-            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+            List<RollingScenario> rollingScenarioExists = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RS);
-
-
+                .Where(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RS)
+                .ToList();
+            if (rollingScenarioExists.Any(g=>g.RSstatus == RSstateNames.CALCULATING))
+            {
+                //удаляем записанный filebuffer
+                Context.FileBuffers.Remove(buffer);
+                Context.SaveChanges();
+                return;
+            }
+            RollingScenario rollingScenarioExist = rollingScenarioExists.FirstOrDefault();
             if (rollingScenarioExist == null)
             {
-                CreateMLRSperiod(clientId, bufferId, Context);
+                CreateMLRSperiod(clientId, buffer.Id, Context);
             }
             else
             {
                 DeleteScenarioPeriod(rollingScenarioExist.Id, Context);
-                CreateMLRSperiod(clientId, bufferId, Context);
+                CreateMLRSperiod(clientId, buffer.Id, Context);
             }
             Context.SaveChanges();
         }
@@ -275,22 +283,29 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             };
             Context.Set<RollingScenario>().Add(rollingScenario);
         }
-        public static void RemoveOldCreateNewRAPeriodML(int clientId, Guid bufferId, DatabaseContext Context)
+        public static void RemoveOldCreateNewRAPeriodML(int clientId, FileBuffer buffer, DatabaseContext Context)
         {
             ClientTree client = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == clientId && g.EndDate == null);
-            RollingScenario rollingScenarioExist = Context.Set<RollingScenario>()
+            List<RollingScenario> rollingScenarioExists = Context.Set<RollingScenario>()
                 .Include(g => g.Promoes)
-                .FirstOrDefault(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RA);
-
-
+                .Where(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RA)
+                .ToList();
+            if (rollingScenarioExists.Any(g => g.RSstatus == RSstateNames.CALCULATING))
+            {
+                //удаляем записанный filebuffer
+                Context.FileBuffers.Remove(buffer);
+                Context.SaveChanges();
+                return;
+            }
+            RollingScenario rollingScenarioExist = rollingScenarioExists.FirstOrDefault();
             if (rollingScenarioExist == null)
             {
-                CreateMLRAperiod(clientId, bufferId, Context);
+                CreateMLRAperiod(clientId, buffer.Id, Context);
             }
             else
             {
                 DeleteScenarioPeriod(rollingScenarioExist.Id, Context);
-                CreateMLRAperiod(clientId, bufferId, Context);
+                CreateMLRAperiod(clientId, buffer.Id, Context);
             }
             Context.SaveChanges();
         }

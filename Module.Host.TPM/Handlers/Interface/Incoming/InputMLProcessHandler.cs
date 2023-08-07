@@ -86,7 +86,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         {
                             foreach (int client in inputMlClients)
                             {
-                                ScenarioHelper.RemoveOldCreateNewRSPeriodML(client, buffer.Id, context);
+                                ScenarioHelper.RemoveOldCreateNewRSPeriodML(client, buffer, context);
                             }
                         }
                         else
@@ -120,6 +120,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     if (buffer != null)
                     {
                         buffer.Status = Interfaces.Core.Model.Consts.ProcessResult.Error;
+                        buffer.ProcessDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
                         context.SaveChanges();
                     }
                 }
@@ -183,7 +184,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 {
                     foreach (int client in inputMlClients)
                     {
-                        ScenarioHelper.RemoveOldCreateNewRAPeriodML(client, buffer.Id, context);
+                        ScenarioHelper.RemoveOldCreateNewRAPeriodML(client, buffer, context);
                     }
                 }
                 else
