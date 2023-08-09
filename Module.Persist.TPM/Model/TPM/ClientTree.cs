@@ -64,6 +64,7 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<RATIShopper> RATIShoppers { get; set; }
         public ICollection<TradeInvestment> TradeInvestments { get; set; }
         public ICollection<PlanPostPromoEffect> PlanPostPromoEffects { get; set; }
+        public ICollection<SavedPromo> SavedPromos { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();

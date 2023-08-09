@@ -186,6 +186,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<SavedScenario>().HasRequired(g => g.RollingScenario);
             modelBuilder.Entity<SavedScenario>().HasMany(g => g.Promoes).WithOptional(g => g.SavedScenario);
+            modelBuilder.Entity<SavedPromo>().HasMany(g => g.Promoes).WithOptional(g => g.SavedPromo).WillCascadeOnDelete();
         }
 
 
@@ -506,6 +507,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.RollingScenario, "DeletedRollingScenarios");
             builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.SavedScenario, "SavedScenarios");
             builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.SavedScenario, "DeletedSavedScenarios");
+            builder.EntitySet<Promo>("Promoes").HasOptionalBinding(e => e.SavedPromo, "SavedPromoes");
+            builder.EntitySet<Promo>("DeletedPromoes").HasOptionalBinding(e => e.SavedPromo, "DeletedSavedPromoes");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<Promo>("DeletedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
             builder.EntitySet<Promo>("Promoes").HasManyBinding(e => e.PromoProducts, "PromoProducts");
@@ -664,6 +667,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.TradeInvestments, "TradeInvestments"); // Для получение только базовых клиентов из иерархии
             builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects"); // Для получение только базовых клиентов из иерархии
+            builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.SavedPromos, "SavedPromoes");
+            builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.SavedPromos, "SavedPromoes"); // Для получение только базовых клиентов из иерархии
             builder.Entity<ClientTree>().Collection.Action("Delete");
             builder.Entity<ClientTree>().Collection.Action("Move");
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
@@ -1334,6 +1339,11 @@ namespace Module.Persist.TPM
             builder.EntitySet<SavedScenario>("SavedScenarios").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<SavedScenario>("DeletedSavedScenarios").HasManyBinding(e => e.Promoes, "DeletedPromoes");
             builder.Entity<SavedScenario>().Collection.Action("UploadSavedScenario");
+
+            builder.EntitySet<SavedPromo>("SavedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<SavedPromo>("DeletedSavedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<SavedPromo>("SavedPromoes").HasManyBinding(e => e.Promoes, "Promoes");
+            builder.EntitySet<SavedPromo>("DeletedSavedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
         }
 
 

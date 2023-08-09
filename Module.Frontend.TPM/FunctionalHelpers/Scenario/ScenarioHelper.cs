@@ -17,6 +17,7 @@ using Module.Persist.TPM.MongoDB;
 using Persist.Model.Settings;
 using Module.Persist.TPM.Utils;
 using Persist.Model.Interface;
+using Module.Frontend.TPM.Util;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 {
@@ -215,6 +216,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         {
             RollingScenario RS = Context.Set<RollingScenario>()
                     .Include(g => g.Promoes)
+                    .Include(g => g.ClientTree)
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
             List<Guid> PromoRSIds = RS.Promoes.Select(f => f.Id).ToList();
             if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
@@ -223,9 +225,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             }
             RS.IsCMManagerApproved = true;
             RS.RSstatus = RSstateNames.APPROVED;
+            SaveOldPromoAfterApprove(RS, Context);
             var newPromoIds = RSPeriodHelper.CopyBackPromoes(RS.Promoes.ToList(), Context);
-            Context.Set<Promo>().RemoveRange(RS.Promoes);
-            Context.SaveChanges();
 
             if (newPromoIds.Count > 0)
             {
@@ -247,7 +248,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 .Include(g => g.Promoes)
                 .Where(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RS)
                 .ToList();
-            if (rollingScenarioExists.Any(g=>g.RSstatus == RSstateNames.CALCULATING))
+            if (rollingScenarioExists.Any(g => g.RSstatus == RSstateNames.CALCULATING || (g.RSstatus == RSstateNames.DRAFT && g.TaskStatus == TaskStatusNames.COMPLETE) || (g.RSstatus == RSstateNames.ON_APPROVAL && g.TaskStatus == TaskStatusNames.COMPLETE)))
             {
                 //удаляем записанный filebuffer
                 Context.FileBuffers.Remove(buffer);
@@ -290,7 +291,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 .Include(g => g.Promoes)
                 .Where(g => g.ClientTreeId == client.Id && !g.Disabled && g.ScenarioType == ScenarioType.RA)
                 .ToList();
-            if (rollingScenarioExists.Any(g => g.RSstatus == RSstateNames.CALCULATING))
+            if (rollingScenarioExists.Any(g => g.RSstatus == RSstateNames.CALCULATING || (g.RSstatus == RSstateNames.DRAFT && g.TaskStatus == TaskStatusNames.COMPLETE) || (g.RSstatus == RSstateNames.ON_APPROVAL && g.TaskStatus == TaskStatusNames.COMPLETE)))
             {
                 //удаляем записанный filebuffer
                 Context.FileBuffers.Remove(buffer);
@@ -325,6 +326,63 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 ScenarioType = ScenarioType.RA
             };
             Context.Set<RollingScenario>().Add(rollingScenario);
+        }
+        private static void SaveOldPromoAfterApprove(RollingScenario RS, DatabaseContext Context)
+        {
+            SavedPromo savedPromoOld = Context.Set<SavedPromo>().FirstOrDefault(g => g.ClientTreeId == RS.ClientTreeId && g.StartDate == RS.StartDate && g.EndDate == RS.EndDate);
+            if (savedPromoOld != null)
+            {
+                Context.Set<SavedPromo>().Remove(savedPromoOld);
+            }
+            SavedPromo savedPromo = new SavedPromo
+            {
+                ClientTreeId = RS.ClientTreeId,
+                StartDate = RS.StartDate,
+                EndDate = RS.EndDate,
+                SavedPromoType = SavedPromoType.Scenario
+            };
+            PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(RS.ClientTree);
+
+            HiddenModeHelper.CopyPromoesToSavedPromo(Context, GetCurrentPeriodPromoes(RS.ScenarioType, Context, clientDispatchDays), savedPromo);
+        }
+        private static List<Promo> GetCurrentPeriodPromoes(ScenarioType scenarioType, DatabaseContext Context, PromoHelper.ClientDispatchDays clientDispatchDays)
+        {
+            DateTimeOffset DispatchesStart;
+            List<string> needStatuses = "OnApproval,Approved,DraftPublished".Split(',').ToList();            
+            List<Promo> promos = new List<Promo>();
+            if (scenarioType == ScenarioType.RS)
+            {
+                StartEndModel startEndModelRS = RSPeriodHelper.GetRSPeriod(Context);
+                if (clientDispatchDays.IsStartAdd)
+                {
+                    DispatchesStart = startEndModelRS.StartDate.AddDays(clientDispatchDays.StartDays);
+                }
+                else
+                {
+                    DispatchesStart = startEndModelRS.StartDate.AddDays(-clientDispatchDays.StartDays);
+                }
+                promos = Context.Set<Promo>().Where(g => g.DispatchesStart > startEndModelRS.StartDate &&
+                g.EndDate > startEndModelRS.EndDate && g.BudgetYear == startEndModelRS.BudgetYear &&
+                needStatuses.Contains(g.PromoStatus.SystemName))
+                    .ToList();
+            }
+            if (scenarioType == ScenarioType.RA)
+            {
+                StartEndModel startEndModelRA = RAmodeHelper.GetRAPeriod();
+                if (clientDispatchDays.IsStartAdd)
+                {
+                    DispatchesStart = startEndModelRA.StartDate.AddDays(clientDispatchDays.StartDays);
+                }
+                else
+                {
+                    DispatchesStart = startEndModelRA.StartDate.AddDays(-clientDispatchDays.StartDays);
+                }
+                promos = Context.Set<Promo>().Where(g => g.DispatchesStart > startEndModelRA.StartDate &&
+                g.EndDate > startEndModelRA.EndDate && g.BudgetYear == startEndModelRA.BudgetYear &&
+                needStatuses.Contains(g.PromoStatus.SystemName))
+                    .ToList();
+            }
+            return promos;
         }
     }
 }
