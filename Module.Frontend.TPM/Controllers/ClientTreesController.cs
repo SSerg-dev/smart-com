@@ -1119,7 +1119,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult SaveScenario(string ClientName, string ObjectId)
+        public IHttpActionResult SaveScenario(string ClientName, string ObjectId, string ScenarioType)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             var scenario = ScenarioHelper.GetActiveScenario(Int32.Parse(ObjectId), Context);
@@ -1153,7 +1153,7 @@ namespace Module.Frontend.TPM.Controllers
                             ,'{defaultSchema}'
                             ,GETDATE()
                             ,NULL
-                            ,'MEDIUM'
+                            ,'{ScenarioType}'
                             ,'{scenarioName}'
                             ,'WAITING'
                             ,'{email ?? "NULL"}')

@@ -396,6 +396,7 @@
     <Content Include="Client\model\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\savedScenario\SavedScenario.js" />
+    <Content Include="Client\store\tpm\scenariotype\ScenarioType.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTnEditor.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTn.js" />

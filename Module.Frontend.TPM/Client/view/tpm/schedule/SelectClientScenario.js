@@ -6,21 +6,45 @@
 
     width: 500,
     minWidth: 500,
-    minHeight: 330,
-    height: 330,
+    minHeight: 400,
+    height: 400,
     items: [{
         xtype: 'panel',
         cls: 'filter-panel',
         layout: {
-            type: 'hbox',
+            type: 'vbox',
             align: 'stretch'
         },
         items: [{
             xtype: 'panel',
             cls: 'scheduleFilterFieldset',
-            layout: 'fit',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
             flex: 1,
             items: [{
+                xtype: 'fieldset',
+                itemId: 'scenarioFieldset',
+                title: l10n.ns('tpm', 'SelectClientScenario').value('ScenarioType'),
+                height: 60,
+                items: [
+                    {
+                        xtype: 'combobox',
+                        itemId: 'scenarioType',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        valueField: 'text',
+                        forceSelection: true,
+                        store: {
+                            type: 'scenariotypestore'
+                        },
+                        height: 30,
+                    }
+                ]
+                },
+                {
                 //Фильтр по клиентам
                 xtype: 'fieldset',
                 itemId: 'clientsFieldset',

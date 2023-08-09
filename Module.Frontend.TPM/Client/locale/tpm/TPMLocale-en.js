@@ -1713,6 +1713,7 @@
     'SelectClientScenario': {
         'SaveClientScenario': 'Save scenario',
         'Clients': 'Clients',
+        'ScenarioType': 'Scenario Type',
         'Error': 'Error',
         'SelectOneFilter': 'Select client'
     },
