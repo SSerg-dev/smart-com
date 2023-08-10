@@ -45,7 +45,6 @@ TpmModes = {
         return settingStore.findRecord('name', 'mode');
     },
     getTpmModeById: function(modeId) {
-        //let modesStore = Ext.create('App.store.tpm.mode.Mode');
         let mode = this.getTpmModeStore().findRecord('id', modeId);
         return mode ? mode.data : null;
     },

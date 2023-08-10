@@ -24,10 +24,12 @@
 
     onApplyButtonClick: function (button) {
         var clientsRadioButtons = button.up('selectClientScenario').down('#clientsRadioGroup');
+        var scenarioTypeControl = button.up('selectClientScenario').down('#scenarioType');
         if (clientsRadioButtons.getChecked().length != 0) {
             var parameters = {
                 ClientName: clientsRadioButtons.getChecked()[0].inputValue,
-                ObjectId: clientsRadioButtons.getChecked()[0].objectId
+                ObjectId: clientsRadioButtons.getChecked()[0].objectId,
+                ScenarioType: scenarioTypeControl.getValue()
             };
             button.up('selectClientScenario').setLoading(true);
             App.Util.makeRequestWithCallback('ClientTrees', 'SaveScenario', parameters, function (data) {
