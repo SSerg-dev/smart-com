@@ -3649,6 +3649,10 @@
     <Compile Include="Migrations\202308100841432_Add-TLCImport.designer.cs">
       <DependentUpon>202308100841432_Add-TLCImport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308100939010_Add_PromoGridView_TLC.cs" />
+    <Compile Include="Migrations\202308100939010_Add_PromoGridView_TLC.designer.cs">
+      <DependentUpon>202308100939010_Add_PromoGridView_TLC.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6851,6 +6855,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308100841432_Add-TLCImport.resx">
       <DependentUpon>202308100841432_Add-TLCImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308100939010_Add_PromoGridView_TLC.resx">
+      <DependentUpon>202308100939010_Add_PromoGridView_TLC.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

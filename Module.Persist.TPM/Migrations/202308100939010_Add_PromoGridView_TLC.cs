@@ -5,12 +5,12 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Add_IsChildGAMCritical : DbMigration
+    public partial class Add_PromoGridView_TLC : DbMigration
     {
         public override void Up()
         {
-            //var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            //Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
+            var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
+            Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
         }
         
         public override void Down()

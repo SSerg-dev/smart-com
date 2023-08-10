@@ -752,6 +752,13 @@
                     dataIndex: 'MLPromoId',
                     hidden: true
                 },
+                {
+                    text: l10n.ns('tpm', 'Promo').value('LoadFromTLC'),
+                    dataIndex: 'LoadFromTLC',
+                    renderer: function (value) {
+                        return value ? l10n.ns('core', 'booleanValues').value('true') : l10n.ns('core', 'booleanValues').value('false');
+                    }
+                },
             ]
         }
     }]

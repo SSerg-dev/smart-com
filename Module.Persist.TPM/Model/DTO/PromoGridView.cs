@@ -102,5 +102,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public string InvoiceNumber { get; set; }
         public bool IsPriceIncrease { get; set; }
         public bool IsChildGAMCritical { get; set; }
+        public bool LoadFromTLC { get; set; }
     }
 }
