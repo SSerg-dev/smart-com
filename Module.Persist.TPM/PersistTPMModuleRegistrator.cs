@@ -187,6 +187,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<SavedScenario>().HasRequired(g => g.RollingScenario);
             modelBuilder.Entity<SavedScenario>().HasMany(g => g.Promoes).WithOptional(g => g.SavedScenario);
             modelBuilder.Entity<SavedPromo>().HasMany(g => g.Promoes).WithOptional(g => g.SavedPromo).WillCascadeOnDelete();
+
+            modelBuilder.Entity<TLCImport>().ToTable("TLCImports");
         }
 
 

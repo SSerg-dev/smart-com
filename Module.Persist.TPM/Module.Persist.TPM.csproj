@@ -3645,6 +3645,10 @@
     <Compile Include="Migrations\202308081207443_add_SavedPromo.designer.cs">
       <DependentUpon>202308081207443_add_SavedPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308100841432_Add-TLCImport.cs" />
+    <Compile Include="Migrations\202308100841432_Add-TLCImport.designer.cs">
+      <DependentUpon>202308100841432_Add-TLCImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3896,6 +3900,7 @@
     <Compile Include="Model\TPM\RPA.cs" />
     <Compile Include="Model\TPM\RPASetting.cs" />
     <Compile Include="Model\TPM\ServiceInfo.cs" />
+    <Compile Include="Model\TPM\TLCImport.cs" />
     <Compile Include="Model\TPM\TradeInvestment.cs" />
     <Compile Include="Model\TPM\RetailType.cs" />
     <Compile Include="Model\TPM\Sale.cs" />
@@ -6843,6 +6848,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308081207443_add_SavedPromo.resx">
       <DependentUpon>202308081207443_add_SavedPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308100841432_Add-TLCImport.resx">
+      <DependentUpon>202308100841432_Add-TLCImport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
