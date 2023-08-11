@@ -156,6 +156,10 @@ namespace Module.Frontend.TPM.Controllers
                     case "Actuals_PLU":
                         await CreateRpaActualPluTask (fileName, rpaId);
                         break;
+                    case "TLC_Draft":
+                        break;
+                    case "TLC_Closed":
+                        break;
                 }
             }
             catch (Exception ex)
