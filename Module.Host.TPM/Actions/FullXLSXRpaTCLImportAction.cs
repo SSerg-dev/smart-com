@@ -73,21 +73,21 @@ namespace Module.Host.TPM.Actions
                 ResultStatus = null;
                 HasErrors = false;
 
-                var rpaStatus = "In progress";
-                using (var context = new DatabaseContext())
+                string rpaStatus = "In progress";
+                using (DatabaseContext context = new DatabaseContext())
                 {
-                    var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                    RPA rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
                     rpa.Status = rpaStatus;
                     context.SaveChanges();
                 }
 
-                var sourceRecords = ParseImportFile();
+                IList<IEntity<Guid>> sourceRecords = ParseImportFile();
 
                 int successCount;
                 int warningCount;
                 int errorCount;
 
-                var resultFilesModel = ApplyImport(sourceRecords, out successCount, out warningCount, out errorCount);
+                ImportResultFilesModel resultFilesModel = ApplyImport(sourceRecords, out successCount, out warningCount, out errorCount);
 
                 // Сохранить выходные параметры
                 Results["ImportSourceRecordCount"] = sourceRecords.Count();
@@ -125,7 +125,7 @@ namespace Module.Host.TPM.Actions
 
         private IList<IEntity<Guid>> ParseImportFile()
         {
-            var fileDispatcher = new FileDispatcher();
+            FileDispatcher fileDispatcher = new FileDispatcher();
             string importDir = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
 
             string importFilePath = Path.Combine(importDir, ImportFile.Name);
@@ -135,7 +135,7 @@ namespace Module.Host.TPM.Actions
             }
 
             var builder = ImportModelFactory.GetCSVImportModelBuilder(ImportType);
-            var validator = ImportModelFactory.GetImportValidator(ImportType);
+            IImportValidator validator = ImportModelFactory.GetImportValidator(ImportType);
             int sourceRecordCount;
             List<string> errors;
             IList<Tuple<string, string>> buildErrors;
@@ -203,21 +203,21 @@ namespace Module.Host.TPM.Actions
                     if (!validator.Validate(item, out validationErrors))
                     {
                         HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
+                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
                     }
                     else if (!builder.Build(item, cache, context, out rec, out warnings, out validationErrors))
                     {
                         HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
+                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
                         if (warnings.Any())
                         {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
+                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
                         }
                     }
                     else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
                     {
                         HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", validationErrors)));
+                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
                     }
                     else
                     {
@@ -225,7 +225,7 @@ namespace Module.Host.TPM.Actions
                         successList.Add(item);
                         if (warnings.Any())
                         {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, String.Join(", ", warnings)));
+                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
                         }
                     }
                 };
@@ -235,8 +235,8 @@ namespace Module.Host.TPM.Actions
                 int resultRecordCount = 0;
 
                 ResultStatus = GetImportStatus();
-                var rpaStatus = ResultStatus;
-                var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                string rpaStatus = ResultStatus;
+                RPA rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
                 rpa.Status = rpaStatus;
                 var importModel = ImportUtility.BuildActiveImport(UserId, RoleId, ImportType);
                 importModel.Status = ResultStatus;
@@ -374,7 +374,7 @@ namespace Module.Host.TPM.Actions
                 errors.Add("No access to the client");
                 isSuitable = false;
             }
-            if (String.IsNullOrEmpty(eanPc))
+            if (string.IsNullOrEmpty(eanPc))
             {
                 errors.Add("EAN_PC not found for PLU");
                 isSuitable = false;

@@ -103,14 +103,14 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
 
-            var currentRequest = HttpContext.Current.Request;
-            var rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));
-            var rpaType = currentRequest.Params.Get("RPAType");
-            var proxy = Context.Set<RPA>().Create<RPA>();
-            var configuration = new MapperConfiguration(cfg =>
+            HttpRequest currentRequest = HttpContext.Current.Request;
+            RPA rpaModel = JsonConvert.DeserializeObject<RPA>(currentRequest.Params.Get("Model"));
+            string rpaType = currentRequest.Params.Get("RPAType");
+            RPA proxy = Context.Set<RPA>().Create<RPA>();
+            MapperConfiguration configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RPA, RPA>().ReverseMap());
-            var mapper = configuration.CreateMapper();
-            var result = mapper.Map(rpaModel, proxy);
+            IMapper mapper = configuration.CreateMapper();
+            RPA result = mapper.Map(rpaModel, proxy);
             Context.Set<RPA>().Add(result);
             try
             {
@@ -128,12 +128,12 @@ namespace Module.Frontend.TPM.Controllers
 
                 //Save file
                 string directory = Core.Settings.AppSettingsManager.GetSetting("RPA_DIRECTORY", "RPAFiles");
-                string fileName = Task<string>.Run(async () => await FileUtility.UploadFile(Request, directory)).Result;
+                string fileName = await FileUtility.UploadFile(Request, directory);
                 IList<Constraint> constraints = Context.Constraints
                                                         .Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
                                                         .ToList();
                 IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                result.Constraint = String.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
+                result.Constraint = string.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
                 result.CreateDate = DateTime.UtcNow;
                 result.FileURL = Path.GetFileName(fileName);
                 // Save RPA
@@ -240,7 +240,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "Name" }, data);
             HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
             LoopHandler handler = new LoopHandler()
@@ -288,7 +288,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRPAPromoSupport).Name, data, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRPAPromoSupport), data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "Name" }, data);
             HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
             LoopHandler handler = new LoopHandler()
@@ -336,7 +336,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaActualEanPc), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualEanPc).Name, data, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualEanPc), data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "Name" }, data);
             HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
             LoopHandler handler = new LoopHandler()
@@ -384,7 +384,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaActualPlu), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaActualPlu).Name, data, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaActualPlu), data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name" }, data);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "Name" }, data);
             HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
             LoopHandler handler = new LoopHandler()
