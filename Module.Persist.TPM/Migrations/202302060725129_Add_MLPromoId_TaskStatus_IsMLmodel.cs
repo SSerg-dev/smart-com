@@ -13,7 +13,7 @@ namespace Module.Persist.TPM.Migrations
             AddColumn($"{defaultSchema}.Promo", "MLPromoId", c => c.String());
             AddColumn($"{defaultSchema}.RollingScenario", "IsMLmodel", c => c.Boolean(nullable: false));
             AddColumn($"{defaultSchema}.RollingScenario", "TaskStatus", c => c.String(maxLength: 100));
-            Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
+            //Sql(ViewMigrations.GetPromoGridViewString(defaultSchema));
         }
         
         public override void Down()

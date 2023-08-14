@@ -220,8 +220,6 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('isActualPromoBaseLineLSVChangedByDemand', when((~col('ActualPromoBaselineLSV').isNull()) & (col('ActualPromoBaselineLSV') != col('PlanPromoBaselineLSV')), True).otherwise(False))\
       .withColumn('isActualPromoLSVChangedByDemand', when((~col('ActualPromoLSVSO').isNull()) & (col('ActualPromoLSVSO') != 0), True).otherwise(False))\
       .withColumn('isActualPromoProstPromoEffectLSVChangedByDemand', when((~col('ActualPromoPostPromoEffectLSV').isNull()) & (col('ActualPromoPostPromoEffectLSV') != 0), True).otherwise(False))\
-      .withColumn('kW1', col('promoClientPostPromoEffectW1') / (col('promoClientPostPromoEffectW1') + col('promoClientPostPromoEffectW2')))\
-      .withColumn('kW2', col('promoClientPostPromoEffectW2') / (col('promoClientPostPromoEffectW1') + col('promoClientPostPromoEffectW2')))\
       .withColumn('TIBasePercent', when((col('UseActualTI') == True) & (~col('ActualTIBasePercent').isNull()), col('ActualTIBasePercent'))
                                         .otherwise(col('PlanTIBasePercent')).cast(DecimalType(30,2)))\
       .withColumn('COGSPercent', when((col('UseActualCOGS') == True) & (~col('ActualCOGSPercent').isNull()), col('ActualCOGSPercent'))
@@ -249,12 +247,6 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoPostPromoEffectLSV', when(col('InOut') == False, when(col('IsOnInvoice') == False, col('ActualPromoPostPromoEffectLSVW1') \
                                                + col('ActualPromoPostPromoEffectLSVW2')).otherwise(isNullCheck(col('ActualPromoLSVSO')) - isNullCheck(col('ActualPromoLSVSI'))))\
                                                 .otherwise(col('ActualPromoPostPromoEffectLSV')).cast(DecimalType(30,6)))\
-      .withColumn('ActualPromoPostPromoEffectLSVW1', when(((col('InOut') == False) & (col('IsOnInvoice') == True)),\
-                                                        col('ActualPromoPostPromoEffectLSV') * col('kW1'))\
-                                                  .otherwise(col('ActualPromoPostPromoEffectLSVW1')).cast(DecimalType(30,6)))\
-      .withColumn('ActualPromoPostPromoEffectLSVW2', when(((col('InOut') == False) & (col('IsOnInvoice') == True)),\
-                                                        col('ActualPromoPostPromoEffectLSV') * col('kW2'))\
-                                                  .otherwise(col('ActualPromoPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetIncrementalLSV', when(col('InOut') == False, isNullCheck(col('ActualPromoIncrementalLSV'))\
                                                    + isNullCheck(col('ActualPromoPostPromoEffectLSV')))\
                                                   .otherwise(isNullCheck(col('ActualPromoIncrementalLSV'))).cast(DecimalType(30,6)))\

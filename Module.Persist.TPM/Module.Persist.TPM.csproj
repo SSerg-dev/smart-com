@@ -323,6 +323,7 @@
     <Compile Include="CalculatePromoParametersModule\BaselineAndPriceCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\BudgetsPromoCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\CalculationTaskManager.cs" />
+    <Compile Include="CalculatePromoParametersModule\PlanPostPromoEffectSelection.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoParametersCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PlanPromoUpliftCalculation.cs" />
     <Compile Include="CalculatePromoParametersModule\PromoUtils.cs" />
@@ -3506,6 +3507,78 @@
     <Compile Include="Migrations\202305170921255_Empty_ML_Dev_Merge.designer.cs">
       <DependentUpon>202305170921255_Empty_ML_Dev_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202304050832193_Add_PlanPostPromoEffect.cs" />
+    <Compile Include="Migrations\202304050832193_Add_PlanPostPromoEffect.designer.cs">
+      <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304061159140_PPE_Change_models.cs" />
+    <Compile Include="Migrations\202304061159140_PPE_Change_models.designer.cs">
+      <DependentUpon>202304061159140_PPE_Change_models.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304101026500_Change_Types_PPE.cs" />
+    <Compile Include="Migrations\202304101026500_Change_Types_PPE.designer.cs">
+      <DependentUpon>202304101026500_Change_Types_PPE.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304121907331_Add_Actions_PPE.cs" />
+    <Compile Include="Migrations\202304121907331_Add_Actions_PPE.designer.cs">
+      <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304171300357_Add_AP_PPE_Historical.cs" />
+    <Compile Include="Migrations\202304171300357_Add_AP_PPE_Historical.designer.cs">
+      <DependentUpon>202304171300357_Add_AP_PPE_Historical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304171445320_Add_AP_PPE_Deleted.cs" />
+    <Compile Include="Migrations\202304171445320_Add_AP_PPE_Deleted.designer.cs">
+      <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304181134363_Add_AP_Discount_Duration.cs" />
+    <Compile Include="Migrations\202304181134363_Add_AP_Discount_Duration.designer.cs">
+      <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304190535124_Empty_PPE_Merge.cs" />
+    <Compile Include="Migrations\202304190535124_Empty_PPE_Merge.designer.cs">
+      <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs" />
+    <Compile Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.designer.cs">
+      <DependentUpon>202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304250605586_Empty250420232.cs" />
+    <Compile Include="Migrations\202304250605586_Empty250420232.designer.cs">
+      <DependentUpon>202304250605586_Empty250420232.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304260322035_Add_AP_GetBrandTechSizes.cs" />
+    <Compile Include="Migrations\202304260322035_Add_AP_GetBrandTechSizes.designer.cs">
+      <DependentUpon>202304260322035_Add_AP_GetBrandTechSizes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304261444457_Empty260420231.cs" />
+    <Compile Include="Migrations\202304261444457_Empty260420231.designer.cs">
+      <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.cs" />
+    <Compile Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.designer.cs">
+      <DependentUpon>202304280758313_Add_AP_PPE_CustomMarketingMan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202304280910520_Add_ActualProductPostPromoEffectLSVW12.cs" />
+    <Compile Include="Migrations\202304280910520_Add_ActualProductPostPromoEffectLSVW12.designer.cs">
+      <DependentUpon>202304280910520_Add_ActualProductPostPromoEffectLSVW12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305161028273_RemoveDF_PromoGridView.cs" />
+    <Compile Include="Migrations\202305161028273_RemoveDF_PromoGridView.designer.cs">
+      <DependentUpon>202305161028273_RemoveDF_PromoGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305181258459_Add_IsChildGAMCritical.cs" />
+    <Compile Include="Migrations\202305181258459_Add_IsChildGAMCritical.designer.cs">
+      <DependentUpon>202305181258459_Add_IsChildGAMCritical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305240725265_EmptyM24052023.cs" />
+    <Compile Include="Migrations\202305240725265_EmptyM24052023.designer.cs">
+      <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.cs" />
+    <Compile Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.designer.cs">
+      <DependentUpon>202305261316088_RemoveAP_DF_GetCanChangeState.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3540,6 +3613,7 @@
     <Compile Include="Model\History\HistoricalCostProduction.cs" />
     <Compile Include="Model\History\HistoricalIncrementalPromo.cs" />
     <Compile Include="Model\History\HistoricalPlanCOGSTn.cs" />
+    <Compile Include="Model\History\HistoricalPlanPostPromoEffect.cs" />
     <Compile Include="Model\History\HistoricalPLUDictionary.cs" />
     <Compile Include="Model\History\HistoricalPromoProduct.cs" />
     <Compile Include="Model\History\HistoricalAgeGroup.cs" />
@@ -3590,6 +3664,7 @@
     <Compile Include="Model\History\HistoricalTechHighLevel.cs" />
     <Compile Include="Model\History\HistoricalTechnology.cs" />
     <Compile Include="Model\History\HistoricalVariety.cs" />
+    <Compile Include="Model\Import\ImportPPE.cs" />
     <Compile Include="Model\Import\ImportCompetitorPromo.cs" />
     <Compile Include="Model\Import\BaseLineComparer.cs" />
     <Compile Include="Model\Import\ImportAssortmentMatrix.cs" />
@@ -3658,9 +3733,12 @@
     <Compile Include="Model\TPM\CloudTask.cs" />
     <Compile Include="Model\TPM\COGSTn.cs" />
     <Compile Include="Model\TPM\CurrentDayIncremental.cs" />
+    <Compile Include="Model\TPM\DiscountRange.cs" />
+    <Compile Include="Model\TPM\DurationRange.cs" />
     <Compile Include="Model\TPM\EventType.cs" />
     <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\IncreaseBaseLine.cs" />
+    <Compile Include="Model\TPM\PlanPostPromoEffect.cs" />
     <Compile Include="Model\TPM\PromoPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductPriceIncrease.cs" />
@@ -6594,6 +6672,60 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202305170921255_Empty_ML_Dev_Merge.resx">
       <DependentUpon>202305170921255_Empty_ML_Dev_Merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304050832193_Add_PlanPostPromoEffect.resx">
+      <DependentUpon>202304050832193_Add_PlanPostPromoEffect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304061159140_PPE_Change_models.resx">
+      <DependentUpon>202304061159140_PPE_Change_models.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304101026500_Change_Types_PPE.resx">
+      <DependentUpon>202304101026500_Change_Types_PPE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304121907331_Add_Actions_PPE.resx">
+      <DependentUpon>202304121907331_Add_Actions_PPE.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304171300357_Add_AP_PPE_Historical.resx">
+      <DependentUpon>202304171300357_Add_AP_PPE_Historical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304171445320_Add_AP_PPE_Deleted.resx">
+      <DependentUpon>202304171445320_Add_AP_PPE_Deleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304181134363_Add_AP_Discount_Duration.resx">
+      <DependentUpon>202304181134363_Add_AP_Discount_Duration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304190535124_Empty_PPE_Merge.resx">
+      <DependentUpon>202304190535124_Empty_PPE_Merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304210935210_Change_PlanPostPromoEffectReportWeekView1.resx">
+      <DependentUpon>202304210935210_Change_PlanPostPromoEffectReportWeekView1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304250605586_Empty250420232.resx">
+      <DependentUpon>202304250605586_Empty250420232.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304260322035_Add_AP_GetBrandTechSizes.resx">
+      <DependentUpon>202304260322035_Add_AP_GetBrandTechSizes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304261444457_Empty260420231.resx">
+      <DependentUpon>202304261444457_Empty260420231.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304280758313_Add_AP_PPE_CustomMarketingMan.resx">
+      <DependentUpon>202304280758313_Add_AP_PPE_CustomMarketingMan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202304280910520_Add_ActualProductPostPromoEffectLSVW12.resx">
+      <DependentUpon>202304280910520_Add_ActualProductPostPromoEffectLSVW12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305161028273_RemoveDF_PromoGridView.resx">
+      <DependentUpon>202305161028273_RemoveDF_PromoGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305181258459_Add_IsChildGAMCritical.resx">
+      <DependentUpon>202305181258459_Add_IsChildGAMCritical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305240725265_EmptyM24052023.resx">
+      <DependentUpon>202305240725265_EmptyM24052023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305261316088_RemoveAP_DF_GetCanChangeState.resx">
+      <DependentUpon>202305261316088_RemoveAP_DF_GetCanChangeState.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

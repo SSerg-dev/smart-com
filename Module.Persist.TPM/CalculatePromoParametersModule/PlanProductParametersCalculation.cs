@@ -228,6 +228,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (duringTheSave.HasValue && !duringTheSave.Value)
                 {
                     context.SaveChanges();
+                    PlanPostPromoEffectSelection.SelectPPEforPromoProduct(context.Set<PromoProduct>().Where(g=>g.PromoId == promo.Id).ToList(), promo, context);
                 }
 
                 return needReturnToOnApprovalStatus;
@@ -352,223 +353,211 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                 if (promo.StartDate.HasValue && promo.EndDate.HasValue)
                 {
-                    ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
-                    if (clientNode != null)
+
+                    List<PromoProduct> promoProducts = context.Set<PromoProduct>()
+                        .Include(x => x.PromoProductPriceIncreases.Select(g => g.ProductCorrectionPriceIncreases))
+                        .Where(x => x.PromoId == promo.Id && !x.Disabled)
+                        .ToList();
+
+                    // вначале сбрасываем значения                    
+                    ResetProductParams(promoProducts, context);
+
+                    // если стоит флаг inout, расчет производися по другим формулам, подбирать baseline не требуется
+                    if (!promo.InOut.HasValue || !promo.InOut.Value)
                     {
-                        List<PromoProduct> promoProducts = context.Set<PromoProduct>()
-                            .Include(x => x.PromoProductPriceIncreases.Select(g => g.ProductCorrectionPriceIncreases))
-                            .Where(x => x.PromoId == promo.Id && !x.Disabled)
-                            .ToList();
-                        double? clientPostPromoEffectW1 = clientNode.PostPromoEffectW1;
-                        double? clientPostPromoEffectW2 = clientNode.PostPromoEffectW2;
+                        var promoProductCorrections = context.Set<PromoProductsCorrection>().Where(x => !x.Disabled && x.PromoProduct.PromoId == promo.Id && x.TempId == null);
 
-                        // вначале сбрасываем значения                    
-                        ResetProductParams(promoProducts, context);
-
-                        // если стоит флаг inout, расчет производися по другим формулам, подбирать baseline не требуется
-                        if (!promo.InOut.HasValue || !promo.InOut.Value)
+                        if (!promo.PlanPromoUpliftPercent.HasValue)
                         {
-                            var promoProductCorrections = context.Set<PromoProductsCorrection>().Where(x => !x.Disabled && x.PromoProduct.PromoId == promo.Id && x.TempId == null);
-
-                            if (!promo.PlanPromoUpliftPercent.HasValue)
-                            {
-                                message = string.Format("For promo №{0} is no Plan Promo Uplift value. Plan parameters will not be calculated.", promo.Number);
-                            }
-
-                            foreach (PromoProduct promoProduct in promoProducts)
-                            {
-                                PromoProductsCorrection promoProductCorrection = promoProductCorrections.FirstOrDefault(x => x.PromoProductId == promoProduct.Id && !x.Disabled);
-                                double? promoProductUplift = promoProductCorrection?.PlanProductUpliftPercentCorrected ?? promoProduct.PlanProductUpliftPercent;
-                                promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promoProductUplift / 100;
-                                promoProduct.PlanProductLSV = promoProduct.PlanProductBaselineLSV + promoProduct.PlanProductIncrementalLSV;
-
-                                //Расчет плановых значений PromoProduct
-                                promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.Price / promoProduct.Product.UOM_PC2Case : null;
-                                promoProduct.PlanProductIncrementalCaseQty = promoProduct.PlanProductBaselineCaseQty * promoProductUplift / 100;
-                                promoProduct.PlanProductCaseQty = promoProduct.PlanProductBaselineCaseQty + promoProduct.PlanProductIncrementalCaseQty;
-                                promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
-                                promoProduct.PlanProductCaseLSV = promoProduct.PlanProductBaselineCaseQty * promoProduct.Price;
-                                promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
-
-                                if (clientNode != null)
-                                {
-                                    //TODO: Уточнить насчет деления на 100
-                                    promoProduct.PlanProductPostPromoEffectQtyW1 = promoProduct.PlanProductBaselineCaseQty * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectQtyW2 = promoProduct.PlanProductBaselineCaseQty * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectQty = promoProduct.PlanProductPostPromoEffectQtyW1 + promoProduct.PlanProductPostPromoEffectQtyW2;
-
-                                    promoProduct.PlanProductPostPromoEffectLSVW1 = promoProduct.PlanProductBaselineLSV * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectLSVW2 = promoProduct.PlanProductBaselineLSV * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectLSV = promoProduct.PlanProductPostPromoEffectLSVW1 + promoProduct.PlanProductPostPromoEffectLSVW2;
-
-                                    promoProduct.PlanProductPostPromoEffectVolumeW1 = promoProduct.PlanProductBaselineVolume * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectVolumeW2 = promoProduct.PlanProductBaselineVolume * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProduct.PlanProductPostPromoEffectVolume = promoProduct.PlanProductPostPromoEffectVolumeW1 + promoProduct.PlanProductPostPromoEffectVolumeW2;
-                                }
-                            }
-
-                            double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
-                            double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
-                            if (promo.NeedRecountUplift.Value)
-                                promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
-
-                            promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
-                            promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
-                            promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;
-                            // PriceIncrease
-                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
-                            {
-                                var promoProductCorrectionPI = promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault(x => !x.Disabled);
-                                var promoProductUpliftPI = promoProductCorrectionPI?.PlanProductUpliftPercentCorrected ?? promoProductPriceIncrease.PlanProductUpliftPercent;
-                                promoProductPriceIncrease.PlanProductIncrementalLSV = promoProductPriceIncrease.PlanProductBaselineLSV * promoProductUpliftPI / 100;
-                                promoProductPriceIncrease.PlanProductLSV = promoProductPriceIncrease.PlanProductBaselineLSV + promoProductPriceIncrease.PlanProductIncrementalLSV;
-
-                                //Расчет плановых значений PromoProduct
-                                promoProductPriceIncrease.PlanProductPCPrice = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? promoProductPriceIncrease.Price / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
-                                promoProductPriceIncrease.PlanProductIncrementalCaseQty = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductUpliftPI / 100;
-                                promoProductPriceIncrease.PlanProductCaseQty = promoProductPriceIncrease.PlanProductBaselineCaseQty + promoProductPriceIncrease.PlanProductIncrementalCaseQty;
-                                promoProductPriceIncrease.PlanProductPCQty = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
-                                promoProductPriceIncrease.PlanProductCaseLSV = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.Price;
-                                promoProductPriceIncrease.PlanProductPCLSV = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseLSV / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
-
-                                if (clientNode != null)
-                                {
-                                    //TODO: Уточнить насчет деления на 100
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 = promoProductPriceIncrease.PlanProductBaselineCaseQty * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2 = promoProductPriceIncrease.PlanProductBaselineCaseQty * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectQty = promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 + promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2;
-
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 = promoProductPriceIncrease.PlanProductBaselineLSV * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2 = promoProductPriceIncrease.PlanProductBaselineLSV * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectLSV = promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 + promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2;
-
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 = promoProductPriceIncrease.PlanProductBaselineVolume * clientPostPromoEffectW1 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2 = promoProductPriceIncrease.PlanProductBaselineVolume * clientPostPromoEffectW2 / 100 ?? 0;
-                                    promoProductPriceIncrease.PlanProductPostPromoEffectVolume = promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 + promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2;
-                                }
-                            }
-
-                            double? sumPlanProductBaseLineLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductBaselineLSV);
-                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
-                            if (!promo.NeedRecountUpliftPI)
-                            {
-                                promo.PromoPriceIncrease.PlanPromoUpliftPercent = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
-                                promo.PlanPromoUpliftPercentPI = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
-                            }
-
-
-                            promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
-                            promo.PromoPriceIncrease.PlanPromoBaselineLSV = sumPlanProductBaseLineLSVPI;
-                            promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoBaselineLSV + promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
-                        }
-                        else
-                        {
-                            foreach (var promoProduct in promoProducts)
-                            {
-                                IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id && x.ProductId == promoProduct.ProductId && !x.Disabled).FirstOrDefault();
-
-                                if (incrementalPromo != null)
-                                {
-                                    //Расчет плановых значений PromoProduct
-                                    promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.Price / promoProduct.Product.UOM_PC2Case : null;
-                                    promoProduct.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
-                                    promoProduct.PlanProductCaseQty = promoProduct.PlanProductIncrementalCaseQty;
-                                    promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
-                                    promoProduct.PlanProductCaseLSV = promoProduct.PlanProductCaseQty * promoProduct.Price;
-                                    incrementalPromo.PlanPromoIncrementalLSV = (promoProduct.Price ?? 0) * (incrementalPromo.PlanPromoIncrementalCases ?? 0);
-                                    promoProduct.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
-                                    promoProduct.PlanProductLSV = promoProduct.PlanProductIncrementalLSV;
-
-                                    // TODO: удаляем?
-                                    //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
-                                }
-                                else
-                                {
-                                    message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
-                                }
-
-                                //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
-
-                                promoProduct.PlanProductPostPromoEffectQtyW1 = 0;
-                                promoProduct.PlanProductPostPromoEffectQtyW2 = 0;
-                                promoProduct.PlanProductPostPromoEffectQty = 0;
-                                promoProduct.PlanProductPostPromoEffectLSVW1 = 0;
-                                promoProduct.PlanProductPostPromoEffectLSVW2 = 0;
-                                promoProduct.PlanProductPostPromoEffectLSV = 0;
-                                promoProduct.PlanProductPostPromoEffectVolumeW1 = 0;
-                                promoProduct.PlanProductPostPromoEffectVolumeW2 = 0;
-                                promoProduct.PlanProductPostPromoEffectVolume = 0;
-                            }
-                            // PriceIncrease
-                            foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
-                            {
-                                IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>()
-                                    .Where(x => x.PromoId == promo.Id && x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !x.Disabled).FirstOrDefault();
-
-                                if (incrementalPromo != null)
-                                {
-                                    //Расчет плановых значений PromoProduct
-                                    promoProductPriceIncrease.PlanProductPCPrice = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? promoProductPriceIncrease.Price / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
-                                    promoProductPriceIncrease.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
-                                    promoProductPriceIncrease.PlanProductCaseQty = promoProductPriceIncrease.PlanProductIncrementalCaseQty;
-                                    promoProductPriceIncrease.PlanProductPCQty = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
-                                    promoProductPriceIncrease.PlanProductCaseLSV = promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.Price;
-                                    incrementalPromo.PlanPromoIncrementalLSV = (promoProductPriceIncrease.Price ?? 0) * (incrementalPromo.PlanPromoIncrementalCases ?? 0);
-                                    promoProductPriceIncrease.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
-                                    promoProductPriceIncrease.PlanProductLSV = promoProductPriceIncrease.PlanProductIncrementalLSV;
-
-                                    // TODO: удаляем?
-                                    //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
-                                }
-                                else
-                                {
-                                    message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProductPriceIncrease.PromoProduct.Product.ZREP);
-                                }
-
-                                //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
-
-                                promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectQty = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectLSV = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2 = 0;
-                                promoProductPriceIncrease.PlanProductPostPromoEffectVolume = 0;
-                            }
-
-                            promo.PlanPromoBaselineLSV = null;
-
-                            double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
-                            // LSV = Qty ?
-                            promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
-                            promo.PlanPromoLSV = promo.PlanPromoIncrementalLSV;
-                            // PriceIncrease
-                            promo.PromoPriceIncrease.PlanPromoBaselineLSV = null;
-
-                            double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
-                            // LSV = Qty ?
-                            promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
-                            promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
+                            message = string.Format("For promo №{0} is no Plan Promo Uplift value. Plan parameters will not be calculated.", promo.Number);
                         }
 
-                        if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
+                        foreach (PromoProduct promoProduct in promoProducts)
                         {
-                            promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
-                            if (IsDemandChanged(promo, promoCopy))
-                            {
-                                promo.LastChangedDateDemand = promo.LastChangedDate;
-                                promo.LastChangedDateFinance = promo.LastChangedDate;
-                            }
+                            PromoProductsCorrection promoProductCorrection = promoProductCorrections.FirstOrDefault(x => x.PromoProductId == promoProduct.Id && !x.Disabled);
+                            double? promoProductUplift = promoProductCorrection?.PlanProductUpliftPercentCorrected ?? promoProduct.PlanProductUpliftPercent;
+                            promoProduct.PlanProductIncrementalLSV = promoProduct.PlanProductBaselineLSV * promoProductUplift / 100;
+                            promoProduct.PlanProductLSV = promoProduct.PlanProductBaselineLSV + promoProduct.PlanProductIncrementalLSV;
+
+                            //Расчет плановых значений PromoProduct
+                            promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.Price / promoProduct.Product.UOM_PC2Case : null;
+                            promoProduct.PlanProductIncrementalCaseQty = promoProduct.PlanProductBaselineCaseQty * promoProductUplift / 100;
+                            promoProduct.PlanProductCaseQty = promoProduct.PlanProductBaselineCaseQty + promoProduct.PlanProductIncrementalCaseQty;
+                            promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
+                            promoProduct.PlanProductCaseLSV = promoProduct.PlanProductBaselineCaseQty * promoProduct.Price;
+                            promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
+
+
+                            //TODO: Уточнить насчет деления на 100
+                            promoProduct.PlanProductPostPromoEffectQtyW1 = promoProduct.PlanProductBaselineCaseQty * promoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectQtyW2 = promoProduct.PlanProductBaselineCaseQty * promoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectQty = promoProduct.PlanProductPostPromoEffectQtyW1 + promoProduct.PlanProductPostPromoEffectQtyW2;
+
+                            promoProduct.PlanProductPostPromoEffectLSVW1 = promoProduct.PlanProductBaselineLSV * promoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectLSVW2 = promoProduct.PlanProductBaselineLSV * promoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectLSV = promoProduct.PlanProductPostPromoEffectLSVW1 + promoProduct.PlanProductPostPromoEffectLSVW2;
+
+                            promoProduct.PlanProductPostPromoEffectVolumeW1 = promoProduct.PlanProductBaselineVolume * promoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectVolumeW2 = promoProduct.PlanProductBaselineVolume * promoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProduct.PlanProductPostPromoEffectVolume = promoProduct.PlanProductPostPromoEffectVolumeW1 + promoProduct.PlanProductPostPromoEffectVolumeW2;
                         }
 
-                        context.SaveChanges();
+                        double? sumPlanProductBaseLineLSV = promoProducts.Sum(x => x.PlanProductBaselineLSV);
+                        double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
+                        if (promo.NeedRecountUplift.Value)
+                            promo.PlanPromoUpliftPercent = sumPlanProductBaseLineLSV != 0 ? sumPlanProductIncrementalLSV / sumPlanProductBaseLineLSV * 100 : null;
+
+                        promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
+                        promo.PlanPromoBaselineLSV = sumPlanProductBaseLineLSV;
+                        promo.PlanPromoLSV = promo.PlanPromoBaselineLSV + promo.PlanPromoIncrementalLSV;
+                        // PriceIncrease
+                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
+                        {
+                            var promoProductCorrectionPI = promoProductPriceIncrease.ProductCorrectionPriceIncreases.FirstOrDefault(x => !x.Disabled);
+                            var promoProductUpliftPI = promoProductCorrectionPI?.PlanProductUpliftPercentCorrected ?? promoProductPriceIncrease.PlanProductUpliftPercent;
+                            promoProductPriceIncrease.PlanProductIncrementalLSV = promoProductPriceIncrease.PlanProductBaselineLSV * promoProductUpliftPI / 100;
+                            promoProductPriceIncrease.PlanProductLSV = promoProductPriceIncrease.PlanProductBaselineLSV + promoProductPriceIncrease.PlanProductIncrementalLSV;
+
+                            //Расчет плановых значений PromoProduct
+                            promoProductPriceIncrease.PlanProductPCPrice = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? promoProductPriceIncrease.Price / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                            promoProductPriceIncrease.PlanProductIncrementalCaseQty = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductUpliftPI / 100;
+                            promoProductPriceIncrease.PlanProductCaseQty = promoProductPriceIncrease.PlanProductBaselineCaseQty + promoProductPriceIncrease.PlanProductIncrementalCaseQty;
+                            promoProductPriceIncrease.PlanProductPCQty = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                            promoProductPriceIncrease.PlanProductCaseLSV = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.Price;
+                            promoProductPriceIncrease.PlanProductPCLSV = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseLSV / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+
+
+                            //TODO: Уточнить насчет деления на 100
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2 = promoProductPriceIncrease.PlanProductBaselineCaseQty * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQty = promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 + promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2;
+
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 = promoProductPriceIncrease.PlanProductBaselineLSV * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2 = promoProductPriceIncrease.PlanProductBaselineLSV * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSV = promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 + promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2;
+
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 = promoProductPriceIncrease.PlanProductBaselineVolume * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW1 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2 = promoProductPriceIncrease.PlanProductBaselineVolume * promoProductPriceIncrease.PromoProduct.PlanProductPostPromoEffectW2 / 100 ?? 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolume = promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 + promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2;
+
+                        }
+
+                        double? sumPlanProductBaseLineLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductBaselineLSV);
+                        double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
+                        if (!promo.NeedRecountUpliftPI)
+                        {
+                            promo.PromoPriceIncrease.PlanPromoUpliftPercent = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
+                            promo.PlanPromoUpliftPercentPI = sumPlanProductBaseLineLSVPI != 0 ? sumPlanProductIncrementalLSVPI / sumPlanProductBaseLineLSVPI * 100 : null;
+                        }
+
+
+                        promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
+                        promo.PromoPriceIncrease.PlanPromoBaselineLSV = sumPlanProductBaseLineLSVPI;
+                        promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoBaselineLSV + promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
                     }
                     else
                     {
-                        message = string.Format("Plan parameters can not be recalculated, because client was not found for this promo.");
+                        foreach (var promoProduct in promoProducts)
+                        {
+                            IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>().Where(x => x.PromoId == promo.Id && x.ProductId == promoProduct.ProductId && !x.Disabled).FirstOrDefault();
+
+                            if (incrementalPromo != null)
+                            {
+                                //Расчет плановых значений PromoProduct
+                                promoProduct.PlanProductPCPrice = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.Price / promoProduct.Product.UOM_PC2Case : null;
+                                promoProduct.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
+                                promoProduct.PlanProductCaseQty = promoProduct.PlanProductIncrementalCaseQty;
+                                promoProduct.PlanProductPCQty = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseQty * promoProduct.Product.UOM_PC2Case : null;
+                                promoProduct.PlanProductCaseLSV = promoProduct.PlanProductCaseQty * promoProduct.Price;
+                                incrementalPromo.PlanPromoIncrementalLSV = (promoProduct.Price ?? 0) * (incrementalPromo.PlanPromoIncrementalCases ?? 0);
+                                promoProduct.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
+                                promoProduct.PlanProductLSV = promoProduct.PlanProductIncrementalLSV;
+
+                                // TODO: удаляем?
+                                //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
+                            }
+                            else
+                            {
+                                message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProduct.Product.ZREP);
+                            }
+
+                            //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
+
+                            promoProduct.PlanProductPostPromoEffectQtyW1 = 0;
+                            promoProduct.PlanProductPostPromoEffectQtyW2 = 0;
+                            promoProduct.PlanProductPostPromoEffectQty = 0;
+                            promoProduct.PlanProductPostPromoEffectLSVW1 = 0;
+                            promoProduct.PlanProductPostPromoEffectLSVW2 = 0;
+                            promoProduct.PlanProductPostPromoEffectLSV = 0;
+                            promoProduct.PlanProductPostPromoEffectVolumeW1 = 0;
+                            promoProduct.PlanProductPostPromoEffectVolumeW2 = 0;
+                            promoProduct.PlanProductPostPromoEffectVolume = 0;
+                        }
+                        // PriceIncrease
+                        foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoProducts.SelectMany(g => g.PromoProductPriceIncreases))
+                        {
+                            IncrementalPromo incrementalPromo = context.Set<IncrementalPromo>()
+                                .Where(x => x.PromoId == promo.Id && x.ProductId == promoProductPriceIncrease.PromoProduct.ProductId && !x.Disabled).FirstOrDefault();
+
+                            if (incrementalPromo != null)
+                            {
+                                //Расчет плановых значений PromoProduct
+                                promoProductPriceIncrease.PlanProductPCPrice = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? promoProductPriceIncrease.Price / promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                                promoProductPriceIncrease.PlanProductIncrementalCaseQty = incrementalPromo.PlanPromoIncrementalCases;
+                                promoProductPriceIncrease.PlanProductCaseQty = promoProductPriceIncrease.PlanProductIncrementalCaseQty;
+                                promoProductPriceIncrease.PlanProductPCQty = promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.PromoProduct.Product.UOM_PC2Case : null;
+                                promoProductPriceIncrease.PlanProductCaseLSV = promoProductPriceIncrease.PlanProductCaseQty * promoProductPriceIncrease.Price;
+                                incrementalPromo.PlanPromoIncrementalLSV = (promoProductPriceIncrease.Price ?? 0) * (incrementalPromo.PlanPromoIncrementalCases ?? 0);
+                                promoProductPriceIncrease.PlanProductIncrementalLSV = incrementalPromo.PlanPromoIncrementalLSV;
+                                promoProductPriceIncrease.PlanProductLSV = promoProductPriceIncrease.PlanProductIncrementalLSV;
+
+                                // TODO: удаляем?
+                                //promoProduct.PlanProductPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? (int?)promoProduct.PlanProductCaseLSV / promoProduct.Product.UOM_PC2Case : null;
+                            }
+                            else
+                            {
+                                message = string.Format("Incremental promo was not found for product with ZREP: {0}", promoProductPriceIncrease.PromoProduct.Product.ZREP);
+                            }
+
+                            //promoProduct.PlanProductUpliftPercent = promo.PlanPromoUpliftPercent;
+
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQtyW1 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQtyW2 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectQty = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSVW1 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSVW2 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectLSV = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW1 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolumeW2 = 0;
+                            promoProductPriceIncrease.PlanProductPostPromoEffectVolume = 0;
+                        }
+
+                        promo.PlanPromoBaselineLSV = null;
+
+                        double? sumPlanProductIncrementalLSV = promoProducts.Sum(x => x.PlanProductIncrementalLSV);
+                        // LSV = Qty ?
+                        promo.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSV;
+                        promo.PlanPromoLSV = promo.PlanPromoIncrementalLSV;
+                        // PriceIncrease
+                        promo.PromoPriceIncrease.PlanPromoBaselineLSV = null;
+
+                        double? sumPlanProductIncrementalLSVPI = promoProducts.SelectMany(g => g.PromoProductPriceIncreases).Sum(x => x.PlanProductIncrementalLSV);
+                        // LSV = Qty ?
+                        promo.PromoPriceIncrease.PlanPromoIncrementalLSV = sumPlanProductIncrementalLSVPI;
+                        promo.PromoPriceIncrease.PlanPromoLSV = promo.PromoPriceIncrease.PlanPromoIncrementalLSV;
                     }
+
+                    if (PromoUtils.HasChanges(context.ChangeTracker, promo.Id))
+                    {
+                        promo.LastChangedDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow);
+                        if (IsDemandChanged(promo, promoCopy))
+                        {
+                            promo.LastChangedDateDemand = promo.LastChangedDate;
+                            promo.LastChangedDateFinance = promo.LastChangedDate;
+                        }
+                    }
+
+                    context.SaveChanges();
                 }
                 else
                 {

@@ -5,7 +5,7 @@
     width: 600,
     minWidth: 280,
     height: '90%',
-    maxHeight: 635,
+    maxHeight: 580,
     resizable: false,
     title: l10n.ns('tpm', 'PromoClient').value('Settings'), 
 
@@ -83,16 +83,6 @@
                     name: 'DistrMarkUp',
                     width: 280,
                     fieldLabel: l10n.ns('tpm', 'ClientTree').value('DistrMarkUp')
-                }, {
-                    xtype: 'singlelinedisplayfield',
-                    name: 'PostPromoEffectW1',
-                    width: 280,
-                    fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW1')
-                }, {
-                    xtype: 'singlelinedisplayfield',
-                    name: 'PostPromoEffectW2',
-                    width: 280,
-                    fieldLabel: l10n.ns('tpm', 'ClientTree').value('PostPromoEffectW2')
                 }]
             }, {
                 xtype: 'fieldset',
@@ -227,8 +217,6 @@
         this.down('[name=IsBaseClient]').setValue(record.IsBaseClient);
         this.down('[name=RetailTypeName]').setValue(record.RetailTypeName);
         this.down('[name=DistrMarkUp]').setValue(record.DistrMarkUp);
-        this.down('[name=PostPromoEffectW1]').setValue(record.PostPromoEffectW1);
-        this.down('[name=PostPromoEffectW2]').setValue(record.PostPromoEffectW2);
 
         this.down('[name=IsBeforeStart]').setValue(record.IsBeforeStart);
         this.down('[name=DaysStart]').setValue(record.DaysStart);

@@ -101,5 +101,6 @@ namespace Module.Persist.TPM.Model.DTO {
         public string WorkflowStep { get; set; }
         public string InvoiceNumber { get; set; }
         public bool IsPriceIncrease { get; set; }
+        public bool IsChildGAMCritical { get; set; }
     }
 }

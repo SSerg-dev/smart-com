@@ -358,7 +358,7 @@ namespace Module.Host.TPM.Actions
 
                         Task.Run(() => PromoHelper.UpdateProductHierarchy("Technology", newName, oldName, oldRecord.Id));
                         TechnologiesController.UpdateProductTrees(oldRecord.Id, newName);
-                        TechnologiesController.UpdateProducts(oldRecord, oldTC, oldTN, oldSC);
+                        Task.Run(() => TechnologiesController.UpdateProductsAsync(oldRecord, oldTC, oldTN, oldSC));
 
                         toUpdate.Add(oldRecord);
                     } else if (oldRecord.Description_ru != newRecord.Description_ru)

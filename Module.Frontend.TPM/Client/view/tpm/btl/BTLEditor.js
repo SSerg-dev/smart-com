@@ -105,9 +105,9 @@
             labelWidth: '105px',
             allowBlank: true,
             allowOnlyWhitespace: true,
-            regex: /^[0-9]*[0-9]$/,
+            regex: /^[^\s]{1,50}$/,
             fieldLabel: l10n.ns('tpm', 'BTL').value('InvoiceNumber'),
-            regexText: l10n.ns('tpm', 'BTL').value('InvoiceNumberRegex'),
+            regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberMaxLengthText')
         }]
     }
 });

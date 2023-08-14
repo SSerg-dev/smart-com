@@ -1,41 +1,35 @@
 ﻿using AutoMapper;
+using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
+using Core.Settings;
 using Frontend.Core.Controllers.Base;
+using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
+using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.IO;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
-using Thinktecture.IdentityModel.Authorization.WebApi;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Frontend.Core.Extensions;
-using Persist;
-using Looper.Parameters;
-using Looper.Core;
-using Module.Persist.TPM.Model.Import;
 using System.Web.Http.Results;
-using Newtonsoft.Json;
-using System.Data.Entity;
-using Module.Persist.TPM.CalculatePromoParametersModule;
-using Core.Settings;
-using Core.Dependency;
+using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Model.DTO;
-using Module.Persist.TPM.Utils;
-using System.Web;
-using Module.Frontend.TPM.Util;
-using Module.Persist.TPM.Model.Interfaces;
-using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -96,7 +90,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<BTLPromo> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<BTLPromo> patch)
         {
             var model = Context.Set<BTLPromo>().Find(key);
             if (model == null)
@@ -109,7 +103,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 CalculateBTLBudgetsCreateTask(key.ToString());
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -127,7 +121,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(BTLPromo model)
+        public async Task<IHttpActionResult> Post(BTLPromo model)
         {
             if (!ModelState.IsValid)
             {
@@ -143,7 +137,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 CalculateBTLBudgetsCreateTask(model.BTLId.ToString());
             }
             catch (Exception e)
@@ -156,7 +150,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult BTLPromoPost(Guid btlId)
+        public async Task<IHttpActionResult> BTLPromoPost(Guid btlId)
         {
             using (var transaction = Context.Database.BeginTransaction())
             {
@@ -222,7 +216,7 @@ namespace Module.Frontend.TPM.Controllers
                     //if (linkedPromoes.Any())
                     //    throw new Exception(String.Format("Promoes with numbers {0} are already attached to another BTL.", string.Join(",", linkedPromoes)));
 
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
 
                     CalculateBTLBudgetsCreateTask(btlId.ToString());
 
@@ -248,7 +242,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<BTLPromo> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<BTLPromo> patch)
         {
             try
             {
@@ -260,7 +254,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 patch.Patch(model);
                 CalculateBTLBudgetsCreateTask(key.ToString());
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -313,7 +307,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -327,7 +321,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.Disabled = true;
 
                 CalculateBTLBudgetsCreateTask(model.BTLId.ToString(), new List<Guid>() { model.PromoId });
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -345,44 +339,42 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoSupportPromo> options, string section = "")
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<PromoSupportPromo> options, string section = "")
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(BTLPromo), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(BTLPromoesController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(BTLPromoesController.GetExportSettingsBTLPromo), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(BTLPromo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(BTLPromoesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(BTLPromoesController.GetExportSettingsBTLPromo), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(BTLPromo)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(BTLPromo)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -439,7 +431,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult BTLPromoDelete(Guid key)
+        public async Task<IHttpActionResult> BTLPromoDelete(Guid key)
         {
             try
             {
@@ -455,7 +447,7 @@ namespace Module.Frontend.TPM.Controllers
                 btlPromo[0].DeletedDate = System.DateTime.Now;
                 btlPromo[0].Disabled = true;
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 CalculateBTLBudgetsCreateTask(btlPromo[0].BTLId.ToString(), new List<Guid>() { btlPromo[0].Id });
 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));

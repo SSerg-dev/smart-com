@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -77,7 +78,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(RPASetting model)
+        public async Task<IHttpActionResult> Post(RPASetting model)
         {
             if (!ModelState.IsValid)
             {
@@ -92,7 +93,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                var resultSaveChanges = Context.SaveChanges();
+                var resultSaveChanges = await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {

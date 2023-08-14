@@ -109,8 +109,13 @@
                         margin: '0 5 0 5',
                         xtype: 'textfield',
                         name: 'InvoiceNumber',
-                        regex: /^[0-9]*[0-9]$/,
-                        regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberRegex'),
+                        listeners: {
+                            blur: function() {
+                                this.setValue(this.getValue().trim());
+                            }
+                        },
+                        regex: /^[^\s]{1,50}$/,
+                        regexText: l10n.ns('tpm', 'PromoSupport').value('InvoiceNumberMaxLengthText')
                     }]
                 }]
             }, {

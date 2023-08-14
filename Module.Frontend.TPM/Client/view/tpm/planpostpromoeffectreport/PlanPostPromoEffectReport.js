@@ -40,6 +40,7 @@
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('ZREP'), dataIndex: 'ZREP' },
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('DemandCode'), dataIndex: 'DemandCode' },
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PromoNameId'), dataIndex: 'PromoNameId' },
+                { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('PromoNumber'), dataIndex: 'PromoNumber' },
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('LocApollo'), dataIndex: 'LocApollo' },
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('TypeApollo'), dataIndex: 'TypeApollo' },
                 { text: l10n.ns('tpm', 'PlanPostPromoEffectReport').value('ModelApollo'), dataIndex: 'ModelApollo' },

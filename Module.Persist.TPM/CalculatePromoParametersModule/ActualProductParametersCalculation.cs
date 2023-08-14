@@ -22,7 +22,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             if (promo != null && (promo.PromoStatus.SystemName == "Finished" || (isSupportAdmin && promo.PromoStatus.SystemName == "Closed")))
             {
                 List<PromoProduct> promoProducts = context.Set<PromoProduct>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
-                ClientTree clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
                 PromoStatus finishedStatus = context.Set<PromoStatus>().Where(x => x.SystemName.ToLower() == "finished" && !x.Disabled).FirstOrDefault();
                 bool isActualPromoBaseLineLSVChangedByDemand = promo.PromoStatusId == finishedStatus.Id
@@ -120,12 +119,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (!promo.InOut.HasValue || !promo.InOut.Value)
                         {
                             promoProduct.ActualProductUpliftPercent = promoProduct.ActualProductBaselineLSV != 0 ? (promoProduct.ActualProductIncrementalLSV / promoProduct.ActualProductBaselineLSV) * 100 : 0;
-                            if (clientTree != null)
-                            {
-                                promoProduct.ActualProductPostPromoEffectQtyW1 = promoProduct.PlanProductBaselineCaseQty * clientTree.PostPromoEffectW1 / 100;
-                                promoProduct.ActualProductPostPromoEffectQtyW2 = promoProduct.PlanProductBaselineCaseQty * clientTree.PostPromoEffectW2 / 100;
-                                promoProduct.ActualProductPostPromoEffectQty = promoProduct.PlanProductPostPromoEffectQtyW1 + promoProduct.PlanProductPostPromoEffectQtyW2;
-                            }
+
+                            promoProduct.ActualProductPostPromoEffectQtyW1 = promoProduct.PlanProductBaselineCaseQty * promoProduct.PlanProductPostPromoEffectW1 / 100;
+                            promoProduct.ActualProductPostPromoEffectQtyW2 = promoProduct.PlanProductBaselineCaseQty * promoProduct.PlanProductPostPromoEffectW2 / 100;
+                            promoProduct.ActualProductPostPromoEffectQty = promoProduct.PlanProductPostPromoEffectQtyW1 + promoProduct.PlanProductPostPromoEffectQtyW2;
 
                             promoProduct.ActualProductLSVByCompensation = (promoProduct.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         }
@@ -148,7 +145,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         ActualPromoLSVByCompensation += (promoProduct.ActualProductPCQty * actualProductPCPrice) ?? 0;
                         promoProduct.ActualProductIncrementalPCQty = promoProduct.ActualProductSellInPrice != 0 ? promoProduct.ActualProductIncrementalLSV / promoProduct.ActualProductSellInPrice : 0;
                         promoProduct.ActualProductIncrementalPCLSV = promoProduct.Product.UOM_PC2Case != 0 ? promoProduct.ActualProductIncrementalLSV / promoProduct.Product.UOM_PC2Case : 0;
-                        promoProduct.ActualProductQtySO = (promoProduct.ActualProductLSV  / actualProductPCPrice) ?? 0;
+                        promoProduct.ActualProductQtySO = (promoProduct.ActualProductLSV / actualProductPCPrice) ?? 0;
                     }
                     else
                     {
@@ -176,7 +173,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         promo.ActualPromoVolumeByCompensation = promoProducts.Sum(g => g.ActualProductLSVByCompensation);
                         promo.ActualPromoVolumeSI = 0;
-                                               
+
                     }
                 }
 

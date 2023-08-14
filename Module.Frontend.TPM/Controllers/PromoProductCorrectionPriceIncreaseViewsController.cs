@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Core.Dependency;
+﻿using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -8,16 +7,13 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
-using Module.Frontend.TPM.FunctionalHelpers.RSmode;
 using Module.Frontend.TPM.FunctionalHelpers.RSPeriod;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.Interfaces;
-using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -138,7 +134,7 @@ namespace Module.Frontend.TPM.Controllers
         //}
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(PromoProductCorrectionPriceIncreaseView model)
+        public async Task<IHttpActionResult> Post(PromoProductCorrectionPriceIncreaseView model)
         {
             if (!ModelState.IsValid)
             {
@@ -152,7 +148,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 return InternalServerError(new Exception($"Promo {model.Number} not found products with FuturePriceMarker"));
             }
-            
+
             // если существует коррекция на данный PromoProduct, то не создаем новый объект
             var item = Context.Set<PromoProductCorrectionPriceIncrease>()
                 .Include(g => g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
@@ -175,11 +171,11 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), item);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)
@@ -208,7 +204,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     var pppiId = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.ZREP == model.ZREP).Id;
                     PromoProductCorrectionPriceIncrease ppcpi = Context.Set<PromoProductCorrectionPriceIncrease>()
-                        .FirstOrDefault(x=>x.PromoProductPriceIncreaseId == pppiId);
+                        .FirstOrDefault(x => x.PromoProductPriceIncreaseId == pppiId);
                     if (ppcpi != null)
                     {
                         if (ppcpi.Disabled == true)
@@ -240,11 +236,11 @@ namespace Module.Frontend.TPM.Controllers
 
                 try
                 {
-                    var saveChangesResult = Context.SaveChanges();
+                    var saveChangesResult = await Context.SaveChangesAsync();
                     if (saveChangesResult > 0)
                     {
                         CreateChangesIncident(Context.Set<ChangesIncident>(), correctionPriceIncrease);
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception e)
@@ -258,7 +254,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncreaseView> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<PromoProductCorrectionPriceIncreaseView> patch)
         {
             try
             {
@@ -311,11 +307,11 @@ namespace Module.Frontend.TPM.Controllers
                     return InternalServerError(new Exception("Promo Locked Update"));
                 }
 
-                var saveChangesResult = Context.SaveChanges();
+                var saveChangesResult = await Context.SaveChangesAsync();
                 if (saveChangesResult > 0)
                 {
                     CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 return Updated(model);
@@ -340,7 +336,7 @@ namespace Module.Frontend.TPM.Controllers
         private bool CheckPriceListA(PromoProductCorrectionPriceIncreaseView view)
         {
             Promo promo = Context.Set<Promo>()
-                .Include(g=>g.PromoPriceIncrease.PromoProductPriceIncreases)
+                .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases)
                 .FirstOrDefault(g => g.Number == view.Number);
 
             List<PromoProduct> promoProducts = Context.Set<PromoProduct>()
@@ -351,7 +347,7 @@ namespace Module.Frontend.TPM.Controllers
                                                                     && x.EndDate >= promo.DispatchesStart
                                                                     && x.ClientTreeId == promo.ClientTreeKeyId).ToList();
             List<PriceList> priceListsForPromoAndPromoProductsFPM = allPriceLists.Where(x => promoProducts.Any(y => y.ProductId == x.ProductId && x.FuturePriceMarker == true)).ToList();
-            
+
             bool IsOneProductWithFuturePriceMarker = false;
             foreach (PromoProduct promoProduct in promoProducts)
             {
@@ -366,13 +362,13 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
                 var model = Context.Set<PromoProductCorrectionPriceIncrease>()
-                    .Include(g=>g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
-                    .FirstOrDefault(g=>g.Id == key);
+                    .Include(g => g.PromoProductPriceIncrease.PromoPriceIncrease.Promo)
+                    .FirstOrDefault(g => g.Id == key);
                 if (model == null)
                 {
                     return NotFound();
@@ -384,11 +380,11 @@ namespace Module.Frontend.TPM.Controllers
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
 
-                var saveChangesResult = Context.SaveChanges();
+                var saveChangesResult = await Context.SaveChangesAsync();
                 if (saveChangesResult > 0)
                 {
                     CreateChangesIncident(Context.Set<ChangesIncident>(), model);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 return StatusCode(HttpStatusCode.NoContent);
@@ -419,7 +415,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             string bodyText = Helper.GetRequestBody(HttpContext.Current.Request);
             //TPMmode tPMmode = JsonHelper.GetValueIfExists<TPMmode>(bodyText, "TPMmode");
@@ -429,44 +425,40 @@ namespace Module.Frontend.TPM.Controllers
                                                 .Where(x => !x.Disabled)
                                                 .Select(p => p.Id);
 
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
 
-            using (DatabaseContext context = new DatabaseContext())
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductCorrectionPriceIncreaseView), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductCorrectionPriceIncreaseView), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetPromoProductCorrectionExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductCorrectionPriceIncreaseView)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(PromoProductCorrectionPriceIncreaseView)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportCorrectionXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
+        public async Task<IHttpActionResult> ExportCorrectionXLSX(ODataQueryOptions<PromoProductCorrectionPriceIncreaseView> options)
         {
             List<string> stasuses = new List<string> { "DraftPublished", "OnApproval", "Approved", "Planned" };
             IQueryable<PromoProductPriceIncrease> results = Context.Set<PromoProductPriceIncrease>()
@@ -476,37 +468,35 @@ namespace Module.Frontend.TPM.Controllers
             //IQueryable results = options.ApplyTo(GetConstraintedQuery());
             var ddd = results.ToList();
             Guid userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductPriceIncrease), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportCorrectionPISettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PromoProductPriceIncrease), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PromoHelper), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetExportCorrectionPISettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PromoProductCorrectionPriceIncrease)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(PromoProductCorrectionPriceIncrease)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -554,7 +544,7 @@ namespace Module.Frontend.TPM.Controllers
                 var importDir = AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 var fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler", tPMmode);
+                await CreateImportTask(fileName, "FullXLSXUpdateImportPromoProductCorrectionPriceIncreaseHandler", tPMmode);
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -568,52 +558,49 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler, TPMmode tPMmode)
+        private async Task CreateImportTask(string fileName, string importHandler, TPMmode tPMmode)
         {
             var userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
 
-            using (var databaseContext = new DatabaseContext())
+            var resiltfile = new ImportResultFilesModel();
+            var resultmodel = new ImportResultModel();
+
+            var handlerData = new HandlerData();
+            var fileModel = new FileModel()
             {
-                var resiltfile = new ImportResultFilesModel();
-                var resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = Path.GetFileName(fileName),
+                DisplayName = Path.GetFileName(fileName)
+            };
 
-                var handlerData = new HandlerData();
-                var fileModel = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = Path.GetFileName(fileName),
-                    DisplayName = Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsCorrection).Name, handlerData, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
+            //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() {"Name"}, handlerData);
 
-                HandlerDataHelper.SaveIncomingArgument("TPMmode", tPMmode, handlerData, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("File", fileModel, handlerData, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportPromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportPromoProductsCorrection).Name, handlerData, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(PromoProductsCorrection), handlerData, visible: false, throwIfNotExists: false);
-                //HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() {"Name"}, handlerData);
+            var handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(PromoProductsCorrection).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(PromoProductsCorrection).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
 
-                var loopHandler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(PromoProductsCorrection).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(PromoProductsCorrection).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-
-                loopHandler.SetParameterData(handlerData);
-                databaseContext.LoopHandlers.Add(loopHandler);
-                databaseContext.SaveChanges();
-            }
+            handler.SetParameterData(handlerData);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]

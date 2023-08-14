@@ -1674,6 +1674,9 @@
     <Content Include="..\Module.Frontend.TPM\Templates\PlanCOGSTnPreTemplate.xlsx">
       <Link>ApplicationData\Templates\PlanCOGSTnPreTemplate.xlsx</Link>
     </Content>
+    <Content Include="..\Module.Frontend.TPM\Templates\Plan PPE template.xlsx">
+      <Link>ApplicationData\Templates\Plan PPE template.xlsx</Link>
+    </Content>
     <Content Include="..\Module.Frontend.TPM\Templates\ActualCOGSTnPreTemplate.xlsx">
       <Link>ApplicationData\Templates\ActualCOGSTnPreTemplate.xlsx</Link>
     </Content>

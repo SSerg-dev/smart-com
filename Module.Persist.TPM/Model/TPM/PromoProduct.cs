@@ -235,6 +235,12 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanProductPostPromoEffectVolume { get; set; }
         public double? ActualProductQtySO { get; set; }
 
+        public double PlanProductPostPromoEffectW1 { get; set; }
+        public double PlanProductPostPromoEffectW2 { get; set; }
+        public double? ActualProductPostPromoEffectLSVW1 { get; set; }
+        public double? ActualProductPostPromoEffectLSVW2 { get; set; }
+
+
         [Index("Unique_PromoProduct", 3, IsUnique = true)]
         public Guid PromoId { get; set; }
         public virtual Promo Promo { get; set; }

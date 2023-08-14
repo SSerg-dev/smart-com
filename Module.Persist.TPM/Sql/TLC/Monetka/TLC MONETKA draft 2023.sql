@@ -295,10 +295,10 @@ BEGIN TRANSACTION
 			@brandTechId, --#5
 			@promoStatusId, --#6
 			@promoName, --#7
-            convert(datetime, @startDate, 5), --#8
-            convert(datetime, @endDate, 5), --#9
-            convert(datetime, @dispatchesStart, 5), --#10
-            convert(datetime, @dispatchesEnd, 5), --#11
+			TODATETIMEOFFSET(convert(datetimeoffset, @startDate, 5), 180), --#8
+			TODATETIMEOFFSET(convert(datetimeoffset, @endDate, 5), 180), --#9
+			TODATETIMEOFFSET(convert(datetime, @dispatchesStart, 5), 180), --#10
+			TODATETIMEOFFSET(convert(datetime, @dispatchesEnd, 5), 180), --#11
             @colorId, --#12
             @eventId, --#13
             @mechanicId, --#14
@@ -334,7 +334,7 @@ BEGIN TRANSACTION
 			@actualPromoUpliftPercent, --#49
 			@actualPromoUpliftPercent, --#50
 			@actualPromoBaselineLSV * ((DATEDIFF (DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1) / 7.0), --#52
-			1, --#57
+			0, --#57
 			
 			DATEDIFF(DAY, convert(datetime, @startDate, 5), convert(datetime, @endDate, 5)) + 1, --#61
 			DATEDIFF(DAY, convert(datetime, @dispatchesStart, 5), convert(datetime, @dispatchesEnd, 5)) + 1, --#62
@@ -413,13 +413,13 @@ Add_TLC '10003','0','Whiskas','Dry','350g','Monetka','TPR','','15','TPR','','0',
 GO
 Add_TLC '10004','0','Pedigree','Pouch','0','Monetka','TPR','','15','TPR','','0','','','19.06.23','02.07.23','2023P7W1D2','2023P7W3D1','05.06.23','25.06.23','2023P6W3D2','2023P7W2D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO
-Add_TLC '10005','0','Dreamies','C&T','60g, 140g','Monetka','TPR','','15','TPR','','0','','','26.06.23','09.07.23','2023P7W2D2','2023P7W4D1','12.06.23','02.07.23','2023P6W4D2','2023P7W3D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Add_TLC '10005','0','Dreamies','C&T','60g;140g','Monetka','TPR','','15','TPR','','0','','','26.06.23','09.07.23','2023P7W2D2','2023P7W4D1','12.06.23','02.07.23','2023P6W4D2','2023P7W3D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO
 Add_TLC '10006','0','Perfect Fit Cat','Pouch','0','Monetka','TPR','','10','TPR','','0','','','03.07.23','16.07.23','2023P7W3D2','2023P8W1D1','19.06.23','09.07.23','2023P7W1D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO
-Add_TLC '10007','0','Whiskas','Dry','800g, 1,9kg','Monetka','TPR','','15','TPR','','0','','','03.07.23','16.07.23','2023P7W3D2','2023P8W1D1','19.06.23','09.07.23','2023P7W1D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Add_TLC '10007','0','Whiskas','Dry','800g;1,9kg','Monetka','TPR','','15','TPR','','0','','','03.07.23','16.07.23','2023P7W3D2','2023P8W1D1','19.06.23','09.07.23','2023P7W1D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO
-Add_TLC '10008','0','Perfect Fit Cat','Dry','650g, 1,2kg','Monetka','TPR','','15','TPR','','0','','','19.06.23','16.07.23','2023P7W1D2','2023P8W1D1','05.06.23','09.07.23','2023P6W3D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Add_TLC '10008','0','Perfect Fit Cat','Dry','650g;1,2kg','Monetka','TPR','','15','TPR','','0','','','19.06.23','16.07.23','2023P7W1D2','2023P8W1D1','05.06.23','09.07.23','2023P6W3D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO
 Add_TLC '10009','0','Cesar','Pouch','0','Monetka','TPR','','20','TPR','','0','','','03.07.23','16.07.23','2023P7W3D2','2023P8W1D1','19.06.23','09.07.23','2023P7W1D2','2023P7W4D1',0,0,0,0,0,0,0,0,0,'5000164','493','draft','yuliya.aleksandrova@effem.com','1',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 GO

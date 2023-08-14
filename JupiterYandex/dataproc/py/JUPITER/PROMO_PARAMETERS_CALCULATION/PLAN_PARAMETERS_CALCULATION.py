@@ -59,10 +59,7 @@ outputProductChangeIncidentsSchema = StructType([
 ]);
 
 if is_notebook():
- sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-05-22_scheduled__2023-05-21T21%3A20%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-05-22", "Schema": "Jupiter", "HandlerId": '
- '"cf12e425-5dd6-4130-9bc6-20e115c75c22"}']
+ sys.argv=['','']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -131,6 +128,9 @@ ASSORTMENTMARTIX_PATH = DIRECTORY + 'JUPITER/AssortmentMatrix'
 BRANDTECH_PATH = DIRECTORY + 'JUPITER/BrandTech'
 SERVICEINFO_PATH = DIRECTORY + 'JUPITER/ServiceInfo'
 RATISHOPPER_PATH = DIRECTORY + 'JUPITER/RATIShopper'
+PLANPOSTPROMOEFFECT_PATH = DIRECTORY + 'JUPITER/PlanPostPromoEffect'
+DISCOUNTRANGE_PATH = DIRECTORY + 'JUPITER/DiscountRange'
+DURATIONRANGE_PATH = DIRECTORY + 'JUPITER/DurationRange'
 
 FILTERED_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'
 FILTERED_INCREASE_PROMO_PATH = SETTING_PROCESS_DIR + '/BlockedPromo/BlockedIncreasePromo.parquet'
@@ -170,6 +170,7 @@ promoDF = spark.read.csv(PROMO_PATH,sep="\u0001",header=True,schema=schemas_map[
 .withColumn("IsLSVBased",col("IsLSVBased").cast(BooleanType()))\
 .withColumn("InOut",col("InOut").cast(BooleanType()))\
 .withColumn("NeedRecountUplift",col("NeedRecountUplift").cast(BooleanType()))\
+.withColumn("NeedRecountUpliftPI",col("NeedRecountUpliftPI").cast(BooleanType()))\
 .withColumn("IsAutomaticallyApproved",col("IsAutomaticallyApproved").cast(BooleanType()))\
 .withColumn("IsCMManagerApproved",col("IsCMManagerApproved").cast(BooleanType()))\
 .withColumn("IsDemandPlanningApproved",col("IsDemandPlanningApproved").cast(BooleanType()))\
@@ -219,6 +220,9 @@ assortmentMatrixDF = spark.read.csv(ASSORTMENTMARTIX_PATH,sep="\u0001",header=Tr
 brandTechDF = spark.read.csv(BRANDTECH_PATH,sep="\u0001",header=True,schema=schemas_map["BrandTech"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 serviceInfoDF = spark.read.csv(SERVICEINFO_PATH,sep="\u0001",header=True,schema=schemas_map["ServiceInfo"])
 ratiShopperDF = spark.read.csv(RATISHOPPER_PATH,sep="\u0001",header=True,schema=schemas_map["RATIShopper"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+planPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep="\u0001",header=True,schema=schemas_map["PlanPostPromoEffect"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+discountRangeDF = spark.read.csv(DISCOUNTRANGE_PATH,sep="\u0001",header=True,schema=schemas_map["Range"])
+durationRangeDF = spark.read.csv(DURATIONRANGE_PATH,sep="\u0001",header=True,schema=schemas_map["Range"])
 
 filteredPromoDF = spark.read.format("parquet").load(FILTERED_PROMO_PATH)
 filteredIncreasePromoDF = spark.read.format("parquet").load(FILTERED_INCREASE_PROMO_PATH)
@@ -407,6 +411,29 @@ cogsTnDF = cogsTnDF.where(col('Disabled') == False)
 # RA TI Shopper
 ratiShopperDF = ratiShopperDF.where(col('Disabled') == False)
 
+# PPE
+planPostPromoEffectDF = planPostPromoEffectDF.where(col('Disabled') == False)
+planPostPromoEffectDF = planPostPromoEffectDF\
+  .join(brandTechDF, planPostPromoEffectDF.BrandTechId == brandTechDF.Id, 'inner')\
+  .select(\
+           planPostPromoEffectDF['*']
+          ,col('BrandTech_code').alias('BrandTech_code')
+          )
+planPostPromoEffectDF = planPostPromoEffectDF\
+  .join(discountRangeDF, planPostPromoEffectDF.DiscountRangeId == discountRangeDF.Id, 'inner')\
+  .select(\
+           planPostPromoEffectDF['*']
+          ,col('MinValue').alias('MinDiscount')
+          ,col('MaxValue').alias('MaxDiscount')
+          )
+planPostPromoEffectDF = planPostPromoEffectDF\
+  .join(durationRangeDF, planPostPromoEffectDF.DurationRangeId == durationRangeDF.Id, 'inner')\
+  .select(\
+           planPostPromoEffectDF['*']
+          ,col('MinValue').alias('MinDuration')
+          ,col('MaxValue').alias('MaxDuration')
+          )
+
 #status list for plan parameters recalculation
 planParametersStatuses = ['DraftPublished','OnApproval','Approved','Planned']
 
@@ -438,6 +465,8 @@ lightPromoDF = promoDF\
            col('Id').alias('promoIdCol')
           ,col('Number').alias('promoNumber')
           ,col('BrandTechId').alias('promoBrandTechId')
+          ,col('PromoDuration').alias('promoPromoDuration')
+          ,col('MarsMechanicDiscount').alias('promoMarsMechanicDiscount')
           ,col('PromoStatusId').alias('promoStatusId')
           ,col('StartDate').alias('promoStartDate')
           ,col('EndDate').alias('promoEndDate')
@@ -447,14 +476,6 @@ lightPromoDF = promoDF\
           ,col('IsOnInvoice').alias('promoIsOnInvoice')
           ,col('InOut').alias('promoInOut')
          )
-
-lightPromoDF = lightPromoDF\
-  .join(activeClientTreeDF, lightPromoDF.promoClientTreeKeyId == activeClientTreeDF.Id, 'inner')\
-  .select(\
-           lightPromoDF['*']
-          ,col('PostPromoEffectW1').alias('promoClientPostPromoEffectW1')
-          ,col('PostPromoEffectW2').alias('promoClientPostPromoEffectW2')
-          )
 
 lightPromoDF = lightPromoDF\
   .withColumn('promoDemandCode', lit(getDemandCode(col('promoClientTreeId'))))
@@ -482,6 +503,7 @@ calcPlanPromoProductDF = calcPlanPromoProductDF\
            calcPlanPromoProductDF['*']
           ,productDF.UOM_PC2Case
           ,productDF.CaseVolume
+          ,productDF.Size
          )
 
 calcPlanPromoDF = calcPlanPromoDF\
@@ -496,23 +518,13 @@ calcPlanPromoDF = calcPlanPromoDF\
   .select(calcPlanPromoDF['*'])\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))
 
-calcPlanPromoDF = calcPlanPromoDF\
-  .join(lightPromoDF, lightPromoDF.promoNumber == calcPlanPromoDF.Number, 'inner')\
-  .select(\
-           calcPlanPromoDF['*']
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
-         )
-
-print(filteredIncreasePromoDF.schema)
-
 #increase
 calcPromoPriceIncreaseDF = promoPriceIncreaseDF\
   .join(filteredIncreasePromoDF, promoPriceIncreaseDF.Id == filteredIncreasePromoDF.PromoId, 'left')\
   .join(calcPlanPromoDF, promoPriceIncreaseDF.Id == calcPlanPromoDF.Id, 'left')\
   .select(\
            promoPriceIncreaseDF['*']
-          ,calcPlanPromoDF.promoStatusSystemName
+          ,calcPlanPromoDF.promoStatusSystemName.alias('promoStatusSystemName')
          )
 
 calcIncreasePlanPromoProductDF = promoProductPriceIncreaseDF\
@@ -520,10 +532,14 @@ calcIncreasePlanPromoProductDF = promoProductPriceIncreaseDF\
   .join(calcPromoPriceIncreaseDF, calcPromoPriceIncreaseDF.Id == promoProductDF.PromoId, 'inner')\
   .join(lightPromoDF, lightPromoDF.promoIdCol == calcPromoPriceIncreaseDF.Id, 'left')\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
-  .select(promoProductPriceIncreaseDF['*'],lightPromoDF['*'],promoProductDF.ProductId)
+  .select(promoProductPriceIncreaseDF['*'],lightPromoDF['*'],promoProductDF.ProductId,promoProductDF.PlanProductPostPromoEffectW1,promoProductDF.PlanProductPostPromoEffectW2)
+  
+calcIncreasePlanPromoProductDF.show()
 
 calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
   .where(col('promoStatusSystemName').isin(*planParametersStatuses))\
+  .where(col('Disabled') == 'False')\
+  .where(col('InOut') == 'False')\
   .drop('promoStatusSystemName')
 
 calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF\
@@ -532,6 +548,7 @@ calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF\
            calcIncreasePlanPromoProductDF['*']
           ,productDF.UOM_PC2Case
           ,productDF.CaseVolume
+          ,productDF.Size
          )
 allCalcPlanPromoProductDF = allCalcPlanPromoProductDF\
   .join(lightPromoDF, lightPromoDF.promoIdCol == allCalcPlanPromoProductDF.PromoId, 'left')\
@@ -541,10 +558,6 @@ allCalcPlanPromoProductDF = allCalcPlanPromoProductDF\
           ,lightPromoDF['*']
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
          )
-
-calcIncreasePlanPromoProductDF = calcIncreasePlanPromoProductDF
-# print(calcPlanPromoProductDF.count())
-# print(calcPlanPromoDF.count())
 
 notInOutCalcPlanPromoProductDF = calcPlanPromoProductDF.where(col('promoInOut') == False)
 inOutCalcPlanPromoProductDF = calcPlanPromoProductDF.where(col('promoInOut') == True)
@@ -590,6 +603,8 @@ tempDF = calcPlanPromoProductDF\
            calcPlanPromoProductDF.promoIdCol.alias('_promoIdCol')
           ,calcPlanPromoProductDF.promoNumber.alias('_promoNumber')
           ,calcPlanPromoProductDF.promoBrandTechId.alias('_promoBrandTechId')
+          ,calcPlanPromoProductDF.promoPromoDuration.alias('_promoPromoDuration')
+          ,calcPlanPromoProductDF.promoMarsMechanicDiscount.alias('_promoMarsMechanicDiscount')
           ,calcPlanPromoProductDF.promoStatusId.alias('_promoStatusId')
           ,calcPlanPromoProductDF.promoStartDate.alias('_promoStartDate')
           ,calcPlanPromoProductDF.promoEndDate.alias('_promoEndDate')
@@ -598,8 +613,6 @@ tempDF = calcPlanPromoProductDF\
           ,calcPlanPromoProductDF.promoClientTreeId.alias('_promoClientTreeId')
           ,calcPlanPromoProductDF.promoIsOnInvoice.alias('_promoIsOnInvoice')
           ,calcPlanPromoProductDF.promoInOut.alias('_promoInOut')
-          ,calcPlanPromoProductDF.promoClientPostPromoEffectW1.alias('_promoClientPostPromoEffectW1')
-          ,calcPlanPromoProductDF.promoClientPostPromoEffectW2.alias('_promoClientPostPromoEffectW2')
           ,calcPlanPromoProductDF.promoDemandCode.alias('_promoDemandCode')
           ,calcPlanPromoProductDF.promoStatusSystemName.alias('_promoStatusSystemName')
          )\
@@ -613,6 +626,10 @@ notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
           .otherwise(notInOutCalcPlanPromoProductDF.promoIdCol))\
   .withColumn('promoBrandTechId', when(notInOutCalcPlanPromoProductDF.promoBrandTechId.isNull(),tempDF._promoBrandTechId)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoBrandTechId))\
+  .withColumn('promoPromoDuration', when(notInOutCalcPlanPromoProductDF.promoPromoDuration.isNull(),tempDF._promoPromoDuration)\
+          .otherwise(notInOutCalcPlanPromoProductDF.promoPromoDuration))\
+  .withColumn('promoMarsMechanicDiscount', when(notInOutCalcPlanPromoProductDF.promoMarsMechanicDiscount.isNull(),tempDF._promoMarsMechanicDiscount)\
+          .otherwise(notInOutCalcPlanPromoProductDF.promoMarsMechanicDiscount))\
   .withColumn('promoStatusId', when(notInOutCalcPlanPromoProductDF.promoStatusId.isNull(),tempDF._promoStatusId)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoStatusId))\
   .withColumn('promoStartDate', when(notInOutCalcPlanPromoProductDF.promoStartDate.isNull(),tempDF._promoStartDate)\
@@ -629,10 +646,6 @@ notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
           .otherwise(notInOutCalcPlanPromoProductDF.promoIsOnInvoice))\
   .withColumn('promoInOut', when(notInOutCalcPlanPromoProductDF.promoInOut.isNull(),tempDF._promoInOut)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoInOut))\
-  .withColumn('promoClientPostPromoEffectW1', when(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW1.isNull(),tempDF._promoClientPostPromoEffectW1)\
-          .otherwise(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW1))\
-  .withColumn('promoClientPostPromoEffectW2', when(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW2.isNull(),tempDF._promoClientPostPromoEffectW2)\
-          .otherwise(notInOutCalcPlanPromoProductDF.promoClientPostPromoEffectW2))\
   .withColumn('promoDemandCode', when(notInOutCalcPlanPromoProductDF.promoDemandCode.isNull(),tempDF._promoDemandCode)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoDemandCode))\
   .withColumn('promoStatusSystemName', when(notInOutCalcPlanPromoProductDF.promoStatusSystemName.isNull(),tempDF._promoStatusSystemName)\
@@ -647,6 +660,7 @@ tempProductDF = productDF\
           ,productDF.ProductEN.alias('_ProductEN')
           ,productDF.EAN_PC.alias('_EAN_PC')
           ,productDF.UOM_PC2Case.alias('_UOM_PC2Case')
+          ,productDF.Size.alias('_Size')
          )
 
 notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
@@ -661,6 +675,8 @@ notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
           .otherwise(notInOutCalcPlanPromoProductDF.EAN_PC))\
   .withColumn('UOM_PC2Case', when(notInOutCalcPlanPromoProductDF.UOM_PC2Case.isNull(),tempProductDF._UOM_PC2Case)\
           .otherwise(notInOutCalcPlanPromoProductDF.UOM_PC2Case))\
+  .withColumn('Size', when(notInOutCalcPlanPromoProductDF.Size.isNull(),tempProductDF._Size)\
+          .otherwise(notInOutCalcPlanPromoProductDF.Size))\
   .select(cols)
 
 calcPlanPromoProductDF = notInOutCalcPlanPromoProductDF.union(inOutCalcPlanPromoProductDF)
@@ -673,9 +689,13 @@ allCalcPlanPromoDF = allCalcPlanPromoDF\
           ,promoStatusDF.SystemName.alias('promoStatusSystemName')
          )
 
+print(calcPlanPromoProductDF.schema)
+
+planPostPromoEffectDF.show()
+
 
 import PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as plan_product_params_calculation_process
-calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols)
+calcPlanPromoProductDF,calcPlanPromoDF,allCalcPlanPromoDF,logPromoProductDF = plan_product_params_calculation_process.run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPlanPromoDF,allCalcPlanPromoDF,planParamsSharesDF,datesDF,planParamsCorrectionDF,planParamsIncrementalDF,planParametersStatuses,promoProductCols,planPostPromoEffectDF)
 
 ####*Promo support calculation*
 
@@ -750,14 +770,6 @@ calcPlanPromoDF = allCalcPlanPromoDF\
 notCalcPlanPromoDF = allCalcPlanPromoDF\
   .where(~col('promoStatusSystemName').isin(*planParametersStatuses))
 
-calcPlanPromoDF = calcPlanPromoDF\
-  .join(lightPromoDF, lightPromoDF.promoIdCol == calcPlanPromoDF.Id, 'left')\
-  .select(\
-           calcPlanPromoDF['*']
-          ,lightPromoDF.promoClientPostPromoEffectW1
-          ,lightPromoDF.promoClientPostPromoEffectW2
-         )
-
 
 import PLAN_PROMO_PARAMS_CALCULATION_PROCESS as plan_promo_params_calculation_process
 calcPlanPromoDF,logCOGS,logTI= plan_promo_params_calculation_process.run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanPromoDF,promoDF)
@@ -771,8 +783,6 @@ calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
   .select(\
            calcPromoPriceIncreaseDF['*']
           ,calcPlanPromoDF.Number
-          ,calcPlanPromoDF.promoClientPostPromoEffectW1
-          ,calcPlanPromoDF.promoClientPostPromoEffectW2
           ,calcPlanPromoDF.ClientTreeKeyId
           ,calcPlanPromoDF.ClientTreeId
           ,calcPlanPromoDF.StartDate
@@ -785,6 +795,9 @@ calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
           ,calcPlanPromoDF.PlanCOGSTn
           ,calcPlanPromoDF.PlanCOGSPercent
           ,calcPlanPromoDF.promoBrandTechName
+          ,calcPlanPromoDF.promoStatusSystemName
+          ,calcPlanPromoDF.InOut.alias('promoInOut')
+          ,calcPlanPromoDF.NeedRecountUpliftPI.alias('promoNeedRecountUpliftPI')
           ,calcPlanPromoDF.MarsMechanicDiscount
           ,calcPlanPromoDF.PlanTIBasePercent
           ,calcPlanPromoDF.RATIShopperPercent
@@ -793,9 +806,11 @@ calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
 
 print(calcPlanPromoDF.schema)
 
+print(calcPromoPriceIncreaseDF.schema)
+
 
 import PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS as pi_plan_product_params_calculation_process
-calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,allCalcIncreasePlanPromoDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols,clientTreeDF,tiDF,ratiShopperDF,increasePromoCols,brandTechDF)
+calcIncreasePlanPromoProductDF,calcPromoPriceIncreaseDF,logIncreasePromoProductDF = pi_plan_product_params_calculation_process.run(calcIncreasePlanPromoProductDF,planParamsPriceListDF,planParamsFuturePriceListDF,planParamsBaselineDF,planParamsBaselineIncreaseDF,calcPromoPriceIncreaseDF,calcPromoPriceIncreaseDF,planParamsSharesDF,datesDF,planParamsIncreaseCorrectionDF,planParamsIncrementalDF,planParametersStatuses,increasePromoProductCols,clientTreeDF,tiDF,ratiShopperDF,increasePromoCols,brandTechDF)
 
 ####*Result*
 

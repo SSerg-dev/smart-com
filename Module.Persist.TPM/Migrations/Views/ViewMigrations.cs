@@ -10,9 +10,16 @@
             return SqlString.Replace("DefaultSchemaSetting", defaultSchema); ;
         }
         private static readonly string SqlString = @" 
-             ALTER VIEW [DefaultSchemaSetting].[PromoGridView]
+             ALTER VIEW [DefaultSchemaSetting].[PromoGridView] AS
+			 WITH
+				CriticalChildDay
+			AS
+			(
+				SELECT DATEADD(day, 16, GETDATE()) as Criticalday
+			),
+			PromoGridViewS
                 AS
-            SELECT pr.Id, pr.Name, pr.Number, pr.Disabled, pr.Mechanic, pr.CreatorId, pr.MechanicIA, pr.ClientTreeId, pr.ClientHierarchy, pr.MarsMechanicDiscount, pr.IsDemandFinanceApproved, pr.IsDemandPlanningApproved, pr.IsCMManagerApproved, pr.IsGAManagerApproved,
+            (SELECT pr.Id, pr.Name, pr.Number, pr.Disabled, pr.Mechanic, pr.CreatorId, pr.MechanicIA, pr.ClientTreeId, pr.ClientHierarchy, pr.MarsMechanicDiscount, pr.IsDemandFinanceApproved, pr.IsDemandPlanningApproved, pr.IsCMManagerApproved, pr.IsGAManagerApproved,
                               pr.PlanInstoreMechanicDiscount, pr.EndDate, pr.StartDate, pr.DispatchesEnd, pr.DispatchesStart, pr.MarsEndDate, pr.MarsStartDate, pr.MarsDispatchesEnd, pr.MarsDispatchesStart, pr.BudgetYear, bnd.Name AS BrandName, 
                               bt.BrandsegTechsub AS BrandTechName, ev.Name AS PromoEventName, ps.Name AS PromoStatusName, ps.Color AS PromoStatusColor, mmc.Name AS MarsMechanicName, mmt.Name AS MarsMechanicTypeName, 
                               pim.Name AS PlanInstoreMechanicName, ps.SystemName AS PromoStatusSystemName, pimt.Name AS PlanInstoreMechanicTypeName, pr.PlanPromoTIShopper, pr.PlanPromoTIMarketing, pr.PlanPromoXSites, pr.PlanPromoCatalogue, 
@@ -27,17 +34,11 @@
 							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
 							  CASE   
 								 WHEN ((pr.IsCMManagerApproved = 0 OR pr.IsCMManagerApproved is NULL)
-									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Customer Marketing Manager'  
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)) THEN 'Customer Marketing Manager'  
 								 WHEN (pr.IsCMManagerApproved = 1
-									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Planning'  
+									AND (pr.IsDemandPlanningApproved = 0 OR pr.IsDemandPlanningApproved is NULL)) THEN 'Demand Planning'
 								 WHEN (pr.IsCMManagerApproved = 1
-									AND pr.IsDemandPlanningApproved = 1
-									AND (pr.IsDemandFinanceApproved = 0 OR pr.IsDemandFinanceApproved is NULL)) THEN 'Demand Finance'  
-								 WHEN (pr.IsCMManagerApproved = 1
-									AND pr.IsDemandPlanningApproved = 1
-									AND pr.IsDemandFinanceApproved = 1) THEN 'Growth Acceleration Manager'  
+									AND pr.IsDemandPlanningApproved = 1) THEN 'Growth Acceleration Manager'  
 								 ELSE ''  
 							  END,
 							  CASE   
@@ -53,6 +54,12 @@
 								 ELSE ''  
 							  END), 
 							  '') as WorkflowStep,
+							  IIF(ps.SystemName = 'OnApproval', 
+							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
+							  (SELECT CAST(CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS BIT)
+							  FROM DefaultSchemaSetting.Promo
+							  WHERE MasterPromoId = pr.Id AND DispatchesStart < (Select Criticalday From CriticalChildDay) AND Disabled = 0), CAST(0 AS BIT)), 
+							  CAST(0 AS BIT)) as IsChildGAMCritical,
 							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
@@ -63,7 +70,11 @@
                               DefaultSchemaSetting.Mechanic AS pim ON pr.PlanInstoreMechanicId = pim.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS pimt ON pr.PlanInstoreMechanicTypeId = pimt.Id LEFT OUTER JOIN
-                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id
+                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id)
+
+							  Select * FROM PromoGridViewS
+            
+			GO
             ";
 
         public static string GetPromoViewString(string defaultSchema)
@@ -2538,6 +2549,162 @@
                     FROM [DefaultSchemaSetting].[PromoProductPriceIncrease] pp
                     WHERE pp.[Disabled] = 0
 			GO
+		";
+		public static string UpdatePlanPostPromoEffectReportWeekViewString(string defaultSchema)
+		{
+			return UpdateCPlanPostPromoEffectReportWeekViewSqlString.Replace("DefaultSchemaSetting", defaultSchema);
+		}
+		private static string UpdateCPlanPostPromoEffectReportWeekViewSqlString = @"
+				ALTER   VIEW [DefaultSchemaSetting].[PlanPostPromoEffectReportWeekView] AS
+            WITH
+		BaseDataView
+			AS
+			(
+				SELECT  
+					p.[Id],
+					p.[ClientTreeId], 
+					p.[ClientTreeKeyId],
+					p.[Name],
+					p.[Number],
+					p.[StartDate],
+					p.[EndDate],
+					p.[DispatchesStart],
+					p.[DispatchesEnd],
+					p.[InOut],
+					p.[PlanPromoUpliftPercent],
+					p.[BrandTechId],
+					ISNULL(p.[IsOnInvoice], 0) AS IsOnInvoice,
+					ps.[Name] AS PromoStatusName,
+
+					pp.[ProductId],
+					pp.[ZREP], 
+					pp.[PlanProductIncrementalCaseQty], 
+					pp.[PlanProductBaselineCaseQty], 
+					pp.[PlanProductPostPromoEffectLSVW1], 
+					pp.[PlanProductPostPromoEffectLSVW2], 
+					pp.[PlanProductBaselineLSV],
+					pp.[PlanProductPostPromoEffectW1],
+					pp.[PlanProductPostPromoEffectW2],
+		
+					DefaultSchemaSetting.GetDemandCode(ct.[parentId], ct.[DemandCode]) AS DemandCode,
+
+					CASE WHEN (1 - dispEndD.[MarsDay]) < 1 
+						THEN CAST(DATEADD(DAY, 1 - dispEndD.[MarsDay] + 7, dispEndD.[OriginalDate]) AS DATE)
+						ELSE CAST(DATEADD(DAY, 1 - dispEndD.[MarsDay], dispEndD.[OriginalDate]) AS DATE)
+					END AS WeekStart,
+
+					ISNULL(pl.[Price], 0) AS [Price]
+				FROM [Promo] p
+				INNER JOIN [PromoProduct] pp 
+					ON pp.[PromoId] = p.[Id]
+				INNER JOIN [PromoStatus] ps 
+					ON ps.[Id] = p.[PromoStatusId]
+				INNER JOIN [ClientTree] ct
+					ON ct.[Id] = p.[ClientTreeKeyId]
+				INNER JOIN [Dates] dispEndD
+					ON dispEndD.[OriginalDate] = CAST(p.[DispatchesEnd] AS DATE) 
+				LEFT JOIN [PriceList] pl
+					ON pl.Id = (
+						SELECT TOP(1)
+							Id
+						FROM [PriceList]
+						WHERE [ClientTreeId] = p.[ClientTreeKeyId]
+							AND [ProductId] = pp.[ProductId]
+							AND [StartDate] <= p.[DispatchesStart]
+							AND [EndDate] >= p.[DispatchesEnd]
+							AND [Disabled] = 0
+						ORDER BY [StartDate] DESC
+					)
+
+				WHERE pp.[Disabled] = 0 AND p.[Disabled] = 0
+			),
+				BaseLineView
+			AS
+			(
+				SELECT 
+					p.[ZREP],
+					bl.[SellInBaselineQTY],
+					bl.[SellOutBaselineQTY],
+					CAST(bl.[StartDate] AS DATE) AS [StartDate],
+					bl.[DemandCode]
+ 				FROM [BaseLine] bl
+				INNER JOIN [Product] p 
+					ON p.[Id] = bl.[ProductId]
+				WHERE bl.[Disabled] = 0
+			),
+				ForCalculatedView
+			AS 
+			(
+				SELECT
+					p.*,
+					ISNULL(ctbt.Share, 1) AS Share,
+					CASE WHEN p.[IsOnInvoice] = 1
+						THEN ISNULL(blW1.[SellInBaselineQTY], 0) 
+						ELSE ISNULL(blW1.[SellOutBaselineQTY], 0)
+					END AS BaseLinePostPromoEffectW1QTY,
+					CASE WHEN p.[IsOnInvoice] = 1
+						THEN ISNULL(blW2.[SellInBaselineQTY], 0) 
+						ELSE ISNULL(blW2.[SellOutBaselineQTY], 0)
+					END AS BaseLinePostPromoEffectW2QTY,
+		
+					CAST(d.[MarsYear] AS NVARCHAR(4)) + 'P' + REPLACE(STR(d.[MarsPeriod], 2), SPACE(1), '0') + d.[MarsWeekName] AS [Week]
+				FROM BaseDataView p
+				LEFT JOIN BaseLineView blW1
+					ON blW1.[DemandCode] = p.[DemandCode]
+						AND blW1.[ZREP] = p.[ZREP]
+						AND blW1.[StartDate] = p.[WeekStart]
+				LEFT JOIN BaseLineView blW2
+					ON blW2.[DemandCode] = p.[DemandCode]
+						AND blW2.[ZREP] = p.[ZREP]
+						AND blW2.[StartDate] = DATEADD(DAY, 7, p.[WeekStart])
+				LEFT JOIN [ClientTreeBrandTech] ctbt
+					ON ctbt.Id = (
+						SELECT TOP(1)
+							Id
+						FROM [ClientTreeBrandTech]
+						WHERE
+							[ParentClientTreeDemandCode] = p.[DemandCode]
+							AND [ClientTreeId] = p.[ClientTreeKeyId]
+							AND [BrandTechId] = p.[BrandTechId]
+							AND [Disabled] = 0
+					)
+				INNER JOIN [Dates] d
+					ON d.[OriginalDate] = CAST(p.[WeekStart] AS DATE) 
+			)
+
+			SELECT 
+				NEWID()														AS Id,
+				CONCAT(c.[ZREP], '_0125') 									AS [ZREP],
+				c.[PromoStatusName]											AS [Status],
+				FORMATMESSAGE('%s#%i', c.[Name], c.[Number])				AS [PromoNameId],
+				c.[Number]													AS [PromoNumber],
+				CAST(c.[WeekStart] AS DATETIMEOFFSET(7))					AS [WeekStartDate],
+				CAST(c.[WeekStart] AS DATETIMEOFFSET(7))					AS [StartDate],
+				CAST(DATEADD(DAY, 14, c.[WeekStart]) AS DATETIMEOFFSET(7))	AS [EndDate],
+				CASE WHEN c.[DemandCode] IS NULL OR c.[DemandCode] = ''
+					THEN 'Demand code was not found'
+					ELSE c.[DemandCode]
+				END															AS [DemandCode],
+				c.[InOut]													AS [InOut],
+				'RU_0125'													AS [LocApollo],
+				'7'															AS [TypeApollo],
+				'SHIP_LEWAND_CS'											AS [ModelApollo],
+				c.[Week]													AS [Week],
+				c.[IsOnInvoice]												AS [IsOnInvoice],
+				c.[PlanPromoUpliftPercent]									AS [PlanUplift],	
+
+				ROUND(c.[BaseLinePostPromoEffectW1QTY] * c.[Share] / 100 * c.[PlanProductPostPromoEffectW1] / 100, 2)					AS PlanPostPromoEffectQtyW1,
+				ROUND(c.[BaseLinePostPromoEffectW1QTY] * c.[Share] / 100, 2)												AS PlanProductBaselineCaseQtyW1,
+				ROUND(c.[BaseLinePostPromoEffectW1QTY] * c.[Price] * c.[Share] / 100 * ABS(c.[PlanProductPostPromoEffectW1]) / 100, 2) AS PlanProductPostPromoEffectLSVW1,
+				ROUND(c.[BaseLinePostPromoEffectW1QTY] * c.[Price] * c.[Share] / 100, 2)									AS PlanProductBaselineLSVW1,
+
+				ROUND(c.[BaseLinePostPromoEffectW2QTY] * c.[Share] / 100 * c.[PlanProductPostPromoEffectW2] / 100, 2)					AS PlanPostPromoEffectQtyW2,
+				ROUND(c.[BaseLinePostPromoEffectW2QTY] * c.[Share] / 100, 2)												AS PlanProductBaselineCaseQtyW2,
+				ROUND(c.[BaseLinePostPromoEffectW2QTY] * c.[Price] * c.[Share] / 100 * ABS(c.[PlanProductPostPromoEffectW2]) / 100, 2) AS PlanProductPostPromoEffectLSVW2,
+				ROUND(c.[BaseLinePostPromoEffectW2QTY] * c.[Price] * c.[Share] / 100, 2)									AS PlanProductBaselineLSVW2
+
+			FROM ForCalculatedView c
+		GO	
 		";
 	}
 }

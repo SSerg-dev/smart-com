@@ -122,7 +122,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Calculate(int rsId)
+        public async Task<IHttpActionResult> Calculate(int rsId)
         {
             try
             {
@@ -147,26 +147,24 @@ namespace Module.Frontend.TPM.Controllers
                     HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
                     HandlerDataHelper.SaveIncomingArgument("RsId", rsId, handlerData, visible: false, throwIfNotExists: false);
 
-                    using (DatabaseContext context = new DatabaseContext())
+
+                    LoopHandler handler = new LoopHandler()
                     {
-                        LoopHandler handler = new LoopHandler()
-                        {
-                            Id = Guid.NewGuid(),
-                            ConfigurationName = "PROCESSING",
-                            Description = "Preparing scenario for calculation",
-                            Name = "Module.Host.TPM.Handlers.ProcessMLCalendarHandler",
-                            ExecutionPeriod = null,
-                            CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                            LastExecutionDate = null,
-                            NextExecutionDate = null,
-                            ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                            UserId = userId,
-                            RoleId = roleId
-                        };
-                        handler.SetParameterData(handlerData);
-                        context.LoopHandlers.Add(handler);
-                        context.SaveChanges();
-                    }
+                        Id = Guid.NewGuid(),
+                        ConfigurationName = "PROCESSING",
+                        Description = "Preparing scenario for calculation",
+                        Name = "Module.Host.TPM.Handlers.ProcessMLCalendarHandler",
+                        ExecutionPeriod = null,
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        LastExecutionDate = null,
+                        NextExecutionDate = null,
+                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                        UserId = userId,
+                        RoleId = roleId
+                    };
+                    handler.SetParameterData(handlerData);
+                    Context.LoopHandlers.Add(handler);
+                    await Context.SaveChangesAsync();
                     return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
                 }
                 else

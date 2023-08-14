@@ -7,12 +7,10 @@ using Frontend.Core.Extensions;
 using Frontend.Core.Extensions.Export;
 using Looper.Core;
 using Looper.Parameters;
-using Module.Frontend.TPM.Model;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Newtonsoft.Json;
 using Persist;
 using Persist.Model;
 using System;
@@ -86,7 +84,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Mechanic> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<Mechanic> patch)
         {
             var model = Context.Set<Mechanic>().Find(key);
             if (model == null)
@@ -96,7 +94,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -113,7 +111,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(Mechanic model)
+        public async Task<IHttpActionResult> Post(Mechanic model)
         {
             if (!ModelState.IsValid)
             {
@@ -128,7 +126,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -140,8 +138,8 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Mechanic> patch)
-        {            
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<Mechanic> patch)
+        {
             try
             {
                 var model = Context.Set<Mechanic>().Find(key);
@@ -151,7 +149,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -169,11 +167,11 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }            
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -185,7 +183,7 @@ namespace Module.Frontend.TPM.Controllers
 
                 model.DeletedDate = System.DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -205,136 +203,146 @@ namespace Module.Frontend.TPM.Controllers
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = 0, Field = "Name", Header = "Mechanic", Quoting = false },
                 new Column() { Order = 1, Field = "SystemName", Header = "System Name", Quoting = false } ,
-                new Column() { Order = 2, Field = "PromoTypes.Name", Header = "Promo Type Name", Quoting = false } 
+                new Column() { Order = 2, Field = "PromoTypes.Name", Header = "Promo Type Name", Quoting = false }
             };
             return columns;
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<Mechanic> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<Mechanic> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Mechanic), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(MechanicsController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(MechanicsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Mechanic), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(MechanicsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(MechanicsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(Mechanic)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(Mechanic)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
-                if (!Request.Content.IsMimeMultipartContent()) {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
+                if (!Request.Content.IsMimeMultipartContent())
+                {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
                 }
 
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private async Task CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportMechanic), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportMechanic).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Mechanic), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name", "PromoTypesId" }, data); 
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
+            {
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                LoopHandler handler = new LoopHandler() {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportMechanic).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(ImportMechanic).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportMechanic), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportMechanic).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Mechanic), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name", "PromoTypesId" }, data);
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportMechanic).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(ImportMechanic).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetExportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "Mechanic");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<Mechanic>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 

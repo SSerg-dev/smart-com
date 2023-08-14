@@ -9,6 +9,7 @@ namespace Module.Persist.TPM.Model.DTO {
         public string ZREP { get; set; }
         public string DemandCode { get; set; }
         public string PromoNameId { get; set; }
+        public int PromoNumber { get; set; }
         public string LocApollo { get; set; }
         public string TypeApollo { get; set; }
         public string ModelApollo { get; set; }

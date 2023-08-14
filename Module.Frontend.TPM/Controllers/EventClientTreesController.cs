@@ -1,24 +1,19 @@
 ﻿using AutoMapper;
 using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
-using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -85,7 +80,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<EventClientTree> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<EventClientTree> patch)
         {
             var model = Context.Set<EventClientTree>().Find(key);
             if (model == null)
@@ -95,7 +90,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -112,7 +107,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(EventClientTree model)
+        public async Task<IHttpActionResult> Post(EventClientTree model)
         {
             if (!ModelState.IsValid)
             {
@@ -127,7 +122,7 @@ namespace Module.Frontend.TPM.Controllers
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -139,7 +134,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [HttpPost]
-        public IHttpActionResult Post(System.Guid eventId)
+        public async Task<IHttpActionResult> Post(System.Guid eventId)
         {
             try
             {
@@ -178,7 +173,7 @@ namespace Module.Frontend.TPM.Controllers
                     Context.Set<EventClientTree>().Add(eventClientTree);
                 }
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)
@@ -189,7 +184,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<EventClientTree> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<EventClientTree> patch)
         {
             try
             {
@@ -200,7 +195,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -222,7 +217,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -232,9 +227,8 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-                string deleteScript = String.Format("DELETE FROM [DefaultSchemaSetting].[EventClientTree] WHERE [Id] = '{0}'", model.Id.ToString());
-                Context.ExecuteSqlCommand(deleteScript);
-
+                Context.Set<EventClientTree>().Remove(model);
+                await Context.SaveChangesAsync();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)

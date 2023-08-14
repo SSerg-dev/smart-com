@@ -181,6 +181,13 @@
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
         }
+        else {
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
+
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
+        }
 
         this.editor.afterWindowShow(this.editor, false);
         this.editor.down('editorform').getForm().getFields().each(function (field, index, len) {
@@ -222,6 +229,13 @@
         }
 
         if (this.editor.model.data.IsOnInvoice === 'Yes') {
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
+
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').setReadOnly(true);
+            this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW2]').addCls('readOnlyFieldActualLSV');
+        }
+        else {
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').setReadOnly(true);
             this.editor.down('numberfield[name=ActualPromoPostPromoEffectLSVW1]').addCls('readOnlyFieldActualLSV');
 

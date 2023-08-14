@@ -41,5 +41,6 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<CoefficientSI2SO> CoefficientSI2SOs { get; set; }
         public ICollection<NonPromoSupportBrandTech> NonPromoSupportBrandTeches { get; set; }
         public ICollection<TradeInvestment> TradeInvestments { get; set; }
+        public ICollection<PlanPostPromoEffect> PlanPostPromoEffects { get; set; }
     }
 }

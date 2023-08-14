@@ -142,7 +142,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<Product> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<Product> patch)
         {
             var model = Context.Set<Product>().Find(key);
             if (model == null)
@@ -152,7 +152,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -169,7 +169,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(Product model)
+        public async Task<IHttpActionResult> Post(Product model)
         {
             if (!ModelState.IsValid)
             {
@@ -202,11 +202,11 @@ namespace Module.Frontend.TPM.Controllers
             }
             try
             {
-                CheckNewBrandTech(result.BrandFlag, result.SupplySegment, model.SubBrand_code);
+                await CheckNewBrandTech(result.BrandFlag, result.SupplySegment, model.SubBrand_code);
                 Context.Set<Product>().Add(result);
                 // добавлен триггер на INSERT для импорта, поэтому создавать инцидент еще раз тут не надо
                 //Context.Set<ProductChangeIncident>().Add(CreateIncident(result, true, false));
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -218,7 +218,7 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<Product> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<Product> patch)
         {
 
             try
@@ -250,9 +250,9 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     return InternalServerError(new Exception(string.Join(". ", errors)));
                 }
-                CheckNewBrandTech(model.BrandFlag, model.SupplySegment, model.SubBrand_code);
+                await CheckNewBrandTech(model.BrandFlag, model.SupplySegment, model.SubBrand_code);
                 Context.Set<ProductChangeIncident>().Add(CreateIncident(model, false, false));
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -274,7 +274,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -304,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
                     ip.DeletedDate = DateTimeOffset.Now;
                 }
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (Exception e)
@@ -315,10 +315,10 @@ namespace Module.Frontend.TPM.Controllers
 
         [HttpPost]
         public IHttpActionResult GetIfAllProductsInSubrange(ODataActionParameters data)
-        {   
+        {
             try
             {
-                var answer = new List<Tuple<int, bool,bool>>();
+                var answer = new List<Tuple<int, bool, bool>>();
                 if (data.ContainsKey("ProductIds") && data["ProductIds"] != null)
                 {
                     var productIdsString = data["ProductIds"] as string;
@@ -350,7 +350,7 @@ namespace Module.Frontend.TPM.Controllers
                     var ResultList = productIdsString.Split(new string[] { ";!;" }, StringSplitOptions.None).ToList();
                     var productIds = ResultList[0].Split(';').Select(Guid.Parse).ToList();
                     // получить продукт и по нему получить технологию и вернуть для нее флаг IsSplitable 
-                    var product = Context.Set<Product>().Find(productIds.ElementAt(0));                   
+                    var product = Context.Set<Product>().Find(productIds.ElementAt(0));
                     var isTechnolySplittable = Context.Set<Technology>().Where(t => t.Tech_code == product.Tech_code).Select(t => t.IsSplittable).FirstOrDefault();
                     var productTreeObjectIds = ResultList[1].Split(';').Select(Int32.Parse).ToList();
                     List<int> idL;
@@ -433,44 +433,42 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<Product> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<Product> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Product), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ProductsController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ProductsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(Product), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(ProductsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(ProductsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(Product)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(Product)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -480,12 +478,12 @@ namespace Module.Frontend.TPM.Controllers
         /// </summary>
         /// <param name="brand">Наименование Бренда</param>
         /// <param name="tech">Наименование Технологии</param>
-        private void CheckNewBrandTech(string brand, string tech, string subCode)
+        private async Task CheckNewBrandTech(string brand, string tech, string subCode)
         {
             if (brand.Length != 0 && tech.Length != 0)
             {
                 Brand checkBrand = Context.Set<Brand>().FirstOrDefault(n => n.Name.ToLower() == brand.ToLower() && !n.Disabled);
-                Technology checkTech = Context.Set<Technology>().FirstOrDefault(n => n.Name.ToLower() == tech.ToLower() && 
+                Technology checkTech = Context.Set<Technology>().FirstOrDefault(n => n.Name.ToLower() == tech.ToLower() &&
                                                                                     n.SubBrand_code.Equals(subCode) &&
                                                                                     !n.Disabled);
 
@@ -503,11 +501,11 @@ namespace Module.Frontend.TPM.Controllers
                         Context.Set<Technology>().Add(checkTech);
                     }
 
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
 
                     BrandTech newBrandTech = new BrandTech { Disabled = false, BrandId = checkBrand.Id, TechnologyId = checkTech.Id };
                     Context.Set<BrandTech>().Add(newBrandTech);
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
         }
@@ -546,7 +544,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateAllHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -560,53 +558,50 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportProduct), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportProduct).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Product), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "ZREP" }, data);
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportProduct), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportProduct).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(Product), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "ZREP" }, data);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportProduct).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(ImportProduct).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportProduct).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(ImportProduct).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
         }
 
         [ClaimsAuthorize]
@@ -687,7 +682,7 @@ namespace Module.Frontend.TPM.Controllers
             return expressionsList;
         }
 
-        private static bool StringsNullOrEmpty(string str1, string str2) 
+        private static bool StringsNullOrEmpty(string str1, string str2)
         {
             return String.IsNullOrEmpty(str1) && String.IsNullOrEmpty(str2);
         }
@@ -696,11 +691,11 @@ namespace Module.Frontend.TPM.Controllers
         {
             bool exist = true;
 
-            var technology = context.Set<Technology>().Where(t => 
+            var technology = context.Set<Technology>().Where(t =>
                                                             t.Tech_code == techCode
                                                             && t.SubBrand_code == subBrandCode
                                                             && !t.Disabled).FirstOrDefault();
-            var brand = context.Set<Brand>().Where(b => 
+            var brand = context.Set<Brand>().Where(b =>
                                                 b.Segmen_code == segmenCode
                                                 && b.Brand_code == brandCode
                                                 && !b.Disabled).FirstOrDefault();
@@ -720,20 +715,20 @@ namespace Module.Frontend.TPM.Controllers
 
 
 
-            if (brand == null) 
-            { 
-                errors.Add("Brand was not found"); 
-                exist = false; 
-            }
-            if (technology == null) 
+            if (brand == null)
             {
-                errors.Add("Technology was not found"); 
-                exist = false; 
+                errors.Add("Brand was not found");
+                exist = false;
             }
-            if (brandTech == null) 
+            if (technology == null)
             {
-                errors.Add("Brand Tech was not found"); 
-                exist = false; 
+                errors.Add("Technology was not found");
+                exist = false;
+            }
+            if (brandTech == null)
+            {
+                errors.Add("Brand Tech was not found");
+                exist = false;
             }
 
             return exist;

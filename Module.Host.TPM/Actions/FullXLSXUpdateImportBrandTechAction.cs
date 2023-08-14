@@ -111,7 +111,7 @@ namespace Module.Host.TPM.Actions
                 context.ExecuteSqlCommand(insertScript);
             }
 
-            ClientTreeBrandTechesController.FillClientTreeBrandTechTable(context);
+            Task.Run(() => ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(context));
 
             foreach (IEnumerable<BrandTech> items in toUpdate.Partition(10000))
             {
@@ -122,7 +122,7 @@ namespace Module.Host.TPM.Actions
             //Добавление в историю
             context.HistoryWriter.Write(toHisCreate, context.AuthManager.GetCurrentUser(), context.AuthManager.GetCurrentRole(), OperationType.Created);
 
-            ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context);
+            Task.Run(() => ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(context));
             CreateCoefficientSI2SOHandler(toCreate.Select(b => b.BrandsegTechsub_code).ToList(), null, 1);
 
             return sourceRecords.Count();

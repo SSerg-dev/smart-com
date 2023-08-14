@@ -406,18 +406,14 @@
             var isOnHold = store.fixedFilters ? !Ext.isEmpty(store.fixedFilters['IsOnHold']) : false;
 
             var onApprovalFilterDP = promoHelperController.getOnApprovalFilterDP();
-            var onApprovalFilterDF = promoHelperController.getOnApprovalFilterDF();
             var onApprovalFilterCMM = promoHelperController.getOnApprovalFilterCMM();
             var onApprovalGAFilterDP = promoHelperController.getOnApprovalGAFilterDP();
-            var onApprovalGAFilterDF = promoHelperController.getOnApprovalGAFilterDF();
             var onApprovalGAFilterCMM = promoHelperController.getOnApprovalGAFilterCMM();
             var onApprovalGAFilterGAM = promoHelperController.getOnApprovalGAFilterGAM();
             var onTimeCriticalKeyAccountManagerFilter = promoHelperController.getTimeCriticalKeyAccountManagerFilter();
 
             var isDisabled = !this.compareFilters(filter, onApprovalFilterDP) &&
-                !this.compareFilters(filter, onApprovalFilterDF) &&
                 !this.compareFilters(filter, onApprovalFilterCMM) &&
-                !this.compareFilters(filter, onApprovalGAFilterDF) &&
                 !isOnHold &&
                 !this.compareFilters(filter, onApprovalGAFilterGAM) ||
                 this.compareFilters(filter, onTimeCriticalKeyAccountManagerFilter) ||
@@ -4115,13 +4111,13 @@
         for (var i = 0; i < promoActions.length; i++) {
             var roles = promoActions[i].roles;
             var statuses = promoActions[i].statuses;
-
+            
             var _role = roles.find(function (element) { return element == currentRole['SystemName']; });
             var _status = statuses.find(function (element) { return element == status; });
 
             if (_role != null && _status != null) {
                 var visible = true;
-
+                
                 if (_status == 'OnApproval' && promoeditorcustom.xtype == 'promoeditorcustom') {
                     var record = this.getRecord(promoeditorcustom);
 
@@ -4147,11 +4143,11 @@
                             break;
 
                         case 'DemandFinance':
-                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsDemandFinanceApproved');
+                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved');
                             break;
 
                         case 'GAManager':
-                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && record.get('IsDemandFinanceApproved') && !record.get('IsGAManagerApproved');
+                            visible = record.get('IsCMManagerApproved') && record.get('IsDemandPlanningApproved') && !record.get('IsGAManagerApproved');
                             break;
 
                         case 'KeyAccountManager':

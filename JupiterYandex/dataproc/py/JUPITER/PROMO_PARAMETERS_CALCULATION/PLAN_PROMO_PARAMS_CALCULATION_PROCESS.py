@@ -146,10 +146,6 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
       .withColumn('PlanPromoIncrementalCOGS', (col('PlanPromoIncrementalLSV') * col('PlanCOGSPercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoBaseTI', (col('PlanPromoLSV') * col('PlanTIBasePercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoTotalCost', (isNullCheck(col('PlanPromoCost')) + isNullCheck(col('PlanPromoBaseTI'))).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectLSVW1', when(col('InOut') == 'False', isNullCheck(col('PlanPromoBaselineLSV'))\
-                                                        * isNullCheck(col('promoClientPostPromoEffectW1')) / 100.0).otherwise(0).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectLSVW2', when(col('InOut') == 'False', col('PlanPromoBaselineLSV') * col('promoClientPostPromoEffectW2') / 100.0)\
-                                              .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoPostPromoEffectLSV', when(col('InOut') == 'False', col('PlanPromoPostPromoEffectLSVW1') + col('PlanPromoPostPromoEffectLSVW2'))\
                                               .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetIncrementalLSV', (isNullCheck(col('PlanPromoIncrementalLSV')) + isNullCheck(col('PlanPromoPostPromoEffectLSV'))).cast(DecimalType(30,6)))\
@@ -183,8 +179,6 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
       .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('PlanPromoNetIncrementalLSV')) * col('RATIShopperPercent') / 100)\
                   .cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperApproved', when(col('LastApprovedDate').isNull(), col('PlanAddTIShopperCalculated')).otherwise(col('PlanAddTIShopperApproved')))\
-      .withColumn('PlanPromoPostPromoEffectVolumeW1', when(col('InOut') == 'False', isNullCheck(col('PlanPromoBaselineVolume')) * isNullCheck(col('promoClientPostPromoEffectW1')) / 100).otherwise(0).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoPostPromoEffectVolumeW2', when(col('InOut') == 'False', isNullCheck(col('PlanPromoBaselineVolume')) * isNullCheck(col('promoClientPostPromoEffectW2')) / 100).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoPostPromoEffectVolume',  when(col('InOut') == 'False', isNullCheck(col('PlanPromoPostPromoEffectVolumeW1')) + isNullCheck(col('PlanPromoPostPromoEffectVolumeW2'))).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetIncrementalVolume', (col('PlanPromoIncrementalVolume') + col('PlanPromoPostPromoEffectVolume')).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoIncrementalCOGSTn', (col('PlanPromoIncrementalVolume') * col('PlanCOGSTn')).cast(DecimalType(30,6)))\

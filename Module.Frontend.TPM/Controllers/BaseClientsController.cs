@@ -1,7 +1,6 @@
 ﻿using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
-using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
@@ -16,18 +15,22 @@ using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
     /// <summary>
     /// Контроллер для работы с базовыми клиентами из иерархии
     /// </summary>
-    public class BaseClientsController : EFContextController {
+    public class BaseClientsController : EFContextController
+    {
         private readonly IAuthorizationManager authorizationManager;
 
-        public BaseClientsController(IAuthorizationManager authorizationManager) {
+        public BaseClientsController(IAuthorizationManager authorizationManager)
+        {
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<ClientTree> GetConstraintedQuery() {
+        protected IQueryable<ClientTree> GetConstraintedQuery()
+        {
 
             UserInfo user = authorizationManager.GetCurrentUser();
             string role = authorizationManager.GetCurrentRoleName();
@@ -44,13 +47,15 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public SingleResult<ClientTree> GetBaseClient([FromODataUri] System.Guid key) {
+        public SingleResult<ClientTree> GetBaseClient([FromODataUri] System.Guid key)
+        {
             return SingleResult.Create(GetConstraintedQuery());
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<ClientTree> GetBaseClients() {
+        public IQueryable<ClientTree> GetBaseClients()
+        {
             return GetConstraintedQuery();
         }
 
@@ -70,7 +75,8 @@ namespace Module.Frontend.TPM.Controllers {
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<ClientTree>;
         }
 
-        private bool EntityExists(int key) {
+        private bool EntityExists(int key)
+        {
             return Context.Set<ClientTree>().Count(e => e.ObjectId == key) > 0;
         }
     }

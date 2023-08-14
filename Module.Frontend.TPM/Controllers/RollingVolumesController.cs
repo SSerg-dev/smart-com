@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using System.Web.Http.OData;
-using System.Web.Http.OData.Query;
-using System.Web.Http.Results;
-using Core.Dependency;
+﻿using Core.Dependency;
 using Core.Security;
 using Core.Security.Models;
 using Core.Settings;
@@ -26,8 +12,21 @@ using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
-using Persist;
 using Persist.Model;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.OData;
+using System.Web.Http.OData.Query;
+using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 
 namespace Module.Frontend.TPM.Controllers
@@ -79,7 +78,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<RollingVolume> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<RollingVolume> patch)
         {
             var model = Context.Set<RollingVolume>().Find(key);
             if (model == null)
@@ -89,7 +88,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -135,7 +134,7 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXUpdateImportRollingVolumesHandler");
+                await CreateImportTask(fileName, "FullXLSXUpdateImportRollingVolumesHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
@@ -161,7 +160,7 @@ namespace Module.Frontend.TPM.Controllers
             }
             else
             {
-             isAvailable = DateTimeOffset.UtcNow.DayOfWeek == (DayOfWeek)dayOfWeek;
+                isAvailable = DateTimeOffset.UtcNow.DayOfWeek == (DayOfWeek)dayOfWeek;
             }
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new
             {
@@ -169,56 +168,54 @@ namespace Module.Frontend.TPM.Controllers
                 isDayOfWeek = isAvailable
             }));
         }
-        private void CreateImportTask(string fileName, string importHandler)
+        private async Task CreateImportTask(string fileName, string importHandler)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext())
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
             {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel()
-                {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRollingVolume), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRollingVolume).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(RollingVolume), data, visible: false, throwIfNotExists: false);
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRollingVolume), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRollingVolume).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(RollingVolume), data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportRollingVolume).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    RunGroup = typeof(ImportRollingVolume).Name,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportRollingVolume).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                RunGroup = typeof(ImportRollingVolume).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
 
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+
         }
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<RollingVolume> patch)
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<RollingVolume> patch)
         {
             try
             {
@@ -229,7 +226,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 patch.Patch(model);
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -256,17 +253,17 @@ namespace Module.Frontend.TPM.Controllers
                 new Column() { Order = order++, Field = "Product.ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = order++, Field = "Product.ProductEN", Header = "SKU", Quoting = false },
                 new Column() { Order = order++, Field = "Product.BrandsegTechsub", Header = "BrandTech", Quoting = false },
-                new Column() { Order = order++, Field = "DemandGroup", Header = "DemandGroup", Quoting = false }, 
-                new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false }, 
-                new Column() { Order = order++, Field = "PlanProductIncrementalQTY", Header = "PlanProductIncrementalQTY", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "Actuals", Header = "Actuals", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "OpenOrders", Header = "OpenOrders", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "ActualOO", Header = "ACTL+OO", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "Baseline", Header = "Baseline", Quoting = false ,Format = "0.00"}, 
-                new Column() { Order = order++, Field = "ActualIncremental", Header = "ActualIncremental", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "PreliminaryRollingVolumes", Header = "PreliminaryRollingVolumes", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "PreviousRollingVolumes", Header = "PreviousRollingVolumes", Quoting = false,Format = "0.00" }, 
-                new Column() { Order = order++, Field = "PromoDifference", Header = "PromoDifference", Quoting = false,Format = "0.00" }, 
+                new Column() { Order = order++, Field = "DemandGroup", Header = "DemandGroup", Quoting = false },
+                new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false },
+                new Column() { Order = order++, Field = "PlanProductIncrementalQTY", Header = "PlanProductIncrementalQTY", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "Actuals", Header = "Actuals", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "OpenOrders", Header = "OpenOrders", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "ActualOO", Header = "ACTL+OO", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "Baseline", Header = "Baseline", Quoting = false ,Format = "0.00"},
+                new Column() { Order = order++, Field = "ActualIncremental", Header = "ActualIncremental", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "PreliminaryRollingVolumes", Header = "PreliminaryRollingVolumes", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "PreviousRollingVolumes", Header = "PreviousRollingVolumes", Quoting = false,Format = "0.00" },
+                new Column() { Order = order++, Field = "PromoDifference", Header = "PromoDifference", Quoting = false,Format = "0.00" },
                 new Column() { Order = order++, Field = "RollingVolumesCorrection", Header = "RollingVolumesCorrection", Quoting = false ,Format = "0.00"},
                 new Column() { Order = order++, Field = "RollingVolumesTotal", Header = "RollingVolumesTotal", Quoting = false ,Format = "0.00"},
                 new Column() { Order = order++, Field = "ManualRollingTotalVolumes", Header = "ManualRollingTotalVolumes", Quoting = false ,Format = "0.00"},
@@ -280,44 +277,42 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<RollingVolume> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<RollingVolume> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery());
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(RollingVolume), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(RollingVolumesController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(RollingVolumesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(RollingVolume), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(RollingVolumesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(RollingVolumesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(RollingVolume)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(RollingVolume)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }

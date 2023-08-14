@@ -21,7 +21,7 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                 { StateNames.DELETED, new List<string> { "Administrator", "SupportAdministrator", "CustomerMarketing", "FunctionalExpert", "KeyAccountManager" } }
             }),
             new RoleStateMap(StateNames.ON_APPROVAL, new Dictionary<string, List<string>>() {
-                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "DemandFinance", "DemandPlanning", "KeyAccountManager", "GAManager" } },
+                { StateNames.DRAFT_PUBLISHED, new List<string> { "Administrator", "SupportAdministrator", "CMManager", "CustomerMarketing", "FunctionalExpert", "DemandPlanning", "KeyAccountManager", "GAManager" } },
                 { StateNames.ON_APPROVAL, new List<string> { "System" } },
                 { StateNames.APPROVED, new List<string> { "CMManager", "SupportAdministrator", "DemandFinance", "DemandPlanning", "GAManager" } }
             }),
@@ -94,7 +94,6 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool isAvailable = true;
             bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
-            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             bool IsGAManagerApproved = promo.IsGAManagerApproved ?? false;
             if (promo.PromoStatus.SystemName == StateNames.ON_APPROVAL) {
                 if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
@@ -120,11 +119,8 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                         case "DemandPlanning":
                             isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
                             break;
-                        case "DemandFinance":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
-                            break;
                         case "GAManager":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && IsDemandFinanceApproved && !IsGAManagerApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsGAManagerApproved;
                             break;
                     }
             }
@@ -140,7 +136,6 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
             bool isAvailable = true;
             bool IsCMManagerApproved = promo.IsCMManagerApproved ?? false;
             bool IsDemandPlanningApproved = promo.IsDemandPlanningApproved ?? false;
-            bool IsDemandFinanceApproved = promo.IsDemandFinanceApproved ?? false;
             bool IsGAManagerApproved = promo.IsGAManagerApproved ?? false;
             if (promo.PromoStatusSystemName == StateNames.ON_APPROVAL) {
                 if (!promo.IsGrowthAcceleration && !promo.IsInExchange)
@@ -167,10 +162,10 @@ namespace Module.Persist.TPM.PromoStateControl.RoleStateMap {
                             isAvailable = IsCMManagerApproved && !IsDemandPlanningApproved;
                             break;
                         case "DemandFinance":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsDemandFinanceApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved;
                             break;
                         case "GAManager":
-                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && IsDemandFinanceApproved && !IsGAManagerApproved;
+                            isAvailable = IsCMManagerApproved && IsDemandPlanningApproved && !IsGAManagerApproved;
                             break;
                     }
             }

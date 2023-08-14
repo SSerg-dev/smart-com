@@ -28,6 +28,8 @@
         { name: 'ActualProductIncrementalPCQty', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'ActualProductIncrementalPCLSV', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'ActualProductIncrementalLSV', type: 'float', hidden: false, isDefault: false, useNull: true },
+        { name: 'PlanProductPostPromoEffectW1', type: 'float', hidden: false, isDefault: false, useNull: true },
+        { name: 'PlanProductPostPromoEffectW2', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductPostPromoEffectLSVW1', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductPostPromoEffectLSVW2', type: 'float', hidden: false, isDefault: false, useNull: true },
         { name: 'PlanProductPostPromoEffectLSV', type: 'float', hidden: false, isDefault: false, useNull: true },

@@ -251,7 +251,18 @@
         proxy.extraParams.needBaseClients = true;
         me.disableButtons([updateButton, deleteButton, moveButton]);
 
+        if (tree.needBaseClients) {
+            proxy.extraParams.needBaseClients = true;
 
+            var baseClientChBox = tree.down('#baseClientsCheckbox');
+            baseClientChBox.suspendEvents();
+            baseClientChBox.setValue(true);
+            baseClientChBox.resumeEvents();
+            
+            if (tree.needLoadTree) {
+                store.load();
+            }
+        } else
         //так как автозагрузка стора отключена, необходимо загрузить стор, если иерархия открыта не в окне промо или в окне промо в режиме создания
         if (tree.needLoadTree && (!promocontainer || (promoeditorcustom && promoeditorcustom.isCreating) && !promoeditorcustom.isFromSchedule)) {
             proxy.extraParams.needBaseClients = false;
@@ -790,7 +801,6 @@
         var toolbar = grid.up('clienttree').down('customtoptreetoolbar');
 
         toolbar.down('#clientsSearchTrigger').setDisabled(false);
-        toolbar.down('#baseClientsCheckbox').setDisabled(false);
     },
 
     onClientTreeEditorAfterRender: function (clientTreeEditor) {

@@ -65,6 +65,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffectItem': 'Plan Post Promo Effect',
         'RATIShopper': 'RA TI Shopper',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
@@ -162,6 +163,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffect': 'Plan Post Promo Effect',
         'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'AddPromoType': 'Create Promo',
@@ -199,7 +201,9 @@
         'CompetitorPromo': 'Competitor Promo',
         'EventType': 'Event Types',
         'MetricsLiveHistory':'Metrics Live History',
-        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction'
+        'PromoProductCorrectionPriceIncrease': 'Increase Promo product correction',
+        'DiscountRange': 'Discount Range',
+        'DurationRange': 'Duration Range'
     },
 
     'text': {
@@ -1166,8 +1170,6 @@
         'DemandCode': 'Demand Code',
         'IsBaseClient': 'Base client',
         'WarningChangeIsBase': 'Change in customer basicity may welcome problems with settlements',
-        'PostPromoEffectW1': 'Post Promo Effect W1',
-        'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
         'FullPathName': 'Full PathName',
         'IsOnInvoice': 'On Invoice',
@@ -1312,6 +1314,7 @@
         'PONumber': 'PO Number',
         'PONumberRegex': 'Only numbers',
         'InvoiceNumberRegex': 'Only numbers',
+        'InvoiceNumberMaxLengthText': 'No spaces. Max 50 symbols',
         'AttachFileName': 'Attach File Name',
         'Name': 'Name',
         'InvoiceNumber': 'Invoice Number',
@@ -1536,7 +1539,8 @@
         'ModalWindowCloseButton': 'Close',
         'ModalWindowOkButton': 'Create',
         'NotSelected': 'Client and type must be selected.',
-        'CreateButtonText': 'Create support type'
+        'CreateButtonText': 'Create support type',
+        'ClientTreeIdValid': 'Only base clients are available for selection.'
     },
 
     'PromoType': {
@@ -1596,6 +1600,8 @@
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectW1': 'Plan Post Promo Effect W1, %',
+        'PlanProductPostPromoEffectW2': 'Plan Post Promo Effect W2, %',
         'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
@@ -1748,6 +1754,33 @@
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
 
+    'PlanPostPromoEffect': {
+        'PlanPostPromoEffectW1': 'Plan Post Promo Effect W1',
+        'PlanPostPromoEffectW2': 'Plan Post Promo Effect W2',
+        'DiscountRangeName': 'Discount',
+        'DurationRangeName': 'Promo Duration',
+        'ClientTreeFullPathName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'BrandTechName': 'BrandTech',
+        'Size': 'Size'
+    },
+    'HistoricalPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseHistoryEntity'],
+    'DeletedPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseDeletedEntity'],
+
+    'DurationRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+
+    'DiscountRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+    
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
@@ -1963,10 +1996,10 @@
     'PostPromoEffectDetails': {
         'mainTitle': 'Post Promo Effect details',
         'PostPromoEffectFieldsetTitle': 'Post Promo Effect Total Field Details',
-        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect W1, %',
-        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect W2, %',
-        'ActualPromoPostPromoEffectLSVW1': 'Fact Post Promo Effect W1, %',
-        'ActualPromoPostPromoEffectLSVW2': 'Fact Post Promo Effect W2, %',
+        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect LSV W1',
+        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect LSV W2',
+        'ActualPromoPostPromoEffectLSVW1': 'Fact Post Promo Effect LSV W1',
+        'ActualPromoPostPromoEffectLSVW2': 'Fact Post Promo Effect LSV W2',
         'close': 'Close'
     },
 
@@ -2005,6 +2038,7 @@
         'DemandCode': 'Demand Code',
         'PromoName': 'Promo Name',
         'PromoNameId': 'Promo Name Id',
+        'PromoNumber': 'Promo Number',
         'LocApollo': 'Loc',
         'TypeApollo': 'Type',
         'ModelApollo': 'Model',
@@ -2380,11 +2414,11 @@
         'BTL': 'BTL',
         'Finance': 'Finance',
 
-        'IncrementalNSV': 'Incremental NSV',
-        'IncrementalLSV': 'Incremental LSV',
-        'PromoNSV': 'Promo NSV',
-        'Earnings': 'Earnings',
-        'ROI': 'ROI',
+        'IncrementalNSV': 'Net Incremental NSV',
+        'IncrementalLSV': 'Net Incremental LSV',
+        'PromoNSV': 'Promo Net NSV',
+        'Earnings': 'Net Earnings',
+        'ROI': 'Net ROI',
 
         'Plan': 'Plan',
         'Actual': 'Actual',
@@ -2689,10 +2723,10 @@
         'ActualPromoLSV': 'Actual Promo LSV',
         'ActualPromoLSVSI': 'Actual Promo LSV SI',
         'ActualPromoLSVSO': 'Actual Promo LSV SO',
-        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect W1, %',
-        'ActualPromoPostPromoEffectLSVW1': 'Actual Post Promo Effect W1, %',
-        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect W2, %',
-        'ActualPromoPostPromoEffectLSVW2': 'Actual Post Promo Effect W2, %',
+        'PlanPromoPostPromoEffectLSVW1': 'Plan Post Promo Effect LSV W1',
+        'ActualPromoPostPromoEffectLSVW1': 'Actual Post Promo Effect LSV W1',
+        'PlanPromoPostPromoEffectLSVW2': 'Plan Post Promo Effect LSV W2',
+        'ActualPromoPostPromoEffectLSVW2': 'Actual Post Promo Effect LSV W2',
         'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV total',
         'ActualPromoPostPromoEffectLSV': 'Actual Promo Effect LSV total',
         'InOut': 'InOut',

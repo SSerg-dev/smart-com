@@ -139,7 +139,10 @@
 
         clientTreeField.validate();
 
-        if (clientTreeField && clientTreeField.isValid()) {
+        if (!clientTreeField.record.data.IsBaseClient) {
+            App.Notify.pushError(l10n.ns('tpm', 'NonPromoSupportClient').value('ClientTreeIdValid'));
+            window.setLoading(false);
+        } else if (clientTreeField && clientTreeField.isValid()) {
             var customNonPromoSupportEditor = Ext.widget('customnonpromosupporteditor');
             var choosenClient = {
                 fullPath: clientTreeField.rawValue,

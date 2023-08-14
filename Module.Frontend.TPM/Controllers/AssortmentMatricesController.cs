@@ -12,7 +12,6 @@ using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
-using Persist;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
@@ -53,13 +52,13 @@ namespace Module.Frontend.TPM.Controllers
                 .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                 .ToList() : new List<Constraint>();
 
-            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);         
+            IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             IQueryable<AssortmentMatrix> query = Context.Set<AssortmentMatrix>().Where(e => !e.Disabled);
 
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
 
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
-            
+
 
             if (needActualAssortmentMatrix)
             {
@@ -91,9 +90,9 @@ namespace Module.Frontend.TPM.Controllers
         public IQueryable<AssortmentMatrix> GetFilteredData(ODataQueryOptions<AssortmentMatrix> options)
         {
             var bodyText = HttpContext.Current.Request.GetRequestBody();
-            
-            var query = JsonHelper.IsValueExists(bodyText, "needActualAssortmentMatrix") 
-                ? GetConstraintedQuery(JsonHelper.GetValueIfExists<bool>(bodyText, "needActualAssortmentMatrix")) 
+
+            var query = JsonHelper.IsValueExists(bodyText, "needActualAssortmentMatrix")
+                ? GetConstraintedQuery(JsonHelper.GetValueIfExists<bool>(bodyText, "needActualAssortmentMatrix"))
                 : GetConstraintedQuery();
 
             var querySettings = new ODataQuerySettings
@@ -107,7 +106,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Put([FromODataUri] System.Guid key, Delta<AssortmentMatrix> patch)
+        public async Task<IHttpActionResult> Put([FromODataUri] System.Guid key, Delta<AssortmentMatrix> patch)
         {
             var model = Context.Set<AssortmentMatrix>().Find(key);
             if (model == null)
@@ -117,7 +116,7 @@ namespace Module.Frontend.TPM.Controllers
             patch.Put(model);
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -134,7 +133,7 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Post(AssortmentMatrix model)
+        public async Task<IHttpActionResult> Post(AssortmentMatrix model)
         {
             if (!ModelState.IsValid)
             {
@@ -154,22 +153,22 @@ namespace Module.Frontend.TPM.Controllers
 
             Context.Set<AssortmentMatrix>().Add(result);
 
-			var pci = new ProductChangeIncident
-			{
-				CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-				IsCreate = false,
-				IsDelete = false,
-				IsCreateInMatrix = true,
-				IsDeleteInMatrix = false,
-				IsChecked = false,
-				Product = result.Product,
-				ProductId = result.ProductId
-			};
-			Context.Set<ProductChangeIncident>().Add(pci);
-
-			try
+            var pci = new ProductChangeIncident
             {
-                Context.SaveChanges();
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                IsCreate = false,
+                IsDelete = false,
+                IsCreateInMatrix = true,
+                IsDeleteInMatrix = false,
+                IsChecked = false,
+                Product = result.Product,
+                ProductId = result.ProductId
+            };
+            Context.Set<ProductChangeIncident>().Add(pci);
+
+            try
+            {
+                await Context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -181,8 +180,8 @@ namespace Module.Frontend.TPM.Controllers
 
         [ClaimsAuthorize]
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] System.Guid key, Delta<AssortmentMatrix> patch)
-        {            
+        public async Task<IHttpActionResult> Patch([FromODataUri] System.Guid key, Delta<AssortmentMatrix> patch)
+        {
             try
             {
                 var model = Context.Set<AssortmentMatrix>().Find(key);
@@ -207,18 +206,18 @@ namespace Module.Frontend.TPM.Controllers
                 };
                 Context.Set<AssortmentMatrix>().Add(oldAssortmentMatrix);
 
-				var pci = new ProductChangeIncident
-				{
-					CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-					IsCreate = false,
-					IsDelete = false,
-					IsCreateInMatrix = true,
-					IsDeleteInMatrix = true,
-					IsChecked = false,
-					Product = model.Product,
-					ProductId = model.ProductId
-				};
-				Context.Set<ProductChangeIncident>().Add(pci);
+                var pci = new ProductChangeIncident
+                {
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    IsCreate = false,
+                    IsDelete = false,
+                    IsCreateInMatrix = true,
+                    IsDeleteInMatrix = true,
+                    IsChecked = false,
+                    Product = model.Product,
+                    ProductId = model.ProductId
+                };
+                Context.Set<ProductChangeIncident>().Add(pci);
 
                 //запись в таблицу ChangesIncident здесь создавать не надо, т.к. есть триггер на UPDATE
 
@@ -230,7 +229,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.StartDate = ChangeTimeZoneUtil.ResetTimeZone(model.StartDate);
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return Updated(model);
             }
@@ -244,11 +243,11 @@ namespace Module.Frontend.TPM.Controllers
             catch (Exception e)
             {
                 return GetErorrRequest(e);
-            }                    
+            }
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult Delete([FromODataUri] System.Guid key)
+        public async Task<IHttpActionResult> Delete([FromODataUri] System.Guid key)
         {
             try
             {
@@ -258,22 +257,22 @@ namespace Module.Frontend.TPM.Controllers
                     return NotFound();
                 }
 
-				var pci = new ProductChangeIncident
-				{
-					CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-					IsCreate = false,
-					IsDelete = false,
-					IsCreateInMatrix = false,
-					IsDeleteInMatrix = true,
-					IsChecked = false,
-					Product = model.Product,
-					ProductId = model.ProductId
-				};
-				Context.Set<ProductChangeIncident>().Add(pci);
+                var pci = new ProductChangeIncident
+                {
+                    CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                    IsCreate = false,
+                    IsDelete = false,
+                    IsCreateInMatrix = false,
+                    IsDeleteInMatrix = true,
+                    IsChecked = false,
+                    Product = model.Product,
+                    ProductId = model.ProductId
+                };
+                Context.Set<ProductChangeIncident>().Add(pci);
 
-				model.DeletedDate = DateTime.Now;
+                model.DeletedDate = DateTime.Now;
                 model.Disabled = true;
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
 
                 return StatusCode(HttpStatusCode.NoContent);
             }
@@ -282,7 +281,7 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
-        
+
         private bool EntityExists(Guid key)
         {
             return Context.Set<AssortmentMatrix>().Count(e => e.Id == key) > 0;
@@ -316,52 +315,52 @@ namespace Module.Frontend.TPM.Controllers
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<AssortmentMatrix> options, bool needActualAssortmentMatrix = false)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<AssortmentMatrix> options, bool needActualAssortmentMatrix = false)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery().Where(x => !x.Disabled));
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(AssortmentMatrix), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(AssortmentMatricesController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(AssortmentMatricesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("IsActuals", needActualAssortmentMatrix, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(AssortmentMatrix), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(AssortmentMatricesController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(AssortmentMatricesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("IsActuals", needActualAssortmentMatrix, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(AssortmentMatrix)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(AssortmentMatrix)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
 
         [ClaimsAuthorize]
-        public async Task<HttpResponseMessage> FullImportXLSX() {
-            try {
+        public async Task<HttpResponseMessage> FullImportXLSX()
+        {
+            try
+            {
                 if (!Request.Content.IsMimeMultipartContent())
                 {
                     throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
@@ -370,77 +369,86 @@ namespace Module.Frontend.TPM.Controllers
                 string importDir = Core.Settings.AppSettingsManager.GetSetting("IMPORT_DIRECTORY", "ImportFiles");
                 string fileName = await FileUtility.UploadFile(Request, importDir);
 
-                CreateImportTask(fileName, "FullXLSXAssortmentMatrixImportHandler");
+                await CreateImportTask(fileName, "FullXLSXAssortmentMatrixImportHandler");
 
                 HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent("success = true");
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
 
                 return result;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        private void CreateImportTask(string fileName, string importHandler) {
+        private async Task CreateImportTask(string fileName, string importHandler)
+        {
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            using (DatabaseContext context = new DatabaseContext()) {
-                ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-                ImportResultModel resultmodel = new ImportResultModel();
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
 
-                HandlerData data = new HandlerData();
-                FileModel file = new FileModel() {
-                    LogicType = "Import",
-                    Name = System.IO.Path.GetFileName(fileName),
-                    DisplayName = System.IO.Path.GetFileName(fileName)
-                };
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
+            {
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
 
-                HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportAssortmentMatrix), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportAssortmentMatrix).Name, data, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportAssortmentMatrix), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportAssortmentMatrix), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportAssortmentMatrix).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportAssortmentMatrix), data, visible: false, throwIfNotExists: false);
 
-                LoopHandler handler = new LoopHandler() {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Загрузка импорта из файла " + typeof(ImportAssortmentMatrix).Name,
-                    Name = "Module.Host.TPM.Handlers." + importHandler,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    RunGroup = typeof(ImportAssortmentMatrix).Name,
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка импорта из файла " + typeof(ImportAssortmentMatrix).Name,
+                Name = "Module.Host.TPM.Handlers." + importHandler,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                RunGroup = typeof(ImportAssortmentMatrix).Name,
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+
         }
 
         [ClaimsAuthorize]
-        public IHttpActionResult DownloadTemplateXLSX() {
-            try {
+        public IHttpActionResult DownloadTemplateXLSX()
+        {
+            try
+            {
                 IEnumerable<Column> columns = GetColumnsImportSettings();
                 XLSXExporter exporter = new XLSXExporter(columns);
                 string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
                 string filename = string.Format("{0}Template.xlsx", "AssortmentMatrix");
-                if (!Directory.Exists(exportDir)) {
+                if (!Directory.Exists(exportDir))
+                {
                     Directory.CreateDirectory(exportDir);
                 }
                 string filePath = Path.Combine(exportDir, filename);
                 exporter.Export(Enumerable.Empty<AssortmentMatrix>(), filePath);
                 string file = Path.GetFileName(filePath);
                 return Content(HttpStatusCode.OK, file);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 

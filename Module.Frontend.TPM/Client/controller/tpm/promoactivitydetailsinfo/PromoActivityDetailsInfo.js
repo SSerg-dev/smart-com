@@ -78,7 +78,6 @@
 
     onCustomExportXlsxButtonClick: function (button) {
         var me = this;
-        debugger;
         var grid = me.getGridByButton(button);
         var panel = grid.up('combineddirectorypanel');
         var store = grid.getStore();

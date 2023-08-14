@@ -1,35 +1,29 @@
-﻿using AutoMapper;
+﻿using Core.MarsCalendar;
 using Core.Security;
 using Core.Security.Models;
-using Core.Settings;
 using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions.Export;
-using Module.Persist.TPM.Model.TPM;
+using Looper.Core;
+using Looper.Parameters;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
-using Module.Persist.TPM.Utils;
-using Core.MarsCalendar;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using Module.Frontend.TPM.Util;
-using System.Web;
-using Looper.Parameters;
-using Looper.Core;
-using Persist;
 
-namespace Module.Frontend.TPM.Controllers {
+namespace Module.Frontend.TPM.Controllers
+{
 
     public class PlanPostPromoEffectReportsController : EFContextController
     {
@@ -61,7 +55,8 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<PlanPostPromoEffectReportWeekView> GetPlanPostPromoEffectReports() {
+        public IQueryable<PlanPostPromoEffectReportWeekView> GetPlanPostPromoEffectReports()
+        {
             return GetConstraintedQuery();
         }
 
@@ -81,69 +76,69 @@ namespace Module.Frontend.TPM.Controllers {
             return optionsPost.ApplyTo(query, querySettings) as IQueryable<PlanPostPromoEffectReportWeekView>;
         }
 
-        public static IEnumerable<Column> GetExportSettings() {
-			int order = 0;
+        public static IEnumerable<Column> GetExportSettings()
+        {
+            int order = 0;
             IEnumerable<Column> columns = new List<Column>() {
                 new Column() { Order = order++, Field = "ZREP", Header = "ZREP", Quoting = false },
                 new Column() { Order = order++, Field = "DemandCode", Header = "Demand Code", Quoting = false },
                 new Column() { Order = order++, Field = "PromoNameId", Header = "Promo Name Id", Quoting = false },
+                new Column() { Order = order++, Field = "PromoNumber", Header = "Promo Number", Quoting = false },
                 new Column() { Order = order++, Field = "LocApollo", Header = "Loc", Quoting = false },
                 new Column() { Order = order++, Field = "TypeApollo", Header = "Type", Quoting = false },
                 new Column() { Order = order++, Field = "ModelApollo", Header = "Model", Quoting = false },
                 new Column() { Order = order++, Field = "WeekStartDate", Header = "Week Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = order++, Field = "PlanPostPromoEffectQty", Header = "Qty", Quoting = false },
-				new Column() { Order = order++, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
+                new Column() { Order = order++, Field = "PlanUplift", Header = "Uplift Plan", Quoting = false },
                 new Column() { Order = order++, Field = "StartDate", Header = "Start Date", Quoting = false, Format = "dd.MM.yyyy"  },
                 new Column() { Order = order++, Field = "EndDate", Header = "End Date", Quoting = false, Format = "dd.MM.yyyy" },
-				new Column() { Order = order++, Field = "Status", Header = "Status", Quoting = false },
-				new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false },
-				new Column() { Order = order++, Field = "PlanProductBaselineCaseQty", Header = "Plan Product Baseline Case Qty", Quoting = false, Format = "0.00" },
-				new Column() { Order = order++, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false, Format = "0.00" },
-				new Column() { Order = order++, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
-				new Column() { Order = order++, Field = "InOut", Header = "InOut", Quoting = false },
-				new Column() { Order = order++, Field = "IsOnInvoice", Header = "On-Invoice", Quoting = false },
+                new Column() { Order = order++, Field = "Status", Header = "Status", Quoting = false },
+                new Column() { Order = order++, Field = "Week", Header = "Week", Quoting = false },
+                new Column() { Order = order++, Field = "PlanProductBaselineCaseQty", Header = "Plan Product Baseline Case Qty", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = "PlanProductPostPromoEffectLSV", Header = "Plan Product Post Promo Effect LSV", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = "PlanProductBaselineLSV", Header = "Plan Product Baseline LSV", Quoting = false, Format = "0.00" },
+                new Column() { Order = order++, Field = "InOut", Header = "InOut", Quoting = false },
+                new Column() { Order = order++, Field = "IsOnInvoice", Header = "On-Invoice", Quoting = false },
             };
             return columns;
         }
         [ClaimsAuthorize]
-        public IHttpActionResult ExportXLSX(ODataQueryOptions<PlanPostPromoEffectReportWeekView> options)
+        public async Task<IHttpActionResult> ExportXLSX(ODataQueryOptions<PlanPostPromoEffectReportWeekView> options)
         {
             IQueryable results = options.ApplyTo(GetConstraintedQuery());
             UserInfo user = authorizationManager.GetCurrentUser();
             Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
-            using (DatabaseContext context = new DatabaseContext())
+
+            HandlerData data = new HandlerData();
+            string handlerName = "ExportHandler";
+
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanPostPromoEffectReportWeekView), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanPostPromoEffectReportsController), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanPostPromoEffectReportsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
             {
-                HandlerData data = new HandlerData();
-                string handlerName = "ExportHandler";
-
-                HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TModel", typeof(PlanPostPromoEffectReportWeekView), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("TKey", typeof(Guid), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnInstance", typeof(PlanPostPromoEffectReportsController), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PlanPostPromoEffectReportsController.GetExportSettings), data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
-                {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = $"Export {nameof(PlanPostPromoEffectReportWeekView)} dictionary",
-                    Name = "Module.Host.TPM.Handlers." + handlerName,
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = userId,
-                    RoleId = roleId
-                };
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
-            }
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Export {nameof(PlanPostPromoEffectReportWeekView)} dictionary",
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
 
             return Content(HttpStatusCode.OK, "success");
         }
@@ -160,6 +155,7 @@ namespace Module.Frontend.TPM.Controllers {
                     ZREP = plan.ZREP,
                     DemandCode = plan.DemandCode,
                     PromoNameId = plan.PromoNameId,
+                    PromoNumber = plan.PromoNumber,
                     LocApollo = plan.LocApollo,
                     TypeApollo = plan.TypeApollo,
                     ModelApollo = plan.ModelApollo,
@@ -183,15 +179,16 @@ namespace Module.Frontend.TPM.Controllers {
                     ZREP = plan.ZREP,
                     DemandCode = plan.DemandCode,
                     PromoNameId = plan.PromoNameId,
+                    PromoNumber = plan.PromoNumber,
                     LocApollo = plan.LocApollo,
                     TypeApollo = plan.TypeApollo,
                     ModelApollo = plan.ModelApollo,
                     WeekStartDate = plan.WeekStartDate + week,
                     PlanPostPromoEffectQty = plan.PlanPostPromoEffectQtyW2,
                     PlanUplift = Math.Round((plan.PlanUplift ?? 0), 2),
-					StartDate = plan.WeekStartDate + week,
-					EndDate = plan.WeekStartDate + week + week,
-					Week = SetWeekByMarsDates(plan.WeekStartDate.Value.Date + week),
+                    StartDate = plan.WeekStartDate + week,
+                    EndDate = plan.WeekStartDate + week + week,
+                    Week = SetWeekByMarsDates(plan.WeekStartDate.Value.Date + week),
                     Status = plan.Status,
                     PlanProductBaselineCaseQty = plan.PlanProductBaselineCaseQtyW2,
                     PlanProductPostPromoEffectLSV = plan.PlanProductPostPromoEffectLSVW2,
@@ -202,7 +199,7 @@ namespace Module.Frontend.TPM.Controllers {
             }
             return result.AsQueryable().Cast<T>();
         }
-        
+
         private PlanPostPromoEffectReportWeekView ReportCreateWeek(SimplePromoPromoProduct simplePromoPromoProduct, String demandCode, String promoStatus, DateTime weekStart, double? qtyW1, double? qtyW2, double? planProductBaselineCaseQtyW1, double? planProductBaselineCaseQtyW2, double? planProductPostPromoEffectLSVW1, double? planProductPostPromoEffectLSVW2, double? planProductBaselineLSVW1, double? planProductBaselineLSVW2)
         {
             TimeSpan week = TimeSpan.FromDays(7);
@@ -228,19 +225,20 @@ namespace Module.Frontend.TPM.Controllers {
             rep.PlanProductPostPromoEffectLSVW1 = planProductPostPromoEffectLSVW1;
             rep.PlanProductPostPromoEffectLSVW2 = planProductPostPromoEffectLSVW2;
             rep.PlanProductBaselineLSVW1 = planProductBaselineLSVW1;
-            rep.PlanProductBaselineLSVW2= planProductBaselineLSVW2;
+            rep.PlanProductBaselineLSVW2 = planProductBaselineLSVW2;
             rep.PlanUplift = simplePromoPromoProduct.PlanPromoUpliftPercent;
             rep.IsOnInvoice = simplePromoPromoProduct.IsOnInvoice;
 
             return rep;
         }
         public static string SetWeekByMarsDates(DateTime week)
-		{
-			string stringFormatYP2W = "{0}P{1:D2}W{2}";
-			string marsDate = (new MarsDate((DateTimeOffset)week).ToString(stringFormatYP2W));
-			return marsDate;
-		}
-		private bool EntityExists(Guid key) {
+        {
+            string stringFormatYP2W = "{0}P{1:D2}W{2}";
+            string marsDate = (new MarsDate((DateTimeOffset)week).ToString(stringFormatYP2W));
+            return marsDate;
+        }
+        private bool EntityExists(Guid key)
+        {
             return Context.Set<PromoProduct>().Count(e => e.Id == key) > 0;
         }
     }

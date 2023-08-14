@@ -56,6 +56,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffectItem': 'Plan Post Promo Effect',
         'Finance': 'Finance',
         'TradeInvestment': 'Plan TradeInvestment',
         'ActualTradeInvestment': 'Actual TradeInvestment',
@@ -138,6 +139,7 @@
         'ActualCOGS': 'Actual COGS',
         'PlanCOGSTn': 'Plan COGS/Tn',
         'ActualCOGSTn': 'Actual COGS/Tn',
+        'PlanPostPromoEffect': 'Plan Post Promo Effect',
         'RATIShopper': 'RA TI Shopper',
         'AddPromoSupportType': 'Add Promo support type',
         'TradeInvestment': 'TradeInvestment',
@@ -167,6 +169,8 @@
         'Competitor': 'Competitor',
         'CompetitorPromo': 'Competitor Promo',
         'CompetitorBradnTech': 'Competitor BrandTech',
+        'DiscountRange': 'Discount Range',
+        'DurationRange': 'Duration Range'
     },
 
     'text': {
@@ -1008,8 +1012,6 @@
         'GHierarchyCode': 'G-Hierarchy code',
         'DemandCode': 'Demand Code',
         'IsBaseClient': 'Base client',
-        'PostPromoEffectW1': 'Post Promo Effect W1',
-        'PostPromoEffectW2': 'Post Promo Effect W2',
         'RetailTypeName': 'Retail Type Name',
         'FullPathName': 'Full PathName'
     },
@@ -1118,6 +1120,7 @@
         'PONumberRegex': 'Only numbers',
         'InvoiceNumber': 'Invoice Number',
         'InvoiceNumberRegex': 'Only numbers',
+        'InvoiceNumberMaxLengthText': 'No spaces. Max 50 symbols',
         'OffAllocation': 'Off allocation by LSV',
     },
     'HistoricalPromoSupport': ['.tpm.PromoSupport', '.core.BaseHistoryEntity'],
@@ -1201,7 +1204,8 @@
         'ModalWindowCloseButton': 'Закрыть',
         'ModalWindowOkButton': 'Создать',
         'NotSelected': 'Должн быть выбран клиент.',
-        'CreateButtonText': 'Create support client'
+        'CreateButtonText': 'Create support client',
+        'ClientTreeIdValid': 'Only base clients are available for selection.'
     },
 
     'RetailType': {
@@ -1248,6 +1252,8 @@
         'AverageMarker': 'Average Marker',
         'PlanProductUpliftPercent': 'Plan Product Uplift Percent',
         'PlanProductBaselineCaseQty': 'Plan Product Baseline Case Qty',
+        'PlanProductPostPromoEffectW1': 'Plan Post Promo Effect W1, %',
+        'PlanProductPostPromoEffectW2': 'Plan Post Promo Effect W2, %',
         'PlanProductPostPromoEffectLSVW1': 'Plan Product Post Promo Effect LSV W1',
         'PlanProductPostPromoEffectLSVW2': 'Plan Product Post Promo Effect LSV W2',
         'PlanProductPostPromoEffectQtyW1': 'Plan Product Post Promo Effect QTY W1',
@@ -1361,6 +1367,33 @@
     'HistoricalActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseHistoryEntity'],
     'DeletedActualCOGSTn': ['.tpm.ActualCOGSTn', '.core.BaseDeletedEntity'],
 
+    'PlanPostPromoEffect': {
+        'PlanPostPromoEffectW1': 'Plan Post Promo Effect W1',
+        'PlanPostPromoEffectW2': 'Plan PostPromo Effect W2',
+        'DiscountRangeName': 'Discount',
+        'DurationRangeName': 'Promo Duration',
+        'ClientTreeFullPathName': 'Client',
+        'ClientTreeObjectId': 'Client hierarchy code',
+        'BrandTechName': 'BrandTech',
+        'Size': 'Size'
+    },
+    'HistoricalPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseHistoryEntity'],
+    'DeletedPlanPostPromoEffect': ['.tpm.PlanPostPromoEffect', '.core.BaseDeletedEntity'],
+    
+    'DurationRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+
+    'DiscountRange': {
+        'Id': 'Id',
+        'Name': 'Name',
+        'MinValue': 'MinValue',
+        'MaxValue': 'MaxValue'
+    },
+    
     'RATIShopper': {
         'ClientTreeFullPathName': 'ClientHierarchy',
         'ClientTreeObjectId': 'ClientId',
@@ -1927,10 +1960,11 @@
         'BTL': 'BTL',
         'Finance': 'Finance',
 
-        'IncrementalNSV': 'Incremental NSV',
-        'IncrementalLSV': 'Incremental LSV',
-        'PromoNSV': 'Promo NSV',
-        'Earnings': 'Earnings',
+        'IncrementalNSV': 'Net Incremental NSV',
+        'IncrementalLSV': 'Net Incremental LSV',
+        'PromoNSV': 'Promo Net NSV',
+        'Earnings': 'Net Earnings',
+        'ROI': 'Net ROI',
 
         'Plan': 'Plan',
         'Actual': 'Actual',

@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-04-16_manual__2023-04-16T10%3A41%3A30.682977%2B00%3A00_", '
- '"ProcessDate": "2023-04-16", "Schema": "Jupiter", "HandlerId": '
- '"cd1af820-17b8-4f46-9a2b-d7ad8fb270bb"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-07-13_manual__2023-07-13T14%3A31%3A58.337289%2B00%3A00_", '
+ '"ProcessDate": "2023-07-13", "Schema": "Jupiter", "HandlerId": '
+ '"a822371a-9f2a-4925-833e-9562a4e496ee"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -106,6 +106,7 @@ COGS_PATH = DIRECTORY + 'JUPITER/COGS'
 COGSTN_PATH = DIRECTORY + 'JUPITER/PlanCOGSTn'
 TI_PATH = DIRECTORY + 'JUPITER/TradeInvestment'
 CORRECTION_PATH = DIRECTORY + 'JUPITER/PromoProductsCorrection'
+PLANPOSTPROMOEFFECT_PATH = DIRECTORY + 'JUPITER/PlanPostPromoEffect'
 
 BLOCKEDPROMO_OUTPUT_PATH = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.parquet'
 BLOCKEDPROMO_OUTPUT_PATH_CSV = es.SETTING_PROCESS_DIR + '/BlockedPromo/BlockedPromo.CSV'
@@ -144,14 +145,12 @@ sharesDF = spark.read.csv(SHARES_PATH,sep="\u0001",header=True,schema=schemas_ma
 clientTreeDF = spark.read.csv(CLIENTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ClientTree"])
 productTreeDF = spark.read.csv(PRODUCTTREE_PATH,sep="\u0001",header=True,schema=schemas_map["ProductTree"])
 correctionDF = spark.read.csv(CORRECTION_PATH,sep="\u0001",header=True,schema=schemas_map["PromoProductsCorrection"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
+planPostPromoEffectDF = spark.read.csv(PLANPOSTPROMOEFFECT_PATH,sep="\u0001",header=True,schema=schemas_map["PlanPostPromoEffect"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 incrementalDF = spark.read.csv(INCREMENTAL_PATH,sep="\u0001",header=True,schema=schemas_map["IncrementalPromo"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 cogsDF = spark.read.csv(COGS_PATH,sep="\u0001",header=True,schema=schemas_map["COGS"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 cogsTnDF = spark.read.csv(COGSTN_PATH,sep="\u0001",header=True,schema=schemas_map["PlanCOGSTn"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 tiDF = spark.read.csv(TI_PATH,sep="\u0001",header=True,schema=schemas_map["TradeInvestment"]).withColumn("Disabled",col("Disabled").cast(BooleanType()))
 datesDF = spark.read.format("csv").option("delimiter","|").option("header","true").schema(datesDimSchema).load(DATESDIM_PATH)
-
-#test
-print(schemas_map["PriceList"])
 
 
 
@@ -230,6 +229,7 @@ actualCogsCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'Prom
 actualCogsTnCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualCOGSTn').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 actualTiCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoActualTradeInvestment').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 promoScenarioIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PromoScenario').select(activeChangesIncidentsDF.ItemId.alias('Id'))
+ppeCiIdsDF = activeChangesIncidentsDF.where(col('DirectoryName') == 'PlanPostPromoEffect').select(activeChangesIncidentsDF.ItemId.alias('Id'))
 
 print('total incidents count:', activeChangesIncidentsDF.count())
 print('assortmentMatrix incidents count:', assortmentMatrixCiIdsDF.count())
@@ -248,6 +248,7 @@ print('actual cogs incidents count:', actualCogsCiIdsDF.count())
 print('actual cogstn incidents count:', actualCogsTnCiIdsDF.count())
 print('actual ti incidents count:', actualTiCiIdsDF.count())
 print('promo scenario incidents count:', promoScenarioIdsDF.count())
+print('plan ppe incidents count:', ppeCiIdsDF.count())
 
 activeProductChangeIncidentsDF = productChangeIncidentsDF\
   .where(col('RecalculationProcessDate').isNull())
@@ -487,6 +488,26 @@ promoByProductTreeCiDF = productTreeCiDF\
   .join(promoProductTreeDF, promoProductTreeDF.ProductTreeObjectId == productTreeCiDF.ObjectId, 'inner')\
   .join(promoFilterDF, promoFilterDF.Id == promoProductTreeDF.PromoId, 'inner')\
   .where(promoFilterDF.InOut == 'false')\
+  .select(promoFilterDF.Id, promoFilterDF.Number)\
+  .dropDuplicates()
+
+#####*Get promo numbers filtered by plan post promo effect incidents*
+
+
+ppeCiDF = ppeCiIdsDF\
+  .join(planPostPromoEffectDF, 'Id', 'inner')\
+  .select(\
+           planPostPromoEffectDF.ClientTreeId,
+           planPostPromoEffectDF.BrandTechId
+         )
+
+promoByPPECiDF = ppeCiDF\
+    .join(promoFilterDF,
+            [\
+              ppeCiDF.ClientTreeId == promoFilterDF.ClientTreeKeyId
+             ,ppeCiDF.BrandTechId == promoFilterDF.BrandTechId
+            ]\
+            ,'inner')\
   .select(promoFilterDF.Id, promoFilterDF.Number)\
   .dropDuplicates()
 
@@ -816,6 +837,11 @@ promoNumbersByProductTreeCiDF = promoByProductTreeCiDF.select(col('Number')).wit
 promoNumbersByProductTreeCiDF = promoNumbersByProductTreeCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
+  
+promoNumbersByPpeCiDF = promoByPPECiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Plan Post Promo Effect incidents: '))
+promoNumbersByPpeCiDF = promoNumbersByPpeCiDF\
+  .groupBy('Title')\
+  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
 promoNumbersByCorrectionCiDF = promoByCorrectionCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Correction incidents: '))
 promoNumbersByCorrectionCiDF = promoNumbersByCorrectionCiDF\
@@ -870,6 +896,7 @@ promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
   .union(promoNumbersBySharesCiDF)\
   .union(promoNumbersByClientTreeCiDF)\
   .union(promoNumbersByProductTreeCiDF)\
+  .union(promoNumbersByPpeCiDF)\
   .union(promoNumbersByCorrectionCiDF)\
   .union(promoNumbersByIncrementalCiDF)\
   .union(promoNumbersByCogsCiDF)\
@@ -894,6 +921,7 @@ promoByCiDF = promoByAssortmentMatrixCiDF\
   .union(promoBySharesCiDF)\
   .union(promoByClientTreeCiDF)\
   .union(promoByProductTreeCiDF)\
+  .union(promoByPPECiDF)\
   .union(promoByCorrectionCiDF)\
   .union(promoByIncrementalCiDF)\
   .union(promoByCogsCiDF)\

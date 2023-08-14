@@ -53,12 +53,6 @@ namespace Module.Host.TPM.Actions.Notifications
 											actualNotifyIncidents.Add(incident);
 										}
 										break;
-									case "DemandFinance":
-										if (!incident.Promo.IsDemandFinanceApproved.HasValue || incident.Promo.IsDemandFinanceApproved == false)
-										{
-											actualNotifyIncidents.Add(incident);
-										}
-										break;
 									case "GAManager":
 										if (!incident.Promo.IsGAManagerApproved.HasValue || incident.Promo.IsGAManagerApproved == false)
 										{
@@ -70,7 +64,6 @@ namespace Module.Host.TPM.Actions.Notifications
 
 							var notifyIncidentsForCMM = actualNotifyIncidents.Where(x => x.ApprovingRole == "CMManager");
 							var notifyIncidentsForDP = actualNotifyIncidents.Where(x => x.ApprovingRole == "DemandPlanning");
-							var notifyIncidentsForDF = actualNotifyIncidents.Where(x => x.ApprovingRole == "DemandFinance");
 							var notifyIncidentsForGAM = actualNotifyIncidents.Where(x => x.ApprovingRole == "GAManager");
 
 							if (notifyIncidentsForCMM.Any())
@@ -80,10 +73,6 @@ namespace Module.Host.TPM.Actions.Notifications
 							if (notifyIncidentsForDP.Any())
 							{
 								CreateNotification(notifyIncidentsForDP, "PROMO_ON_APPROVAL_NOTIFICATION", template, context, "DemandPlanning");
-							}
-							if (notifyIncidentsForDF.Any())
-							{
-								CreateNotification(notifyIncidentsForDF, "PROMO_ON_APPROVAL_NOTIFICATION", template, context, "DemandFinance");
 							}
 							if (notifyIncidentsForGAM.Any())
 							{

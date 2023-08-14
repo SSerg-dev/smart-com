@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Web.Http.OData.Builder;
 
 namespace Module.Persist.TPM
@@ -176,6 +177,12 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<MetricsLiveHistory>().ToTable("MetricsLiveHistories");
             modelBuilder.Entity<CloudTask>();
+            modelBuilder.Entity<DiscountRange>();
+            modelBuilder.Entity<DurationRange>();
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DiscountRange);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.DurationRange);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.BrandTech);
+            modelBuilder.Entity<PlanPostPromoEffect>().HasRequired(g => g.ClientTree);
         }
 
 
@@ -286,6 +293,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.NonPromoSupportBrandTeches, "NonPromoSupportBrandTeches");
             builder.EntitySet<BrandTech>("BrandTeches").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
             builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
+            builder.EntitySet<BrandTech>("BrandTeches").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<BrandTech>("DeletedBrandTeches").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
             builder.EntitySet<HistoricalBrandTech>("HistoricalBrandTeches");
             builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Brand, "Brands");
             builder.EntitySet<BrandTech>("BrandTeches").HasRequiredBinding(e => e.Technology, "Technologies");
@@ -648,6 +657,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.RATIShoppers, "RATIShoppers"); // Для получение только базовых клиентов из иерархии
             builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.TradeInvestments, "TradeInvestments");
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.TradeInvestments, "TradeInvestments"); // Для получение только базовых клиентов из иерархии
+            builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.PlanPostPromoEffects, "PlanPostPromoEffects"); // Для получение только базовых клиентов из иерархии
             builder.Entity<ClientTree>().Collection.Action("Delete");
             builder.Entity<ClientTree>().Collection.Action("Move");
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
@@ -930,6 +941,29 @@ namespace Module.Persist.TPM
             builder.Entity<COGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<COGS>("COGSs");
             builder.Entity<HistoricalCOGS>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalCOGS>("HistoricalCOGSs");
 
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects");
+            builder.EntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("ExportXLSX");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasOptionalBinding(e => e.BrandTech, "BrandTeches");
+
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.DurationRange, "DurationRanges");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DurationRange, "DurationRanges");
+            builder.EntitySet<PlanPostPromoEffect>("PlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
+            builder.EntitySet<PlanPostPromoEffect>("DeletedPlanPostPromoEffects").HasRequiredBinding(e => e.DiscountRange, "DiscountRanges");
+
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("DownloadTemplateXLSX");
+            
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("GetBrandTechSizes");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("FullImportXLSX");
+            builder.Entity<PlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<PlanPostPromoEffect>("PlanPostPromoEffects");
+            builder.Entity<HistoricalPlanPostPromoEffect>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalPlanPostPromoEffect>("HistoricalPlanPostPromoEffects");
+            builder.EntitySet<DurationRange>("DurationRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
+            builder.EntitySet<DiscountRange>("DiscountRanges").HasManyBinding(e => e.PlanPostPromoEffects, "PlanPostPromoEffects");
+            
             builder.EntitySet<PlanCOGSTn>("PlanCOGSTns");
             builder.EntitySet<PlanCOGSTn>("DeletedPlanCOGSTns");
             builder.EntitySet<HistoricalPlanCOGSTn>("HistoricalPlanCOGSTns");
