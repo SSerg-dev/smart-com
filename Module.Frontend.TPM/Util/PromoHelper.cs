@@ -729,7 +729,7 @@ namespace Module.Frontend.TPM.Util
             {
                 if (columns[i] != firstline[i])
                 {
-                    return new ReturnInputMLRS { InputMLRSs = new List<InputMLRS>(), Error =  "Incorrect set of columns" };
+                    return new ReturnInputMLRS { InputMLRSs = new List<InputMLRS>(), Error = "Incorrect set of columns" };
                 }
             }
             List<InputMLRS> inputMLs = Lines
@@ -861,6 +861,67 @@ namespace Module.Frontend.TPM.Util
                     return new ReturnInputMLRA { InputMLRAs = new List<InputMLRA>(), Error = string.Format("ML Promo: {0} the start date is greater than the end date", input.PromoId) };
                 }
             }
+            return new ReturnInputMLRA { InputMLRAs = inputMLs, Error = "" };
+        }
+        public static ReturnInputMLRS GetInputMLRSquick(string pathfile, string delimiter)
+        {
+            var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+            
+            List<InputMLRS> inputMLs = Lines
+                   .Skip(1)
+                   .Select(x => x.Split(char.Parse(delimiter)))
+                   .Select(x => new InputMLRS
+                   {
+                       PromoId = int.Parse(x[0]),
+                       PPG = x[1],
+                       Format = x[2],
+                       ZREP = int.Parse(x[3]),
+                       StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                       EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                       MechanicMars = x[6],
+                       DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                       MechInstore = x[8],
+                       InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                       PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                       PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                       FormatCode = int.Parse(x[12]),
+                       Source = x[13],
+                       BaseLSV = double.Parse(x[14], CultureInfo.InvariantCulture),
+                       TotalLSV = double.Parse(x[15], CultureInfo.InvariantCulture),
+                   })
+                   .Where(g => g.Source == "optimizer")
+                   .ToList();
+
+            return new ReturnInputMLRS { InputMLRSs = inputMLs, Error = "" };
+        }
+        public static ReturnInputMLRA GetInputMLRAquick(string pathfile, string delimiter)
+        {
+            var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
+
+            List<InputMLRA> inputMLs = Lines
+                   .Skip(1)
+                   .Select(x => x.Split(char.Parse(delimiter)))
+                   .Select(x => new InputMLRA
+                   {
+                       PromoId = int.Parse(x[0]),
+                       PPG = x[1],
+                       Format = x[2],
+                       ZREP = int.Parse(x[3]),
+                       StartDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[4])),
+                       EndDate = ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Parse(x[5])),
+                       MechanicMars = x[6],
+                       DiscountMars = double.Parse(x[7], CultureInfo.InvariantCulture),
+                       MechInstore = x[8],
+                       InstoreDiscount = double.Parse(x[9], CultureInfo.InvariantCulture),
+                       PlannedUplift = double.Parse(x[10], CultureInfo.InvariantCulture),
+                       PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
+                       FormatCode = int.Parse(x[12]),
+                       Source = x[13],
+                       Year = int.Parse(x[14], CultureInfo.InvariantCulture),
+                   })
+                   .Where(g => g.Source == "optimizer")
+                   .ToList();
+
             return new ReturnInputMLRA { InputMLRAs = inputMLs, Error = "" };
         }
         public static string GetNamePromo(DatabaseContext context, Mechanic mechanic, ProductTree productTree, double MarsMechanicDiscount)
