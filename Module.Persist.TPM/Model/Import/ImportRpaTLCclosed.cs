@@ -1,11 +1,7 @@
 ﻿using Core.Import;
 using Module.Persist.TPM.Utils;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Module.Persist.TPM.Model.Import
 {
@@ -71,22 +67,22 @@ namespace Module.Persist.TPM.Model.Import
         public double PlanPromoLSV { get; set; }
         [ImportCSVColumn(ColumnNumber = 16)]
         [Display(Name = "Plan Promo Uplift %")]
-        public double PlanPromoUpliftPercent { get; set; }
+        public double? PlanPromoUpliftPercent { get; set; }
         [ImportCSVColumn(ColumnNumber = 17)]
         [Display(Name = "Plan Promo TI Shopper")]
         public double PlanPromoTIShopper { get; set; }
         [ImportCSVColumn(ColumnNumber = 18)]
         [Display(Name = "Plan Promo TI Marketing")]
-        public double PlanPromoTIMarketing { get; set; }
+        public double? PlanPromoTIMarketing { get; set; }
         [ImportCSVColumn(ColumnNumber = 19)]
         [Display(Name = "Plan Promo X-Sites")]
-        public double PlanPromoXSites { get; set; }
+        public double? PlanPromoXSites { get; set; }
         [ImportCSVColumn(ColumnNumber = 20)]
         [Display(Name = "Plan Promo Catalogue")]
-        public double PlanPromoCatalogue { get; set; }
+        public double? PlanPromoCatalogue { get; set; }
         [ImportCSVColumn(ColumnNumber = 21)]
         [Display(Name = "Plan Promo POSM In Client")]
-        public double PlanPromoPOSMInClient { get; set; }
+        public double? PlanPromoPOSMInClient { get; set; }
         [ImportCSVColumn(ColumnNumber = 22)]
         [Display(Name = "Plan Promo Branding")]
         public double PlanPromoBranding { get; set; }
@@ -95,16 +91,16 @@ namespace Module.Persist.TPM.Model.Import
         public double PlanPromoBTL { get; set; }
         [ImportCSVColumn(ColumnNumber = 24)]
         [Display(Name = "Plan Promo Cost Production")]
-        public double PlanPromoCostProduction { get; set; }
+        public double? PlanPromoCostProduction { get; set; }
         [ImportCSVColumn(ColumnNumber = 25)]
         [Display(Name = "Plan PromoCostProdXSites")]
-        public double PlanPromoCostProdXSites { get; set; }
+        public double? PlanPromoCostProdXSites { get; set; }
         [ImportCSVColumn(ColumnNumber = 26)]
         [Display(Name = "Plan PromoCostProdCatalogue")]
-        public double PlanPromoCostProdCatalogue { get; set; }
+        public double? PlanPromoCostProdCatalogue { get; set; }
         [ImportCSVColumn(ColumnNumber = 27)]
         [Display(Name = "Plan PromoCostProdPOSMInClient")]
-        public double PlanPromoCostProdPOSMInClient { get; set; }
+        public double? PlanPromoCostProdPOSMInClient { get; set; }
         [ImportCSVColumn(ColumnNumber = 28)]
         [Display(Name = "Plan Promo Cost")]
         public double PlanPromoCost { get; set; }
@@ -227,10 +223,10 @@ namespace Module.Persist.TPM.Model.Import
         public double PlanAddTIShopperCalculated { get; set; }
         [ImportCSVColumn(ColumnNumber = 68)]
         [Display(Name = "Plan Add TI Marketing Approved")]
-        public double PlanAddTIMarketingApproved { get; set; }
+        public double? PlanAddTIMarketingApproved { get; set; }
         [ImportCSVColumn(ColumnNumber = 69)]
         [Display(Name = "Actual InStore Mechanic Name")]
-        public double ActualInStoreMechanicName { get; set; }
+        public string ActualInStoreMechanicName { get; set; }
         [ImportCSVColumn(ColumnNumber = 70)]
         [Display(Name = "Actual InStore Mechanic Type Name")]
         public string ActualInStoreMechanicTypeName { get; set; }
@@ -257,25 +253,25 @@ namespace Module.Persist.TPM.Model.Import
         public double ActualPromoLSV { get; set; }
         [ImportCSVColumn(ColumnNumber = 78)]
         [Display(Name = "Actual Promo Uplift %")]
-        public double ActualPromoUplift { get; set; }
+        public double? ActualPromoUplift { get; set; }
         [ImportCSVColumn(ColumnNumber = 79)]
         [Display(Name = "Actual Promo Net Uplift Percent")]
-        public double ActualPromoNetUpliftPercent { get; set; }
+        public double? ActualPromoNetUpliftPercent { get; set; }
         [ImportCSVColumn(ColumnNumber = 80)]
         [Display(Name = "Actual Promo TI Shopper")]
         public double ActualPromoTIShopper { get; set; }
         [ImportCSVColumn(ColumnNumber = 81)]
         [Display(Name = "Actual Promo TI Marketing")]
-        public double ActualPromoTIMarketing { get; set; }
+        public double? ActualPromoTIMarketing { get; set; }
         [ImportCSVColumn(ColumnNumber = 82)]
         [Display(Name = "Actual Promo Prod XSites")]
-        public double ActualPromoProdXSites { get; set; }
+        public double? ActualPromoProdXSites { get; set; }
         [ImportCSVColumn(ColumnNumber = 83)]
         [Display(Name = "Actual Promo Prod Catalogue")]
-        public double ActualPromoProdCatalogue { get; set; }
+        public double? ActualPromoProdCatalogue { get; set; }
         [ImportCSVColumn(ColumnNumber = 84)]
         [Display(Name = "Actual Promo Prod POSMInClient")]
-        public double ActualPromoProdPOSMInClient { get; set; }
+        public double? ActualPromoProdPOSMInClient { get; set; }
         [ImportCSVColumn(ColumnNumber = 85)]
         [Display(Name = "Actual Promo Branding")]
         public double ActualPromoBranding { get; set; }
@@ -284,16 +280,16 @@ namespace Module.Persist.TPM.Model.Import
         public double ActualPromoBTL { get; set; }
         [ImportCSVColumn(ColumnNumber = 87)]
         [Display(Name = "Actual Promo Cost Production")]
-        public double ActualPromoCostProduction { get; set; }
+        public double? ActualPromoCostProduction { get; set; }
         [ImportCSVColumn(ColumnNumber = 88)]
         [Display(Name = "Actual Promo CostProdXSites")]
-        public double ActualPromoCostProdXSites { get; set; }
+        public double? ActualPromoCostProdXSites { get; set; }
         [ImportCSVColumn(ColumnNumber = 89)]
         [Display(Name = "Actual Promo Cost ProdCatalogue")]
-        public double ActualPromoCostProdCatalogue { get; set; }
+        public double? ActualPromoCostProdCatalogue { get; set; }
         [ImportCSVColumn(ColumnNumber = 90)]
         [Display(Name = "Actual Promo Cost ProdPOSMInClient")]
-        public double ActualPromoCostProdPOSMInClient { get; set; }
+        public double? ActualPromoCostProdPOSMInClient { get; set; }
         [ImportCSVColumn(ColumnNumber = 91)]
         [Display(Name = "Actual Promo Cost")]
         public double ActualPromoCost { get; set; }

@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRpaTCLclosedImportAction(FullImportSettings settings, Guid RPAId)
+        public FullXLSXRpaTCLclosedImportAction(FullImportSettings settings, Guid rPAId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -58,7 +58,7 @@ namespace Module.Host.TPM.Actions
             Separator = settings.Separator;
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
-            this.RPAId = RPAId;
+            RPAId = rPAId;
 
             AllowPartialApply = false;
             logger = LogManager.GetCurrentClassLogger();
@@ -192,7 +192,7 @@ namespace Module.Host.TPM.Actions
                 List<ClientTree> existingClientTreeIds = query.ToList();
 
                 // Проверка на дубликаты и остальное........
-                CheckForDuplicates(context, sourceRecords, out sourceRecordWithoutDuplicates, out validationErrors);
+                sourceRecordWithoutDuplicates = CheckForDuplicates(context, sourceRecords, out validationErrors);
 
                 //Стандартные проверки
                 foreach (var item in sourceRecordWithoutDuplicates)
@@ -288,16 +288,17 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private void CheckForDuplicates(DatabaseContext context, IList<IEntity<Guid>> templateRecordIds, out IList<IEntity<Guid>> distinctRecordIds, out IList<string> errors)
+        private IList<IEntity<Guid>> CheckForDuplicates(DatabaseContext context, IList<IEntity<Guid>> templateRecordIds, out IList<string> errors)
         {
-            distinctRecordIds = new List<IEntity<Guid>>();
+            var distinctRecordIds = new List<IEntity<Guid>>();
             errors = new List<string>();
 
 
             var sourceTemplateRecords = templateRecordIds
-                .Select(sr => (sr as ImportRpaActualPlu));
+                .Select(sr => (sr as ImportRpaTLCclosed));
 
             var shortPromoes = context.Set<Promo>()
+                .Where(g => g.LoadFromTLC)
                 .Select(ps => new
                 {
                     ps.Id,
@@ -305,50 +306,10 @@ namespace Module.Host.TPM.Actions
                     ps.ClientTreeId,
                     ps.Number,
                     ps.PromoStatus.SystemName
-                });
-
-
-
-            //foreach(var promo in shortPromoes)
-            //{
-            //    var products = context.Set<PromoProduct>().Include("Plu").Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
-            //    foreach (ImportRpaActualPlu item in sourceTemplateRecords)
-            //    {
-            //        var found = products.FirstOrDefault(x => x.Plu != null && x.Plu.PluCode == item.PluImport);
-            //        item.Plu = new PromoProduct2Plu() { PluCode = item.PluImport };
-            //        if (found != null)
-            //        {
-            //            item.EAN_PC = found.EAN_PC;
-            //        }
-            //    }
-            //}
-
-            var joinPromoSupports = sourceTemplateRecords
-                .Join(shortPromoes,
-                        str => str.PromoNumberImport,
-                        ssp => ssp.Number,
-                        (str, ssp) => new
-                        {
-                            PromoNumberImport = str.PromoNumberImport,
-                            PluImport = str.PluImport,
-                            ActualProductPcQuantityImport = str.ActualProductPcQuantityImport,
-                            PromoId = ssp.Id,
-                            Disabled = ssp.Disabled,
-                            ClietTreeId = ssp.ClientTreeId,
-                            StatusName = ssp.SystemName
-
-                        });
-
-            distinctRecordIds = joinPromoSupports
-                .Select(p => new ImportRpaActualPlu
-                {
-                    PromoNumberImport = p.PromoNumberImport,
-                    PluImport = p.PluImport,
-                    ActualProductPcQuantityImport = p.ActualProductPcQuantityImport,
-                    PromoId = p.PromoId,
-                    StatusName = p.StatusName
-                } as IEntity<Guid>)
+                })
                 .ToList();
+
+            return distinctRecordIds;
         }
 
         private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
