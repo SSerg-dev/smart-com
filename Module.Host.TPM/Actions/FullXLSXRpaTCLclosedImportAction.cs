@@ -25,7 +25,7 @@ using Utility.Import;
 
 namespace Module.Host.TPM.Actions
 {
-    public class FullXLSXRpaTCLImportAction : BaseAction
+    public class FullXLSXRpaTCLclosedImportAction : BaseAction
     {
         private readonly Guid UserId;
         private readonly Guid RoleId;
@@ -48,7 +48,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRpaTCLImportAction(FullImportSettings settings, Guid RPAId)
+        public FullXLSXRpaTCLclosedImportAction(FullImportSettings settings, Guid RPAId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;

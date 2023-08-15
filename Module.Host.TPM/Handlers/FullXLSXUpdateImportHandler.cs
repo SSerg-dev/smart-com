@@ -551,7 +551,7 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXRpaActualPluImportAction(settings, rpaId);
         }
     }
-    public class FullXLSXRpaTCLImportHandler : FullXLSXImportHandler
+    public class FullXLSXRpaTCLclosedImportHandler : FullXLSXImportHandler
     {
         private Guid rpaId;
         public override void Action(HandlerInfo info, ExecuteData data)
@@ -561,7 +561,20 @@ namespace Module.Host.TPM.Handlers
         }
         protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
         {
-            return new FullXLSXRpaTCLImportAction(settings, rpaId);
+            return new FullXLSXRpaTCLclosedImportAction(settings, rpaId);
+        }
+    }
+    public class FullXLSXRpaTCLdraftImportHandler : FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRpaTCLdraftImportAction(settings, rpaId);
         }
     }
     class FullXLSXUpdateImportEventHandler : FullXLSXImportHandler
