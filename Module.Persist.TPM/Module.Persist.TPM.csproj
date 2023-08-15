@@ -3660,6 +3660,10 @@
     <Compile Include="Migrations\202308101218385_RPASettingAddTLC.designer.cs">
       <DependentUpon>202308101218385_RPASettingAddTLC.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308140633330_AddHandlerIdToRPA.cs" />
+    <Compile Include="Migrations\202308140633330_AddHandlerIdToRPA.designer.cs">
+      <DependentUpon>202308140633330_AddHandlerIdToRPA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6870,6 +6874,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308101218385_RPASettingAddTLC.resx">
       <DependentUpon>202308101218385_RPASettingAddTLC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308140633330_AddHandlerIdToRPA.resx">
+      <DependentUpon>202308140633330_AddHandlerIdToRPA.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
