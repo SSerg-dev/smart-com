@@ -31,6 +31,9 @@ Ext.define('App.controller.core.rpa.RPA', {
                 'rpa #close': {
                     click: this.onCloseButtonClick
                 },
+                'rpa #showlogbutton': {
+                    click: this.onShowLogButtonClick
+                },
                 //RPA Form
                 'rpaformtoolbar #saveRPAForm': {
                     click: this.onSaveRPAFormClick
@@ -42,9 +45,26 @@ Ext.define('App.controller.core.rpa.RPA', {
         });
     },
 
+    onShowLogButtonClick: function(button) {
+        var grid = Ext.ComponentQuery.query('directorygrid')[1];
+        var selected = grid.getSelectionModel().getSelection()[0];
+
+        if (!Ext.isEmpty(selected.data.HandlerId)) {
+            var calculatingInfoWindow = Ext.create('App.view.tpm.promocalculating.CalculatingInfoWindow');
+            calculatingInfoWindow.on({
+                beforeclose: function() {
+                    if ($.connection.tasksLogHub)
+                        requestHub($.connection.tasksLogHub.server.unsubscribeLog);
+                }
+            });
+
+            calculatingInfoWindow.show();
+            requestHub($.connection.tasksLogHub.server.subscribeLog, [selected.data.HandlerId]);
+        }
+    },
+
     onCreateButtonClick: function (button) {
        var editor = Ext.widget('customrpaeditor');
-       editor.down('#params').setVisible(false);
        editor.show();
     },
 
@@ -77,8 +97,7 @@ Ext.define('App.controller.core.rpa.RPA', {
             var rpaModel = editor.rpaModel ? editor.rpaModel : Ext.create('App.model.core.rpa.RPA');
             var handlerName = rpaForm.down('combobox[name=HandlerName]').getValue();
             var userName = App.UserInfo.getUserName();
-            var params = rpaForm.down('#params');
-            var parametr = params.items.items.filter(el => el.value !== "").map((el) => el.value).join(';');
+            var parametr = '';
             var rpaType = rpaForm.getForm().findField('rpaType').getValue();
             rpaModel.set('HandlerName', handlerName);            
             rpaModel.set('UserName', userName);

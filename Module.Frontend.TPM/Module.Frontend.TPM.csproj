@@ -393,6 +393,7 @@
     <Content Include="Client\model\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\mechanictype\MechanicTypeForClient.js" />
     <Content Include="Client\model\tpm\rollingvolume\RollingVolume.js" />
+    <Content Include="Client\model\tpm\rpa\RPA.js" />
     <Content Include="Client\model\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\savedScenario\SavedScenario.js" />
@@ -1127,6 +1128,9 @@
     <Content Include="Client\view\tpm\promo\UserRolePromoEditor.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\view\tpm\rollingvolume\RollingVolumeEditor.js" />
+    <Content Include="Client\view\tpm\rpa\CustomRPA.js" />
+    <Content Include="Client\view\tpm\rpa\CustomRPAEditor.js" />
+    <Content Include="Client\view\tpm\rpa\CustomRPAForm.js" />
     <Content Include="Client\view\tpm\rsmode\ConfirmUploadScenario.js" />
     <Content Include="Client\view\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\view\tpm\rsmode\DeletedRSmodeDetail.js" />

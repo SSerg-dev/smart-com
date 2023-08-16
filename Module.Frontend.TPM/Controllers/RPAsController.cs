@@ -142,27 +142,28 @@ namespace Module.Frontend.TPM.Controllers
                 switch (rpaType)
                 {
                     case "Events":
-                        await CreateRPAEventImportTask(fileName, rpaId);
+                        result.HandlerId = await CreateRPAEventImportTask(fileName, rpaId);
                         break;
                     case "PromoSupport":
-                        await CreateRPAPromoSupportTask(fileName, rpaId);
+                        result.HandlerId = await CreateRPAPromoSupportTask(fileName, rpaId);
                         break;
                     case "NonPromoSupport":
-                        await CreateRPANonPromoSupportTask(fileName, rpaId);
+                        result.HandlerId = await CreateRPANonPromoSupportTask(fileName, rpaId);
                         break;
                     case "Actuals_EAN_PC":
-                        await CreateRPAActualEanPcTask(fileName, rpaId);
+                        result.HandlerId = await CreateRPAActualEanPcTask(fileName, rpaId);
                         break;
                     case "Actuals_PLU":
-                        await CreateRpaActualPluTask (fileName, rpaId);
+                        result.HandlerId = await CreateRpaActualPluTask (fileName, rpaId);
                         break;
                     case "TLC_Draft":
-                        await CreateRpaTLCclosedTask(fileName, rpaId);
+                        result.HandlerId = await CreateRpaTLCclosedTask(fileName, rpaId);
                         break;
                     case "TLC_Closed":
-                        await CreateRpaTLCdraftTask(fileName, rpaId);
+                        result.HandlerId = await CreateRpaTLCdraftTask(fileName, rpaId);
                         break;
                 }
+                await Context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -171,7 +172,7 @@ namespace Module.Frontend.TPM.Controllers
             return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "RPA save and upload done." }));
         }
 
-        private async Task CreateRPAEventImportTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRPAEventImportTask(string fileName, Guid rpaId)
         {
             string importHandler = "FullXLSXRPAEventImportHandler";
 
@@ -215,9 +216,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRPAPromoSupportTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRPAPromoSupportTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRPAPromoSupportImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -263,9 +265,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRPANonPromoSupportTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRPANonPromoSupportTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRPANonPromoSupportImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -311,9 +314,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRPAActualEanPcTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRPAActualEanPcTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRPAActualEANPCImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -359,9 +363,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRpaActualPluTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRpaActualPluTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRpaActualPluImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -407,9 +412,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRpaTLCclosedTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRpaTLCclosedTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRpaTCLclosedImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -455,9 +461,10 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
-        private async Task CreateRpaTLCdraftTask(string fileName, Guid rpaId)
+        private async Task<Guid> CreateRpaTLCdraftTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRpaTCLdraftImportHandler";
             UserInfoCore user = authorizationManager.GetCurrentUser();
@@ -503,6 +510,7 @@ namespace Module.Frontend.TPM.Controllers
             handler.SetParameterData(data);
             Context.LoopHandlers.Add(handler);
             await Context.SaveChangesAsync();
+            return handler.Id;
         }
 
         [ClaimsAuthorize]
