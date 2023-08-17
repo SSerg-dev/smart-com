@@ -1169,6 +1169,8 @@
     <Content Include="Content\images\time_criticalnew.png" />
     <Content Include="Content\images\workflow.png" />
     <Content Include="Content\images\workflownew.png" />
+    <Content Include="Content\Templates\TLCClosedTemplate.xlsx" />
+    <Content Include="Content\Templates\TLCDraftTemplate.xlsx" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />

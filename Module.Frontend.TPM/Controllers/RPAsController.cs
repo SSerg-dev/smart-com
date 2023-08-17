@@ -28,6 +28,9 @@ using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using Utility.FileWorker;
 using Column = Frontend.Core.Extensions.Export.Column;
 using UserInfoCore = Core.Security.Models.UserInfo;
 
@@ -513,6 +516,198 @@ namespace Module.Frontend.TPM.Controllers
             return handler.Id;
         }
 
+        private IHttpActionResult DownloadTLCClosedTemplateXLSX()
+        {
+            try
+            {
+                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
+                string templateFilePath = Path.Combine(templateDir, "TLCClosedTemplate.xlsx");
+                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook twb = new XSSFWorkbook(templateStream);
+
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template.xlsx", "TLCClosed");
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    string file = Path.GetFileName(filePath);
+
+                    DateTime dt = DateTime.Now;
+                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.Type == "root"
+                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+
+                    List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+                    List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
+                    List<MechanicType> mecanicTypes = Context.Set<MechanicType>().Where(x => !x.Disabled).ToList();
+
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ISheet sheet2 = twb.GetSheet("Clients");
+                        ICreationHelper cH = twb.GetCreationHelper();
+
+                        int i = 0;
+                        foreach (ClientTree ct in clientsList)
+                        {
+                            IRow clientRow = sheet2.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(ct.FullPathName);
+
+                            ICell idCell = clientRow.CreateCell(1);
+                            idCell.SetCellValue(ct.ObjectId);
+                            i++;
+                        }
+
+                        ISheet sheet3 = twb.GetSheet("BrandTech");
+                        i = 1;
+                        foreach (BrandTech bt in brandtechs)
+                        {
+                            IRow clientRow = sheet3.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(bt.BrandsegTechsub);
+                            i++;
+                        }
+                        sheet2.AutoSizeColumn(0);
+                        sheet2.AutoSizeColumn(1);
+                        sheet3.AutoSizeColumn(0);
+
+                        ISheet sheet4 = twb.GetSheet("Mechanics");
+                        i = 1;
+                        foreach (Mechanic m in mecanics)
+                        {
+                            IRow clientRow = sheet4.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet4.AutoSizeColumn(0);
+
+                        ISheet sheet5 = twb.GetSheet("Mechanics Type");
+                        i = 1;
+                        foreach (MechanicType m in mecanicTypes)
+                        {
+                            IRow clientRow = sheet5.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue("VP");
+                            hcell = clientRow.CreateCell(1);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet5.AutoSizeColumn(0);
+                        sheet5.AutoSizeColumn(1);
+
+                        twb.Write(stream);
+                        stream.Close();
+                    }
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    return Content(HttpStatusCode.OK, file);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        private IHttpActionResult DownloadTLCDraftTemplateXLSX()
+        {
+            try
+            {
+                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
+                string templateFilePath = Path.Combine(templateDir, "TLCDraftTemplate.xlsx");
+                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook twb = new XSSFWorkbook(templateStream);
+
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template.xlsx", "TLCDraft");
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    string file = Path.GetFileName(filePath);
+
+                    DateTime dt = DateTime.Now;
+                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.Type == "root"
+                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+
+                    List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
+                    List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
+                    List<MechanicType> mecanicTypes = Context.Set<MechanicType>().Where(x => !x.Disabled).ToList();
+
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ISheet sheet2 = twb.GetSheet("Clients");
+                        ICreationHelper cH = twb.GetCreationHelper();
+
+                        int i = 0;
+                        foreach (ClientTree ct in clientsList)
+                        {
+                            IRow clientRow = sheet2.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(ct.FullPathName);
+
+                            ICell idCell = clientRow.CreateCell(1);
+                            idCell.SetCellValue(ct.ObjectId);
+                            i++;
+                        }
+
+                        ISheet sheet3 = twb.GetSheet("BrandTech");
+                        i = 0;
+                        foreach (BrandTech bt in brandtechs)
+                        {
+                            IRow clientRow = sheet3.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(bt.BrandsegTechsub);
+                            i++;
+                        }
+                        sheet2.AutoSizeColumn(0);
+                        sheet2.AutoSizeColumn(1);
+                        sheet3.AutoSizeColumn(0);
+
+                        ISheet sheet4 = twb.GetSheet("Mechanics");
+                        i = 0;
+                        foreach (Mechanic m in mecanics)
+                        {
+                            IRow clientRow = sheet4.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet4.AutoSizeColumn(0);
+
+                        ISheet sheet5 = twb.GetSheet("Mechanics Type");
+                        i = 0;
+                        foreach (MechanicType m in mecanicTypes)
+                        {
+                            IRow clientRow = sheet5.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue("VP");
+                            hcell = clientRow.CreateCell(1);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet5.AutoSizeColumn(0);
+                        sheet5.AutoSizeColumn(1);
+
+                        twb.Write(stream);
+                        stream.Close();
+                    }
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    return Content(HttpStatusCode.OK, file);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX()
         {
@@ -523,25 +718,35 @@ namespace Module.Frontend.TPM.Controllers
                 Guid testId = Guid.Parse(handlerId);
                 RPASetting setting = Context.Set<RPASetting>()
                     .First(s => s.Id == testId);
-                var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
-                var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
-                XLSXExporter exporter = new XLSXExporter(columns);
-                string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                string filename = string.Format("{0}Template_{1}.xlsx", "RPA", DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
-                if (!Directory.Exists(exportDir))
+
+                if (setting.Name == "TLC Draft Handler")
                 {
-                    Directory.CreateDirectory(exportDir);
+                    return DownloadTLCDraftTemplateXLSX();
+                } else if (setting.Name == "TLC Closed Handler")
+                {
+                    return DownloadTLCClosedTemplateXLSX();
                 }
-                string filePath = Path.Combine(exportDir, filename);
-                exporter.Export(Enumerable.Empty<RPA>(), filePath);
-                string file = Path.GetFileName(filePath);
-                return Content(HttpStatusCode.OK, file);
+                else
+                {
+                    var columnHeaders = JsonConvert.DeserializeObject<RPAEventJsonField>(setting.Json).templateColumns;
+                    var columns = columnHeaders.Select(c => JsonConvert.DeserializeObject<Column>(c.ToString()));
+                    XLSXExporter exporter = new XLSXExporter(columns);
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template_{1}.xlsx", "RPA", DateTime.UtcNow.ToString("yyyyddMMHHmmss"));
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    exporter.Export(Enumerable.Empty<RPA>(), filePath);
+                    string file = Path.GetFileName(filePath);
+                    return Content(HttpStatusCode.OK, file);
+                }
             }
             catch (Exception e)
             {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
-
         }
 
         [ClaimsAuthorize]
