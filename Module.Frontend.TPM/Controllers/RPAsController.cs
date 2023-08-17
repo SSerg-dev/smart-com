@@ -160,10 +160,10 @@ namespace Module.Frontend.TPM.Controllers
                         result.HandlerId = await CreateRpaActualPluTask (fileName, rpaId);
                         break;
                     case "TLC_Draft":
-                        result.HandlerId = await CreateRpaTLCclosedTask(fileName, rpaId);
+                        result.HandlerId = await CreateRpaTLCdraftTask(fileName, rpaId);
                         break;
                     case "TLC_Closed":
-                        result.HandlerId = await CreateRpaTLCdraftTask(fileName, rpaId);
+                        result.HandlerId = await CreateRpaTLCclosedTask(fileName, rpaId);
                         break;
                 }
                 await Context.SaveChangesAsync();

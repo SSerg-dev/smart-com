@@ -22,6 +22,7 @@ using System.Linq;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
+using static Module.Frontend.TPM.Util.PromoHelper;
 
 namespace Module.Host.TPM.Actions
 {
@@ -167,7 +168,6 @@ namespace Module.Host.TPM.Actions
             {
 
                 var records = new ConcurrentBag<IEntity<Guid>>();
-                IList<IEntity<Guid>> sourceRecordWithoutDuplicates = new List<IEntity<Guid>>();
                 IList<string> warnings = new List<string>();
                 IList<string> validationErrors = new List<string>();
 
@@ -190,45 +190,14 @@ namespace Module.Host.TPM.Actions
                 IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
                 List<ClientTree> existingClientTreeIds = query.ToList();
+                string username = context.Users.FirstOrDefault(g => g.Id == UserId).Name;
+                // проверка на дубликаты из файла
+                CheckForDuplicatesImport(context, sourceRecords, out validationErrors);
+                // создание пром
+                List<Promo> promos = CreatePromoesFromTLCclosed(context, sourceRecords, username, existingClientTreeIds, out validationErrors);
 
-                // Проверка на дубликаты и остальное........
-                sourceRecordWithoutDuplicates = CheckForDuplicates(context, sourceRecords, out validationErrors);
-
-                //Стандартные проверки
-                foreach (var item in sourceRecordWithoutDuplicates)
-                {
-
-                    IEntity<Guid> rec;
-
-                    if (!validator.Validate(item, out validationErrors))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                    }
-                    else if (!builder.Build(item, cache, context, out rec, out warnings, out validationErrors))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                        if (warnings.Any())
-                        {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
-                        }
-                    }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                    }
-                    else
-                    {
-                        records.Add(rec);
-                        successList.Add(item);
-                        if (warnings.Any())
-                        {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
-                        }
-                    }
-                };
+                // Проверка на дубликаты из базы
+                promos = CheckForDuplicates(context, promos, out validationErrors);
 
                 logger.Trace("Persist models built");
 
@@ -288,269 +257,43 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private IList<IEntity<Guid>> CheckForDuplicates(DatabaseContext context, IList<IEntity<Guid>> templateRecordIds, out IList<string> errors)
+        private void CheckForDuplicatesImport(DatabaseContext context, IList<IEntity<Guid>> sourceRecords, out IList<string> errors)
         {
-            var distinctRecordIds = new List<IEntity<Guid>>();
             errors = new List<string>();
+            List<ImportRpaTLCclosed> sourceTemplateRecords = sourceRecords
+                .Select(sr => (sr as ImportRpaTLCclosed)).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount }).ToList();
+            var promos2 = promos1.Distinct().ToList();
+            if (promos2.Count != sourceRecords.Count)
+            {
+                var duplicate = promos1.GroupBy(s => s)
+                    .SelectMany(grp => grp.Skip(1)).FirstOrDefault();
+                errors.Add("dublicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate);
+                HasErrors = true;
+                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), String.Join(", ", errors)));
+            }
 
-
-            var sourceTemplateRecords = templateRecordIds
-                .Select(sr => (sr as ImportRpaTLCclosed));
-
-            var shortPromoes = context.Set<Promo>()
-                .Where(g => g.LoadFromTLC)
-                .Select(ps => new
-                {
-                    ps.Id,
-                    ps.Disabled,
-                    ps.ClientTreeId,
-                    ps.Number,
-                    ps.PromoStatus.SystemName
-                })
-                .ToList();
-
-            return distinctRecordIds;
         }
 
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
+        private List<Promo> CheckForDuplicates(DatabaseContext context, List<Promo> promos, out IList<string> errors)
         {
             errors = new List<string>();
-            warnings = new List<string>();
-            bool isSuitable = true;
-
-            ImportRpaActualPlu typedRec = (ImportRpaActualPlu)rec;
-
-            var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == typedRec.PromoNumberImport && !x.Disabled);
-            if (promo == null)
+            foreach (Promo promo in promos)
             {
-                errors.Add("Promo not found or deleted");
-                isSuitable = false;
-                return isSuitable;
+
             }
 
-            var eanPc = context.Set<PLUDictionary>().FirstOrDefault(x => x.PluCode == typedRec.PluImport && x.ObjectId == promo.ClientTree.ObjectId)?.EAN_PC;
 
-            if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTree.ObjectId))
-            {
-                errors.Add("No access to the client");
-                isSuitable = false;
-            }
-            if (string.IsNullOrEmpty(eanPc))
-            {
-                errors.Add("EAN_PC not found for PLU");
-                isSuitable = false;
-                return isSuitable;
-            }
-            typedRec.EAN_PC = eanPc;
-            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && x.Product.EAN_PC == typedRec.EAN_PC && !x.Disabled);
-            if (promoProduct == null)
-            {
-                errors.Add("PromoProduct not found");
-                isSuitable = false;
-            }
-            var promoStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == promo.PromoStatus.SystemName && !x.Disabled);
-            if (promoStatus.SystemName != "Finished")
-            {
-                errors.Add("Invalid promo status");
-                isSuitable = false;
-            }
-
-            return isSuitable;
+            return promos;
         }
 
         private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
         {
+            return 0;
 
-            var sourcePromoProducts = sourceRecords
-                 .Select(sr => sr as ImportRpaActualPlu)
-                 .ToList();
-
-            var sourcePromoIds = sourcePromoProducts
-                .Distinct()
-                .Select(ps => ps.PromoId)
-                .ToList();
-
-
-            var promoes = context.Set<Promo>()
-                .Where(x => sourcePromoIds.Contains(x.Id) && !x.Disabled)
-                .ToList();
-
-
-            ScriptGenerator generator = GetScriptGenerator();
-            var query = GetQuery(context);
-
-            List<PromoProduct> toUpdate = new List<PromoProduct>();
-            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-            foreach (Promo promo in promoes)
-            {
-                if (promo != null)
-                {
-                    if (!promo.InOut.HasValue || !promo.InOut.Value)
-                    {
-                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts.Where(x => x.PromoId == promo.Id))
-                        {
-                            PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId && pp.EAN_PC == itemRecord.EAN_PC && !pp.Disabled);
-                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
-                            // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
-                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
-
-                            if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
-                            {
-                                //распределение импортируемого количества пропорционально PlanProductBaselineLSV
-                                var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
-                                List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-                                List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
-                                bool isRealBaselineExist = false;
-                                foreach (var p in productsWithRealBaseline)
-                                {
-                                    var newRecordClone = ClonePromoProduct(promoProduct);
-                                    p.ActualProductUOM = "PC";
-                                    // проверка Baseline (исправляет ActualProductPCQty)
-                                    if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
-                                    {
-                                        if (p.PlanProductIncrementalLSV != 0 && sumBaseline != 0)
-                                        {
-                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumBaseline / (decimal?)p.PlanProductBaselineLSV));
-                                        }
-                                        else
-                                        {
-                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        }
-                                        isRealBaselineExist = true;
-                                    }
-                                    else
-                                    {
-                                        p.ActualProductPCQty = null;
-                                        newRecordClone.ActualProductPCQty = null;
-                                    }
-
-                                    promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
-                                    promoProductsToUpdate.Add(p);
-                                }
-
-                                if (isRealBaselineExist)
-                                {
-                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
-                                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
-                                    {
-                                        var firstRealBaselineItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
-                                        firstRealBaselineItem.ActualProductPCQty += differenceActualProductPCQty;
-                                    }
-                                }
-                                else
-                                {
-                                    //TODO: вывод предупреждения
-                                    //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
-                                    if (oldRecord != null)
-                                    {
-                                        oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        toUpdate.Add(oldRecord);
-                                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, promoProduct));
-                                    }
-                                }
-
-                                toUpdate.AddRange(promoProductsToUpdate);
-                                toHisUpdate.AddRange(promoProductsToUpdateHis);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts)
-                        {
-                            PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
-                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
-                            //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
-                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
-
-                            if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
-                            {
-                                //распределение импортируемого количества пропорционально PlanProductIncrementalLSV
-                                var sumIncremental = productsWithRealPCPrice.Sum(x => x.PlanProductIncrementalLSV);
-                                List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
-                                List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-                                bool isRealPCPriceExist = false;
-                                foreach (var p in productsWithRealPCPrice)
-                                {
-                                    var newRecordClone = ClonePromoProduct(promoProduct);
-                                    p.ActualProductUOM = "PC";
-                                    // проверка Price (исправляет ActualProductPCQty)
-                                    if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
-                                    {
-                                        if (p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
-                                        {
-                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumIncremental / (decimal?)p.PlanProductIncrementalLSV));
-                                        }
-                                        else
-                                        {
-                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        }
-                                        isRealPCPriceExist = true;
-                                    }
-                                    else
-                                    {
-                                        p.ActualProductPCQty = null;
-                                        newRecordClone.ActualProductPCQty = null;
-                                    }
-
-                                    promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
-                                    promoProductsToUpdate.Add(p);
-                                }
-
-                                if (isRealPCPriceExist)
-                                {
-                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
-                                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
-                                    {
-                                        var firstRealPriceItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
-                                        firstRealPriceItem.ActualProductPCQty += differenceActualProductPCQty;
-                                    }
-                                }
-                                else
-                                {
-                                    //TODO: вывод предупреждения
-                                    //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
-                                    if (oldRecord != null)
-                                    {
-                                        oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        toUpdate.Add(oldRecord);
-                                    }
-                                }
-
-                                toUpdate.AddRange(promoProductsToUpdate);
-                            }
-                        }
-                    }
-                }
-
-                foreach (PromoProduct item in toUpdate)
-                {
-                    context.Set<PromoProduct>().AddOrUpdate(item);
-                }
-                context.SaveChanges();
-                // Обновляем фактические значения
-                CreateTaskCalculateActual(promo.Id);
-            }
-
-            return sourceRecords.Count();
         }
 
-        private ScriptGenerator GetScriptGenerator()
-        {
-            if (Generator == null)
-            {
-                Generator = new ScriptGenerator(ModelType);
-            }
-            return Generator;
-        }
+
 
         private string GetImportStatus()
         {
@@ -572,63 +315,179 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        /// <summary>
-        /// Создание клона продукта
-        /// </summary>
-        /// <returns></returns>
-        private PromoProduct ClonePromoProduct(PromoProduct promoProduct)
+        private List<Promo> CreatePromoesFromTLCclosed(DatabaseContext context, IList<IEntity<Guid>> sourceRecords, string username, List<ClientTree> existingClientTreeIds, out IList<string> errors)
         {
-            var promoProductClone = new PromoProduct();
-            promoProductClone.ActualProductPCQty = promoProduct.ActualProductPCQty;
-            promoProductClone.EAN_PC = promoProduct.EAN_PC;
-            promoProductClone.ActualProductUOM = promoProduct.ActualProductUOM;
-            return promoProductClone;
-        }
-
-        /// <summary>
-        /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
-        /// </summary>
-        /// <param name="promoId">ID промо</param>
-        private void CreateTaskCalculateActual(Guid promoId)
-        {
-            // к этому моменту промо уже заблокировано
-
-            using (DatabaseContext context = new DatabaseContext())
+            errors = new List<string>();
+            List<Promo> promos = new List<Promo>();
+            List<ImportRpaTLCclosed> sourceTemplateRecords = sourceRecords
+                            .Select(sr => (sr as ImportRpaTLCclosed)).ToList();
+            List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+            List<PromoTypes> promoTypes = context.Set<PromoTypes>().Where(g => !g.Disabled && (g.SystemName == "Regular" || g.SystemName == "InOut")).ToList();
+            List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+            List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            foreach (ImportRpaTLCclosed import in sourceTemplateRecords)
             {
-                HandlerData data = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", UserId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", RoleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
+                ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == import.ClientHierarchyCode).FirstOrDefault();
+                if (!existingClientTreeIds.Any(x => x.ObjectId == clientTree.ObjectId))
                 {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Calculate actual parameters",
-                    Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = UserId,
-                    RoleId = RoleId
+                    errors.Add("No access to the client " + clientTree.FullPathName);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                }
+                Promo promo = new Promo
+                {
+                    CreatorLogin = username,
+                    LoadFromTLC = true,
+                    PromoTypesId = promoTypes.FirstOrDefault(g => g.Name == import.PromoType).Id,
+                    ClientHierarchy = clientTree.FullPathName,
+                    ClientTreeId = clientTree.ObjectId,
+                    ClientTreeKeyId = clientTree.Id,
+                    BrandTechId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).Id,
+                    ProductSubrangesList = import.Subrange,
+                    StartDate = import.PromoStartDate,
+                    EndDate = import.PromoEndDate,
+                    BudgetYear = import.BudgetYear,
+                    PromoDuration = import.PromoDuration,
+                    PlanPromoBaselineLSV = import.PlanPromoBaselineLSV,
+                    PlanPromoIncrementalLSV = import.PlanPromoIncrementalLSV,
+                    PlanPromoLSV = import.PlanPromoLSV,
+                    PlanPromoUpliftPercent = import.PlanPromoUpliftPercent,
+                    PlanPromoTIShopper = import.PlanPromoTIShopper,
+                    PlanPromoTIMarketing = import.PlanPromoTIMarketing,
+                    PlanPromoXSites = import.PlanPromoXSites,
+                    PlanPromoCatalogue = import.PlanPromoCatalogue,
+                    PlanPromoPOSMInClient = import.PlanPromoPOSMInClient,
+                    PlanPromoBranding = import.PlanPromoBranding,
+                    PlanPromoBTL = import.PlanPromoBTL,
+                    PlanPromoCostProduction = import.PlanPromoCostProduction,
+                    PlanPromoCostProdXSites = import.PlanPromoCostProdXSites,
+                    PlanPromoCostProdCatalogue = import.PlanPromoCostProdCatalogue,
+                    PlanPromoCostProdPOSMInClient = import.PlanPromoCostProdPOSMInClient,
+                    PlanPromoCost = import.PlanPromoCost,
+                    //PlanPromoBaseTI = import.TIBase,
+                    PlanPromoIncrementalBaseTI = import.PlanPromoIncrementalBaseTI,
+                    PlanPromoNetIncrementalBaseTI = import.PlanPromoNetIncrementalBaseTI,
+                    PlanCOGSPercent = import.COGS,
+                    PlanCOGSTn = import.COGSTn,
+                    PlanPromoIncrementalCOGS = import.PlanPromoIncrementalCOGSLSV,
+                    PlanPromoNetIncrementalCOGS = import.PlanPromoNetIncrementalCOGSLSV,
+                    PlanPromoIncrementalCOGSTn = import.PlanPromoIncrementalCOGStn,
+                    PlanPromoNetIncrementalCOGSTn = import.PlanPromoNetIncrementalCOGStn,
+                    PlanPromoIncrementalEarningsLSV = import.PlanPromoIncrementalEarningsLSV,
+                    PlanPromoNetIncrementalEarningsLSV = import.PlanPromoNetIncrementalEarningsLSV,
+                    ActualPromoIncrementalEarningsLSV = import.ActualPromoIncrementalEarningsLSV,
+                    ActualPromoNetIncrementalEarningsLSV = import.ActualPromoNetIncrementalEarningsLSV,
+                    PlanPromoROIPercentLSV = import.PlanPromoROILSV,
+                    PlanPromoNetROIPercentLSV = import.PlanPromoNetROILSV,
+                    ActualPromoROIPercentLSV = import.ActualPromoROILSV,
+                    ActualPromoNetROIPercentLSV = import.ActualPromoNetROILSV,
+                    PlanPromoTotalCost = import.PlanPromoTotalCost,
+                    PlanPromoPostPromoEffectLSV = import.PlanPostPromoEffectLSV,
+                    PlanPromoNetIncrementalLSV = import.PlanPromoNetIncrementalLSV,
+                    PlanPromoNetLSV = import.PlanPromoNetLSV,
+                    PlanPromoBaselineBaseTI = import.PlanPromoBaselineBaseTI,
+                    PlanPromoBaseTI = import.PlanPromoBaseTI,
+                    PlanPromoNetBaseTI = import.PlanPromoNetBaseTI,
+                    PlanPromoNSV = import.PlanPromoNSV,
+                    PlanPromoNetNSV = import.PlanPromoNetNSV,
+                    PlanPromoIncrementalNSV = import.PlanPromoIncrementalNSV,
+                    PlanPromoNetIncrementalNSV = import.PlanPromoNetIncrementalNSV,
+                    PlanPromoIncrementalMAC = import.PlanPromoIncrementalMAC,
+                    PlanPromoIncrementalMACLSV = import.PlanPromoIncrementalMACLSV,
+                    PlanPromoNetIncrementalMAC = import.PlanPromoNetIncrementalMAC,
+                    PlanPromoNetIncrementalMACLSV = import.PlanPromoNetIncrementalMACLSV,
+                    PlanPromoIncrementalEarnings = import.PlanPromoIncrementalEarnings,
+                    PlanPromoNetIncrementalEarnings = import.PlanPromoNetIncrementalEarnings,
+                    PlanPromoROIPercent = import.PlanPromoROI,
+                    PlanPromoNetROIPercent = import.PlanPromoNetROI,
+                    PlanPromoNetUpliftPercent = import.PlanPromoNetUplift,
+                    PlanAddTIShopperApproved = import.PlanAddTIShopperApproved,
+                    PlanAddTIShopperCalculated = import.PlanAddTIShopperCalculated,
+                    PlanAddTIMarketingApproved = import.PlanAddTIMarketingApproved,
+                    ActualInStoreShelfPrice = import.ActualInstoreShelfPrice,
+                    InvoiceNumber = import.Invoicenumber,
+                    ActualPromoBaselineLSV = import.ActualPromoBaselineLSV,
+                    ActualPromoIncrementalLSV = import.ActualPromoIncrementalLSV,
+                    ActualPromoLSVByCompensation = import.ActualPromoLSVByCompensation,
+                    ActualPromoLSV = import.ActualPromoLSV,
+                    ActualPromoUpliftPercent = import.ActualPromoUplift,
+                    ActualPromoNetUpliftPercent = import.ActualPromoNetUpliftPercent,
+                    ActualPromoTIShopper = import.ActualPromoTIShopper,
+                    ActualPromoTIMarketing = import.ActualPromoTIMarketing,
+                    ActualPromoXSites = import.ActualPromoProdXSites,
+                    ActualPromoCatalogue = import.ActualPromoProdCatalogue,
+                    ActualPromoPOSMInClient = import.ActualPromoProdPOSMInClient,
+                    ActualPromoBranding = import.ActualPromoBranding,
+                    ActualPromoBTL = import.ActualPromoBTL,
+                    ActualPromoCostProduction = import.ActualPromoCostProduction,
+                    ActualPromoCostProdXSites = import.ActualPromoCostProdXSites,
+                    ActualPromoCostProdCatalogue = import.ActualPromoCostProdCatalogue,
+                    ActualPromoCostProdPOSMInClient = import.ActualPromoCostProdPOSMInClient,
+                    ActualPromoCost = import.ActualPromoCost,
+                    ActualPromoIncrementalBaseTI = import.ActualPromoIncrementalBaseTI,
+                    ActualPromoNetIncrementalBaseTI = import.ActualPromoNetIncrementalBaseTI,
+                    ActualPromoIncrementalCOGS = import.ActualPromoIncrementalCOGSLSV,
+                    ActualPromoNetIncrementalCOGS = import.ActualPromoNetIncrementalCOGSLSV,
+                    ActualPromoIncrementalCOGSTn = import.ActualPromoIncrementalCOGStn,
+                    ActualPromoNetIncrementalCOGSTn = import.ActualPromoNetIncrementalCOGStn,
+                    ActualPromoTotalCost = import.ActualPromoTotalCost,
+                    ActualPromoPostPromoEffectLSV = import.ActualPostPromoEffectLSV,
+                    ActualPromoNetIncrementalLSV = import.ActualPromoNetIncrementalLSV,
+                    ActualPromoNetLSV = import.ActualPromoNetLSV,
+                    ActualPromoIncrementalNSV = import.ActualPromoIncrementalNSV,
+                    ActualPromoNetIncrementalNSV = import.ActualPromoNetIncrementalNSV,
+                    ActualPromoBaselineBaseTI = import.ActualPromoBaselineBaseTI,
+                    ActualPromoBaseTI = import.ActualPromoBaseTI,
+                    ActualPromoNetBaseTI = import.ActualPromoNetBaseTI,
+                    ActualPromoNSV = import.ActualPromoNSV,
+                    ActualPromoNetNSV = import.ActualPromoNetNSV,
+                    ActualPromoIncrementalMAC = import.ActualPromoIncrementalMAC,
+                    ActualPromoIncrementalMACLSV = import.ActualPromoIncrementalMACLSV,
+                    ActualPromoNetIncrementalMAC = import.ActualPromoNetIncrementalMAC,
+                    ActualPromoNetIncrementalMACLSV = import.ActualPromoNetIncrementalMACLSV,
+                    ActualPromoIncrementalEarnings = import.ActualPromoIncrementalEarnings,
+                    ActualPromoNetIncrementalEarnings = import.ActualPromoNetIncrementalEarnings,
+                    ActualPromoROIPercent = import.ActualPromoROI,
+                    ActualPromoNetROIPercent = import.ActualPromoNetROI,
+                    ActualAddTIShopper = import.ActualAddTIShopper,
+                    ActualAddTIMarketing = import.ActualAddTIMarketing,
+                    SumInvoice = import.SumInInvoice,
                 };
-
-                //BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
-                //bp.HandlerId = handler.Id;
-
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
+                promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (DateTimeOffset)promo.EndDate, (int)promo.BudgetYear))
+                {
+                    errors.Add("Wrong BudgetYear " + import.BudgetYear);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                }
+                Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == import.Mechanic && g.PromoTypesId == promo.PromoTypesId);
+                promo.MarsMechanicId = mechanic.Id;
+                promo.MarsMechanicDiscount = import.Discount;
+                MechanicType mechanicType = mechanicTypes.FirstOrDefault(g => g.Name == import.MechanicType);
+                promo.MarsMechanicTypeId = mechanicType.Id;
+                promo.MechanicComment = import.MechanicComment;
+                promo.ActualInStoreMechanicId = mechanics.FirstOrDefault(g => g.SystemName == import.ActualInStoreMechanicName && g.PromoTypesId == promo.PromoTypesId).Id;
+                promo.ActualInStoreMechanicTypeId = mechanicTypes.FirstOrDefault(g => g.Name == import.ActualInStoreMechanicTypeName).Id;
+                promo.ActualInStoreDiscount = import.ActualInStoreMechanicDiscount;
             }
-        }
 
-        private IEnumerable<PromoProduct> GetQuery(DatabaseContext context)
+            return promos;
+        }
+        private bool CheckBudgetYear(DateTimeOffset dispatchStartDate, DateTimeOffset endDate, int budgetYear)
         {
-            IQueryable<PromoProduct> query = context.Set<PromoProduct>().AsNoTracking();
-            return query.ToList();
+            DateTimeOffset startYear = TimeHelper.ThisBuggetYearStart();
+            DateTimeOffset endYear = TimeHelper.ThisBuggetYearEnd();
+            int budgetYearT = TimeHelper.ThisBuggetYear();
+            if (dispatchStartDate < startYear || endYear < endDate)
+            {
+                return false;
+            }
+            if (budgetYear != budgetYearT)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

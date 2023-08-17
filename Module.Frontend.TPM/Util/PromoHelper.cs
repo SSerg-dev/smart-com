@@ -1007,6 +1007,27 @@ namespace Module.Frontend.TPM.Util
 
             return clientDispatchDays;
         }
+        public static Promo SetDispatchDates(ClientTree clientTree, DateTimeOffset startDate, DateTimeOffset endDate, Promo promo)
+        {
+            ClientDispatchDays clientDispatchDays = GetClientDispatchDays(clientTree);
+            if (clientDispatchDays.IsStartAdd)
+            {
+                promo.DispatchesStart = startDate.AddDays(clientDispatchDays.StartDays);
+            }
+            else
+            {
+                promo.DispatchesStart = startDate.AddDays(-clientDispatchDays.StartDays);
+            }
+            if (clientDispatchDays.IsEndAdd)
+            {
+                promo.DispatchesEnd = endDate.AddDays(clientDispatchDays.EndDays);
+            }
+            else
+            {
+                promo.DispatchesEnd = endDate.AddDays(-clientDispatchDays.EndDays);
+            }
+            return promo;
+        }
         public class ClientDispatchDays
         {
             public int StartDays { get; set; }
