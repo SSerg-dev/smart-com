@@ -1,3 +1,4 @@
+organization_id = "bpfuurgn7jf9lvpss6co"
 cloud_id = "b1g0ngqm213bgkm0uqtt"
 folder_net = "smartcom-env-rg"
 zone = "ru-central1-b"
@@ -55,7 +56,7 @@ dataproc = {
     disk_compute = 64
     compute_min = 1
     compute_max = 3
-    ssh-key = "smartadmin:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhs734/KlEdJyOl6I2EmzvLDOdTrnrMuj7LTIwQSL5RjG+HEVr6yCBCeWRrNkBU2Lp2IdsN/FXtm4mZjNcezfhyJ+zcZCrgSyKYBpczXd22s54mXdNjjJ9nm1Xzzj9l7FyuZIFVb3Y5kcBqt6+XK3XQf46pEdLZqW3nUcFZPfbBnysKcgfLvQtFsmFSZjolbApH9B+6C+oi4y3Ls/YKwBTE+JkGy/MRaJkT9eyYzmAbQeretwHCsl83RwD90kNtIN9bidgdiA9R1H/V58l0376MUqmZHjjhMLgkezDLfpPM3EK9LSdH8mmt4198iYOkn24OfdoofwB3LGAUsVXAxy3 smartadmin"
+    ssh-key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhs734/KlEdJyOl6I2EmzvLDOdTrnrMuj7LTIwQSL5RjG+HEVr6yCBCeWRrNkBU2Lp2IdsN/FXtm4mZjNcezfhyJ+zcZCrgSyKYBpczXd22s54mXdNjjJ9nm1Xzzj9l7FyuZIFVb3Y5kcBqt6+XK3XQf46pEdLZqW3nUcFZPfbBnysKcgfLvQtFsmFSZjolbApH9B+6C+oi4y3Ls/YKwBTE+JkGy/MRaJkT9eyYzmAbQeretwHCsl83RwD90kNtIN9bidgdiA9R1H/V58l0376MUqmZHjjhMLgkezDLfpPM3EK9LSdH8mmt4198iYOkn24OfdoofwB3LGAUsVXAxy3 smartadmin"
 }
 
 airflow-sa-name = "jupiter-app-2-dev-airflow-sa"
@@ -99,3 +100,4 @@ EOT
 }
 
 deploy-sa-name = "jupiter-app-2-dev-deploy-sa"
+admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeh1g5kg4fns2v8un96" ]

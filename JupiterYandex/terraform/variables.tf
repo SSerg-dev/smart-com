@@ -1,3 +1,7 @@
+variable "organization_id" {
+    description = "Organization ID"
+}
+
 variable "cloud_id" {
     description = "Cloud ID"
 }
@@ -195,4 +199,8 @@ variable "kafka-proxy" {
 
 variable "deploy-sa-name" {
     description = "Deployment service account"
+}
+
+variable "admins" {
+    description = "Admin accounts for folder"
 }

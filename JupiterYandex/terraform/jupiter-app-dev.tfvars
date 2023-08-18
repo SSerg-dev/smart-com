@@ -1,3 +1,4 @@
+organization_id = "bpfuurgn7jf9lvpss6co"
 cloud_id = "b1g0ngqm213bgkm0uqtt"
 folder_net = "smartcom-env-rg"
 zone = "ru-central1-b"
@@ -99,3 +100,4 @@ EOT
 }
 
 deploy-sa-name = "jupiter-app-dev-deploy-sa"
+admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeik7084rirbkajnjmh" ]

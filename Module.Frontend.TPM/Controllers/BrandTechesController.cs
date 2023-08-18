@@ -177,7 +177,6 @@ namespace Module.Frontend.TPM.Controllers
                 if (resultSaveChanges > 0)
                 {
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
-                    await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                 }
 
                 return Updated(model);
