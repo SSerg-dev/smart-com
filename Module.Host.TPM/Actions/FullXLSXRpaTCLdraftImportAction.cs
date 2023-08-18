@@ -30,6 +30,7 @@ namespace Module.Host.TPM.Actions
         private readonly Guid UserId;
         private readonly Guid RoleId;
         private readonly Guid RPAId;
+        private readonly Guid HandlerId;
         private readonly FileModel ImportFile;
         private readonly Type ImportType;
         private readonly Type ModelType;
@@ -47,7 +48,7 @@ namespace Module.Host.TPM.Actions
         private bool HasErrors { get; set; }
 
         private ScriptGenerator Generator { get; set; }
-        public FullXLSXRpaTCLdraftImportAction(FullImportSettings settings, Guid RPAId)
+        public FullXLSXRpaTCLdraftImportAction(FullImportSettings settings, Guid RPAId, Guid handlerId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -58,6 +59,7 @@ namespace Module.Host.TPM.Actions
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
             this.RPAId = RPAId;
+            HandlerId = handlerId;
 
             AllowPartialApply = false;
             logger = LogManager.GetCurrentClassLogger();

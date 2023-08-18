@@ -2,12 +2,12 @@
 using Core.Extensions;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
-using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.Util;
 using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
@@ -16,7 +16,6 @@ using Persist.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using Utility;
@@ -31,6 +30,7 @@ namespace Module.Host.TPM.Actions
         private readonly Guid UserId;
         private readonly Guid RoleId;
         private readonly Guid RPAId;
+        private readonly Guid HandlerId;
         private readonly FileModel ImportFile;
         private readonly Type ImportType;
         private readonly Type ModelType;
@@ -49,7 +49,7 @@ namespace Module.Host.TPM.Actions
 
         private ScriptGenerator Generator { get; set; }
 
-        public FullXLSXRpaTCLclosedImportAction(FullImportSettings settings, Guid rPAId)
+        public FullXLSXRpaTCLclosedImportAction(FullImportSettings settings, Guid rPAId, Guid handlerId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -60,6 +60,7 @@ namespace Module.Host.TPM.Actions
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
             RPAId = rPAId;
+            HandlerId = handlerId;
 
             AllowPartialApply = false;
             logger = LogManager.GetCurrentClassLogger();
@@ -197,7 +198,7 @@ namespace Module.Host.TPM.Actions
                 List<Promo> promos = CreatePromoesFromTLCclosed(context, sourceRecords, username, existingClientTreeIds, out validationErrors);
 
                 // Проверка на дубликаты из базы
-                promos = CheckForDuplicates(context, promos, out validationErrors);
+                promos = CheckForDuplicates(context, promos, sourceRecords, out validationErrors);
 
                 logger.Trace("Persist models built");
 
@@ -215,7 +216,7 @@ namespace Module.Host.TPM.Actions
                 if (hasSuccessList)
                 {
                     // Закончить импорт
-                    resultRecordCount = InsertDataToDatabase(records, context);
+                    resultRecordCount = InsertDataToDatabase(promos, context);
                     //CalculateBudgetsCreateTask(context, promoesForBudgetCalculation);
                 }
                 logger.Trace("Persist models inserted");
@@ -270,25 +271,53 @@ namespace Module.Host.TPM.Actions
                     .SelectMany(grp => grp.Skip(1)).FirstOrDefault();
                 errors.Add("dublicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate);
                 HasErrors = true;
-                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), String.Join(", ", errors)));
+                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), string.Join(", ", errors)));
             }
 
         }
 
-        private List<Promo> CheckForDuplicates(DatabaseContext context, List<Promo> promos, out IList<string> errors)
+        private List<Promo> CheckForDuplicates(DatabaseContext context, List<Promo> promos, IList<IEntity<Guid>> sourceRecords, out IList<string> errors)
         {
             errors = new List<string>();
-            foreach (Promo promo in promos)
+            List<ImportRpaTLCclosed> sourceTemplateRecords = sourceRecords
+                .Select(sr => (sr as ImportRpaTLCclosed)).ToList();
+            List<Guid> promoStatuses = context.Set<PromoStatus>().Where(g => !g.Disabled && (g.SystemName == "Closed" || g.SystemName == "Finished")).Select(g => g.Id).ToList();
+            var promosPresent = context.Set<Promo>()
+                .Where(g => promoStatuses.Contains((Guid)g.PromoStatusId) && !g.Disabled && g.TPMmode == TPMmode.Current)
+                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount })
+                .ToList();
+            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount }).ToList();
+            foreach (var promoImport in promoImports)
             {
-
+                var present = promosPresent
+                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount);
+                if (present != null)
+                {
+                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount);
+                    errors.Add("dublicate present in client:" + dublicate.Client + ", startdate:" + dublicate.PromoStartDate + " enddate:" + dublicate.PromoEndDate);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == dublicate.Client && g.PromoStartDate == dublicate.PromoStartDate && g.PromoEndDate == dublicate.PromoEndDate), string.Join(", ", errors)));
+                }
             }
 
 
             return promos;
         }
 
-        private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        private int InsertDataToDatabase(List<Promo> promos, DatabaseContext context)
         {
+            context.Set<Promo>().AddRange(promos);
+            context.SaveChanges();
+            // записать в TLCImport
+            if (promos.Count > 0)
+            {
+                DateTimeOffset date = TimeHelper.Now();
+                List<TLCImport> tLCImports = promos.Select(g => new TLCImport { PromoId = g.Id, LoadDate = date, HandlerId = HandlerId }).ToList();
+                context.Set<TLCImport>().AddRange(tLCImports);
+                context.SaveChanges();
+                return promos.Count;
+            }
             return 0;
 
         }
@@ -326,6 +355,7 @@ namespace Module.Host.TPM.Actions
             List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
             List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
             List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            PromoStatus promoStatus = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "Closed");
             foreach (ImportRpaTLCclosed import in sourceTemplateRecords)
             {
                 ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == import.ClientHierarchyCode).FirstOrDefault();
@@ -340,6 +370,7 @@ namespace Module.Host.TPM.Actions
                     CreatorLogin = username,
                     LoadFromTLC = true,
                     PromoTypesId = promoTypes.FirstOrDefault(g => g.Name == import.PromoType).Id,
+                    PromoStatusId = promoStatus.Id,
                     ClientHierarchy = clientTree.FullPathName,
                     ClientTreeId = clientTree.ObjectId,
                     ClientTreeKeyId = clientTree.Id,
@@ -470,6 +501,7 @@ namespace Module.Host.TPM.Actions
                 promo.ActualInStoreMechanicId = mechanics.FirstOrDefault(g => g.SystemName == import.ActualInStoreMechanicName && g.PromoTypesId == promo.PromoTypesId).Id;
                 promo.ActualInStoreMechanicTypeId = mechanicTypes.FirstOrDefault(g => g.Name == import.ActualInStoreMechanicTypeName).Id;
                 promo.ActualInStoreDiscount = import.ActualInStoreMechanicDiscount;
+                promos.Add(promo);
             }
 
             return promos;
