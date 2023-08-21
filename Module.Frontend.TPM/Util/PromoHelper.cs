@@ -1699,5 +1699,75 @@ namespace Module.Frontend.TPM.Util
             result.LastChangedDate = ChangedDate;
             return result;
         }
+
+        public static void CreatePromoProductTree(Promo promo, List<ProductTree> productTrees, DatabaseContext context)
+        {
+            promo.PromoProductTrees = new List<PromoProductTree>();
+            var inOutProfuctIds = new List<string>();
+            var productHierachy = "";
+            var productSubrangesListRU = new List<string>();
+            var brandNode = productTrees.First(x => x.BrandId == promo.BrandId);
+            var techNode = productTrees.First(x => x.TechnologyId == promo.TechnologyId && x.parentId == brandNode.ObjectId);
+            var currentNode = techNode;
+            if (!promo.ProductSubrangesList.Contains(';'))
+            {
+                var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.Id && x.Name == promo.ProductSubrangesList);
+                if (subrangeNode != null)
+                {
+                    currentNode = subrangeNode;
+                    productSubrangesListRU.Add(currentNode.Description_ru);
+                }
+
+                productHierachy = currentNode.FullPathName;
+
+                inOutProfuctIds = context.Set<Product>()
+                    .SqlQuery(currentNode.FilterQuery)
+                    .Select(x => x.Id.ToString())
+                    .ToList();
+
+                promo.PromoProductTrees.Add(new PromoProductTree
+                {
+                    Disabled = false,
+                    ProductTreeObjectId = currentNode.ObjectId,
+                    PromoId = promo.Id
+                });
+            }
+            else 
+            {
+                var subranges = promo.ProductSubrangesList.Split(';');
+
+                foreach(var subrange in subranges)
+                {
+                    var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.ObjectId && x.Name == subrange);
+
+                    if (productHierachy == "")
+                        productHierachy = subrangeNode.FullPathName;
+                    else
+                        productHierachy = subrangeNode.FullPathName.Substring(0, subrangeNode.FullPathName.LastIndexOf('>') + 1) + " ...";
+
+                    productSubrangesListRU.Add(subrangeNode.Description_ru);
+
+                    var selectedProducts = context.Set<Product>()
+                        .SqlQuery(subrangeNode.FilterQuery)
+                        .Select(x => x.Id.ToString())
+                        .ToList();
+
+                    inOutProfuctIds.AddRange(selectedProducts);
+
+                    promo.PromoProductTrees.Add(new PromoProductTree
+                    {
+                        Disabled = false,
+                        ProductTreeObjectId = subrangeNode.ObjectId,
+                        PromoId = promo.Id
+                    });
+                }
+            }
+
+            promo.ProductHierarchy = productHierachy;
+            promo.ProductSubrangesListRU = String.Join(";", productSubrangesListRU.Where(x => x != null));
+            promo.InOutProductIds = String.Join(";", inOutProfuctIds.Where(x => x != null));
+            if (promo.InOutProductIds.Length > 0)
+                promo.InOutProductIds += ";";
+        }
     }
 }

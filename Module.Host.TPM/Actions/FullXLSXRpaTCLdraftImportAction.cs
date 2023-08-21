@@ -2,12 +2,11 @@
 using Core.Extensions;
 using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
-using Looper.Core;
 using Looper.Parameters;
-using Module.Frontend.TPM.Util;
 using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
@@ -16,12 +15,12 @@ using Persist.Model;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
+using static Module.Frontend.TPM.Util.PromoHelper;
 
 namespace Module.Host.TPM.Actions
 {
@@ -47,8 +46,7 @@ namespace Module.Host.TPM.Actions
         private string ResultStatus { get; set; }
         private bool HasErrors { get; set; }
 
-        private ScriptGenerator Generator { get; set; }
-        public FullXLSXRpaTCLdraftImportAction(FullImportSettings settings, Guid RPAId, Guid handlerId)
+        public FullXLSXRpaTCLdraftImportAction(FullImportSettings settings, Guid rPAId, Guid handlerId)
         {
             UserId = settings.UserId;
             RoleId = settings.RoleId;
@@ -58,7 +56,7 @@ namespace Module.Host.TPM.Actions
             Separator = settings.Separator;
             Quote = settings.Quote;
             HasHeader = settings.HasHeader;
-            this.RPAId = RPAId;
+            RPAId = rPAId;
             HandlerId = handlerId;
 
             AllowPartialApply = false;
@@ -166,9 +164,7 @@ namespace Module.Host.TPM.Actions
             // Получить записи текущего импорта
             using (DatabaseContext context = new DatabaseContext())
             {
-
                 var records = new ConcurrentBag<IEntity<Guid>>();
-                IList<IEntity<Guid>> sourceRecordWithoutDuplicates = new List<IEntity<Guid>>();
                 IList<string> warnings = new List<string>();
                 IList<string> validationErrors = new List<string>();
 
@@ -176,7 +172,6 @@ namespace Module.Host.TPM.Actions
                 var validator = ImportModelFactory.GetImportValidator(ImportType);
                 // Получить функцию SetProperty
                 var builder = ImportModelFactory.GetModelBuilder(ImportType, ModelType);
-
 
                 var cacheBuilder = ImportModelFactory.GetImportCacheBuilder(ImportType);
                 var cache = cacheBuilder.Build(sourceRecords, context);
@@ -191,45 +186,14 @@ namespace Module.Host.TPM.Actions
                 IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
                 List<ClientTree> existingClientTreeIds = query.ToList();
+                string username = context.Users.FirstOrDefault(g => g.Id == UserId).Name;
+                // проверка на дубликаты из файла
+                CheckForDuplicatesImport(context, sourceRecords, out validationErrors);
+                // создание пром
+                List<Promo> promos = CreatePromoesFromTLCdraft(context, sourceRecords, username, existingClientTreeIds, out validationErrors);
 
-                // Проверка на дубликаты и остальное........
-                CheckForDuplicates(context, sourceRecords, out sourceRecordWithoutDuplicates, out validationErrors);
-
-                //Стандартные проверки
-                foreach (var item in sourceRecordWithoutDuplicates)
-                {
-
-                    IEntity<Guid> rec;
-
-                    if (!validator.Validate(item, out validationErrors))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                    }
-                    else if (!builder.Build(item, cache, context, out rec, out warnings, out validationErrors))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                        if (warnings.Any())
-                        {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
-                        }
-                    }
-                    else if (!IsFilterSuitable(ref rec, context, out validationErrors, existingClientTreeIds))
-                    {
-                        HasErrors = true;
-                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", validationErrors)));
-                    }
-                    else
-                    {
-                        records.Add(rec);
-                        successList.Add(item);
-                        if (warnings.Any())
-                        {
-                            warningRecords.Add(new Tuple<IEntity<Guid>, string>(item, string.Join(", ", warnings)));
-                        }
-                    }
-                };
+                // Проверка на дубликаты из базы
+                promos = CheckForDuplicates(context, promos, sourceRecords, out validationErrors);
 
                 logger.Trace("Persist models built");
 
@@ -247,8 +211,7 @@ namespace Module.Host.TPM.Actions
                 if (hasSuccessList)
                 {
                     // Закончить импорт
-                    resultRecordCount = InsertDataToDatabase(records, context);
-                    //CalculateBudgetsCreateTask(context, promoesForBudgetCalculation);
+                    resultRecordCount = InsertDataToDatabase(promos, context);
                 }
                 logger.Trace("Persist models inserted");
                 context.SaveChanges();
@@ -289,307 +252,65 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private void CheckForDuplicates(DatabaseContext context, IList<IEntity<Guid>> templateRecordIds, out IList<IEntity<Guid>> distinctRecordIds, out IList<string> errors)
-        {
-            distinctRecordIds = new List<IEntity<Guid>>();
-            errors = new List<string>();
-
-
-            var sourceTemplateRecords = templateRecordIds
-                .Select(sr => (sr as ImportRpaActualPlu));
-
-            var shortPromoes = context.Set<Promo>()
-                .Select(ps => new
-                {
-                    ps.Id,
-                    ps.Disabled,
-                    ps.ClientTreeId,
-                    ps.Number,
-                    ps.PromoStatus.SystemName
-                });
-
-
-
-            //foreach(var promo in shortPromoes)
-            //{
-            //    var products = context.Set<PromoProduct>().Include("Plu").Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
-            //    foreach (ImportRpaActualPlu item in sourceTemplateRecords)
-            //    {
-            //        var found = products.FirstOrDefault(x => x.Plu != null && x.Plu.PluCode == item.PluImport);
-            //        item.Plu = new PromoProduct2Plu() { PluCode = item.PluImport };
-            //        if (found != null)
-            //        {
-            //            item.EAN_PC = found.EAN_PC;
-            //        }
-            //    }
-            //}
-
-            var joinPromoSupports = sourceTemplateRecords
-                .Join(shortPromoes,
-                        str => str.PromoNumberImport,
-                        ssp => ssp.Number,
-                        (str, ssp) => new
-                        {
-                            PromoNumberImport = str.PromoNumberImport,
-                            PluImport = str.PluImport,
-                            ActualProductPcQuantityImport = str.ActualProductPcQuantityImport,
-                            PromoId = ssp.Id,
-                            Disabled = ssp.Disabled,
-                            ClietTreeId = ssp.ClientTreeId,
-                            StatusName = ssp.SystemName
-
-                        });
-
-            distinctRecordIds = joinPromoSupports
-                .Select(p => new ImportRpaActualPlu
-                {
-                    PromoNumberImport = p.PromoNumberImport,
-                    PluImport = p.PluImport,
-                    ActualProductPcQuantityImport = p.ActualProductPcQuantityImport,
-                    PromoId = p.PromoId,
-                    StatusName = p.StatusName
-                } as IEntity<Guid>)
-                .ToList();
-        }
-
-        private bool IsFilterSuitable(ref IEntity<Guid> rec, DatabaseContext context, out IList<string> errors, List<ClientTree> existingClientTreeIds)
+        private void CheckForDuplicatesImport(DatabaseContext context, IList<IEntity<Guid>> sourceRecords, out IList<string> errors)
         {
             errors = new List<string>();
-            warnings = new List<string>();
-            bool isSuitable = true;
-
-            ImportRpaActualPlu typedRec = (ImportRpaActualPlu)rec;
-
-            var promo = context.Set<Promo>().FirstOrDefault(x => x.Number == typedRec.PromoNumberImport && !x.Disabled);
-            if (promo == null)
+            List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
+                .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount }).ToList();
+            var promos2 = promos1.Distinct().ToList();
+            if (promos2.Count != sourceRecords.Count)
             {
-                errors.Add("Promo not found or deleted");
-                isSuitable = false;
-                return isSuitable;
+                var duplicate = promos1.GroupBy(s => s)
+                    .SelectMany(grp => grp.Skip(1)).FirstOrDefault();
+                errors.Add("Duplicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate);
+                HasErrors = true;
+                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), string.Join(", ", errors)));
             }
-
-            var eanPc = context.Set<PLUDictionary>().FirstOrDefault(x => x.PluCode == typedRec.PluImport && x.ObjectId == promo.ClientTree.ObjectId)?.EAN_PC;
-
-            if (!existingClientTreeIds.Any(x => x.ObjectId == promo.ClientTree.ObjectId))
-            {
-                errors.Add("No access to the client");
-                isSuitable = false;
-            }
-            if (string.IsNullOrEmpty(eanPc))
-            {
-                errors.Add("EAN_PC not found for PLU");
-                isSuitable = false;
-                return isSuitable;
-            }
-            typedRec.EAN_PC = eanPc;
-            var promoProduct = context.Set<PromoProduct>().FirstOrDefault(x => x.PromoId == promo.Id && x.Product.EAN_PC == typedRec.EAN_PC && !x.Disabled);
-            if (promoProduct == null)
-            {
-                errors.Add("PromoProduct not found");
-                isSuitable = false;
-            }
-            var promoStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName == promo.PromoStatus.SystemName && !x.Disabled);
-            if (promoStatus.SystemName != "Finished")
-            {
-                errors.Add("Invalid promo status");
-                isSuitable = false;
-            }
-
-            return isSuitable;
         }
 
-        private int InsertDataToDatabase(IEnumerable<IEntity<Guid>> sourceRecords, DatabaseContext context)
+        private List<Promo> CheckForDuplicates(DatabaseContext context, List<Promo> promos, IList<IEntity<Guid>> sourceRecords, out IList<string> errors)
         {
-
-            var sourcePromoProducts = sourceRecords
-                 .Select(sr => sr as ImportRpaActualPlu)
-                 .ToList();
-
-            var sourcePromoIds = sourcePromoProducts
-                .Distinct()
-                .Select(ps => ps.PromoId)
+            errors = new List<string>();
+            List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
+                .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
+            List<Guid> promoStatuses = context.Set<PromoStatus>().Where(g => !g.Disabled && g.SystemName != "Cancelled").Select(g => g.Id).ToList();
+            var promosPresent = context.Set<Promo>()
+                .Where(g => promoStatuses.Contains((Guid)g.PromoStatusId) && !g.Disabled && g.TPMmode == TPMmode.Current)
+                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount })
                 .ToList();
-
-
-            var promoes = context.Set<Promo>()
-                .Where(x => sourcePromoIds.Contains(x.Id) && !x.Disabled)
-                .ToList();
-
-
-            ScriptGenerator generator = GetScriptGenerator();
-            var query = GetQuery(context);
-
-            List<PromoProduct> toUpdate = new List<PromoProduct>();
-            List<Tuple<IEntity<Guid>, IEntity<Guid>>> toHisUpdate = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-            foreach (Promo promo in promoes)
+            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount }).ToList();
+            foreach (var promoImport in promoImports)
             {
-                if (promo != null)
+                var present = promosPresent
+                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount);
+                if (present != null)
                 {
-                    if (!promo.InOut.HasValue || !promo.InOut.Value)
-                    {
-                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts.Where(x => x.PromoId == promo.Id))
-                        {
-                            PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId && pp.EAN_PC == itemRecord.EAN_PC && !pp.Disabled);
-                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
-                            // выбор продуктов с ненулевым BaseLine (проверка Baseline ниже)
-                            var productsWithRealBaseline = query.Where(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
-
-                            if (productsWithRealBaseline != null && productsWithRealBaseline.Count() > 0)
-                            {
-                                //распределение импортируемого количества пропорционально PlanProductBaselineLSV
-                                var sumBaseline = productsWithRealBaseline.Sum(x => x.PlanProductBaselineLSV);
-                                List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-                                List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
-                                bool isRealBaselineExist = false;
-                                foreach (var p in productsWithRealBaseline)
-                                {
-                                    var newRecordClone = ClonePromoProduct(promoProduct);
-                                    p.ActualProductUOM = "PC";
-                                    // проверка Baseline (исправляет ActualProductPCQty)
-                                    if (p.PlanProductBaselineLSV != null && p.PlanProductBaselineLSV != 0)
-                                    {
-                                        if (p.PlanProductIncrementalLSV != 0 && sumBaseline != 0)
-                                        {
-                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumBaseline / (decimal?)p.PlanProductBaselineLSV));
-                                        }
-                                        else
-                                        {
-                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        }
-                                        isRealBaselineExist = true;
-                                    }
-                                    else
-                                    {
-                                        p.ActualProductPCQty = null;
-                                        newRecordClone.ActualProductPCQty = null;
-                                    }
-
-                                    promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
-                                    promoProductsToUpdate.Add(p);
-                                }
-
-                                if (isRealBaselineExist)
-                                {
-                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
-                                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
-                                    {
-                                        var firstRealBaselineItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
-                                        firstRealBaselineItem.ActualProductPCQty += differenceActualProductPCQty;
-                                    }
-                                }
-                                else
-                                {
-                                    //TODO: вывод предупреждения
-                                    //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == promoProduct.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
-                                    if (oldRecord != null)
-                                    {
-                                        oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        toUpdate.Add(oldRecord);
-                                        toHisUpdate.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(oldRecord, promoProduct));
-                                    }
-                                }
-
-                                toUpdate.AddRange(promoProductsToUpdate);
-                                toHisUpdate.AddRange(promoProductsToUpdateHis);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (ImportRpaActualPlu itemRecord in sourcePromoProducts)
-                        {
-                            PromoProduct promoProduct = context.Set<PromoProduct>()
-                                .FirstOrDefault(pp => pp.PromoId == itemRecord.PromoId);
-                            promoProduct.ActualProductPCQty = itemRecord.ActualProductPcQuantityImport;
-                            //в случае inout промо выбираем продукты с ненулевой ценой PlanProductPCPrice, которая подбирается из справочника IncrementalPromo
-                            var productsWithRealPCPrice = query.Where(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled).ToList();
-
-                            if (productsWithRealPCPrice != null && productsWithRealPCPrice.Count() > 0)
-                            {
-                                //распределение импортируемого количества пропорционально PlanProductIncrementalLSV
-                                var sumIncremental = productsWithRealPCPrice.Sum(x => x.PlanProductIncrementalLSV);
-                                List<PromoProduct> promoProductsToUpdate = new List<PromoProduct>();
-                                List<Tuple<IEntity<Guid>, IEntity<Guid>>> promoProductsToUpdateHis = new List<Tuple<IEntity<Guid>, IEntity<Guid>>>();
-                                bool isRealPCPriceExist = false;
-                                foreach (var p in productsWithRealPCPrice)
-                                {
-                                    var newRecordClone = ClonePromoProduct(promoProduct);
-                                    p.ActualProductUOM = "PC";
-                                    // проверка Price (исправляет ActualProductPCQty)
-                                    if (p.PlanProductPCPrice != null && p.PlanProductPCPrice != 0)
-                                    {
-                                        if (p.PlanProductIncrementalLSV != 0 && sumIncremental != 0)
-                                        {
-                                            p.ActualProductPCQty = (int?)(promoProduct.ActualProductPCQty * ((decimal?)sumIncremental / (decimal?)p.PlanProductIncrementalLSV));
-                                        }
-                                        else
-                                        {
-                                            p.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        }
-                                        isRealPCPriceExist = true;
-                                    }
-                                    else
-                                    {
-                                        p.ActualProductPCQty = null;
-                                        newRecordClone.ActualProductPCQty = null;
-                                    }
-
-                                    promoProductsToUpdateHis.Add(new Tuple<IEntity<Guid>, IEntity<Guid>>(p, newRecordClone));
-                                    promoProductsToUpdate.Add(p);
-                                }
-
-                                if (isRealPCPriceExist)
-                                {
-                                    var differenceActualProductPCQty = promoProduct.ActualProductPCQty - promoProductsToUpdate.Sum(x => x.ActualProductPCQty);
-                                    if (differenceActualProductPCQty.HasValue && differenceActualProductPCQty != 0)
-                                    {
-                                        var firstRealPriceItem = promoProductsToUpdate.FirstOrDefault(x => x.ActualProductPCQty != null);
-                                        firstRealPriceItem.ActualProductPCQty += differenceActualProductPCQty;
-                                    }
-                                }
-                                else
-                                {
-                                    //TODO: вывод предупреждения
-                                    //если не найдено продуктов с ненулевым basline, просто записываем импортируемое количество в первый попавшийся продукт, чтобы сохранилось
-                                    warningRecords.Add(new Tuple<IEntity<Guid>, string>(promo, "Plan Product Base Line LSV is 0"));
-                                    PromoProduct oldRecord = query.FirstOrDefault(x => x.EAN_PC == itemRecord.EAN_PC && x.PromoId == promo.Id && !x.Disabled);
-                                    if (oldRecord != null)
-                                    {
-                                        oldRecord.ActualProductUOM = "PC";
-                                        oldRecord.ActualProductPCQty = promoProduct.ActualProductPCQty;
-                                        toUpdate.Add(oldRecord);
-                                    }
-                                }
-
-                                toUpdate.AddRange(promoProductsToUpdate);
-                            }
-                        }
-                    }
+                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount);
+                    errors.Add("Duplicate present in client:" + dublicate.Client + ", startdate:" + dublicate.PromoStartDate + " enddate:" + dublicate.PromoEndDate);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == dublicate.Client && g.PromoStartDate == dublicate.PromoStartDate && g.PromoEndDate == dublicate.PromoEndDate), string.Join(", ", errors)));
                 }
+            }
 
-                foreach (PromoProduct item in toUpdate)
-                {
-                    context.Set<PromoProduct>().AddOrUpdate(item);
-                }
+            return promos;
+        }
+
+        private int InsertDataToDatabase(List<Promo> promos, DatabaseContext context)
+        {
+            context.Set<Promo>().AddRange(promos);
+            context.SaveChanges();
+            // записать в TLCImport
+            if (promos.Count > 0)
+            {
+                DateTimeOffset date = TimeHelper.Now();
+                List<TLCImport> tLCImports = promos.Select(g => new TLCImport { PromoId = g.Id, LoadDate = date, HandlerId = HandlerId }).ToList();
+                context.Set<TLCImport>().AddRange(tLCImports);
                 context.SaveChanges();
-                // Обновляем фактические значения
-                CreateTaskCalculateActual(promo.Id);
+                return promos.Count;
             }
-
-            return sourceRecords.Count();
-        }
-
-        private ScriptGenerator GetScriptGenerator()
-        {
-            if (Generator == null)
-            {
-                Generator = new ScriptGenerator(ModelType);
-            }
-            return Generator;
+            return 0;
         }
 
         private string GetImportStatus()
@@ -602,7 +323,6 @@ namespace Module.Host.TPM.Actions
                 }
                 else
                 {
-
                     return ImportUtility.StatusName.ERROR;
                 }
             }
@@ -612,63 +332,123 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        /// <summary>
-        /// Создание клона продукта
-        /// </summary>
-        /// <returns></returns>
-        private PromoProduct ClonePromoProduct(PromoProduct promoProduct)
+        private List<Promo> CreatePromoesFromTLCdraft(DatabaseContext context, IList<IEntity<Guid>> sourceRecords, string username, List<ClientTree> existingClientTreeIds, out IList<string> errors)
         {
-            var promoProductClone = new PromoProduct();
-            promoProductClone.ActualProductPCQty = promoProduct.ActualProductPCQty;
-            promoProductClone.EAN_PC = promoProduct.EAN_PC;
-            promoProductClone.ActualProductUOM = promoProduct.ActualProductUOM;
-            return promoProductClone;
-        }
-
-        /// <summary>
-        /// Создание отложенной задачи, выполняющей расчет фактических параметров продуктов и промо
-        /// </summary>
-        /// <param name="promoId">ID промо</param>
-        private void CreateTaskCalculateActual(Guid promoId)
-        {
-            // к этому моменту промо уже заблокировано
-
-            using (DatabaseContext context = new DatabaseContext())
+            errors = new List<string>();
+            List<Promo> promos = new List<Promo>();
+            List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
+                            .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
+            List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+            List<PromoTypes> promoTypes = context.Set<PromoTypes>().Where(g => !g.Disabled && (g.SystemName == "Regular" || g.SystemName == "InOut")).ToList();
+            List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
+            List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
+            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            List<Color> colors = context.Set<Color>().Where(x => !x.Disabled).ToList();
+            PromoStatus promoStatus = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "Draft");
+            var users = context.Set<User>().Where(x => !x.Disabled).ToList();
+            foreach (ImportRpaTLCdraft import in sourceTemplateRecords)
             {
-                HandlerData data = new HandlerData();
-                HandlerDataHelper.SaveIncomingArgument("PromoId", promoId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("UserId", UserId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("RoleId", RoleId, data, visible: false, throwIfNotExists: false);
-                HandlerDataHelper.SaveIncomingArgument("needRedistributeLSV", true, data, visible: false, throwIfNotExists: false);
-
-                LoopHandler handler = new LoopHandler()
+                ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == import.ClientHierarchyCode).FirstOrDefault();
+                if (!existingClientTreeIds.Any(x => x.ObjectId == clientTree.ObjectId))
                 {
-                    Id = Guid.NewGuid(),
-                    ConfigurationName = "PROCESSING",
-                    Description = "Calculate actual parameters",
-                    Name = "Module.Host.TPM.Handlers.CalculateActualParamatersHandler",
-                    ExecutionPeriod = null,
-                    CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
-                    LastExecutionDate = null,
-                    NextExecutionDate = null,
-                    ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
-                    UserId = UserId,
-                    RoleId = RoleId
+                    errors.Add("No access to the client " + clientTree.FullPathName);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                }
+                var user = users.FirstOrDefault(x => !String.IsNullOrEmpty(x.Email) && x.Email.Equals(import.Email, StringComparison.CurrentCultureIgnoreCase));
+                if (user == null) 
+                {
+                    errors.Add($"User '{import.Email}' not found");
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    //break?
+                }
+                var promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event 'Standard promo' not found");
+                }
+
+                var btId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).Id;
+                var brandId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).BrandId;
+                var techId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).TechnologyId;
+
+                Guid? colorId = null;
+                var color = colors.Where(x => !x.Disabled && x.BrandTechId == btId).ToList();
+                if (color.Count() == 1)
+                {
+                    colorId = color.First().Id;
+                }
+
+                Promo promo = new Promo
+                {
+                    CreatorLogin = user.Name,
+                    CreatorId = user.Id,
+                    LoadFromTLC = false,
+                    Name = "Unpublish Promo",
+                    EventName = promoEvent.Name,
+                    EventId = promoEvent.Id,
+                    ColorId = colorId,
+                    ProductHierarchy = "",
+                    PromoTypesId = promoTypes.FirstOrDefault(g => g.Name == import.PromoType).Id,
+                    DeviationCoefficient = 0,
+                    IsApolloExport = true, //??
+                    ProductSubrangesListRU = "",
+                    PromoStatusId = promoStatus.Id,
+                    ClientHierarchy = clientTree.FullPathName,
+                    ClientTreeId = clientTree.ObjectId,
+                    BaseClientTreeIds = clientTree.ObjectId.ToString(),
+                    ClientTreeKeyId = clientTree.Id,
+                    BrandTechId = btId,
+                    ProductSubrangesList = import.Subrange,
+                    StartDate = import.PromoStartDate,
+                    EndDate = import.PromoEndDate,
+                    TechnologyId = techId,
+                    InOutProductIds = "",
+                    InOut = import.PromoType == "InOut", // add to closed import
+                    BrandId = brandId,
+                    BudgetYear = import.BudgetYear,
+                    CalendarPriority = 3,
+                    NeedRecountUplift = true
                 };
-
-                //BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
-                //bp.HandlerId = handler.Id;
-
-                handler.SetParameterData(data);
-                context.LoopHandlers.Add(handler);
-                context.SaveChanges();
+                CreatePromoProductTree(promo, context.Set<ProductTree>().Where(x => x.EndDate == null).ToList(), context);
+                promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                SetPromoMarsDates(promo);
+                if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (DateTimeOffset)promo.EndDate, (int)promo.BudgetYear))
+                {
+                    errors.Add("Wrong BudgetYear " + import.BudgetYear);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                }
+                Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == import.Mechanic && g.PromoTypesId == promo.PromoTypesId);
+                promo.MarsMechanicId = mechanic.Id;
+                promo.MarsMechanicDiscount = import.Discount;
+                promo.Mechanic = "";
+                MechanicType mechanicType = mechanicTypes.FirstOrDefault(g => g.Name == import.MechanicType);
+                promo.MarsMechanicTypeId = mechanicType?.Id;
+                promo.MechanicComment = import.MechanicComment;
+                SetMechanic(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
+                SetMechanicIA(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
+                promos.Add(promo);
+                // psc?
             }
-        }
 
-        private IEnumerable<PromoProduct> GetQuery(DatabaseContext context)
+            return promos;
+        }
+        private bool CheckBudgetYear(DateTimeOffset dispatchStartDate, DateTimeOffset endDate, int budgetYear)
         {
-            IQueryable<PromoProduct> query = context.Set<PromoProduct>().AsNoTracking();
-            return query.ToList();
+            DateTimeOffset startYear = TimeHelper.ThisBuggetYearStart();
+            DateTimeOffset endYear = TimeHelper.ThisBuggetYearEnd();
+            int budgetYearT = TimeHelper.ThisBuggetYear();
+            if (dispatchStartDate < startYear || endYear < endDate)
+            {
+                return false;
+            }
+            if (budgetYear != budgetYearT)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

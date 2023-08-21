@@ -475,9 +475,6 @@ namespace Module.Frontend.TPM.Controllers
             RoleInfo role = authorizationManager.GetCurrentRole();
             Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
 
-            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
-            ImportResultModel resultmodel = new ImportResultModel();
-
             HandlerData data = new HandlerData();
             FileModel file = new FileModel()
             {
@@ -489,9 +486,9 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaTLCclosed), data, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaTLCclosed).Name, data, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaTLCclosed), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportRpaTLCdraft), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportRpaTLCdraft).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportRpaTLCdraft), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "Name" }, data);
             HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
 
