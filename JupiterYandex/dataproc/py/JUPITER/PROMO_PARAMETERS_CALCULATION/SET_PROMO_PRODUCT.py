@@ -27,12 +27,13 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
               ,notInOutCalcPlanPromoDF.ClientTreeKeyId
               ,notInOutCalcPlanPromoDF.DispatchesStart
               ,promoProductTreeDF.Disabled.alias('pptDisabled')
+              ,promoProductTreeDF.TPMmode.alias('pptTPMmode')
               ,notInOutCalcPlanPromoDF.Number.alias('pNumber')
               ,productTreeDF.EndDate
               ,lower(productTreeDF.FilterQuery).alias('FilterQuery')
               ,notInOutCalcPlanPromoDF.InOutProductIds.alias('promoInOutProductIds')
              )\
-      .where((col('pptDisabled') == 'false') & (col('EndDate').isNull()))
+      .where((col('pptDisabled') == 'false') & (col('pptTPMmode') != 3) & (col('EndDate').isNull()))
 
     setProductDF = setProductDF\
       .withColumn('CheckedProductList', split(setProductDF.promoInOutProductIds, ';'))\
