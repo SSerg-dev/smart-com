@@ -767,7 +767,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 TradedUnitFormat = material.Traded_unit_format,
                 UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null,
                 ZREP = material.ZREP.TrimStart('0'),
-                NetWeight = (double?)material.GNET_WT,
+                NetWeight = material.GNET_WT,
                 UOM = material.UNIT_OF_WT
             };
         }
@@ -791,7 +791,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
                 product.Tech_code != material.Tech_code ||
                 product.SubBrand_code != material.SubBrand_code ||
                 product.TradedUnitFormat != material.Traded_unit_format ||
-                product.NetWeight != (double?)material.GNET_WT || 
+                product.NetWeight != material.GNET_WT || 
                 product.UOM != material.UNIT_OF_WT);
         }
 
@@ -800,7 +800,7 @@ namespace Module.Host.TPM.Actions.DataLakeIntegrationActions
             var updatedFields = new List<string>();
             int? division = !String.IsNullOrEmpty(material.DIVISION) ? (int?)int.Parse(material.DIVISION) : null;
             int? UOM_PC2Case = !String.IsNullOrEmpty(material.UOM_PC2Case) ? (int?)int.Parse(material.UOM_PC2Case) : null;
-            double? NetWeight = (double?)material.GNET_WT;
+            double? NetWeight = material.GNET_WT;
             string EAN_Case = material.EAN_Case.HasValue ? DecimalToString(material.EAN_Case) : null;
             string EAN_PC = material.EAN_PC.HasValue ? DecimalToString(material.EAN_PC) : null;
 

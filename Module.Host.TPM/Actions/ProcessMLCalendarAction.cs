@@ -124,11 +124,11 @@ namespace Module.Host.TPM.Actions
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
                 if (rollingScenario.ScenarioType == ScenarioType.RS)
                 {
-                    inputMLs.AddRange(PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSetting.Delimiter, startEndModel, clientTrees).InputMLRSs);
+                    inputMLs.AddRange(PromoHelper.GetInputMLRSquick(pathfile, cSVProcessInterfaceSetting.Delimiter).InputMLRSs);
                 }
                 if (rollingScenario.ScenarioType == ScenarioType.RA)
                 {
-                    inputMLs.AddRange(PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSetting.Delimiter, startEndModel, clientTrees).InputMLRAs);
+                    inputMLs.AddRange(PromoHelper.GetInputMLRAquick(pathfile, cSVProcessInterfaceSetting.Delimiter).InputMLRAs);
                 }
                 List<int> inputMlIds = inputMLs.Select(g => g.PromoId).Distinct().ToList();
 

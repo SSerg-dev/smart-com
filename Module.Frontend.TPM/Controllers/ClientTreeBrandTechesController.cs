@@ -117,7 +117,7 @@ namespace Module.Frontend.TPM.Controllers
                                             && s.BrandTechId == bt.Id
                                             && s.ParentClientTreeDemandCode == demandCode
                                             && !s.Disabled).Count();
-                    if (shareRecordCounnt == 0)
+                    if (shareRecordCounnt == 0 && !String.IsNullOrEmpty(demandCode))
                     {
                         context.Set<ClientTreeBrandTech>().Add(new ClientTreeBrandTech()
                         {

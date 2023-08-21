@@ -171,6 +171,7 @@ promoFilterDF = promoDF\
   .select(\
            promoDF.Id
           ,promoDF.Disabled
+          ,promoDF.TPMmode
           ,promoDF.Number
           ,promoDF.BrandTechId
           ,promoDF.ClientTreeKeyId
@@ -181,17 +182,18 @@ promoFilterDF = promoDF\
           ,date_add(to_date(promoDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')
           ,promoStatusDF.SystemName.alias('promoStatusName')
          )\
-  .where((~col('promoStatusName').isin(*notCheckPromoStatusList)) & (col('Disabled') == 'False'))
+  .where((~col('promoStatusName').isin(*notCheckPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode') != 3))
 
 actualCogsTiRecalculationPromoDF = promoDF\
   .join(promoStatusDF, promoStatusDF.Id == promoDF.PromoStatusId, 'inner')\
   .select(\
            promoDF.Id
           ,promoDF.Disabled
+          ,promoDF.TPMmode
           ,promoDF.Number
           ,promoStatusDF.SystemName.alias('promoStatusName')
          )\
-  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False'))
+  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode') != 3))
 
 promoFilterDF = promoFilterDF\
   .join(brandTechDF, brandTechDF.Id == promoFilterDF.BrandTechId, 'left')\
@@ -200,7 +202,7 @@ promoFilterDF = promoFilterDF\
           ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')
          )\
 
-activePromoProductDF = promoProductDF.where(col('Disabled') == 'false')
+activePromoProductDF = promoProductDF.where((col('Disabled') == 'false') & (col('TPMmode') != 3))
 activeClientTreeDF = clientTreeDF.where(col('EndDate').isNull())
 
 activeClientTreeList = activeClientTreeDF.collect()

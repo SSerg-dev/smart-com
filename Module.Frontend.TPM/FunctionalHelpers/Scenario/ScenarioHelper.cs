@@ -333,6 +333,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             if (savedPromoOld != null)
             {
                 Context.Set<SavedPromo>().Remove(savedPromoOld);
+                Context.SaveChanges();
             }
             SavedPromo savedPromo = new SavedPromo
             {
@@ -343,14 +344,15 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             };
             PromoHelper.ClientDispatchDays clientDispatchDays = PromoHelper.GetClientDispatchDays(RS.ClientTree);
 
-            HiddenModeHelper.CopyPromoesToSavedPromo(Context, GetCurrentPeriodPromoes(RS.ScenarioType, Context, clientDispatchDays), savedPromo);
+            HiddenModeHelper.CopyPromoesToSavedPromo(Context, GetCurrentPeriodPromoes(RS, Context, clientDispatchDays), savedPromo);
         }
-        private static List<Promo> GetCurrentPeriodPromoes(ScenarioType scenarioType, DatabaseContext Context, PromoHelper.ClientDispatchDays clientDispatchDays)
+        private static List<Promo> GetCurrentPeriodPromoes(RollingScenario RS, DatabaseContext Context, PromoHelper.ClientDispatchDays clientDispatchDays)
         {
             DateTimeOffset DispatchesStart;
             List<string> needStatuses = "OnApproval,Approved,DraftPublished".Split(',').ToList();            
             List<Promo> promos = new List<Promo>();
-            if (scenarioType == ScenarioType.RS)
+
+            if (RS.ScenarioType == ScenarioType.RS)
             {
                 StartEndModel startEndModelRS = RSPeriodHelper.GetRSPeriod(Context);
                 if (clientDispatchDays.IsStartAdd)
@@ -362,11 +364,11 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                     DispatchesStart = startEndModelRS.StartDate.AddDays(-clientDispatchDays.StartDays);
                 }
                 promos = Context.Set<Promo>().Where(g => g.DispatchesStart > startEndModelRS.StartDate &&
-                g.EndDate > startEndModelRS.EndDate && g.BudgetYear == startEndModelRS.BudgetYear &&
-                needStatuses.Contains(g.PromoStatus.SystemName))
+                g.EndDate < startEndModelRS.EndDate && g.BudgetYear == startEndModelRS.BudgetYear &&
+                needStatuses.Contains(g.PromoStatus.SystemName) && g.ClientTreeId == RS.ClientTree.ObjectId && !g.Disabled && g.TPMmode == TPMmode.Current)
                     .ToList();
             }
-            if (scenarioType == ScenarioType.RA)
+            if (RS.ScenarioType == ScenarioType.RA)
             {
                 StartEndModel startEndModelRA = RAmodeHelper.GetRAPeriod();
                 if (clientDispatchDays.IsStartAdd)
@@ -378,8 +380,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                     DispatchesStart = startEndModelRA.StartDate.AddDays(-clientDispatchDays.StartDays);
                 }
                 promos = Context.Set<Promo>().Where(g => g.DispatchesStart > startEndModelRA.StartDate &&
-                g.EndDate > startEndModelRA.EndDate && g.BudgetYear == startEndModelRA.BudgetYear &&
-                needStatuses.Contains(g.PromoStatus.SystemName))
+                g.EndDate < startEndModelRA.EndDate && g.BudgetYear == startEndModelRA.BudgetYear &&
+                needStatuses.Contains(g.PromoStatus.SystemName) && g.ClientTreeId == RS.ClientTree.ObjectId && !g.Disabled && g.TPMmode == TPMmode.Current)
                     .ToList();
             }
             return promos;

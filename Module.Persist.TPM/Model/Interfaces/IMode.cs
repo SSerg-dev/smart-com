@@ -9,6 +9,7 @@
         Current,
         RS,
         RA,
-        Hidden
+        Hidden,
+        Archive
     }
 }

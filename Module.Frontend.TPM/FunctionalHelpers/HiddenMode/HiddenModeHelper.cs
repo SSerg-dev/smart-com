@@ -149,7 +149,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             {
                 cfg.CreateMap<Promo, Promo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
@@ -183,20 +183,20 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease));
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductTree, PromoProductTree>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProduct, PromoProduct>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
@@ -205,13 +205,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
                 cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Archive))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())

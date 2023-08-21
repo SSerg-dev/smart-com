@@ -111,7 +111,8 @@ def generate_entity_list(parameters:dict):
     raw_path=parameters['RawPath']
     dst_dir=parameters['DstDir'] 
     entities = [
-              {'SrcPath':'FILES/RUSSIA_PETCARE_DEMAND_PLANNING_DM/MARS_STP/MVP/SOURCES/','DstPath':dst_dir},
+              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA/','DstPath':dst_incr_dir},
+              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/ROLLING/','DstPath':dst_dir},
              ]
     return entities
 

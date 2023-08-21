@@ -52,9 +52,9 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     IEnumerable<string> fBufferNames = fileBuffers.Select(g => g.FileName).OrderBy(f => f);
                     IEnumerable<string> NotPresents = fileNames.Except(fBufferNames);
                     List<FileBuffer> fileBuffersAdd = new List<FileBuffer>();
-                    StartEndModel startEndModelRS = RSPeriodHelper.GetRSPeriod(context);
-                    StartEndModel startEndModelRA = RAmodeHelper.GetRAPeriod();
-                    List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                    //StartEndModel startEndModelRS = RSPeriodHelper.GetRSPeriod(context);
+                    //StartEndModel startEndModelRA = RAmodeHelper.GetRAPeriod();
+                    //List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
 
                     foreach (string filename in NotPresents)
                     {
@@ -79,7 +79,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                     {
                         buffererr = buffer;
                         string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRS.SourcePath, buffer.FileName);
-                        ReturnInputMLRS returnInputMLRS = PromoHelper.GetInputMLRS(pathfile, cSVProcessInterfaceSettingRS.Delimiter, startEndModelRS, clientTrees);
+                        ReturnInputMLRS returnInputMLRS = PromoHelper.GetInputMLRSquick(pathfile, cSVProcessInterfaceSettingRS.Delimiter);
                         List<InputMLRS> inputMLs = returnInputMLRS.InputMLRSs;
                         List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
                         if (inputMlClients.Count > 0)
@@ -102,7 +102,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                         }
                     }
                     context.SaveChanges();
-                    ReadMLRA(context, info, data, handlerLogger, startEndModelRA, clientTrees);
+                    ReadMLRA(context, info, data, handlerLogger);
                 }
             }
             catch (Exception e)
@@ -137,7 +137,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
                 }
             }
         }
-        private void ReadMLRA(DatabaseContext context, HandlerInfo info, ExecuteData data, LogWriter handlerLogger, StartEndModel startEndModelRA, List<ClientTree> clientTrees)
+        private void ReadMLRA(DatabaseContext context, HandlerInfo info, ExecuteData data, LogWriter handlerLogger)
         {
             // настройки
             string filesDir = AppSettingsManager.GetSetting("INTERFACE_DIRECTORY", "InterfaceFiles");
@@ -177,7 +177,7 @@ namespace Module.Host.TPM.Handlers.Interface.Incoming
             {
                 buffererr = buffer;
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSettingRA.SourcePath, buffer.FileName);
-                ReturnInputMLRA returnInputMLRA = PromoHelper.GetInputMLRA(pathfile, cSVProcessInterfaceSettingRA.Delimiter, startEndModelRA, clientTrees);
+                ReturnInputMLRA returnInputMLRA = PromoHelper.GetInputMLRAquick(pathfile, cSVProcessInterfaceSettingRA.Delimiter);
                 List<InputMLRA> inputMLs = returnInputMLRA.InputMLRAs;
                 List<int> inputMlClients = inputMLs.Select(g => g.FormatCode).Distinct().ToList();
                 if (inputMlClients.Count > 0)
