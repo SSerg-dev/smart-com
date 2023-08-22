@@ -166,6 +166,9 @@ except:
 notCheckPromoStatusList = ['Draft', 'Cancelled', 'Deleted', 'Closed', 'Started', 'Finished']
 actualCogsTiRecalculationPromoStatusList = ['Finished', 'Closed']
 
+#tpm modes for recalculation: Current, RS, RA
+calcTPMmodes = [0, 1, 2]
+
 promoFilterDF = promoDF\
   .join(promoStatusDF, promoStatusDF.Id == promoDF.PromoStatusId, 'inner')\
   .select(\
@@ -182,7 +185,7 @@ promoFilterDF = promoDF\
           ,date_add(to_date(promoDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')
           ,promoStatusDF.SystemName.alias('promoStatusName')
          )\
-  .where((~col('promoStatusName').isin(*notCheckPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode') != 3))
+  .where((~col('promoStatusName').isin(*notCheckPromoStatusList)) & (col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
 
 actualCogsTiRecalculationPromoDF = promoDF\
   .join(promoStatusDF, promoStatusDF.Id == promoDF.PromoStatusId, 'inner')\
@@ -193,7 +196,7 @@ actualCogsTiRecalculationPromoDF = promoDF\
           ,promoDF.Number
           ,promoStatusDF.SystemName.alias('promoStatusName')
          )\
-  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode') != 3))
+  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode').isin(*calcTPMmodes))
 
 promoFilterDF = promoFilterDF\
   .join(brandTechDF, brandTechDF.Id == promoFilterDF.BrandTechId, 'left')\
@@ -202,7 +205,7 @@ promoFilterDF = promoFilterDF\
           ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')
          )\
 
-activePromoProductDF = promoProductDF.where((col('Disabled') == 'false') & (col('TPMmode') != 3))
+activePromoProductDF = promoProductDF.where((col('Disabled') == 'false') & (col('TPMmode').isin(*calcTPMmodes))
 activeClientTreeDF = clientTreeDF.where(col('EndDate').isNull())
 
 activeClientTreeList = activeClientTreeDF.collect()

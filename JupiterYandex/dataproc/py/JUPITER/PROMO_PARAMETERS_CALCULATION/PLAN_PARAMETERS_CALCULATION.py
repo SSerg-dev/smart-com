@@ -279,11 +279,14 @@ filteredPromoDF = filteredPromoDF.dropDuplicates()
 filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
 # print('filtered promo count:', filteredPromoDF.count())
 
+#tpm modes for recalculation: Current, RS, RA
+calcTPMmodes = [0, 1, 2]
+
 # promoProduct
 promoProductCols = promoProductDF.columns
 increasePromoProductCols = promoProductPriceIncreaseDF.columns
 increasePromoCols = promoPriceIncreaseDF.columns
-allCalcPlanPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & (col('TPMmode') != 3))
+allCalcPlanPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
 
@@ -296,7 +299,7 @@ calcPlanPromoDF = promoDF.where(col('Disabled') == 'False')
 
 # all promo
 promoCols = promoDF.columns
-allCalcPlanPromoDF = promoDF.where((col('Disabled') == 'false') & (col('TPMmode') != 3))
+allCalcPlanPromoDF = promoDF.where((col('Disabled') == 'false') & col('TPMmode').isin(*calcTPMmodes))
 allCalcPlanPromoIdsDF = allCalcPlanPromoDF.select(col('Id'))
 disabledPromoDF = promoDF.join(allCalcPlanPromoIdsDF, 'Id', 'left_anti').select(promoDF['*'])
 
@@ -356,7 +359,7 @@ planParamsSharesDF = sharesDF.where(col('Disabled') == 'False').drop('Disabled')
 
 # product correction
 planParamsCorrectionDF = correctionDF\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .where(col('Disabled') == '0')\
   .select(\
            upper(col('PromoProductId')).alias('correctionPromoProductId')
@@ -373,7 +376,7 @@ planParamsIncreaseCorrectionDF = correctionPriceIncreaseDF\
 
 # incremental
 planParamsIncrementalDF = incrementalDF\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .where(col('Disabled') == 'False')\
   .select(\
            col('PromoId').alias('incrementalPromoId')
@@ -385,7 +388,7 @@ planParamsIncrementalDF = incrementalDF\
 promoSupportDF = promoSupportDF.where(col('Disabled') == 'False')
 promoSupportPromoCols = promoSupportPromoDF.columns
 promoSupportPromoCols.remove('#QCCount')
-activePromoSupportPromoDF = promoSupportPromoDF.where((col('Disabled') == 'False') & (col('TPMmode') != 3)).select(promoSupportPromoCols)
+activePromoSupportPromoDF = promoSupportPromoDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes)).select(promoSupportPromoCols)
 activePromoSupportPromoIdsDF = activePromoSupportPromoDF.select(col('Id'))
 disabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoIdsDF, 'Id', 'left_anti').select(promoSupportPromoCols)
 
@@ -463,7 +466,7 @@ activeClientTreeList
 
 lightPromoDF = promoDF\
   .where(col('Disabled') == 'False')\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .select(\
            col('Id').alias('promoIdCol')
           ,col('Number').alias('promoNumber')
@@ -591,11 +594,11 @@ print(promoWithChangedProductDF.collect())
 
 unlinkedPromoProductDF = notInOutCalcPlanPromoProductDF\
   .where(notInOutCalcPlanPromoProductDF.Disabled == True)\
-  .where(col('TPMmode') != 3)
+  .where(col('TPMmode').isin(*calcTPMmodes))
 
 notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
   .where(notInOutCalcPlanPromoProductDF.Disabled == False)\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .drop('Number', 'ResultFilteredProductId', 'ResultFilteredZREP', 'pId')
 
 inOutCalcPlanPromoProductDF = inOutCalcPlanPromoProductDF.withColumn('Action', lit(None))
