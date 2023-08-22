@@ -3668,6 +3668,10 @@
     <Compile Include="Migrations\202308211255299_Empty210823.designer.cs">
       <DependentUpon>202308211255299_Empty210823.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308221353109_Add_AP_SA_RPA.cs" />
+    <Compile Include="Migrations\202308221353109_Add_AP_SA_RPA.designer.cs">
+      <DependentUpon>202308221353109_Add_AP_SA_RPA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6885,6 +6889,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308211255299_Empty210823.resx">
       <DependentUpon>202308211255299_Empty210823.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308221353109_Add_AP_SA_RPA.resx">
+      <DependentUpon>202308221353109_Add_AP_SA_RPA.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
