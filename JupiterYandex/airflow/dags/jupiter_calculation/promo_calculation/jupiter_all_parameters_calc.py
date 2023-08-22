@@ -28,7 +28,6 @@ import pandas as pd
 import glob
 import os
 import base64
-import cloud_scripts.utils as utils
 
 import struct
 from contextlib import closing
@@ -61,22 +60,20 @@ def get_parameters(**kwargs):
     execution_date = kwargs['execution_date'].strftime("%Y/%m/%d")
     parent_run_id = dag_run.conf.get('parent_run_id')
     run_id = urllib.parse.quote_plus(parent_run_id) if parent_run_id else urllib.parse.quote_plus(kwargs['run_id'])
-
-    project_path = utils.get_project_path()
     
     schema = dag_run.conf.get('schema')
     upload_date = kwargs['logical_date'].strftime("%Y-%m-%d %H:%M:%S")
     file_name = dag_run.conf.get('FileName')
     create_date = dag_run.conf.get('CreateDate')
 
-    raw_path = Variable.get(project_path + "RawPath")
-    process_path = Variable.get(project_path + "ProcessPath")
-    output_path = Variable.get(project_path + "OutputPath")
-    white_list = Variable.get(project_path + "WhiteList",default_var=None)
-    black_list = Variable.get(project_path + "BlackList",default_var=None)
+    raw_path = Variable.get("RawPath")
+    process_path = Variable.get("ProcessPath")
+    output_path = Variable.get("OutputPath")
+    white_list = Variable.get("WhiteList",default_var=None)
+    black_list = Variable.get("BlackList",default_var=None)
     upload_path = f'{raw_path}/{execution_date}/'
-    system_name = Variable.get(project_path + "SystemName")
-    last_upload_date = Variable.get(project_path + "LastUploadDate")
+    system_name = Variable.get("SystemName")
+    last_upload_date = Variable.get("LastUploadDate")
     
     parent_handler_id = dag_run.conf.get('parent_handler_id')
     handler_id = parent_handler_id if parent_handler_id else str(uuid.uuid4())
@@ -86,7 +83,7 @@ def get_parameters(**kwargs):
     odbc_extras = mssql_scripts.get_odbc_extras_string(db_conn)
     bcp_import_parameters =  base64.b64encode((f'DRIVER=ODBC Driver 18 for SQL Server;SERVER={db_conn.host};DATABASE={db_conn.schema};UID={db_conn.login};PWD={db_conn.password};{odbc_extras}').encode()).decode()
     
-    cluster_id = Variable.get(project_path + "JupiterDataprocClusterId")
+    cluster_id = Variable.get("JupiterDataprocClusterId")
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,
                   "OutputPath": output_path,
@@ -160,28 +157,26 @@ with DAG(
 # Get dag parameters from vault    
     parameters = get_parameters()
     save_params = save_parameters(parameters)
-
-    project_path = utils.get_project_path()
     
     parameters_calculation = DataprocCreatePysparkJobOperator(
         task_id='parameters_calculation',
         cluster_id=parameters['JupiterDataprocClusterId'],
         main_python_file_uri='hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PARAMETERS_CALCULATION.py	',
         python_file_uris=[
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION.py',
-            f'hdfs:///SRC{project_path}/SHARED/EXTRACT_SETTING.py',
-            f'hdfs:///SRC{project_path}/SHARED/SUPPORT_FUNCTIONS.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PROMO_PARAMS_CALCULATION_PROCESS.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py', 
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS.py', 
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py', 
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py',
-            f'hdfs:///SRC{project_path}/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py', 
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PARAMETERS_CALCULATION.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PARAMETERS_CALCULATION.py',
+            'hdfs:///SRC/SHARED/EXTRACT_SETTING.py',
+            'hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/SET_PROMO_PRODUCT.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_PROMO_PARAMS_CALCULATION_PROCESS.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PI_PLAN_PRODUCT_PARAMS_CALCULATION_PROCESS.py', 
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/PLAN_SUPPORT_PARAMS_CALCULATION_PROCESS.py', 
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/COGS_TI_CALCULATION.py', 
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/RA_TI_SHOPPER_CALCULATION.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PRODUCT_PARAMS_CALCULATION_PROCESS.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_PROMO_PARAMS_CALCULATION_PROCESS.py',
+            'hdfs:///SRC/JUPITER/PROMO_PARAMETERS_CALCULATION/ACTUAL_SUPPORT_PARAMS_CALCULATION_PROCESS.py', 
         ],
         file_uris=[
             's3a://data-proc-public/jobs/sources/data/config.json',
