@@ -253,6 +253,9 @@ actualCogsDF = actualCogsDF\
 actualCogsTnDF = actualCogsTnDF\
   .withColumn('StartDate', date_add(to_date(actualCogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\
   .withColumn('EndDate', date_add(to_date(actualCogsTnDF.EndDate, 'yyyy-MM-dd'), 1))
+  
+#tpm modes for recalculation: Current, RS, RA
+calcTPMmodes = [0, 1, 2]
 
 ####*Prepare dataframes for calculation*
 
@@ -260,7 +263,7 @@ filteredPromoDF = filteredPromoDF.dropDuplicates()
 
 # promoProduct
 promoProductCols = promoProductDF.columns
-allCalcActualPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & (col('TPMmode') != 3))
+allCalcActualPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
 allCalcActualPromoProductIdsDF = allCalcActualPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcActualPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
 
@@ -269,11 +272,11 @@ disabledPromoProductDF = promoProductDF.join(allCalcActualPromoProductIdsDF, 'Id
 # print('disabledPromoProducts count:', disabledPromoProductDF.count())
 
 # promo
-calcActualPromoDF = promoDF.where((col('Disabled') == 'False') & (col('TPMmode') != 3))
+calcActualPromoDF = promoDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
 
 # all promo
 promoCols = promoDF.columns
-allCalcActualPromoDF = promoDF.where((col('Disabled') == 'false') & (col('TPMmode') != 3))
+allCalcActualPromoDF = promoDF.where((col('Disabled') == 'false') & col('TPMmode').isin(*calcTPMmodes))
 allCalcActualPromoIdsDF = allCalcActualPromoDF.select(col('Id'))
 disabledPromoDF = promoDF.join(allCalcActualPromoIdsDF, 'Id', 'left_anti').select(promoDF['*'])
 
@@ -296,7 +299,7 @@ actualParamsPriceListDF = priceListDF\
 # incremental
 actualParamsIncrementalDF = incrementalDF\
   .where(col('Disabled') == 'False')\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .select(\
            col('PromoId').alias('incrementalPromoId')
           ,col('ProductId').alias('incrementalProductId')
@@ -306,7 +309,7 @@ actualParamsIncrementalDF = incrementalDF\
 # support
 promoSupportDF = promoSupportDF.where(col('Disabled') == 'False')
 promoSupportPromoCols = promoSupportPromoDF.columns
-activePromoSupportPromoDF = promoSupportPromoDF.where((col('Disabled') == 'False') & (col('TPMmode') != 3)).select(promoSupportPromoCols)
+activePromoSupportPromoDF = promoSupportPromoDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes)).select(promoSupportPromoCols)
 activePromoSupportPromoIdsDF = activePromoSupportPromoDF.select(col('Id'))
 disabledPromoSupportPromoDF = promoSupportPromoDF.join(activePromoSupportPromoIdsDF, 'Id', 'left_anti').select(promoSupportPromoCols)
 
@@ -347,7 +350,7 @@ notCheckPromoStatusList = ['Cancelled','Deleted']
 
 lightPromoDF = promoDF\
   .where(col('Disabled') == 'False')\
-  .where(col('TPMmode') != 3)\
+  .where(col('TPMmode').isin(*calcTPMmodes))\
   .select(\
            col('Id').alias('promoIdCol')
           ,col('Number').alias('promoNumber')

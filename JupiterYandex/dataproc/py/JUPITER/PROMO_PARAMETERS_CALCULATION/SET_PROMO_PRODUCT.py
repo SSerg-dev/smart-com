@@ -18,6 +18,9 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
     spark = SparkSession(sc)
     #####*Get AM Products*
     
+    #tpm modes for recalculation: Current, RS, RA
+    calcTPMmodes = [0, 1, 2]
+    
     notInOutCalcPlanPromoDF = notInOutCalcPlanPromoDF.withColumn("InOutProductIds",upper(col("InOutProductIds")))
     setProductDF = notInOutCalcPlanPromoDF\
       .join(promoProductTreeDF, promoProductTreeDF.PromoId == notInOutCalcPlanPromoDF.Id, 'inner')\
@@ -33,7 +36,7 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
               ,lower(productTreeDF.FilterQuery).alias('FilterQuery')
               ,notInOutCalcPlanPromoDF.InOutProductIds.alias('promoInOutProductIds')
              )\
-      .where((col('pptDisabled') == 'false') & (col('pptTPMmode') != 3) & (col('EndDate').isNull()))
+      .where((col('pptDisabled') == 'false') & col('pptTPMmode').isin(*calcTPMmodes) & (col('EndDate').isNull()))
 
     setProductDF = setProductDF\
       .withColumn('CheckedProductList', split(setProductDF.promoInOutProductIds, ';'))\
