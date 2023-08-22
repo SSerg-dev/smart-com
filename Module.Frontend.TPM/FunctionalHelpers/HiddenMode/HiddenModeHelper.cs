@@ -130,15 +130,38 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
                 cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.MapFrom(f => f.ProductCorrectionPriceIncreases.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoProductPriceIncrease, opt => opt.Ignore());
             }
                 );
             var mapper = configuration.CreateMapper();
             List<Promo> promoesRA = mapper.Map<List<Promo>>(promoes);
             Context.Set<Promo>().AddRange(promoesRA);
+            Context.SaveChanges();
+            foreach (var promoRA in promoesRA)
+            {
+                if (promoRA.PromoPriceIncrease != null)
+                {
+                    foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRA.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
+                    {
+                        PromoProduct promoProduct = promoRA.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
+                        promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                    }
+                }
+            }
             Context.SaveChanges();
             return promoesRA;
 
@@ -306,10 +329,21 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore());
                 cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
-                    //.ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
-                    //.ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
-                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.MapFrom(f => f.ProductCorrectionPriceIncreases.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoProductPriceIncrease, opt => opt.Ignore());
             }
                 );
             var mapper = configuration.CreateMapper();
@@ -317,7 +351,18 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             var promoRAIds = promoesRA.Select(p => p.Id).ToList();
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
-
+            foreach (var promoRA in promoesRA)
+            {
+                if (promoRA.PromoPriceIncrease != null)
+                {
+                    foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRA.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
+                    {
+                        PromoProduct promoProduct = promoRA.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
+                        promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                    }
+                }
+            }
+            Context.SaveChanges();
             var source = string.Format("{0} Scenario {1}", rollingScenario.ScenarioType.ToString(), rollingScenario.RSId);
             var mongoHelper = new MongoHelper<Guid>();
             mongoHelper.WriteScenarioPromoes(

@@ -171,7 +171,15 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         }
         public static void RestoreRAPeriod(SavedScenario savedScenario, DatabaseContext Context, ClientTree clientTree)
         {
-            List<Promo> promos = savedScenario.Promoes.ToList();
+            List<int> promoHiddennumbers = savedScenario.Promoes.Select(h => h.Number).Cast<int>().ToList();
+            List<Promo> promos = Context.Set<Promo>()
+                    //.Include(g => g.BTLPromoes)
+                    .Include(g => g.PromoSupportPromoes)
+                    .Include(g => g.PromoProductTrees)
+                    .Include(g => g.IncrementalPromoes)
+                    .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                    .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
+                    .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Hidden).ToList();
             RollingScenario rollingScenario = CreateRAPeriod(null, clientTree, Context, ScenarioType.RA, false);
             Context.SaveChanges();
             savedScenario.RollingScenarioId = rollingScenario.Id;

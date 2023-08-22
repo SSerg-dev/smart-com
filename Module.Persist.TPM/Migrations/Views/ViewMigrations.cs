@@ -246,7 +246,7 @@
                 ISNULL(pr.ActualInStoreShelfPrice, 0) AS Price, 
                 ISNULL(pr.ActualInStoreDiscount, 0) AS Discount,
                 [DefaultSchemaSetting].[GetPromoSubrangesById](pr.Id) as Subranges,
-				CASE WHEN TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) ELSE 0 END AS row_number
+				CASE WHEN TPMmode < 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pr.TPMmode ORDER BY pr.TPMmode DESC) ELSE 0 END AS row_number
 
             FROM
                 [DefaultSchemaSetting].Promo AS pr LEFT OUTER JOIN
@@ -2164,7 +2164,7 @@
 				pr.PlanPromoCostProduction,
 				pr.PlanPromoNSV,
 				CS.SystemName,
-				CASE WHEN TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) ELSE 0 END AS row_number
+				CASE WHEN TPMmode < 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pr.TPMmode ORDER BY TPMmode DESC) ELSE 0 END AS row_number
 
 				FROM [DefaultSchemaSetting].[Promo] AS pr (NOLOCK)
 				LEFT JOIN [DefaultSchemaSetting].[PromoStatus] AS CS (NOLOCK) ON CS.Id = pr.PromoStatusId

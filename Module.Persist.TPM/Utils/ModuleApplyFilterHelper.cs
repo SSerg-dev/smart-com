@@ -41,7 +41,7 @@ namespace Module.Persist.TPM.Utils
                 promoToFilter = promoToFilter.Where(x => RoleStateUtil.RoleCanChangeState(role, x.PromoStatus.SystemName) && RoleStateUtil.IsOnApprovalRoleOrder(role, x));
                 query = promoToFilter.AsQueryable();
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -140,7 +140,7 @@ namespace Module.Persist.TPM.Utils
                 }
                 query = promoToFilter.AsQueryable();
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -181,7 +181,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -236,11 +236,11 @@ namespace Module.Persist.TPM.Utils
                     }
                     break;
                 case TPMmode.RS:
-                    query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+                    query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     break;
                 case TPMmode.RA:
-                    query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+                    query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
                     query = query.GroupBy(x => x.Number, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault()).Where(g => !g.Disabled);
                     break;
             }
@@ -534,7 +534,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.PromoProduct.Promo.ClientTree.ObjectId));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -586,7 +586,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -839,7 +839,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -870,7 +870,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:
@@ -901,7 +901,7 @@ namespace Module.Persist.TPM.Utils
                 query = query.Where(x =>
                     hierarchy.Any(h => h.Id == x.Promo.ClientTreeId));
             }
-            query = query.Where(x => x.TPMmode != TPMmode.Hidden);
+            query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
             {
                 case TPMmode.Current:

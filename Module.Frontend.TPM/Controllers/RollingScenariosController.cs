@@ -353,14 +353,19 @@ namespace Module.Frontend.TPM.Controllers
         [HttpPost]
         public IHttpActionResult UploadScenario(Guid savedScenarioId)
         {
-            try
+            using (var transaction = Context.Database.BeginTransaction())
             {
-                ClientTree clientTree = ScenarioHelper.UploadSavedScenario(savedScenarioId, Context);
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client {clientTree.FullPathName} upload" }));
-            }
-            catch (Exception e)
-            {
-                return InternalServerError(GetExceptionMessage.GetInnerException(e));
+                try
+                {
+                    ClientTree clientTree = ScenarioHelper.UploadSavedScenario(savedScenarioId, Context);
+                    transaction.Commit();
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"Scenario for client {clientTree.FullPathName} upload" }));
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    return InternalServerError(GetExceptionMessage.GetInnerException(e));
+                }
             }
         }
         [ClaimsAuthorize]

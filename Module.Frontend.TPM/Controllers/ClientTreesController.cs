@@ -35,6 +35,7 @@ using UserInfo = Core.Security.Models.UserInfo;
 using Module.Persist.TPM.Enum;
 using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -1166,7 +1167,16 @@ namespace Module.Frontend.TPM.Controllers
                 };
                 Context.Set<SavedScenario>().Add(newSavedScenario);
                 Context.SaveChanges();
-                HiddenModeHelper.CopyPromoesToHidden(Context, scenario.Promoes.ToList(), newSavedScenario); ;
+                List<int> promoHiddennumbers = scenario.Promoes.Select(h => h.Number).Cast<int>().ToList();
+                List<Promo> promos = Context.Set<Promo>()
+                        //.Include(g => g.BTLPromoes)
+                        .Include(g => g.PromoSupportPromoes)
+                        .Include(g => g.PromoProductTrees)
+                        .Include(g => g.IncrementalPromoes)
+                        .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                        .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
+                        .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
+                HiddenModeHelper.CopyPromoesToHidden(Context, promos, newSavedScenario);
                 Context.ExecuteSqlCommand(createRunScript);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
             }

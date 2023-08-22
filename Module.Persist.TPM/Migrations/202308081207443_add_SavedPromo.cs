@@ -1,6 +1,7 @@
 ﻿namespace Module.Persist.TPM.Migrations
 {
     using Core.Settings;
+    using Module.Persist.TPM.Migrations.Views;
     using System;
     using System.Data.Entity.Migrations;
     
@@ -29,6 +30,9 @@
             AddColumn($"{defaultSchema}.Promo", "SavedPromoId", c => c.Guid());
             CreateIndex($"{defaultSchema}.Promo", "SavedPromoId");
             AddForeignKey($"{defaultSchema}.Promo", "SavedPromoId", $"{defaultSchema}.SavedPromo", "Id", cascadeDelete: true);
+
+            Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
+            Sql(ViewMigrations.GetPromoRSViewString(defaultSchema));
         }
         
         public override void Down()
