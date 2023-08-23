@@ -103,278 +103,269 @@ namespace Module.Persist.TPM.Model.Import
         public double? PlanPromoCostProdPOSMInClient { get; set; }
         [ImportCSVColumn(ColumnNumber = 28)]
         [Display(Name = "Plan Promo Cost")]
-        public double PlanPromoCost { get; set; }
+        public double PlanPromoCost { get; set; }        
         [ImportCSVColumn(ColumnNumber = 29)]
-        [Display(Name = "TI Base")]
-        public double TIBase { get; set; }
-        [ImportCSVColumn(ColumnNumber = 30)]
         [Display(Name = "Plan Promo Incremental Base TI")]
         public double PlanPromoIncrementalBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 31)]
+        [ImportCSVColumn(ColumnNumber = 30)]
         [Display(Name = "Plan Promo Net Incremental Base TI")]
         public double PlanPromoNetIncrementalBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 32)]
-        [Display(Name = "COGS")]
-        public double COGS { get; set; }
-        [ImportCSVColumn(ColumnNumber = 33)]
-        [Display(Name = "COGS/Tn")]
-        public double COGSTn { get; set; }
-        [ImportCSVColumn(ColumnNumber = 34)]
+        [ImportCSVColumn(ColumnNumber = 31)]
         [Display(Name = "Plan Promo Incremental COGS LSV")]
         public double PlanPromoIncrementalCOGSLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 35)]
+        [ImportCSVColumn(ColumnNumber = 32)]
         [Display(Name = "Plan Promo Net Incremental COGS LSV")]
         public double PlanPromoNetIncrementalCOGSLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 36)]
+        [ImportCSVColumn(ColumnNumber = 33)]
         [Display(Name = "Plan Promo Incremental COGS/tn")]
         public double PlanPromoIncrementalCOGStn { get; set; }
-        [ImportCSVColumn(ColumnNumber = 37)]
+        [ImportCSVColumn(ColumnNumber = 34)]
         [Display(Name = "Plan Promo Net Incremental COGS/tn")]
         public double PlanPromoNetIncrementalCOGStn { get; set; }
-        [ImportCSVColumn(ColumnNumber = 38)]
+        [ImportCSVColumn(ColumnNumber = 35)]
         [Display(Name = "Plan Promo Incremental Earnings LSV")]
         public double PlanPromoIncrementalEarningsLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 39)]
+        [ImportCSVColumn(ColumnNumber = 36)]
         [Display(Name = "Plan Promo Net Incremental Earnings LSV")]
         public double PlanPromoNetIncrementalEarningsLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 40)]
+        [ImportCSVColumn(ColumnNumber = 37)]
         [Display(Name = "Actual Promo Incremental Earnings LSV")]
         public double ActualPromoIncrementalEarningsLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 41)]
+        [ImportCSVColumn(ColumnNumber = 38)]
         [Display(Name = "Actual Promo Net Incremental Earnings LSV")]
         public double ActualPromoNetIncrementalEarningsLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 42)]
+        [ImportCSVColumn(ColumnNumber = 39)]
         [Display(Name = "Plan Promo ROI % LSV")]
         public double PlanPromoROILSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 43)]
+        [ImportCSVColumn(ColumnNumber = 40)]
         [Display(Name = "Plan Promo Net ROI % LSV")]
         public double PlanPromoNetROILSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 44)]
+        [ImportCSVColumn(ColumnNumber = 41)]
         [Display(Name = "Actual Promo ROI % LSV")]
         public double ActualPromoROILSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 45)]
+        [ImportCSVColumn(ColumnNumber = 42)]
         [Display(Name = "Actual Promo Net ROI % LSV")]
         public double ActualPromoNetROILSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 46)]
+        [ImportCSVColumn(ColumnNumber = 43)]
         [Display(Name = "Plan Promo Total Cost")]
         public double PlanPromoTotalCost { get; set; }
-        [ImportCSVColumn(ColumnNumber = 47)]
+        [ImportCSVColumn(ColumnNumber = 44)]
         [Display(Name = "Plan Post Promo Effect LSV")]
         public double PlanPostPromoEffectLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 48)]
+        [ImportCSVColumn(ColumnNumber = 45)]
         [Display(Name = "Plan Promo Net Incremental LSV")]
         public double PlanPromoNetIncrementalLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 49)]
+        [ImportCSVColumn(ColumnNumber = 46)]
         [Display(Name = "PlanPromo Net LSV")]
         public double PlanPromoNetLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 50)]
+        [ImportCSVColumn(ColumnNumber = 47)]
         [Display(Name = "Plan Promo Baseline Base TI")]
         public double PlanPromoBaselineBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 51)]
+        [ImportCSVColumn(ColumnNumber = 48)]
         [Display(Name = "Plan Promo Base TI")]
         public double PlanPromoBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 52)]
+        [ImportCSVColumn(ColumnNumber = 49)]
         [Display(Name = "Plan Promo Net Base TI")]
         public double PlanPromoNetBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 53)]
+        [ImportCSVColumn(ColumnNumber = 50)]
         [Display(Name = "Plan Promo NSV")]
         public double PlanPromoNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 54)]
+        [ImportCSVColumn(ColumnNumber = 51)]
         [Display(Name = "Plan Promo Net NSV")]
         public double PlanPromoNetNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 55)]
+        [ImportCSVColumn(ColumnNumber = 52)]
         [Display(Name = "Plan Promo Incremental NSV")]
         public double PlanPromoIncrementalNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 56)]
+        [ImportCSVColumn(ColumnNumber = 53)]
         [Display(Name = "Plan Promo Net Incremental NSV")]
         public double PlanPromoNetIncrementalNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 57)]
+        [ImportCSVColumn(ColumnNumber = 54)]
         [Display(Name = "Plan Promo Incremental MAC")]
         public double PlanPromoIncrementalMAC { get; set; }
-        [ImportCSVColumn(ColumnNumber = 58)]
+        [ImportCSVColumn(ColumnNumber = 55)]
         [Display(Name = "Plan Promo Incremental MAC LSV")]
         public double PlanPromoIncrementalMACLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 59)]
+        [ImportCSVColumn(ColumnNumber = 56)]
         [Display(Name = "Plan Promo Net Incremental MAC")]
         public double PlanPromoNetIncrementalMAC { get; set; }
-        [ImportCSVColumn(ColumnNumber = 60)]
+        [ImportCSVColumn(ColumnNumber = 57)]
         [Display(Name = "Plan Promo Net Incremental MAC LSV")]
         public double PlanPromoNetIncrementalMACLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 61)]
+        [ImportCSVColumn(ColumnNumber = 58)]
         [Display(Name = "Plan Promo Incremental Earnings")]
         public double PlanPromoIncrementalEarnings { get; set; }
-        [ImportCSVColumn(ColumnNumber = 62)]
+        [ImportCSVColumn(ColumnNumber = 59)]
         [Display(Name = "Plan Promo Net Incremental Earnings")]
         public double PlanPromoNetIncrementalEarnings { get; set; }
-        [ImportCSVColumn(ColumnNumber = 63)]
+        [ImportCSVColumn(ColumnNumber = 60)]
         [Display(Name = "Plan Promo ROI, %")]
         public double PlanPromoROI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 64)]
+        [ImportCSVColumn(ColumnNumber = 61)]
         [Display(Name = "Plan Promo Net ROI, %")]
         public double PlanPromoNetROI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 65)]
+        [ImportCSVColumn(ColumnNumber = 62)]
         [Display(Name = "Plan Promo Net Uplift %")]
         public double PlanPromoNetUplift { get; set; }
-        [ImportCSVColumn(ColumnNumber = 66)]
+        [ImportCSVColumn(ColumnNumber = 63)]
         [Display(Name = "Plan Add TI Shopper Approved")]
         public double PlanAddTIShopperApproved { get; set; }
-        [ImportCSVColumn(ColumnNumber = 67)]
+        [ImportCSVColumn(ColumnNumber = 64)]
         [Display(Name = "Plan Add TI Shopper Calculated")]
         public double PlanAddTIShopperCalculated { get; set; }
-        [ImportCSVColumn(ColumnNumber = 68)]
+        [ImportCSVColumn(ColumnNumber = 65)]
         [Display(Name = "Plan Add TI Marketing Approved")]
         public double? PlanAddTIMarketingApproved { get; set; }
-        [ImportCSVColumn(ColumnNumber = 69)]
+        [ImportCSVColumn(ColumnNumber = 66)]
         [Display(Name = "Actual InStore Mechanic Name")]
         public string ActualInStoreMechanicName { get; set; }
-        [ImportCSVColumn(ColumnNumber = 70)]
+        [ImportCSVColumn(ColumnNumber = 67)]
         [Display(Name = "Actual InStore Mechanic Type Name")]
         public string ActualInStoreMechanicTypeName { get; set; }
-        [ImportCSVColumn(ColumnNumber = 71)]
+        [ImportCSVColumn(ColumnNumber = 68)]
         [Display(Name = "Actual InStore Mechanic Discount")]
         public double ActualInStoreMechanicDiscount { get; set; }
-        [ImportCSVColumn(ColumnNumber = 72)]
+        [ImportCSVColumn(ColumnNumber = 69)]
         [Display(Name = "Actual Instore Shelf Price")]
         public double ActualInstoreShelfPrice { get; set; }
-        [ImportCSVColumn(ColumnNumber = 73)]
+        [ImportCSVColumn(ColumnNumber = 70)]
         [Display(Name = "Invoice number")]
         public string Invoicenumber { get; set; }
-        [ImportCSVColumn(ColumnNumber = 74)]
+        [ImportCSVColumn(ColumnNumber = 71)]
         [Display(Name = "Actual Promo Baseline LSV")]
         public double ActualPromoBaselineLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 75)]
+        [ImportCSVColumn(ColumnNumber = 72)]
         [Display(Name = "Actual Promo Incremental LSV")]
         public double ActualPromoIncrementalLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 76)]
+        [ImportCSVColumn(ColumnNumber = 73)]
         [Display(Name = "Actual PromoLSV By Compensation")]
         public double ActualPromoLSVByCompensation { get; set; }
-        [ImportCSVColumn(ColumnNumber = 77)]
+        [ImportCSVColumn(ColumnNumber = 74)]
         [Display(Name = "Actual Promo LSV")]
         public double ActualPromoLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 78)]
+        [ImportCSVColumn(ColumnNumber = 75)]
         [Display(Name = "Actual Promo Uplift %")]
         public double? ActualPromoUplift { get; set; }
-        [ImportCSVColumn(ColumnNumber = 79)]
+        [ImportCSVColumn(ColumnNumber = 76)]
         [Display(Name = "Actual Promo Net Uplift Percent")]
         public double? ActualPromoNetUpliftPercent { get; set; }
-        [ImportCSVColumn(ColumnNumber = 80)]
+        [ImportCSVColumn(ColumnNumber = 77)]
         [Display(Name = "Actual Promo TI Shopper")]
         public double ActualPromoTIShopper { get; set; }
-        [ImportCSVColumn(ColumnNumber = 81)]
+        [ImportCSVColumn(ColumnNumber = 78)]
         [Display(Name = "Actual Promo TI Marketing")]
         public double? ActualPromoTIMarketing { get; set; }
-        [ImportCSVColumn(ColumnNumber = 82)]
+        [ImportCSVColumn(ColumnNumber = 79)]
         [Display(Name = "Actual Promo Prod XSites")]
         public double? ActualPromoProdXSites { get; set; }
-        [ImportCSVColumn(ColumnNumber = 83)]
+        [ImportCSVColumn(ColumnNumber = 80)]
         [Display(Name = "Actual Promo Prod Catalogue")]
         public double? ActualPromoProdCatalogue { get; set; }
-        [ImportCSVColumn(ColumnNumber = 84)]
+        [ImportCSVColumn(ColumnNumber = 81)]
         [Display(Name = "Actual Promo Prod POSMInClient")]
         public double? ActualPromoProdPOSMInClient { get; set; }
-        [ImportCSVColumn(ColumnNumber = 85)]
+        [ImportCSVColumn(ColumnNumber = 82)]
         [Display(Name = "Actual Promo Branding")]
         public double ActualPromoBranding { get; set; }
-        [ImportCSVColumn(ColumnNumber = 86)]
+        [ImportCSVColumn(ColumnNumber = 83)]
         [Display(Name = "Actual Promo BTL")]
         public double ActualPromoBTL { get; set; }
-        [ImportCSVColumn(ColumnNumber = 87)]
+        [ImportCSVColumn(ColumnNumber = 84)]
         [Display(Name = "Actual Promo Cost Production")]
         public double? ActualPromoCostProduction { get; set; }
-        [ImportCSVColumn(ColumnNumber = 88)]
+        [ImportCSVColumn(ColumnNumber = 85)]
         [Display(Name = "Actual Promo CostProdXSites")]
         public double? ActualPromoCostProdXSites { get; set; }
-        [ImportCSVColumn(ColumnNumber = 89)]
+        [ImportCSVColumn(ColumnNumber = 86)]
         [Display(Name = "Actual Promo Cost ProdCatalogue")]
         public double? ActualPromoCostProdCatalogue { get; set; }
-        [ImportCSVColumn(ColumnNumber = 90)]
+        [ImportCSVColumn(ColumnNumber = 87)]
         [Display(Name = "Actual Promo Cost ProdPOSMInClient")]
         public double? ActualPromoCostProdPOSMInClient { get; set; }
-        [ImportCSVColumn(ColumnNumber = 91)]
+        [ImportCSVColumn(ColumnNumber = 88)]
         [Display(Name = "Actual Promo Cost")]
         public double ActualPromoCost { get; set; }
-        [ImportCSVColumn(ColumnNumber = 92)]
+        [ImportCSVColumn(ColumnNumber = 89)]
         [Display(Name = "Actual Promo Incremental BaseTI")]
         public double ActualPromoIncrementalBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 93)]
+        [ImportCSVColumn(ColumnNumber = 90)]
         [Display(Name = "Actual Promo Net Incremental BaseTI")]
         public double ActualPromoNetIncrementalBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 94)]
+        [ImportCSVColumn(ColumnNumber = 91)]
         [Display(Name = "Actual Promo Incremental COGS LSV")]
         public double ActualPromoIncrementalCOGSLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 95)]
+        [ImportCSVColumn(ColumnNumber = 92)]
         [Display(Name = "Actual Promo Net Incremental COGS LSV")]
         public double ActualPromoNetIncrementalCOGSLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 96)]
+        [ImportCSVColumn(ColumnNumber = 93)]
         [Display(Name = "Actual Promo Incremental COGS/tn")]
         public double ActualPromoIncrementalCOGStn { get; set; }
-        [ImportCSVColumn(ColumnNumber = 97)]
+        [ImportCSVColumn(ColumnNumber = 94)]
         [Display(Name = "Actual Promo Net Incremental COGS/tn")]
         public double ActualPromoNetIncrementalCOGStn { get; set; }
-        [ImportCSVColumn(ColumnNumber = 98)]
+        [ImportCSVColumn(ColumnNumber = 95)]
         [Display(Name = "Actual Promo Total Cost")]
         public double ActualPromoTotalCost { get; set; }
-        [ImportCSVColumn(ColumnNumber = 99)]
+        [ImportCSVColumn(ColumnNumber = 96)]
         [Display(Name = "Actual Post Promo Effect LSV")]
         public double ActualPostPromoEffectLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 100)]
+        [ImportCSVColumn(ColumnNumber = 97)]
         [Display(Name = "Actual Promo Net Incremental LSV")]
         public double ActualPromoNetIncrementalLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 101)]
+        [ImportCSVColumn(ColumnNumber = 98)]
         [Display(Name = "Actual Promo Net LSV")]
         public double ActualPromoNetLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 102)]
+        [ImportCSVColumn(ColumnNumber = 99)]
         [Display(Name = "Actual Promo Incremental NSV")]
         public double ActualPromoIncrementalNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 103)]
+        [ImportCSVColumn(ColumnNumber = 100)]
         [Display(Name = "Actual Promo Net Incremental NSV")]
         public double ActualPromoNetIncrementalNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 104)]
+        [ImportCSVColumn(ColumnNumber = 101)]
         [Display(Name = "Actual Promo Baseline Base TI")]
         public double ActualPromoBaselineBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 105)]
+        [ImportCSVColumn(ColumnNumber = 102)]
         [Display(Name = "Actual Promo Base TI")]
         public double ActualPromoBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 106)]
+        [ImportCSVColumn(ColumnNumber = 103)]
         [Display(Name = "Actual Promo Net Base TI")]
         public double ActualPromoNetBaseTI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 107)]
+        [ImportCSVColumn(ColumnNumber = 104)]
         [Display(Name = "Actual Promo NSV")]
         public double ActualPromoNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 108)]
+        [ImportCSVColumn(ColumnNumber = 105)]
         [Display(Name = "Actual Promo Net NSV")]
         public double ActualPromoNetNSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 109)]
+        [ImportCSVColumn(ColumnNumber = 106)]
         [Display(Name = "Actual Promo Incremental MAC")]
         public double ActualPromoIncrementalMAC { get; set; }
-        [ImportCSVColumn(ColumnNumber = 110)]
+        [ImportCSVColumn(ColumnNumber = 107)]
         [Display(Name = "Actual Promo Incremental MAC LSV")]
         public double ActualPromoIncrementalMACLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 111)]
+        [ImportCSVColumn(ColumnNumber = 108)]
         [Display(Name = "Actual Promo Net Incremental MAC")]
         public double ActualPromoNetIncrementalMAC { get; set; }
-        [ImportCSVColumn(ColumnNumber = 112)]
+        [ImportCSVColumn(ColumnNumber = 109)]
         [Display(Name = "Actual Promo Net Incremental MAC LSV")]
         public double ActualPromoNetIncrementalMACLSV { get; set; }
-        [ImportCSVColumn(ColumnNumber = 113)]
+        [ImportCSVColumn(ColumnNumber = 110)]
         [Display(Name = "Actual Promo Incremental Earnings")]
         public double ActualPromoIncrementalEarnings { get; set; }
-        [ImportCSVColumn(ColumnNumber = 114)]
+        [ImportCSVColumn(ColumnNumber = 111)]
         [Display(Name = "Actual Promo Net Incremental Earnings")]
         public double ActualPromoNetIncrementalEarnings { get; set; }
-        [ImportCSVColumn(ColumnNumber = 115)]
+        [ImportCSVColumn(ColumnNumber = 112)]
         [Display(Name = "Actual Promo ROI, %")]
         public double ActualPromoROI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 116)]
+        [ImportCSVColumn(ColumnNumber = 113)]
         [Display(Name = "Actual Promo Net ROI%")]
         public double ActualPromoNetROI { get; set; }
-        [ImportCSVColumn(ColumnNumber = 117)]
+        [ImportCSVColumn(ColumnNumber = 114)]
         [Display(Name = "Actual Add TI Shopper")]
         public double ActualAddTIShopper { get; set; }
-        [ImportCSVColumn(ColumnNumber = 118)]
+        [ImportCSVColumn(ColumnNumber = 115)]
         [Display(Name = "Actual Add TI Marketing")]
         public double ActualAddTIMarketing { get; set; }
-        [ImportCSVColumn(ColumnNumber = 119)]
+        [ImportCSVColumn(ColumnNumber = 116)]
         [Display(Name = "Sum In Invoice")]
         public double SumInInvoice { get; set; }
 

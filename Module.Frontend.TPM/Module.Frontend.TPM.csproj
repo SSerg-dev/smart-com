@@ -1196,7 +1196,9 @@
     <None Include="Templates\ActualCOGSTnPreTemplate.xlsx" />
     <None Include="Templates\ActualTIPreTemplate.xlsx" />
     <None Include="Templates\BaseLineTemplate.xlsx" />
+    <None Include="Templates\TLCClosedTemplate.xlsx" />
     <None Include="Templates\COGSPreTemplate.xlsx" />
+    <None Include="Templates\TLCDraftTemplate.xlsx" />
     <None Include="Templates\Plan PPE template.xlsx" />
     <None Include="Templates\PlanCOGSTnPreTemplate.xlsx" />
     <None Include="Templates\TIPreTemplate.xlsx" />
