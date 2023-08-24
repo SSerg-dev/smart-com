@@ -1800,7 +1800,10 @@ namespace Module.Frontend.TPM.Util
                 foreach(var subrange in subranges)
                 {
                     var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.ObjectId && x.Name == subrange);
-
+                    if (subrangeNode == null)
+                    {
+                        throw new Exception("Subrange not found: " + promo.ProductSubrangesList);
+                    }
                     if (productHierachy == "")
                         productHierachy = subrangeNode.FullPathName;
                     else

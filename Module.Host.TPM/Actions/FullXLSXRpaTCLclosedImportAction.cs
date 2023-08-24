@@ -503,9 +503,13 @@ namespace Module.Host.TPM.Actions
                 MechanicType mechanicType = mechanicTypes.FirstOrDefault(g => g.Name == import.MechanicType);
                 promo.MarsMechanicTypeId = mechanicType.Id;
                 promo.MechanicComment = import.MechanicComment;
-                promo.ActualInStoreMechanicId = mechanics.FirstOrDefault(g => g.SystemName == import.ActualInStoreMechanicName && g.PromoTypesId == promo.PromoTypesId).Id;
-                promo.ActualInStoreMechanicTypeId = mechanicTypes.FirstOrDefault(g => g.Name == import.ActualInStoreMechanicTypeName).Id;
-                promo.ActualInStoreDiscount = import.ActualInStoreMechanicDiscount;
+                if (!string.IsNullOrEmpty(import.ActualInStoreMechanicName))
+                {
+                    promo.ActualInStoreMechanicId = mechanics.FirstOrDefault(g => g.SystemName == import.ActualInStoreMechanicName && g.PromoTypesId == promo.PromoTypesId).Id;
+                    promo.ActualInStoreMechanicTypeId = mechanicTypes.FirstOrDefault(g => g.Name == import.ActualInStoreMechanicTypeName).Id;
+                    promo.ActualInStoreDiscount = import.ActualInStoreMechanicDiscount;
+                }
+
                 promos.Add(promo);
             }
 

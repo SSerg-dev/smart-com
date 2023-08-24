@@ -422,7 +422,7 @@ namespace Module.Host.TPM.Actions
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
                 }
-                if (TimeHelper.TodayStartDay() < promo.StartDate)
+                if (TimeHelper.TodayStartDay() > promo.StartDate)
                 {
                     errors.Add("Start date earlier than the current day " + import.PromoStartDate);
                     HasErrors = true;
