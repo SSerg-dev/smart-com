@@ -24,7 +24,8 @@
             VALUES
                 (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetRPASettings' AND Resource = 'RPASettings')),
 				(NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetRPAs' AND Resource = 'RPASettings')),
-				(NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'SaveRPA' AND Resource = 'RPAs'))
+				(NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'SaveRPA' AND Resource = 'RPAs')),
+                (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'DownloadTemplateXLSX' AND Resource = 'RPAs'))
             GO
         ";
     }

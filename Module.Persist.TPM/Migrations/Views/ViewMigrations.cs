@@ -29,7 +29,7 @@
                               CAST(ROUND(CAST(pr.PlanPromoBaselineLSV / 1000000.0 AS DECIMAL(18, 3)), 2) AS FLOAT) AS PlanPromoBaselineLSV, pr.LastChangedDate, pr.LastChangedDateFinance, pr.LastChangedDateDemand, pts.Name AS PromoTypesName, 
                               pr.IsGrowthAcceleration, pr.IsApolloExport, CAST(CAST(pr.DeviationCoefficient * 100 AS DECIMAL) AS FLOAT) AS DeviationCoefficient, pr.ActualPromoLSVByCompensation, pr.PlanPromoLSV, pr.ActualPromoLSV, 
                               pr.ActualPromoBaselineLSV, pr.ActualPromoIncrementalLSV, pr.SumInvoice, pr.IsOnInvoice, pr.IsInExchange, pr.TPMmode, CAST(CASE WHEN pr.MasterPromoId IS NULL THEN 0 ELSE 1 END AS BIT) as IsOnHold, (CASE WHEN ActualPromoLSVByCompensation > 0 THEN ABS(ActualPromoLSV - ActualPromoLSVByCompensation) / ActualPromoLSVByCompensation ELSE 0 END) as ActualPromoLSVdiffPercent,
-							  pr.PlanPromoIncrementalLSV AS PlanPromoIncrementalLSVRaw, pr.LoadFromTLC,
+							  pr.PlanPromoIncrementalLSV AS PlanPromoIncrementalLSVRaw,
 							  IIF(ps.SystemName = 'OnApproval', 
 							  IIF(pr.IsGrowthAcceleration = 1 OR pr.IsInExchange = 1,
 							  CASE   
@@ -60,7 +60,12 @@
 							  FROM DefaultSchemaSetting.Promo
 							  WHERE MasterPromoId = pr.Id AND DispatchesStart < (Select Criticalday From CriticalChildDay) AND Disabled = 0), CAST(0 AS BIT)), 
 							  CAST(0 AS BIT)) as IsChildGAMCritical,
-							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId
+							  pr.InvoiceNumber, pr.IsPriceIncrease, pr.MLPromoId,
+							  IIF(pr.LoadFromTLC = 1, CAST(1 AS BIT),
+							  CASE
+								WHEN (pr.Id = tlci.PromoId) THEN CAST(1 AS BIT)
+								ELSE CAST(0 AS BIT)
+							  END) as LoadFromTLC
             FROM     DefaultSchemaSetting.Promo AS pr LEFT OUTER JOIN
                               DefaultSchemaSetting.Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.Brand AS bnd ON pr.BrandId = bnd.Id LEFT OUTER JOIN
@@ -70,7 +75,8 @@
                               DefaultSchemaSetting.Mechanic AS pim ON pr.PlanInstoreMechanicId = pim.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
                               DefaultSchemaSetting.MechanicType AS pimt ON pr.PlanInstoreMechanicTypeId = pimt.Id LEFT OUTER JOIN
-                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id)
+                              DefaultSchemaSetting.PromoTypes AS pts ON pr.PromoTypesId = pts.Id LEFT OUTER JOIN
+							  DefaultSchemaSetting.TLCImports as tlci ON pr.id = tlci.PromoId)
 
 							  Select * FROM PromoGridViewS
             
