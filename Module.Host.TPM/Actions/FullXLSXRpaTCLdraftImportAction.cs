@@ -307,6 +307,8 @@ namespace Module.Host.TPM.Actions
                 DateTimeOffset date = TimeHelper.Now();
                 List<TLCImport> tLCImports = promos.Select(g => new TLCImport { PromoId = g.Id, LoadDate = date, HandlerId = HandlerId }).ToList();
                 context.Set<TLCImport>().AddRange(tLCImports);
+                List<PromoStatusChange> promoStatusChanges = promos.Select(g => new PromoStatusChange { PromoId = g.Id, StatusId = g.PromoStatusId, Date = TimeHelper.Now(), UserId = UserId, RoleId = RoleId }).ToList();
+                context.Set<PromoStatusChange>().AddRange(promoStatusChanges);
                 context.SaveChanges();
                 return promos.Count;
             }
@@ -414,11 +416,17 @@ namespace Module.Host.TPM.Actions
                 CreatePromoProductTree(promo, context.Set<ProductTree>().Where(x => x.EndDate == null).ToList(), context);
                 promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
                 SetPromoMarsDates(promo);
-                if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (DateTimeOffset)promo.EndDate, (int)promo.BudgetYear))
+                if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (int)promo.BudgetYear))
                 {
                     errors.Add("Wrong BudgetYear " + import.BudgetYear);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                }
+                if (TimeHelper.TodayStartDay() < promo.StartDate)
+                {
+                    errors.Add("Start date earlier than the current day " + import.PromoStartDate);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
                 }
                 Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == import.Mechanic && g.PromoTypesId == promo.PromoTypesId);
                 promo.MarsMechanicId = mechanic.Id;
@@ -430,25 +438,20 @@ namespace Module.Host.TPM.Actions
                 SetMechanic(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
                 SetMechanicIA(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
                 promos.Add(promo);
-                // psc?
             }
 
             return promos;
         }
-        private bool CheckBudgetYear(DateTimeOffset dispatchStartDate, DateTimeOffset endDate, int budgetYear)
+        private bool CheckBudgetYear(DateTimeOffset dispatchStartDate, int budgetYear)
         {
-            DateTimeOffset startYear = TimeHelper.ThisBuggetYearStart();
-            DateTimeOffset endYear = TimeHelper.ThisBuggetYearEnd();
-            int budgetYearT = TimeHelper.ThisBuggetYear();
-            if (dispatchStartDate < startYear || endYear < endDate)
+            List<int> buggetYears = TimeHelper.GetBudgetYears(dispatchStartDate);
+
+            if (buggetYears.Contains(budgetYear))
             {
-                return false;
+                return true;
             }
-            if (budgetYear != budgetYearT)
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
+
     }
 }

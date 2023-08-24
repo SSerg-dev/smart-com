@@ -44,6 +44,28 @@ namespace Module.Persist.TPM.Utils
             DateTimeOffset thisStartYear = ChangeTimeZoneUtil.ResetTimeZone(new DateTimeOffset(inday.Year, inday.Month, inday.Day, 23, 59, 999, TimeSpan.Zero));
             return thisStartYear;
         }
+        public static DateTimeOffset GetYear(DateTimeOffset day)
+        {
+            DateTimeOffset today = ChangeTimeZoneUtil.ResetTimeZone(day);
+            DateTimeOffset thisStartYear = ChangeTimeZoneUtil.ResetTimeZone(new DateTimeOffset(today.Year, 1, 1, 0, 0, 0, TimeSpan.Zero));
+            return thisStartYear;
+        }
+        public static List<int> GetBudgetYears(DateTimeOffset startdispatch)
+        {
+            DateTimeOffset dispatchstart = ChangeTimeZoneUtil.ResetTimeZone(startdispatch);
+            int month = dispatchstart.Month;
+            List<int> buggetYears = new List<int>();
+            buggetYears.Add(dispatchstart.Year);
+            if (month == 12)
+            {
+                buggetYears.Add(dispatchstart.Year + 1);
+            }
+            if (month == 1)
+            {
+                buggetYears.Add(dispatchstart.Year - 1);
+            }
+            return buggetYears;
+        }
         public static DateTimeOffset Now()
         {
             return ChangeTimeZoneUtil.ResetTimeZone(DateTimeOffset.Now);
