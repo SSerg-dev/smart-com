@@ -263,13 +263,13 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
             List<ImportRpaTLCclosed> sourceTemplateRecords = sourceRecords
                 .Select(sr => (sr as ImportRpaTLCclosed)).ToList();
-            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount }).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount, g.PromoType }).ToList();
             var promos2 = promos1.Distinct().ToList();
             if (promos2.Count != sourceRecords.Count)
             {
                 var duplicate = promos1.GroupBy(s => s)
                     .SelectMany(grp => grp.Skip(1)).FirstOrDefault();
-                errors.Add("Duplicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate);
+                errors.Add("Duplicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate + " promotype:" + duplicate.PromoType);
                 HasErrors = true;
                 errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), string.Join(", ", errors)));
             }
@@ -284,14 +284,14 @@ namespace Module.Host.TPM.Actions
             List<Guid> promoStatuses = context.Set<PromoStatus>().Where(g => !g.Disabled && (g.SystemName == "Closed" || g.SystemName == "Finished")).Select(g => g.Id).ToList();
             var promosPresent = context.Set<Promo>()
                 .Where(g => promoStatuses.Contains((Guid)g.PromoStatusId) && !g.Disabled && g.TPMmode == TPMmode.Current)
-                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount })
+                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId })
                 .ToList();
             List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount }).ToList();
+            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId }).ToList();
             foreach (var promoImport in promoImports)
             {
                 var present = promosPresent
-                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount);
+                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount && g.PromoTypesId == promoImport.PromoTypesId);
                 if (present != null)
                 {
                     var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount);
