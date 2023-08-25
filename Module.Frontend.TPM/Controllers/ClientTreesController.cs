@@ -1175,7 +1175,7 @@ namespace Module.Frontend.TPM.Controllers
                         .Include(g => g.IncrementalPromoes)
                         .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                         .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
-                        .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList();
+                        .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.RA).ToList();
                 HiddenModeHelper.CopyPromoesToHidden(Context, promos, newSavedScenario);
                 Context.ExecuteSqlCommand(createRunScript);
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));

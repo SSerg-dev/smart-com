@@ -389,7 +389,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                                         mapperPromoProductsCorrectionBack.Map(promoProductsCorrectionRS, promoProductsCorrection);
                                         MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductsCorrectionRS.Id);
                                         //promoProductRS.PromoProductsCorrections.Remove(promoProductsCorrectionRS);
-                                        Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
+                                        //Context.Set<PromoProductsCorrection>().Remove(promoProductsCorrectionRS);
                                     }
                                     else
                                     {
@@ -406,19 +406,18 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                                 PromoProductPriceIncrease promoProductPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
                                     .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled);
 
-                                PromoProductCorrectionPriceIncrease promoProductCorrectionPIRS = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
-                                    .FirstOrDefault(f => f.ZREP == promoProductPI.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                PromoProductCorrectionPriceIncrease promoProductCorrectionPIRS = promoProductPIRS.ProductCorrectionPriceIncreases
                                     .FirstOrDefault(f => !f.Disabled);
 
-                                PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoRS.PromoPriceIncrease.PromoProductPriceIncreases
-                                    .FirstOrDefault(f => f.ZREP == promoProduct.ZREP && !f.Disabled).ProductCorrectionPriceIncreases
+                                PromoProductCorrectionPriceIncrease promoProductsCorrectionPI = promoProductPI.ProductCorrectionPriceIncreases
                                     .FirstOrDefault(f => !f.Disabled);
 
                                 if (promoProductsCorrectionPI != null)
                                 {
                                     mapperPromoProductCorrectionPriceIncreaseBack.Map(promoProductCorrectionPIRS, promoProductsCorrectionPI);
                                     //MoveFromRSChangesIncident(Context.Set<ChangesIncident>(), nameof(PromoProductsCorrection), promoProductsCorrection.Id, promoProductCorrectionPIRS.Id);
-                                    Context.Set<PromoProductCorrectionPriceIncrease>().Remove(promoProductCorrectionPIRS);
+                                    //promoProductPIRS.ProductCorrectionPriceIncreases.Remove(promoProductCorrectionPIRS);
+                                    //Context.Set<PromoProductCorrectionPriceIncrease>().Remove(promoProductCorrectionPIRS);
                                 }
                                 else
                                 {
@@ -432,8 +431,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
 
                                 mapperPromoProductPriceIncreaseBack.Map(promoProductPIRS, promoProductPI);
 
-                                //promoRS.PromoProducts.Remove(promoProductRS);
+                                //promoRS.PromoPriceIncrease.PromoProductPriceIncreases.Remove(promoProductPIRS);
                                 Context.Set<PromoProductPriceIncrease>().Remove(promoProductPIRS);
+                                Context.SaveChanges();
                             }
                             else if (promoProduct == null && !OutZreps.Contains(promoProductRS.ZREP))
                             {
@@ -483,8 +483,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     }
                     promo.PromoStatusId = promoStatusOnApproval;
                     //promoesRS.Remove(promoRS); - нельзя сделать
-                    Context.Set<Promo>().Remove(promoRS); // не отследит EF
+                    //Context.Set<Promo>().Remove(promoRS); // не отследит EF
                                                           //ChangeStatusOnApproval(Context, promo);
+                    //Context.SaveChanges();
                     promoIds.Add(promo.Id);
                 }
                 else // новый
@@ -516,12 +517,12 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     promoIds.Add(promoRS.Id);
                 }
 
-
-
-                // Context.SaveChanges(); //удалить
             }
-
             Context.SaveChanges();
+
+            Context.Set<Promo>().RemoveRange(promoesRS);
+            Context.SaveChanges();
+
             return promoIds;
         }
         public static void MoveFromRSChangesIncident(DbSet<ChangesIncident> changesIncidents, string directoryName, Guid id, Guid oldId)

@@ -3672,6 +3672,10 @@
     <Compile Include="Migrations\202308221353109_Add_AP_SA_RPA.designer.cs">
       <DependentUpon>202308221353109_Add_AP_SA_RPA.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308250602507_PPPI_PromoProduct_Optional.cs" />
+    <Compile Include="Migrations\202308250602507_PPPI_PromoProduct_Optional.designer.cs">
+      <DependentUpon>202308250602507_PPPI_PromoProduct_Optional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />

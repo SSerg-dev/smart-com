@@ -23,7 +23,7 @@ from io import StringIO
 import urllib.parse
 import subprocess
 
-import cloud_scripts.mssql_scripts as mssql_scripts
+import cloud_scripts.azure_scripts as azure_scripts
 import json
 import pandas as pd
 import glob
@@ -38,6 +38,7 @@ MSSQL_CONNECTION_NAME = 'odbc_jupiter'
 HDFS_CONNECTION_NAME = 'webhdfs_default'
 VAULT_CONNECTION_NAME = 'vault_default'
 REMOTE_HDFS_CONNECTION_NAME = 'webhdfs_atlas'
+AZURE_CONNECTION_NAME = 'azure_jupiter_ml_sp'
 TAGS=["jupiter", "promo", "copy"]
 
 
@@ -70,8 +71,12 @@ def get_parameters(**kwargs):
     remote_hdfs_conn = BaseHook.get_connection(REMOTE_HDFS_CONNECTION_NAME)
     print(remote_hdfs_conn)
     remote_hdfs_url = remote_hdfs_conn.get_uri()
-    
-    dst_dir = f'{raw_path}/SOURCES_REMOTE/UNIVERSALCATALOG/'
+
+    azure_conn = BaseHook.get_connection(AZURE_CONNECTION_NAME)
+    print(azure_conn)
+
+    dst_ra_dir = f'{raw_path}/SOURCES/ML/RA'    
+    dst_rs_dir = f'{raw_path}/SOURCES/ML/RS/'
     
 
     parameters = {"RawPath": raw_path,
@@ -98,12 +103,12 @@ def get_parameters(**kwargs):
 
 
 @task
-def generate_distcp_script(parameters:dict, entity):
+def generate_azure_copy_script(parameters:dict, entity):
     src_path = entity['SrcPath']
     dst_path = entity['DstPath']
-    remote_hdfs_url = parameters['RemoteHdfsUrl']
-    
-    script = f'hdfs dfs -rm -r {dst_path};hadoop distcp -pbc {remote_hdfs_url}{src_path} hdfs://$(hdfs getconf -namenodes){dst_path} '
+    script = azure_scripts.generate_adls_to_hdfs_copy_file_command(azure_connection_name=AZURE_CONNECTION_NAME,
+                                                     src_path=src_path,
+                                                     dst_path=dst_path)
     return script
 
 @task
@@ -111,8 +116,8 @@ def generate_entity_list(parameters:dict):
     raw_path=parameters['RawPath']
     dst_dir=parameters['DstDir'] 
     entities = [
-              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA/','DstPath':dst_incr_dir},
-              {'SrcPath':'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/ROLLING/','DstPath':dst_dir},
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA/','DstPath':dst_ra_dir},
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/ROLLING/','DstPath':dst_rs_dir},
              ]
     return entities
 
@@ -129,5 +134,5 @@ with DAG(
     #add copy from datalake to hdfs
     copy_entities = BashOperator.partial(task_id="copy_entity",
                                        do_xcom_push=True,
-                                      ).expand(bash_command=generate_distcp_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
+                                      ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
                                               )
