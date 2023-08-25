@@ -169,7 +169,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoProductCorrectionView>();
 
             modelBuilder.Entity<PromoPriceIncrease>().HasRequired(g => g.Promo).WithOptional(g => g.PromoPriceIncrease).WillCascadeOnDelete();
-            modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
+            modelBuilder.Entity<PromoProductPriceIncrease>().HasOptional(g => g.PromoProduct).WithMany(g => g.PromoProductPriceIncreases);
             modelBuilder.Entity<PromoProductPriceIncrease>().HasRequired(g => g.PromoPriceIncrease).WithMany(g => g.PromoProductPriceIncreases).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProductCorrectionPriceIncrease>().HasRequired(g => g.PromoProductPriceIncrease).WithMany(g => g.ProductCorrectionPriceIncreases).WillCascadeOnDelete();
             modelBuilder.Entity<PromoProductPriceIncreasesView>().ToTable("PromoProductPriceIncreasesView");

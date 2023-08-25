@@ -3648,6 +3648,10 @@
     <Compile Include="Migrations\202308081207443_add_SavedPromo.designer.cs">
       <DependentUpon>202308081207443_add_SavedPromo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308250602507_PPPI_PromoProduct_Optional.cs" />
+    <Compile Include="Migrations\202308250602507_PPPI_PromoProduct_Optional.designer.cs">
+      <DependentUpon>202308250602507_PPPI_PromoProduct_Optional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6847,6 +6851,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308081207443_add_SavedPromo.resx">
       <DependentUpon>202308081207443_add_SavedPromo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308250602507_PPPI_PromoProduct_Optional.resx">
+      <DependentUpon>202308250602507_PPPI_PromoProduct_Optional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
