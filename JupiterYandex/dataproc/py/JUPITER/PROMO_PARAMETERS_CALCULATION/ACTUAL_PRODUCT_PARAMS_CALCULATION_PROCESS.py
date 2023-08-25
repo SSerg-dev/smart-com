@@ -154,7 +154,7 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
     actualParDF = spark.createDataFrame(sumActualProductParamsList, actualParSchema)
 
     calcActualPromoDF = calcActualPromoDF\
-      .join(actualParDF, actualParDF.promoIdCol == calcActualPromoDF.PromoId, 'inner')\
+      .join(actualParDF, actualParDF.promoIdCol == calcActualPromoDF.Id, 'inner')\
       .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('InOut') == False, col('calcActualPromoPostPromoEffectVolume')).otherwise(0).cast(DecimalType(30,6)))\
