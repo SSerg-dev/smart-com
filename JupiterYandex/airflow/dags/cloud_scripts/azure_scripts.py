@@ -53,4 +53,21 @@ def generate_hdfs_to_adls_copy_folder_command(azure_connection_name, src_path, d
     
     """
 
+    return script
+	
+def generate_adls_remove_folder_command(azure_connection_name, src_path):
+    azure_conn = BaseHook.get_connection(azure_connection_name)
+    
+    
+    script = f"""
+    export AZCOPY_AUTO_LOGIN_TYPE=SPN
+    export AZCOPY_SPA_APPLICATION_ID={azure_conn.login} 
+    export AZCOPY_SPA_CLIENT_SECRET={azure_conn.password}
+    export AZCOPY_TENANT_ID={azure_conn.extra_dejson['extra__azure__tenantId']}
+    
+    azcopy remove {src_path} --recursive   
+    
+    """
+
     return script	
+

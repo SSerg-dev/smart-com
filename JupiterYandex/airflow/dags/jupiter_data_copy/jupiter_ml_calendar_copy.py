@@ -75,9 +75,7 @@ def get_parameters(**kwargs):
     azure_conn = BaseHook.get_connection(AZURE_CONNECTION_NAME)
     print(azure_conn)
 
-    dst_ra_dir = f'{raw_path}/SOURCES/ML/RA'    
-    dst_rs_dir = f'{raw_path}/SOURCES/ML/RS/'
-    
+    dst_dir = f'{raw_path}/SOURCES/ML/'    
 
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,
@@ -102,24 +100,40 @@ def get_parameters(**kwargs):
 
 
 
-@task
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
 def generate_azure_copy_script(parameters:dict, entity):
     src_path = entity['SrcPath']
     dst_path = entity['DstPath']
-    script = azure_scripts.generate_adls_to_hdfs_copy_file_command(azure_connection_name=AZURE_CONNECTION_NAME,
+    script = azure_scripts.generate_adls_to_hdfs_copy_folder_command(azure_connection_name=AZURE_CONNECTION_NAME,
                                                      src_path=src_path,
                                                      dst_path=dst_path)
     return script
 
-@task
-def generate_entity_list(parameters:dict):
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def generate_azure_remove_script(parameters:dict, entity):
+    src_path = entity['SrcPath']
+    script = azure_scripts.generate_adls_remove_folder_command(azure_connection_name=AZURE_CONNECTION_NAME,
+                                                     src_path=src_path)
+    return script
+
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def generate_entity_list_ra(parameters:dict):
     raw_path=parameters['RawPath']
     dst_dir=parameters['DstDir'] 
     entities = [
-              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA/','DstPath':dst_ra_dir},
-              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/ROLLING/','DstPath':dst_rs_dir},
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA','DstPath':dst_dir},
              ]
     return entities
+
+@task(trigger_rule=TriggerRule.ALL_SUCCESS)
+def generate_entity_list_rs(parameters:dict):
+    raw_path=parameters['RawPath']
+    dst_dir=parameters['DstDir'] 
+    entities = [
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/Rolling','DstPath':dst_dir},
+             ]
+    return entities
+
 
 with DAG(
     dag_id='jupiter_ml_calendar_copy',
@@ -129,10 +143,41 @@ with DAG(
     tags=TAGS,
     render_template_as_native_obj=True,
 ) as dag:
-# Get dag parameters from vault    
-    parameters = get_parameters()  
+
+    # Get dag parameters from vault    
+    parameters = get_parameters()
+
     #add copy from datalake to hdfs
-    copy_entities = BashOperator.partial(task_id="copy_entity",
+    entities_ra = generate_entity_list_ra(parameters)
+    entities_rs = generate_entity_list_rs(parameters)
+    
+    copy_ra_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities_ra)
+    copy_rs_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities_rs)
+
+    remove_ra_script = generate_azure_remove_script.partial(parameters=parameters).expand(entity=entities_ra)
+    remove_rs_script = generate_azure_remove_script.partial(parameters=parameters).expand(entity=entities_rs)
+
+    copy_ra_entities = BashOperator.partial(task_id="copy_entity_ra",
                                        do_xcom_push=True,
-                                      ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
+                                      ).expand(bash_command=copy_ra_script,
                                               )
+
+    copy_rs_entities = BashOperator.partial(task_id="copy_entity_rs",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=copy_rs_script,
+                                              )
+
+    remove_ra_entities = BashOperator.partial(task_id="remove_entity_ra",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=remove_ra_script,
+                                              )
+
+    remove_rs_entities = BashOperator.partial(task_id="remove_entity_rs",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=remove_rs_script,
+                                              )
+
+    #parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script >> copy_ra_entities >> copy_rs_entities >> remove_ra_entities >> remove_rs_entities
+    parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script
+    remove_rs_script >> copy_ra_entities >> remove_ra_entities
+    remove_rs_script >> copy_rs_entities >> remove_rs_entities
