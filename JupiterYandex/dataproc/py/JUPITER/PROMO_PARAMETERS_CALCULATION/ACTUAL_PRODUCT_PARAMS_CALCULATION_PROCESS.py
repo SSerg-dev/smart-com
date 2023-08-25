@@ -127,14 +127,14 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
 
     sumActualProductParamsList = calcActualPromoProductDF\
       .select(\
-                col('promoNumber')
+                col('promoIdCol')
                ,col('ActualProductLSVByCompensation')
                ,col('ActualProductBaselineVolume')
                ,col('ActualProductPostPromoEffectVolume')
                ,col('ActualProductVolumeByCompensation')
                ,col('ActualProductVolume')
              )\
-      .groupBy('promoNumber')\
+      .groupBy('promoIdCol')\
       .agg(sum('ActualProductLSVByCompensation').cast(DecimalType(30,6)).alias('calcActualPromoLSVByCompensation'),
            sum('ActualProductBaselineVolume').cast(DecimalType(30,6)).alias('calcActualPromoBaselineVolume'),
            sum('ActualProductPostPromoEffectVolume').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectVolume'),
@@ -143,7 +143,7 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .collect()
 
     actualParSchema = StructType([
-      StructField("promoNumber", StringType(), True),
+      StructField("promoIdCol", StringType(), True),
       StructField("calcActualPromoLSVByCompensation", DecimalType(30,6), True),
       StructField("calcActualPromoBaselineVolume", DecimalType(30,6), True),
       StructField("calcActualPromoPostPromoEffectVolume", DecimalType(30,6), True),
@@ -154,7 +154,7 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
     actualParDF = spark.createDataFrame(sumActualProductParamsList, actualParSchema)
 
     calcActualPromoDF = calcActualPromoDF\
-      .join(actualParDF, actualParDF.promoNumber == calcActualPromoDF.Number, 'inner')\
+      .join(actualParDF, actualParDF.promoIdCol == calcActualPromoDF.PromoId, 'inner')\
       .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('InOut') == False, col('calcActualPromoPostPromoEffectVolume')).otherwise(0).cast(DecimalType(30,6)))\

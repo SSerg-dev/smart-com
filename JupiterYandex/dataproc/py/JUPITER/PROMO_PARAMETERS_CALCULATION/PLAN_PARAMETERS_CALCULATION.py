@@ -59,7 +59,10 @@ outputProductChangeIncidentsSchema = StructType([
 ]);
 
 if is_notebook():
- sys.argv=['','']
+ sys.argv=['','{"MaintenancePathPrefix": '
+ '"/JUPITER/RAW/#MAINTENANCE/2023-08-22_manual__2023-08-22T10%3A51%3A08.795386%2B00%3A00_", '
+ '"ProcessDate": "2023-08-22", "Schema": "Jupiter", "HandlerId": '
+ '"384f8906-f8c0-4536-b98d-37dc66a54084"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -275,18 +278,20 @@ cogsTnDF = cogsTnDF\
 
 ####*Prepare dataframes for calculation*
 
-filteredPromoDF = filteredPromoDF.dropDuplicates()
-filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
-# print('filtered promo count:', filteredPromoDF.count())
 
 #tpm modes for recalculation: Current, RS, RA
 calcTPMmodes = [0, 1, 2]
+
+filteredPromoDF = filteredPromoDF.dropDuplicates()
+filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
+# print('filtered promo count:', filteredPromoDF.count())
 
 # promoProduct
 promoProductCols = promoProductDF.columns
 increasePromoProductCols = promoProductPriceIncreaseDF.columns
 increasePromoCols = promoPriceIncreaseDF.columns
 allCalcPlanPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
+
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
 
@@ -630,7 +635,7 @@ tempDF = calcPlanPromoProductDF\
 cols = notInOutCalcPlanPromoProductDF.columns
 
 notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
-  .join(tempDF, tempDF._promoNumber == notInOutCalcPlanPromoProductDF.promoNumber, 'left')\
+  .join(tempDF, tempDF._promoIdCol == notInOutCalcPlanPromoProductDF.promoIdCol, 'left')\
   .withColumn('promoIdCol', when(notInOutCalcPlanPromoProductDF.promoIdCol.isNull(),tempDF._promoIdCol)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoIdCol))\
   .withColumn('promoBrandTechId', when(notInOutCalcPlanPromoProductDF.promoBrandTechId.isNull(),tempDF._promoBrandTechId)\

@@ -291,7 +291,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
 
     sumPlanProductParamsList = calcPlanPromoProductDF\
       .select(\
-               col('promoNumber')
+               col('promoIdCol')
               ,col('PlanProductIncrementalLSV')
               ,col('PlanProductBaselineLSV')
               ,col('PlanProductBaselineVolume')
@@ -302,7 +302,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
               ,col('PlanProductPostPromoEffectVolumeW1')
               ,col('PlanProductPostPromoEffectVolumeW2')
              )\
-      .groupBy('promoNumber')\
+      .groupBy('promoIdCol')\
       .agg(sum('PlanProductIncrementalLSV').alias('calcPlanPromoIncrementalLSV'),
            sum('PlanProductBaselineLSV').alias('calcPlanPromoBaselineLSV'),
            sum('PlanProductIncrementalCase').alias('calcPlanProductIncrementalCase'),
@@ -323,7 +323,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
       .drop('tempPlanPromoIncrementalLSV','tempPlanPromoBaselineLSV')
     
     sumPlanProductParamsList = sumPlanProductParamsList.select(\
-               col('promoNumber')
+               col('promoIdCol')
               ,col('calcPlanPromoIncrementalLSV')
               ,col('calcPlanPromoBaselineLSV')
               ,col('calcPlanProductIncrementalCase')
@@ -338,7 +338,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     sumPlanProductParamsList = sumPlanProductParamsList.collect()
 
     planParSchema = StructType([
-      StructField("promoNumber", StringType(), True),
+      StructField("promoIdCol", StringType(), True),
       StructField("calcPlanPromoIncrementalLSV", DecimalType(30,6), True),
       StructField("calcPlanPromoBaselineLSV", DecimalType(30,6), True),
       StructField("calcPlanProductIncrementalCase", DecimalType(30,6), True),
@@ -353,7 +353,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
     planParDF = spark.createDataFrame(sumPlanProductParamsList, planParSchema)
 
     calcPlanPromoDF = calcPlanPromoDF\
-      .join(planParDF, planParDF.promoNumber == calcPlanPromoDF.Number, 'inner')
+      .join(planParDF, planParDF.promoIdCol == calcPlanPromoDF.Id, 'inner')
 
     @udf
     def isNullCheck(value):

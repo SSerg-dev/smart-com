@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-07-13_manual__2023-07-13T14%3A31%3A58.337289%2B00%3A00_", '
- '"ProcessDate": "2023-07-13", "Schema": "Jupiter", "HandlerId": '
- '"a822371a-9f2a-4925-833e-9562a4e496ee"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-08-23_manual__2023-08-23T08%3A44%3A28.142273%2B00%3A00_", '
+ '"ProcessDate": "2023-08-23", "Schema": "Jupiter", "HandlerId": '
+ '"47fa610c-7508-480b-bbaa-715c56da7360"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -196,7 +196,7 @@ actualCogsTiRecalculationPromoDF = promoDF\
           ,promoDF.Number
           ,promoStatusDF.SystemName.alias('promoStatusName')
          )\
-  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False') & (col('TPMmode').isin(*calcTPMmodes))
+  .where((col('promoStatusName').isin(*actualCogsTiRecalculationPromoStatusList)) & (col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
 
 promoFilterDF = promoFilterDF\
   .join(brandTechDF, brandTechDF.Id == promoFilterDF.BrandTechId, 'left')\
@@ -205,7 +205,7 @@ promoFilterDF = promoFilterDF\
           ,brandTechDF.BrandsegTechsub.alias('promoBrandTechName')
          )\
 
-activePromoProductDF = promoProductDF.where((col('Disabled') == 'false') & (col('TPMmode').isin(*calcTPMmodes))
+activePromoProductDF = promoProductDF.where((col('Disabled') == 'false') & col('TPMmode').isin(*calcTPMmodes))
 activeClientTreeDF = clientTreeDF.where(col('EndDate').isNull())
 
 activeClientTreeList = activeClientTreeDF.collect()
