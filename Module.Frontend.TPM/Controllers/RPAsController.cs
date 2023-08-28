@@ -26,10 +26,12 @@ using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
+using Module.Persist.TPM.Model.DTO;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Persist.ScriptGenerator.Filter;
 using Utility.FileWorker;
 using Column = Frontend.Core.Extensions.Export.Column;
 using UserInfoCore = Core.Security.Models.UserInfo;
@@ -532,9 +534,20 @@ namespace Module.Frontend.TPM.Controllers
                     string filePath = Path.Combine(exportDir, filename);
                     string file = Path.GetFileName(filePath);
 
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    string role = authorizationManager.GetCurrentRoleName();
+                    IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                        .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                        .ToList() : new List<Constraint>();
+                    IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+
                     DateTime dt = DateTime.Now;
-                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
+                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+
+                    IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+                    query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, true);
+                    List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
                     List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
@@ -628,9 +641,20 @@ namespace Module.Frontend.TPM.Controllers
                     string filePath = Path.Combine(exportDir, filename);
                     string file = Path.GetFileName(filePath);
 
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    string role = authorizationManager.GetCurrentRoleName();
+                    IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                        .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                        .ToList() : new List<Constraint>();
+                    IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+
                     DateTime dt = DateTime.Now;
-                    List<ClientTree> clientsList = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0))).ToList();
+                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
+                        || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+
+                    IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
+                    query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, true);
+                    List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
                     List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
