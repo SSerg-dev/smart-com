@@ -954,7 +954,8 @@
         'RSmode': 'Scenario List',
         'SaveScenarioTaskCreated': 'Save scenario task was successfully created.',
         'SaveScenarioTaskError': 'Error occurred during scenario task creation.',
-        'SaveScenarioSelectError': 'Select client to save scenario.'
+        'SaveScenarioSelectError': 'Select client to save scenario.',
+        'SaveScenarioTypeError': 'Select type to save scenario.'
     },
 
     'Color': {

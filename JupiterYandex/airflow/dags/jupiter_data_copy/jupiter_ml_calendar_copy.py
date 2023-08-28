@@ -17,6 +17,7 @@ from airflow.utils.task_group import TaskGroup
 from airflow.hooks.base_hook import BaseHook
 from airflow.providers.hashicorp.hooks.vault import VaultHook
 from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.ssh.hooks.ssh import SSHHook
 
 import uuid
 from io import StringIO
@@ -39,6 +40,7 @@ HDFS_CONNECTION_NAME = 'webhdfs_default'
 VAULT_CONNECTION_NAME = 'vault_default'
 REMOTE_HDFS_CONNECTION_NAME = 'webhdfs_atlas'
 AZURE_CONNECTION_NAME = 'azure_jupiter_ml_sp'
+SSH_CONNECTION_NAME = 'ssh_jupiter'
 TAGS=["jupiter", "promo", "copy"]
 
 
@@ -66,6 +68,7 @@ def get_parameters(**kwargs):
     upload_path = f'{raw_path}/{execution_date}/'
     system_name = Variable.get("SystemName")
     last_upload_date = Variable.get("LastUploadDate")
+    ml_path = Variable.get("MlSftpPath")
     
     db_conn = BaseHook.get_connection(MSSQL_CONNECTION_NAME)
     remote_hdfs_conn = BaseHook.get_connection(REMOTE_HDFS_CONNECTION_NAME)
@@ -75,9 +78,7 @@ def get_parameters(**kwargs):
     azure_conn = BaseHook.get_connection(AZURE_CONNECTION_NAME)
     print(azure_conn)
 
-    dst_ra_dir = f'{raw_path}/SOURCES/ML/RA'    
-    dst_rs_dir = f'{raw_path}/SOURCES/ML/RS/'
-    
+    dst_dir = f'{raw_path}/SOURCES/ML/'    
 
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,
@@ -96,6 +97,7 @@ def get_parameters(**kwargs):
                   "ParentRunId":parent_run_id,
                   "RemoteHdfsUrl":remote_hdfs_url,
                   "DstDir":dst_dir,
+                  "MLPath":ml_path,
                   }
     print(parameters)
     return parameters
@@ -106,20 +108,59 @@ def get_parameters(**kwargs):
 def generate_azure_copy_script(parameters:dict, entity):
     src_path = entity['SrcPath']
     dst_path = entity['DstPath']
-    script = azure_scripts.generate_adls_to_hdfs_copy_file_command(azure_connection_name=AZURE_CONNECTION_NAME,
+    script = azure_scripts.generate_adls_to_hdfs_copy_folder_command(azure_connection_name=AZURE_CONNECTION_NAME,
                                                      src_path=src_path,
                                                      dst_path=dst_path)
     return script
 
 @task
-def generate_entity_list(parameters:dict):
+def generate_azure_remove_script(parameters:dict, entity):
+    src_path = entity['SrcPath']
+    script = azure_scripts.generate_adls_remove_folder_command(azure_connection_name=AZURE_CONNECTION_NAME,
+                                                     src_path=src_path)
+    return script
+
+@task
+def generate_entity_list_ra(parameters:dict):
     raw_path=parameters['RawPath']
     dst_dir=parameters['DstDir'] 
     entities = [
-              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA/','DstPath':dst_ra_dir},
-              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/ROLLING/','DstPath':dst_rs_dir},
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/RA','DstPath':dst_dir},
              ]
     return entities
+
+@task
+def generate_entity_list_rs(parameters:dict):
+    raw_path=parameters['RawPath']
+    dst_dir=parameters['DstDir'] 
+    entities = [
+              {'SrcPath':'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_PROMO_DM/PROMO_PREDICTIVE_PLANNER/JUPITER/Rolling','DstPath':dst_dir},
+             ]
+    return entities
+
+@task
+def copy_hdfs_to_sftp(sftp_path, hdfs_path):
+    tmp_path=f'/tmp/'
+
+    sftp_path=f'{sftp_path}/'
+    dst_path = f'{hdfs_path}'
+    
+    ssh_hook=SSHHook(SSH_CONNECTION_NAME)
+    hdfs_hook = WebHDFSHook(HDFS_CONNECTION_NAME)
+    
+    conn = hdfs_hook.get_conn()
+    conn.download(hdfs_path, tmp_path, overwrite=True)
+    
+    files=glob.glob(f'{tmp_path}/*.csv')
+    #files = [f for f in files if os.path.isfile(f)]
+    for src_file_path in files:
+      print(src_file_path)
+    
+      with ssh_hook.get_conn() as ssh_client:
+       sftp_client = ssh_client.open_sftp()
+       sftp_client.put(src_file_path,sftp_path)
+    
+    return True
 
 with DAG(
     dag_id='jupiter_ml_calendar_copy',
@@ -129,10 +170,44 @@ with DAG(
     tags=TAGS,
     render_template_as_native_obj=True,
 ) as dag:
-# Get dag parameters from vault    
-    parameters = get_parameters()  
+
+    # Get dag parameters from vault    
+    parameters = get_parameters()
+
     #add copy from datalake to hdfs
-    copy_entities = BashOperator.partial(task_id="copy_entity",
+    entities_ra = generate_entity_list_ra(parameters)
+    entities_rs = generate_entity_list_rs(parameters)
+    
+    copy_ra_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities_ra)
+    copy_rs_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities_rs)
+
+    remove_ra_script = generate_azure_remove_script.partial(parameters=parameters).expand(entity=entities_ra)
+    remove_rs_script = generate_azure_remove_script.partial(parameters=parameters).expand(entity=entities_rs)
+
+    copy_ra_entities = BashOperator.partial(task_id="copy_entity_ra",
                                        do_xcom_push=True,
-                                      ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
+                                      ).expand(bash_command=copy_ra_script,
                                               )
+
+    copy_rs_entities = BashOperator.partial(task_id="copy_entity_rs",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=copy_rs_script,
+                                              )
+
+    move_sftp_ra = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RA", f"{parameters['DstDir']}/RA")
+    move_sftp_rs = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RS", f"{parameters['DstDir']}/Rolling")
+
+    remove_ra_entities = BashOperator.partial(task_id="remove_entity_ra",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=remove_ra_script,
+                                              )
+
+    remove_rs_entities = BashOperator.partial(task_id="remove_entity_rs",
+                                       do_xcom_push=True,
+                                      ).expand(bash_command=remove_rs_script,
+                                              )
+
+    #parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script >> copy_ra_entities >> copy_rs_entities >> remove_ra_entities >> remove_rs_entities
+    parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script
+    remove_rs_script >> move_sftp_ra >> remove_ra_entities
+    remove_rs_script >> move_sftp_rs >> remove_rs_entities

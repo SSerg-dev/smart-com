@@ -1126,7 +1126,11 @@ namespace Module.Frontend.TPM.Controllers
             var scenario = ScenarioHelper.GetActiveScenario(Int32.Parse(ObjectId), Context);
 
             if (scenario == null) return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RA scenario not found" }));
-
+            List<Guid> PromoRSIds = scenario.Promoes.Select(f => f.Id).ToList();
+            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
+            {
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "there is a blocked Promo" }));
+            }
             var email = NotificationsHelper.GetUsersEmail(new List<Guid>() { (Guid)user.Id }, Context).First();
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 

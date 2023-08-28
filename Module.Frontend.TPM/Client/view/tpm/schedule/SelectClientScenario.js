@@ -6,8 +6,8 @@
 
     width: 500,
     minWidth: 500,
-    minHeight: 400,
-    height: 400,
+    minHeight: 450,
+    height: 450,
     items: [{
         xtype: 'panel',
         cls: 'filter-panel',
@@ -27,7 +27,11 @@
                 xtype: 'fieldset',
                 itemId: 'scenarioFieldset',
                 title: l10n.ns('tpm', 'SelectClientScenario').value('ScenarioType'),
-                height: 60,
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                flex: 1,
                 items: [
                     {
                         xtype: 'combobox',
@@ -53,7 +57,7 @@
                     type: 'vbox',
                     align: 'stretch'
                 },
-                flex: 1,
+                flex: 3,
                 items: [{
                     xtype: 'textfieldwithtrigger',
                     itemId: 'textFilterByClients',
