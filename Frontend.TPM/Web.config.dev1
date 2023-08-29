@@ -103,7 +103,7 @@
 	<add key="MongoColName" value="historicals" />
 	<add key="MongoTTLSec" value="63113904" />
 	<add key="MongoURITemplate" value="mongodb://{0}:{1}@{2}/{3}?{4}" />
-	<add key="MongoUrl" value="mongodb://192.168.10.92:27017" />
+	<add key="MongoUrl" value="mongodb://192.168.10.202:27017" />
 	<add key="MongoDBName" value="Test" />
     <!--KeyVault-->
     <add key="UseKeyVault" value="false" />
