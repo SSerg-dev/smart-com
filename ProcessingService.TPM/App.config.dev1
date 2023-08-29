@@ -24,7 +24,7 @@
     <add key="INTERFACE_DIRECTORY_INBOUND_OUTCOME" value="InterfaceFilesInboundOutCome" />
     <add key="INTERFACE_DIRECTORY_OUTBOUND_INCOME" value="InterfaceFilesOutboundIncome" />
     <add key="IMPORT_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\ImportResultFiles" />
-	<add key="PROMO_SUPPORT_DIRECTORY" value="D:\TPM_Dev1\Storage\PromoSupportFiles" />
+    <add key="PROMO_SUPPORT_DIRECTORY" value="D:\TPM_Dev1\Storage\PromoSupportFiles" />
     <add key="DATALAKESYNC_RESULT_DIRECTORY" value="D:\TPM_Dev1\Storage\DataLakeSyncResultFiles" />
     <add key="HANDLER_CONFIG_DIRECTORY" value="D:\TPM_Dev1\Storage\HandlerConfig" />
     <add key="MANUAL_DIRECTORY" value="D:\TPM_Dev1\Storage\Manuals" />
@@ -50,7 +50,7 @@
 	<add key="MongoTTLSec" value="63113904" />
 	<add key="MongoURITemplate" value="mongodb://{0}:{1}@{2}/{3}?{4}" />
 	<add key="MongoUrl" value="mongodb://localhost:27017" />
-	<add key="MongoDBName" value="TPMDev1" />
+	<add key="MongoDBName" value="Test" />
   </appSettings>
   <connectionStrings>
     <add name="HistoryDocumentStore" connectionString="Url = http://localhost:8080" />
