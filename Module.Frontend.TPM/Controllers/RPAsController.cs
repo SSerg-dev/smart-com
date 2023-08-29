@@ -138,7 +138,10 @@ namespace Module.Frontend.TPM.Controllers
                                                         .Where(x => x.UserRole.UserId == user.Id && x.UserRole.Role.Id == roleId)
                                                         .ToList();
                 IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
-                result.Constraint = string.Join(",", constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => x.Value));
+                var clientTrees = Context.Set<ClientTree>().Where(x => x.EndDate == null);
+                var clientIds = constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => Int32.Parse(x.Value));
+                clientTrees = clientTrees.Where(x => clientIds.Any(y => x.ObjectId == y));
+                result.Constraint = string.Join(",", clientTrees.Select(x => x.Name));
                 result.CreateDate = DateTime.UtcNow;
                 result.FileURL = Path.GetFileName(fileName);
                 // Save RPA
@@ -545,8 +548,8 @@ namespace Module.Frontend.TPM.Controllers
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
 
-                    IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-                    query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, true);
+                    var clientIds = constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => Int32.Parse(x.Value));
+                    query = query.Where(x => clientIds.Any(y => x.ObjectId == y));
                     List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
@@ -652,8 +655,8 @@ namespace Module.Frontend.TPM.Controllers
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
                         || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
 
-                    IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
-                    query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters, FilterQueryModes.Active, true);
+                    var clientIds = constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => Int32.Parse(x.Value));
+                    query = query.Where(x => clientIds.Any(y => x.ObjectId == y));
                     List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
