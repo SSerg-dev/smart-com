@@ -46,11 +46,12 @@
     <add key="DefaultSchema" value="Jupiter" />
 	
 	    <!--mongo-->
-	<add key="MongoColName" value="historicals" />
-	<add key="MongoTTLSec" value="63113904" />
-	<add key="MongoURITemplate" value="mongodb://{0}:{1}@{2}/{3}?{4}" />
-	<add key="MongoUrl" value="mongodb://localhost:27017" />
-	<add key="MongoDBName" value="Test" />
+    <add key="HistoryModule" value="MongoDB" />
+	  <add key="MongoColName" value="historicals" />
+	  <add key="MongoTTLSec" value="63113904" />
+	  <add key="MongoURITemplate" value="mongodb://{0}:{1}@{2}/{3}?{4}" />
+	  <add key="MongoUrl" value="mongodb://localhost:27017" />
+	  <add key="MongoDBName" value="Test" />
   </appSettings>
   <connectionStrings>
     <add name="HistoryDocumentStore" connectionString="Url = http://localhost:8080" />
