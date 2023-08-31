@@ -320,7 +320,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.SavedScenario, opt => opt.Ignore())
                     .ForMember(pTo => pTo.SavedScenarioId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.RollingScenario, opt => opt.MapFrom(f => rollingScenario))
-                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease));
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease))
+                    .ForMember(pTo => pTo.CalculateML, opt => opt.MapFrom(f => true));
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.RA))
