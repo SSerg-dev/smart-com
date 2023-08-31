@@ -183,6 +183,8 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             RollingScenario rollingScenario = CreateRAPeriod(null, clientTree, Context, ScenarioType.RA, false);
             Context.SaveChanges();
             savedScenario.RollingScenarioId = rollingScenario.Id;
+            rollingScenario.RSstatus = RSstateNames.CALCULATING;
+            rollingScenario.TaskStatus = TaskStatusNames.INPROGRESS;
             HiddenModeHelper.CopyPromoesFromHiddenToRA(Context, promos, rollingScenario);
             Context.SaveChanges();
         }
