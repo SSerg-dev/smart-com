@@ -107,7 +107,8 @@ namespace Module.Host.TPM
                 new Handlers.Interface.Incoming.InputMLProcessHandler(),
                 new Handlers.ProcessMLCalendarHandler(),
                 new Handlers.FullXLSXPPEUpdateImportHandler(),
-                new Handlers.PrepareNightCalculateHandler()
+                new Handlers.PrepareNightCalculateHandler(),
+                new Handlers.ScenarioClientUploadCheckHandler()
             };
         }
     }
