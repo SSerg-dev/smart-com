@@ -206,7 +206,7 @@
             UserRoles.KeyAccountManager,
             UserRoles.DemandPlanning,
             UserRoles.DemandFinance,
-            UserRoles.CMManager,
+            UserRoles.CustomerMarketingManager,
             UserRoles.CustomerMarketing,
             UserRoles.FunctionalExpert,
             UserRoles.GrowthAccelerationManager,
