@@ -7,7 +7,7 @@ Ext.define('App.store.tpm.mode.Mode', {
 
     data: [
         TpmModes.Prod,
-        TpmModes.RS,
-        TpmModes.RA
+        TpmModes.RS
+        //TpmModes.RA
     ]
 });
