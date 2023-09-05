@@ -548,11 +548,6 @@ namespace Module.Frontend.TPM.Controllers
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
 
-                    var clientIds = constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => Int32.Parse(x.Value));
-                    if (clientIds.Any())
-                    {
-                        query = query.Where(x => clientIds.Any(y => x.ObjectId == y));
-                    }
                     List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
@@ -658,11 +653,6 @@ namespace Module.Frontend.TPM.Controllers
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
                         || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
 
-                    var clientIds = constraints.Where(c => c.Prefix == "CLIENT_ID").Select(x => Int32.Parse(x.Value));
-                    if (clientIds.Any())
-                    {
-                        query = query.Where(x => clientIds.Any(y => x.ObjectId == y));
-                    }
                     List<ClientTree> clientsList = query.ToList();
 
                     List<BrandTech> brandtechs = Context.Set<BrandTech>().Where(x => !x.Disabled).ToList();
