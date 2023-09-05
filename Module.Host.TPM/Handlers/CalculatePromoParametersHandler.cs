@@ -143,7 +143,8 @@ namespace Module.Host.TPM.Handlers
                         {
                             PlanPromoUpliftCalculation.DistributePlanPromoUpliftToProducts(promo, context, UserId);
                         }
-                        if (promo.IsPriceIncrease && promo.TPMmode == Persist.TPM.Model.Interfaces.TPMmode.Current)
+                        if (NeedUpliftFinding(promo))
+                        //if (promo.IsPriceIncrease && promo.TPMmode == Persist.TPM.Model.Interfaces.TPMmode.Current)
                         {
                             //Подбор исторических промо и расчет PlanPromoUpliftPercent PriceIncrease
                             if (!promo.NeedRecountUpliftPI && promoCopy.IsPriceIncrease)

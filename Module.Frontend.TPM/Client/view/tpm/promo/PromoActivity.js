@@ -773,100 +773,100 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                                         }
                                                     },
                                                 },
-                                                {
-                                                    xtype: 'checkbox',
-                                                    labelSeparator: '',
-                                                    itemId: 'PromoUpliftLockedUpdateCheckboxPI',
-                                                    name: 'NeedRecountUpliftPI',
-                                                    labelAlign: 'right',
-                                                    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
-                                                    style: 'margin-left: 10px',
-                                                    //crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
-                                                    availableRoleStatusActions: {
-                                                        SupportAdministrator: App.global.Statuses.AllStatuses,
-                                                        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                    },
-                                                    availableRoleStatusActionsInOut: {
+                                                //{
+                                                //    xtype: 'checkbox',
+                                                //    labelSeparator: '',
+                                                //    itemId: 'PromoUpliftLockedUpdateCheckboxPI',
+                                                //    name: 'NeedRecountUpliftPI',
+                                                //    labelAlign: 'right',
+                                                //    crudAccess: ['Administrator', 'SupportAdministrator', 'FunctionalExpert', 'DemandPlanning'],
+                                                //    style: 'margin-left: 10px',
+                                                //    //crudAccess: ['Administrator', 'FunctionalExpert', 'DemandPlanning'],
+                                                //    availableRoleStatusActions: {
+                                                //        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                                //        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //    },
+                                                //    availableRoleStatusActionsInOut: {
 
-                                                    },
-                                                    listeners: {
-                                                        afterRender: function (me) {
-                                                            var readonly = me.up('promoeditorcustom').readOnly;
-                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
-                                                            var GlyphLock = this.up('container').down('#GlyphLock');
-                                                            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
-                                                            var lockAccessCrud = false;
+                                                //    },
+                                                //    listeners: {
+                                                //        afterRender: function (me) {
+                                                //            var readonly = me.up('promoeditorcustom').readOnly;
+                                                //            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                //            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                //            var currentRole = App.UserInfo.getCurrentRole()['SystemName'];
+                                                //            var lockAccessCrud = false;
 
-                                                            if (planPromoUpliftNumberFieldPI.crudAccess.indexOf(currentRole) === -1) {
-                                                                lockAccessCrud = true;
-                                                            }
-                                                            if ((!this.value || readonly) || lockAccessCrud) {
-                                                                planPromoUpliftNumberFieldPI.setEditable(false);
-                                                                GlyphLock.setGlyph(0xf33e);
-                                                                planPromoUpliftNumberFieldPI.isReadable = false;
-                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
-                                                            } else {
-                                                                planPromoUpliftNumberFieldPI.setEditable(true);
-                                                                GlyphLock.setGlyph(0xf33f);
-                                                                planPromoUpliftNumberFieldPI.isReadable = true;
-                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
-                                                            }
-                                                        },
-                                                        change: function (checkbox, newValue, oldValue) {
-                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
-                                                            var GlyphLock = this.up('container').down('#GlyphLock');
-                                                            if (newValue) {
-                                                                planPromoUpliftNumberFieldPI.setEditable(true);
-                                                                GlyphLock.setGlyph(0xf33f);
-                                                                planPromoUpliftNumberFieldPI.isReadable = true;
-                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
-                                                            } else {
-                                                                planPromoUpliftNumberFieldPI.setEditable(false);
-                                                                GlyphLock.setGlyph(0xf33e);
-                                                                planPromoUpliftNumberFieldPI.isReadable = false;
-                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
-                                                            }
-                                                        },
-                                                        enable: function (me) {
-                                                            var readonly = me.up('promoeditorcustom').readOnly;
-                                                            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
-                                                            var GlyphLock = this.up('container').down('#GlyphLock');
-                                                            if (!this.value || readonly) {
-                                                                planPromoUpliftNumberFieldPI.setEditable(false);
-                                                                planPromoUpliftNumberFieldPI.isReadable = false;
-                                                                //planPromoUpliftNumberField.removeCls('readOnlyField');
-                                                            } else {
-                                                                planPromoUpliftNumberFieldPI.setEditable(true);
-                                                                planPromoUpliftNumberFieldPI.isReadable = true;
-                                                                //planPromoUpliftNumberField.addCls('readOnlyField');
-                                                            }
-                                                            GlyphLock.setDisabled(false);
-                                                        },
-                                                        disable: function (me) {
-                                                            var GlyphLock = this.up('container').down('#GlyphLock');
-                                                            GlyphLock.setDisabled(true);
-                                                        },
-                                                    }
-                                                },
-                                                {
-                                                    xtype: 'button',
-                                                    itemId: 'GlyphLock',
-                                                    cls: 'promo-calculation-activity-uplift-btnglyph',
-                                                    glyph: 0xf33e,
-                                                    width: 30,
-                                                    height: 30,
-                                                    availableRoleStatusActions: {
-                                                        SupportAdministrator: App.global.Statuses.AllStatuses,
-                                                        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
-                                                    },
-                                                    availableRoleStatusActionsInOut: {
+                                                //            if (planPromoUpliftNumberFieldPI.crudAccess.indexOf(currentRole) === -1) {
+                                                //                lockAccessCrud = true;
+                                                //            }
+                                                //            if ((!this.value || readonly) || lockAccessCrud) {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(false);
+                                                //                GlyphLock.setGlyph(0xf33e);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = false;
+                                                //                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                //            } else {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(true);
+                                                //                GlyphLock.setGlyph(0xf33f);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = true;
+                                                //                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                //            }
+                                                //        },
+                                                //        change: function (checkbox, newValue, oldValue) {
+                                                //            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                //            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                //            if (newValue) {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(true);
+                                                //                GlyphLock.setGlyph(0xf33f);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = true;
+                                                //                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                //            } else {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(false);
+                                                //                GlyphLock.setGlyph(0xf33e);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = false;
+                                                //                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                //            }
+                                                //        },
+                                                //        enable: function (me) {
+                                                //            var readonly = me.up('promoeditorcustom').readOnly;
+                                                //            var planPromoUpliftNumberFieldPI = this.up('container').down('triggerfielddetails[name=PlanPromoUpliftPercentPI]');
+                                                //            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                //            if (!this.value || readonly) {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(false);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = false;
+                                                //                //planPromoUpliftNumberField.removeCls('readOnlyField');
+                                                //            } else {
+                                                //                planPromoUpliftNumberFieldPI.setEditable(true);
+                                                //                planPromoUpliftNumberFieldPI.isReadable = true;
+                                                //                //planPromoUpliftNumberField.addCls('readOnlyField');
+                                                //            }
+                                                //            GlyphLock.setDisabled(false);
+                                                //        },
+                                                //        disable: function (me) {
+                                                //            var GlyphLock = this.up('container').down('#GlyphLock');
+                                                //            GlyphLock.setDisabled(true);
+                                                //        },
+                                                //    }
+                                                //},
+                                                //{
+                                                //    xtype: 'button',
+                                                //    itemId: 'GlyphLock',
+                                                //    cls: 'promo-calculation-activity-uplift-btnglyph',
+                                                //    glyph: 0xf33e,
+                                                //    width: 30,
+                                                //    height: 30,
+                                                //    availableRoleStatusActions: {
+                                                //        SupportAdministrator: App.global.Statuses.AllStatuses,
+                                                //        Administrator: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //        FunctionalExpert: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //        DemandPlanning: App.global.Statuses.AllStatusesBeforeStartedWithoutDraft,
+                                                //    },
+                                                //    availableRoleStatusActionsInOut: {
 
-                                                    },
-                                                }
+                                                //    },
+                                                //}
                                             ]
                                         },
                                         {

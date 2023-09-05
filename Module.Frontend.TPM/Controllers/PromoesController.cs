@@ -469,13 +469,13 @@ namespace Module.Frontend.TPM.Controllers
                         needResetUpliftCorrections = true;
                     }
 
-                    if (model.NeedRecountUpliftPI != promoCopy.NeedRecountUpliftPI ||
-                        (promoCopy.PlanPromoUpliftPercentPI == null && model.PlanPromoUpliftPercentPI != null &&
-                        Math.Round((double)model.PromoPriceIncrease.PlanPromoUpliftPercent, 2, MidpointRounding.AwayFromZero) != model.PlanPromoUpliftPercentPI))
-                    {
-                        needResetUpliftCorrectionsPI = true;
+                    //if (model.NeedRecountUpliftPI != promoCopy.NeedRecountUpliftPI ||
+                    //    (promoCopy.PlanPromoUpliftPercentPI == null && model.PlanPromoUpliftPercentPI != null &&
+                    //    Math.Round((double)model.PromoPriceIncrease.PlanPromoUpliftPercent, 2, MidpointRounding.AwayFromZero) != model.PlanPromoUpliftPercentPI))
+                    //{
+                    //    needResetUpliftCorrectionsPI = true;
 
-                    }
+                    //}
                     // PriceIncrease
                     if (model.PromoPriceIncrease != null && model.PlanPromoUpliftPercentPI != null)
                     {

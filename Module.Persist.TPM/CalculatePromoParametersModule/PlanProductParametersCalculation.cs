@@ -78,6 +78,10 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         FillPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList());
                     }
+                    else
+                    {
+                        CopyPriceIncreaseProdusts(promo, promoProductsNotDisabled.ToList(), context);
+                    }
                 }
 
                 foreach (PromoProduct promoProduct in promoProductsNotDisabled)
@@ -826,7 +830,44 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         PromoProductCorrectionPriceIncrease promoProductCorrectionPriceIncrease = new PromoProductCorrectionPriceIncrease
                         {
-                            PlanProductUpliftPercentCorrected = promoProduct.PromoProductsCorrections.FirstOrDefault().PlanProductUpliftPercentCorrected,
+                            PlanProductUpliftPercentCorrected = promoProduct.PromoProductsCorrections.FirstOrDefault(f => !f.Disabled).PlanProductUpliftPercentCorrected,
+                            TempId = promoProduct.PromoProductsCorrections.FirstOrDefault().TempId,
+                            UserId = promoProduct.PromoProductsCorrections.FirstOrDefault().UserId,
+                            UserName = promoProduct.PromoProductsCorrections.FirstOrDefault().UserName,
+                            CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)
+                        };
+                        promoProductPriceIncrease.ProductCorrectionPriceIncreases.Add(promoProductCorrectionPriceIncrease);
+                    }
+                }
+                promo.PromoPriceIncrease.PromoProductPriceIncreases.Add(promoProductPriceIncrease);
+            }
+        }
+        public static void CopyPriceIncreaseProdusts(Promo promo, List<PromoProduct> promoProducts, DatabaseContext Context)
+        {
+            foreach (PromoProductPriceIncrease pppi in promo.PromoPriceIncrease.PromoProductPriceIncreases.ToList())
+            {
+                promo.PromoPriceIncrease.PromoProductPriceIncreases.Remove(pppi);
+                Context.Set<PromoProductPriceIncrease>().Remove(pppi);
+            }
+            //promo.PromoPriceIncrease.PromoProductPriceIncreases = new List<PromoProductPriceIncrease>();
+            foreach (PromoProduct promoProduct in promoProducts)
+            {
+                PromoProductPriceIncrease promoProductPriceIncrease = new PromoProductPriceIncrease
+                {
+                    PromoProduct = promoProduct,
+                    ZREP = promoProduct.ZREP,
+                    EAN_Case = promoProduct.EAN_Case,
+                    EAN_PC = promoProduct.EAN_PC,
+                    ProductEN = promoProduct.ProductEN
+                };
+                if (promoProduct.PromoProductsCorrections != null)
+                {
+                    promoProductPriceIncrease.ProductCorrectionPriceIncreases = new List<PromoProductCorrectionPriceIncrease>();
+                    if (promoProduct.PromoProductsCorrections.Any(f => !f.Disabled))
+                    {
+                        PromoProductCorrectionPriceIncrease promoProductCorrectionPriceIncrease = new PromoProductCorrectionPriceIncrease
+                        {
+                            PlanProductUpliftPercentCorrected = promoProduct.PromoProductsCorrections.FirstOrDefault(f => !f.Disabled).PlanProductUpliftPercentCorrected,
                             TempId = promoProduct.PromoProductsCorrections.FirstOrDefault().TempId,
                             UserId = promoProduct.PromoProductsCorrections.FirstOrDefault().UserId,
                             UserName = promoProduct.PromoProductsCorrections.FirstOrDefault().UserName,

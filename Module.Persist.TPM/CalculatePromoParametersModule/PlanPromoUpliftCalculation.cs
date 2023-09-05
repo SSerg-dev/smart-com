@@ -186,8 +186,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     .FirstOrDefault();
                 // сбрасываем uplift
                 // PriceIncrease
-                currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = null;
-                currentPromo.PlanPromoUpliftPercentPI = null;
+                //currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = null;
+                //currentPromo.PlanPromoUpliftPercentPI = null;
 
                 //Получаем все продукты по этому промо
                 List<PromoProductPriceIncrease> currentPromoProducts = context.Set<PromoProductPriceIncrease>()
@@ -221,7 +221,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                     productCorrectionPriceIncrease.ChangeDate = DateTimeOffset.UtcNow;
                                     productCorrectionPriceIncrease.UserId = user.Id;
                                     productCorrectionPriceIncrease.UserName = user.Name;
-                                }                                
+                                }
                             }
                         }
                     }
@@ -718,7 +718,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                         if (productsCorrection != null)
                         {
                             promoProductsCorrection.PlanProductUpliftPercentCorrected = productsCorrection.PlanProductUpliftPercentCorrected;
-                        }                        
+                        }
                     }
                     summPlanIncremental += promoProductsCorrection.PromoProductPriceIncrease.PlanProductBaselineLSV * promoProductsCorrection.PlanProductUpliftPercentCorrected / 100;
                 }
@@ -1008,12 +1008,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static void DistributePlanPromoUpliftToProductsPriceIncrease(Promo currentPromo, DatabaseContext context, Guid UserId)
         {
             double? newUplift = currentPromo.PlanPromoUpliftPercentPI;
-            if (!currentPromo.IsPriceIncrease || currentPromo.TPMmode == Model.Interfaces.TPMmode.RS)
-            {
-                newUplift = currentPromo.PlanPromoUpliftPercent;
-                currentPromo.PlanPromoUpliftPercentPI = currentPromo.PlanPromoUpliftPercent;
-                currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = currentPromo.PlanPromoUpliftPercent;
-            }
+            //if (!currentPromo.IsPriceIncrease || currentPromo.TPMmode == Model.Interfaces.TPMmode.RS)
+            //{
+            newUplift = currentPromo.PlanPromoUpliftPercent;
+            currentPromo.PlanPromoUpliftPercentPI = currentPromo.PlanPromoUpliftPercent;
+            currentPromo.PromoPriceIncrease.PlanPromoUpliftPercent = currentPromo.PlanPromoUpliftPercent;
+            //}
             if (newUplift != null)
             {
                 User user = context.Set<User>().Where(x => x.Id == UserId && x.Disabled != true).FirstOrDefault();

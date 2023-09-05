@@ -356,15 +356,15 @@
                 currentMode: true,
                 widget: 'promoproductcorrection'
             },
-            {
-                text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
-                tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
-                glyph: 0xf619,
-                rsMode: false,
-                raMode: false,
-                currentMode: true,
-                widget: 'promoproductcorrectionpriceincrease'
-            },
+            //{
+            //    text: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+            //    tooltip: l10n.ns('tpm', 'mainmenu').value('PromoProductCorrectionPriceIncrease'),
+            //    glyph: 0xf619,
+            //    rsMode: false,
+            //    raMode: false,
+            //    currentMode: true,
+            //    widget: 'promoproductcorrectionpriceincrease'
+            //},
         ]
     },
     {
