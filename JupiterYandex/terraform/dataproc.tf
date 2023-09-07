@@ -58,7 +58,8 @@ resource "yandex_dataproc_cluster" "dataproc" {
   cluster_config {
     version_id = "2.0"
     hadoop {
-      services   = ["HBASE", "HDFS", "YARN", "SPARK", "TEZ", "MAPREDUCE", "HIVE", "ZEPPELIN", "ZOOKEEPER"]
+      services   = ["HDFS", "YARN", "SPARK", "TEZ", "MAPREDUCE", "HIVE", "ZEPPELIN", "ZOOKEEPER", "LIVY"]
+      # services   = ["HBASE", "HDFS", "YARN", "SPARK", "TEZ", "MAPREDUCE", "HIVE", "ZEPPELIN", "ZOOKEEPER"]
       properties = {
          "pip:Zeppi_Convert" = "0.1.2"
          "conda:koalas" = "1.8.2"

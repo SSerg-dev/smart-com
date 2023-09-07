@@ -204,3 +204,7 @@ variable "deploy-sa-name" {
 variable "admins" {
     description = "Admin accounts for folder"
 }
+
+variable "datasphere-sa-name" {
+    description = "Service account Datasphere"
+}

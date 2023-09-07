@@ -101,3 +101,5 @@ EOT
 
 deploy-sa-name = "jupiter-app-dev-deploy-sa"
 admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeik7084rirbkajnjmh" ]
+
+datasphere-sa-name = "jupiter-app-dev-datasphere-sa"
