@@ -26,6 +26,7 @@ using System.Web.Http;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using System.Web.Http.Results;
+using LiteDB;
 using Module.Persist.TPM.Model.DTO;
 using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
@@ -546,7 +547,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     DateTime dt = DateTime.Now;
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
 
                     List<ClientTree> clientsList = query.ToList();
 
@@ -572,7 +573,7 @@ namespace Module.Frontend.TPM.Controllers
                         }
 
                         ISheet sheet3 = twb.GetSheet("BrandTech");
-                        i = 1;
+                        i = 0;
                         foreach (BrandTech bt in brandtechs)
                         {
                             IRow clientRow = sheet3.CreateRow(i);
@@ -585,7 +586,7 @@ namespace Module.Frontend.TPM.Controllers
                         sheet3.AutoSizeColumn(0);
 
                         ISheet sheet4 = twb.GetSheet("Mechanics");
-                        i = 1;
+                        i = 0;
                         foreach (Mechanic m in mecanics)
                         {
                             IRow clientRow = sheet4.CreateRow(i);
@@ -596,7 +597,7 @@ namespace Module.Frontend.TPM.Controllers
                         sheet4.AutoSizeColumn(0);
 
                         ISheet sheet5 = twb.GetSheet("Mechanics Type");
-                        i = 1;
+                        i = 0;
                         foreach (MechanicType m in mecanicTypes)
                         {
                             IRow clientRow = sheet5.CreateRow(i);
@@ -651,7 +652,7 @@ namespace Module.Frontend.TPM.Controllers
 
                     DateTime dt = DateTime.Now;
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                        || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
+                        || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
 
                     List<ClientTree> clientsList = query.ToList();
 
