@@ -374,6 +374,14 @@ namespace Module.Host.TPM.Actions
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
                 }
+                var btId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.Id;
+                if (btId == null)
+                {
+                    errors.Add("BrandTech not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
                 Promo promo = new Promo
                 {
                     CreatorLogin = username,
@@ -383,7 +391,7 @@ namespace Module.Host.TPM.Actions
                     ClientHierarchy = clientTree.FullPathName,
                     ClientTreeId = clientTree.ObjectId,
                     ClientTreeKeyId = clientTree.Id,
-                    BrandTechId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub == import.BrandTech).Id,
+                    BrandTechId = btId,
                     ProductSubrangesList = import.Subrange,
                     StartDate = import.PromoStartDate,
                     EndDate = import.PromoEndDate,

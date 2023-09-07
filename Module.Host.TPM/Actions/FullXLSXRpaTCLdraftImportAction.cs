@@ -379,7 +379,7 @@ namespace Module.Host.TPM.Actions
                     throw new Exception("Event 'Standard promo' not found");
                 }
 
-                var btId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub == import.BrandTech).Id;
+                var btId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (btId == null)
                 {
                     errors.Add("BrandTech not found: " + import.BrandTech);
@@ -387,7 +387,7 @@ namespace Module.Host.TPM.Actions
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
                     break;
                 }
-                var brandId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub == import.BrandTech).BrandId;
+                var brandId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.BrandId;
                 if (brandId == null)
                 {
                     errors.Add("Brand not found: " + import.BrandTech);
@@ -395,7 +395,7 @@ namespace Module.Host.TPM.Actions
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
                     break;
                 }
-                var techId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub == import.BrandTech).TechnologyId;
+                var techId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.TechnologyId;
                 if (techId == null)
                 {
                     errors.Add("Technology not found: " + import.BrandTech);
