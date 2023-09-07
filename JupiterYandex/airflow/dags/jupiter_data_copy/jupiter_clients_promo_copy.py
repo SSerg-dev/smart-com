@@ -17,6 +17,7 @@ from airflow.hooks.base_hook import BaseHook
 from airflow.providers.hashicorp.hooks.vault import VaultHook
 from airflow.providers.http.operators.http import SimpleHttpOperator
 # from cloud_scripts.trigger_dagrun import TriggerDagRunOperator as CustomTriggerDagRunOperator
+import cloud_scripts.azure_scripts as azure_scripts
 
 import uuid
 from io import StringIO
@@ -33,7 +34,7 @@ import base64
 import struct
 from contextlib import closing
 
-
+AZURE_CONNECTION_NAME = 'azure_dev_sp'
 MSSQL_CONNECTION_NAME = 'odbc_jupiter'
 HDFS_CONNECTION_NAME = 'webhdfs_default'
 VAULT_CONNECTION_NAME = 'vault_default'
@@ -115,7 +116,7 @@ def get_clients_to_copy(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
     converters = [(-155, handle_datetimeoffset)]
-    result = mssql_scripts.get_records(odbc_hook,sql=f"""SELECT * FROM {schema}.ScenarioCopyTask WHERE [Disabled] = 0 """,output_converters=converters)
+    result = mssql_scripts.get_records(odbc_hook,sql=f"""SELECT * FROM {schema}.ScenarioCopyTask WHERE [Status] = 'WAITING' """,output_converters=converters)
     
     result = [{k: v for k, v in d.items() if k not in ['CreateDate','ProcessDate','DeletedDate']} for d in result]
     return result
@@ -151,6 +152,8 @@ def create_dag_config_copy_from_adls(parameters:dict, db_conf:dict,clients):
           "emails":client["Email"],
           "drop_files_if_errors":True,
           "source_path":db_conf["source_path"],
+          "scenario_type":client["ScenarioType"],
+          "scenario_name":client["ScenarioName"],
           "Id":client["Id"],				  
             }
         conf_list.append(conf)
@@ -159,13 +162,22 @@ def create_dag_config_copy_from_adls(parameters:dict, db_conf:dict,clients):
 
 @task
 def generate_entity_list(parameters:dict, db_conf:dict,clients):
-    raw_path=parameters['RawPath']
-    dst_dir=parameters['DstDir']
+    #raw_path=parameters['RawPath']
+    #dst_dir=parameters['DstDir']
     entities = []
     for client in clients:
-        entity = {'SrcPath':f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}/*','DstPath':f'https://marsanalyticsdevadls.dfs.core.windows.net/output/FILES/RUSSIA_PETCARE_JUPITER//{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}'}
+        entities.append({'SrcPath':f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}/','DstPath':f'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_JUPITER/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}'})
     return entities
   
+@task
+def generate_azure_copy_script(parameters:dict, entity):
+    src_path = entity['SrcPath']
+    dst_path = entity['DstPath']
+
+    script = azure_scripts.generate_hdfs_to_adls_copy_folder_command(azure_connection_name=AZURE_CONNECTION_NAME,
+                                                     src_path=src_path,
+                                                     dst_path=dst_path)
+    return script
   
 with DAG(
     dag_id='jupiter_clients_promo_copy',
@@ -195,9 +207,14 @@ with DAG(
                                                                      trigger_dag_id="jupiter_client_promo_copy",
                                                                     ).expand(conf=create_dag_config_copy_from_adls)
 
-    #copy_entities = BashOperator.partial(task_id="copy_entity",
-    #                                  do_xcom_push=True,
-    #                                 ).expand(bash_command=generate_azure_copy_script.partial(parameters=parameters).expand(entity=generate_entity_list(parameters)),
-    #                                         )
- 
-    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls# >> copy_entities
+    entities = generate_entity_list(parameters, create_dag_config_copy_from_db, get_clients_to_copy)
+
+    azure_copy_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities)
+
+    copy_entities = BashOperator.partial(task_id="copy_entity",
+                                      do_xcom_push=True,
+                                     ).expand(bash_command=azure_copy_script)
+
+    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls
+    trigger_jupiter_client_promo_copy_from_adls >> entities >> azure_copy_script >> copy_entities
+

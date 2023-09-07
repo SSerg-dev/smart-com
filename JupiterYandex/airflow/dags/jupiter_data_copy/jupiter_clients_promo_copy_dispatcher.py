@@ -42,7 +42,7 @@ BCP_SEPARATOR = '0x01'
 CSV_SEPARATOR = '\u0001'
 TAGS=["jupiter","promo","dev"]
 PARAMETERS_FILE = 'PARAMETERS.csv'
-SCHEMA='Scenario'
+SCHEMA='Jupiter'
 
 def separator_convert_hex_to_string(sep):
     sep_map = {'0x01':'\x01'}
@@ -112,7 +112,7 @@ def get_clients_to_copy(parameters:dict):
     odbc_hook = OdbcHook(MSSQL_CONNECTION_NAME)
     schema = parameters["Schema"]
     converters = [(-155, handle_datetimeoffset)]
-    result = mssql_scripts.get_records(odbc_hook,sql=f"""SELECT * FROM {schema}.ScenarioCopyTask WHERE [Disabled] = 0 """,output_converters=converters)
+    result = mssql_scripts.get_records(odbc_hook,sql=f"""SELECT * FROM {schema}.ScenarioCopyTask WHERE [Status] = 'WAITING' """,output_converters=converters)
     
     result = [{k: v for k, v in d.items() if k not in ['CreateDate','ProcessDate','DeletedDate']} for d in result]
     return result
@@ -128,7 +128,7 @@ with DAG(
     render_template_as_native_obj=True,
     default_args={'retries': 2},
     max_active_runs=1,
-    schedule_interval='*/10 * * * *',
+    schedule_interval='*/20 * * * *',
 ) as dag:
 # Get dag parameters from vault    
     parameters = get_parameters()
@@ -138,7 +138,7 @@ with DAG(
     trigger_jupiter_clients_promo_copy = TriggerDagRunOperator(
         task_id="trigger_jupiter_clients_promo_copy",
         trigger_dag_id="jupiter_clients_promo_copy",  
-        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"{{dag_run.conf.get('schema')}}"},
+        conf={"parent_run_id":"{{run_id}}","parent_process_date":"{{ds}}","schema":"Jupiter"},
         wait_for_completion = True,
     )
     
