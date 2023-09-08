@@ -262,6 +262,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoNetIncrementalBaseTI', (col('ActualPromoNetIncrementalLSV') * col('TIBasePercent') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoIncrementalCOGS', (col('ActualPromoIncrementalLSV') * col('COGSPercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetIncrementalCOGS', (col('ActualPromoNetIncrementalLSV') * col('COGSPercent') / 100.0).cast(DecimalType(30,6)))\
+      .withColumn('ActualPromoNSVtn', (isNullCheck(col('ActualPromoNSV')) / (isNullCheck(col('ActualPromoVolumeSI')).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetLSV', (isNullCheck(col('ActualPromoBaselineLSV')) + isNullCheck(col('ActualPromoNetIncrementalLSV'))).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetBaseTI', (col('ActualPromoNetLSV') * col('TIBasePercent') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoTotalCost', (isNullCheck(col('ActualPromoCost')) + isNullCheck(col('ActualPromoBaseTI'))).cast(DecimalType(30,6)))\
@@ -312,7 +313,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoROIPercent', when(col('IsLSVBased') == False, when(col("ActualPromoCost") != 0, (col('ActualPromoIncrementalEarnings') / col('ActualPromoCost') + 1) * 100.0)\
                                               .otherwise(0)).otherwise(col('ActualPromoROIPercentLSV')).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetROIPercent', when(col('IsLSVBased') == False, when(col("ActualPromoCost") != 0, (col('ActualPromoNetIncrementalEarnings') / col('ActualPromoCost') + 1) * 100.0)\
-                                              .otherwise(0)).otherwise(col('ActualPromoNetROIPercentLSV')).cast(DecimalType(30,6)))
+                                              .otherwise(0)).otherwise(col('ActualPromoNetROIPercentLSV')).cast(DecimalType(30,6)))      
 
     if "MasterPromoId" in promoDF.schema.fieldNames():
       inExchangeCalcPromoDF = promoDF\

@@ -349,6 +349,20 @@
       "name": "#QCCount",
       "nullable": true,
       "type": "integer"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoVolume",
+      "nullable": true,
+      "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "PlanPromoNSVtn",
+      "nullable": true,
+      "type": "double"
     }
   ],
   "type": "struct"

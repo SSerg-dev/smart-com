@@ -196,7 +196,11 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
       .withColumn('PlanPromoROIPercent', when(col('IsLSVBased') == False, when(col("PlanPromoCost") != 0, (col('PlanPromoIncrementalEarnings') / col('PlanPromoCost') + 1) * 100.0)\
                                               .otherwise(0)).otherwise(col('PlanPromoROIPercentLSV')).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetROIPercent', when(col('IsLSVBased') == False, when(col("PlanPromoCost") != 0, (col('PlanPromoNetIncrementalEarnings') / col('PlanPromoCost') + 1) * 100.0)\
-                                              .otherwise(0)).otherwise(col('PlanPromoNetROIPercentLSV')).cast(DecimalType(30,6)))
+                                              .otherwise(0)).otherwise(col('PlanPromoNetROIPercentLSV')).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoVolume', (isNullCheck(col('PlanPromoBaselineVolume')) + isNullCheck(col('PlanPromoIncrementalVolume')))\
+                  .cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoNSVtn', (isNullCheck(col('PlanPromoNSV')) / isNullCheck(col('PlanPromoVolume')))\
+                  .cast(DecimalType(30,6)))
 
     if "MasterPromoId" in promoDF.schema.fieldNames():
       inExchangeCalcPromoDF = promoDF\
