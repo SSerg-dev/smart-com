@@ -77,4 +77,21 @@ namespace Module.Persist.TPM.Model.TPM
             return new { obj.Disabled, obj.DeletedDate, obj.StartDate, obj.EndDate, obj.Price, obj.ClientTreeId, obj.ProductId }.GetHashCode();
         }
     }
+
+    public class checkPriceListEqualityComparer : IEqualityComparer<PriceList>
+    {
+        public bool Equals(PriceList x, PriceList y)
+        {
+            return
+                x.DeletedDate == y.DeletedDate &&
+                x.StartDate == y.StartDate &&
+                x.ClientTreeId == y.ClientTreeId &&
+                x.ProductId == y.ProductId;               
+        }
+
+        public int GetHashCode(PriceList obj)
+        {
+            return new { obj.DeletedDate, obj.StartDate,obj.ClientTreeId, obj.ProductId }.GetHashCode();
+        }
+    }
 }
