@@ -737,12 +737,15 @@ namespace Module.Persist.TPM
 
 
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
+            builder.EntitySet<ClientTreeBrandTech>("DeletedClientTreeBrandTeches");
             builder.EntitySet<HistoricalClientTreeBrandTech>("HistoricalClientTreeBrandTeches");
             builder.Entity<ClientTreeBrandTech>().Collection.Action("ExportXLSX");
             builder.Entity<ClientTreeBrandTech>().Collection.Action("FullImportXLSX");
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
+            builder.EntitySet<ClientTreeBrandTech>("DeletedClientTreeBrandTeches").HasRequiredBinding(e => e.ClientTree, "ClientTrees");
             builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.ClientTree, (e, te) => e.ClientTreeId == te.Id);
             builder.EntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
+            builder.EntitySet<ClientTreeBrandTech>("DeletedClientTreeBrandTeches").HasRequiredBinding(e => e.BrandTech, "BrandTeches");
             builder.Entity<ClientTreeBrandTech>().HasRequired(e => e.BrandTech, (e, te) => e.BrandTechId == te.Id);
             builder.Entity<ClientTreeBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTreeBrandTech>("ClientTreeBrandTeches");
             builder.Entity<HistoricalClientTreeBrandTech>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalClientTreeBrandTech>("HistoricalClientTreeBrandTeches");

@@ -3680,6 +3680,10 @@
     <Compile Include="Migrations\202308251351555_Empty25082023.designer.cs">
       <DependentUpon>202308251351555_Empty25082023.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309060940066_Add_AP_Deleted_ClientTreeBranchTech.cs" />
+    <Compile Include="Migrations\202309060940066_Add_AP_Deleted_ClientTreeBranchTech.designer.cs">
+      <DependentUpon>202309060940066_Add_AP_Deleted_ClientTreeBranchTech.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202309100644403_Add_Promo_NSVtn.cs" />
     <Compile Include="Migrations\202309100644403_Add_Promo_NSVtn.designer.cs">
       <DependentUpon>202309100644403_Add_Promo_NSVtn.cs</DependentUpon>
@@ -3691,6 +3695,10 @@
     <Compile Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.cs" />
     <Compile Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.designer.cs">
       <DependentUpon>202309100659014_Add_ROI_Reports_NSVtn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309100858584_Empty_Migration_After_Merge_Sprin25.cs" />
+    <Compile Include="Migrations\202309100858584_Empty_Migration_After_Merge_Sprin25.designer.cs">
+      <DependentUpon>202309100858584_Empty_Migration_After_Merge_Sprin25.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -6927,6 +6935,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.resx">
       <DependentUpon>202309100659014_Add_ROI_Reports_NSVtn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309060940066_Add_AP_Deleted_ClientTreeBranchTech.resx">
+      <DependentUpon>202309060940066_Add_AP_Deleted_ClientTreeBranchTech.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309100858584_Empty_Migration_After_Merge_Sprin25.resx">
+      <DependentUpon>202309100858584_Empty_Migration_After_Merge_Sprin25.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1217,6 +1217,7 @@
         'CurrentBrandTechName': 'Brand tech',
     },
     'HistoricalClientTreeBrandTech': ['.tpm.ClientTreeBrandTech', '.core.BaseHistoryEntity'],
+    'DeletedClientTreeBrandTech': ['.tpm.ClientTreeBrandTech', '.core.BaseDeletedEntity'],
 
     'PromoDemand': {
         'BrandTechId': 'BrandTechId',

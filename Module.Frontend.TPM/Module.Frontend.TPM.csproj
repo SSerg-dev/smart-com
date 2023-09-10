@@ -315,6 +315,7 @@
     <Content Include="Client\controller\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\controller\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\controller\tpm\clientkpidata\ClientKPIDataRS.js" />
+    <Content Include="Client\controller\tpm\clienttreebrandtech\DeletedClientTreeBrandTech.js" />
     <Content Include="Client\controller\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\DeletedCompetitorPromo.js" />
     <Content Include="Client\controller\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
@@ -357,6 +358,7 @@
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
     <Content Include="Client\model\tpm\clientkpidata\ClientKPIDataRS.js" />
+    <Content Include="Client\model\tpm\clienttreebrandtech\DeletedClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\model\tpm\competitorpromo\DeletedCompetitorPromo.js" />
     <Content Include="Client\model\tpm\competitorpromo\HistoricalCompetitorPromo.js" />
@@ -416,6 +418,8 @@
     <Content Include="Client\view\tpm\clientdashboard\PromoWeeksRS.js" />
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRSEditor.js" />
     <Content Include="Client\view\tpm\clientkpidata\ClientKPIDataRS.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\DeletedClientTreeBrandTech.js" />
+    <Content Include="Client\view\tpm\clienttreebrandtech\DeletedClientTreeBrandTechDetail.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromo.js" />
     <Content Include="Client\view\tpm\competitorpromo\CompetitorPromoEditor.js" />
     <Content Include="Client\view\tpm\competitorpromo\DeletedCompetitorPromo.js" />
@@ -495,6 +499,7 @@
     <Compile Include="Controllers\CoefficientSI2SOsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSsController.cs" />
     <Compile Include="Controllers\DeletedActualCOGSTnsController.cs" />
+    <Compile Include="Controllers\DeletedClientTreeBrandTechesController.cs" />
     <Compile Include="Controllers\DeletedIncreaseBaseLine.cs" />
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedPlanPostPromoEffectsController.cs" />
