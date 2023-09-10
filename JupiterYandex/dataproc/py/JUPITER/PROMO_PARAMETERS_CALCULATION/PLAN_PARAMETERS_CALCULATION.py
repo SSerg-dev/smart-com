@@ -818,6 +818,7 @@ calcPromoPriceIncreaseDF = calcPromoPriceIncreaseDF\
           ,calcPlanPromoDF.PlanTIBasePercent
           ,calcPlanPromoDF.RATIShopperPercent
           ,calcPlanPromoDF.LastApprovedDate
+          ,calcPlanPromoDF.PlanPromoUpliftPercent.alias('promoPlanPromoUpliftPercent')
          )
 
 print(calcPlanPromoDF.schema)

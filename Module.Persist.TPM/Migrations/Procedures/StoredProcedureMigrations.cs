@@ -97,6 +97,7 @@ namespace Module.Persist.TPM.Migrations.Procedures
 						[PlanPromoBTL] = tp.[PlanPromoBTL],
 						[PlanPromoCostProduction] = tp.[PlanPromoCostProduction],
 						[PlanPromoUpliftPercent] = tp.[PlanPromoUpliftPercent],
+						[PlanPromoUpliftPercentPI] = tp.[PlanPromoUpliftPercentPI],
 						[PlanPromoIncrementalLSV] = tp.[PlanPromoIncrementalLSV],
 						[PlanPromoLSV] = tp.[PlanPromoLSV],
 						[PlanPromoROIPercent] = tp.[PlanPromoROIPercent],

@@ -176,6 +176,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
                                               .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetUpliftPercent', when(col('PlanPromoBaselineLSV') != 0, (col('PlanPromoNetIncrementalLSV') / col('PlanPromoBaselineLSV')) * 100.0)\
                                               .otherwise(0).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoUpliftPercentPI', (col('PlanPromoUpliftPercent').cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('PlanPromoNetIncrementalLSV')) * col('RATIShopperPercent') / 100)\
                   .cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperApproved', when(col('LastApprovedDate').isNull(), col('PlanAddTIShopperCalculated')).otherwise(col('PlanAddTIShopperApproved')))\
