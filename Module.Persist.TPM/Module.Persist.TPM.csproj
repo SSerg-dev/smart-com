@@ -3680,6 +3680,18 @@
     <Compile Include="Migrations\202308251351555_Empty25082023.designer.cs">
       <DependentUpon>202308251351555_Empty25082023.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309100644403_Add_Promo_NSVtn.cs" />
+    <Compile Include="Migrations\202309100644403_Add_Promo_NSVtn.designer.cs">
+      <DependentUpon>202309100644403_Add_Promo_NSVtn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309100656345_Add_Increase_Promo_NSVtn.cs" />
+    <Compile Include="Migrations\202309100656345_Add_Increase_Promo_NSVtn.designer.cs">
+      <DependentUpon>202309100656345_Add_Increase_Promo_NSVtn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.cs" />
+    <Compile Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.designer.cs">
+      <DependentUpon>202309100659014_Add_ROI_Reports_NSVtn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6906,6 +6918,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308251351555_Empty25082023.resx">
       <DependentUpon>202308251351555_Empty25082023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309100644403_Add_Promo_NSVtn.resx">
+      <DependentUpon>202309100644403_Add_Promo_NSVtn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309100656345_Add_Increase_Promo_NSVtn.resx">
+      <DependentUpon>202309100656345_Add_Increase_Promo_NSVtn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309100659014_Add_ROI_Reports_NSVtn.resx">
+      <DependentUpon>202309100659014_Add_ROI_Reports_NSVtn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

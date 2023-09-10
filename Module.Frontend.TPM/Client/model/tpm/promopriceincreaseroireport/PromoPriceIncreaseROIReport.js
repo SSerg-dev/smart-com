@@ -158,6 +158,9 @@
         { name: 'IsPriceIncrease', type: 'bool', hidden: false, isDefault: true },
         { name: 'IsApolloExport', type: 'bool', hidden: false, isDefault: true },
         { name: 'MLmodel', type: 'bool', hidden: false, isDefault: true },
+        { name: 'PlanPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'PlanPromoNSVtn', useNull: true, type: 'float', hidden: false, isDefault: true },
+        { name: 'ActualPromoNSVtn', useNull: true, type: 'float', hidden: false, isDefault: true },
     ],
     proxy: {
         type: 'breeze',

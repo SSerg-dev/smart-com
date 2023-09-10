@@ -296,6 +296,9 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoNetIncrementalCOGSTn { get; set; }
         public double? ActualPromoIncrementalCOGSTn { get; set; }
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
+        public double? PlanPromoVolume { get; set; }
+        public double? PlanPromoNSVtn { get; set; }
+        public double? ActualPromoNSVtn { get; set; }
 
         public string MLPromoId { get; set; }
         public bool CalculateML { get; set; }

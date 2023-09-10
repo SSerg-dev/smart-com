@@ -255,6 +255,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTn;
                     promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTn;
 
+                    promo.ActualPromoNSVtn = promo.ActualPromoNSV / promo.ActualPromoVolumeSI;
+
                     if (promo.IsLSVBased)
                     {
                         promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);

@@ -59,6 +59,8 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanAddTIShopperCalculated { get; set; }
         public double? PlanAddTIShopperApproved { get; set; }
         public double? PlanPromoNetUpliftPercent { get; set; }
+        public double? PlanPromoVolume { get; set; }
+        public double? PlanPromoNSVtn { get; set; }
 
         public virtual Promo Promo { get; set; }
         public ICollection<PromoProductPriceIncrease> PromoProductPriceIncreases { get; set; }

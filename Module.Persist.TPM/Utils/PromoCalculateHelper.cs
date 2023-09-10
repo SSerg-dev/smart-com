@@ -226,6 +226,9 @@ namespace Module.Persist.TPM.Utils
                 promo.PlanPromoNetIncrementalCOGSTn = null;
                 promo.ActualPromoIncrementalCOGSTn = null;
                 promo.ActualPromoNetIncrementalCOGSTn = null;
+                promo.PlanPromoVolume = null;
+                promo.PlanPromoNSVtn = null;
+                promo.ActualPromoNSVtn = null;
             }
         }
     }

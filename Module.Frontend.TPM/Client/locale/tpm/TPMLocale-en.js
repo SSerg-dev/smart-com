@@ -2340,7 +2340,10 @@
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'Price Increase',
         'IsApolloExport': 'Anaplan Export',
-        'MLmodel': 'ML model'
+        'MLmodel': 'ML model',
+        'PlanPromoVolume': 'Plan Promo Volume',
+        'PlanPromoNSVtn': 'Plan Promo NSV/Tn',
+        'ActualPromoNSVtn': 'Actual Promo NSV/Tn'
     },
     'PromoPriceIncreaseROIReport': ['.tpm.PromoROIReport'],
 

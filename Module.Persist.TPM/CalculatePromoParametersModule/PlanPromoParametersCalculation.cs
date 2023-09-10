@@ -227,9 +227,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.PlanPromoNetNSV = (promo.PlanPromoNetLSV ?? 0) - (promo.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PlanPromoNetBaseTI ?? 0);
                     promo.PlanPromoIncrementalCOGSTn = promo.PlanPromoIncrementalVolume * COGSTnTonCost;
                     promo.PlanPromoNetIncrementalCOGSTn = promo.PlanPromoNetIncrementalVolume * COGSTnTonCost;
+                    promo.PlanPromoVolume = promo.PlanPromoBaselineVolume + promo.PlanPromoIncrementalVolume;
+                    promo.PlanPromoNSVtn = promo.PlanPromoNSV / promo.PlanPromoVolume;
                     // PriceIncrease
                     if (promo.PromoPriceIncrease != null)
                     {
+                        promo.PromoPriceIncrease.PlanPromoVolume = promo.PromoPriceIncrease.PlanPromoBaselineVolume + promo.PromoPriceIncrease.PlanPromoIncrementalVolume;
+                        promo.PromoPriceIncrease.PlanPromoNSVtn = promo.PromoPriceIncrease.PlanPromoNSV / promo.PromoPriceIncrease.PlanPromoVolume;
                         promo.PromoPriceIncrease.PlanPromoNetNSV = (promo.PromoPriceIncrease.PlanPromoNetLSV ?? 0) - (promo.PromoPriceIncrease.PlanPromoTIShopper ?? 0) - (promo.PlanPromoTIMarketing ?? 0) - (promo.PromoPriceIncrease.PlanPromoNetBaseTI ?? 0);
                         promo.PromoPriceIncrease.PlanPromoIncrementalCOGSTn = promo.PromoPriceIncrease.PlanPromoIncrementalVolume * COGSTnTonCost;
                         promo.PromoPriceIncrease.PlanPromoNetIncrementalCOGSTn = promo.PromoPriceIncrease.PlanPromoNetIncrementalVolume * COGSTnTonCost;

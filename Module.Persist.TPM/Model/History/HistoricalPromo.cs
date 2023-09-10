@@ -271,6 +271,9 @@ namespace Module.Persist.TPM.Model.History {
         public double? PlanPromoNetIncrementalCOGSTn { get; set; }
         public double? ActualPromoIncrementalCOGSTn { get; set; }
         public double? ActualPromoNetIncrementalCOGSTn { get; set; }
+        public double? PlanPromoVolume { get; set; }
+        public double? PlanPromoNSVtn { get; set; }
+        public double? ActualPromoNSVtn { get; set; }
 
         public bool? InOut { get; set; }
         // Id операции (по сути транзакции) для предотвращения дублирования
