@@ -49,7 +49,11 @@ Ext.define('App.view.tpm.rpa.RPAForm', {
                                     model: "App.model.core.rpasetting.RPASetting",
                                     modelId: "efselectionmodel"
                                 }]
-                            }
+                            },
+                            sorters: [{
+                                property: 'Name',
+                                direction: 'DESC'
+                            }]
                         },
                         listeners: {
                             select: function(t, o) {

@@ -229,6 +229,7 @@
             UserRoles.DemandFinance,
             UserRoles.CMManager,
             UserRoles.CustomerMarketing,
+            UserRoles.CustomerMarketingManager,
             UserRoles.FunctionalExpert,
             UserRoles.GrowthAccelerationManager,
             UserRoles.SuperReader
