@@ -286,14 +286,12 @@ filteredPromoDF = filteredPromoDF.dropDuplicates()
 filteredIncreasePromoDF = filteredIncreasePromoDF.dropDuplicates()
 # print('filtered promo count:', filteredPromoDF.count())
 
-#tpm modes for recalculation: Current, RS, RA
-calcTPMmodes = [0, 1, 2]
-
 # promoProduct
 promoProductCols = promoProductDF.columns
 increasePromoProductCols = promoProductPriceIncreaseDF.columns
 increasePromoCols = promoPriceIncreaseDF.columns
 allCalcPlanPromoProductDF = promoProductDF.where((col('Disabled') == 'False') & col('TPMmode').isin(*calcTPMmodes))
+
 allCalcPlanPromoProductIdsDF = allCalcPlanPromoProductDF.select(col('Id'))
 disabledPromoProductDF = promoProductDF.join(allCalcPlanPromoProductIdsDF, 'Id', 'left_anti').select(promoProductDF['*'])
 

@@ -76,19 +76,20 @@ Ext.define('App.view.core.security.ModesView', {
     refreshList: function (store) {
         var records = store.getRange();
         var buttons = records.map(function (rec) {
-            return {
-                xtype: 'button',
-                itemId: rec.get('id'),
-                text: rec.get('text'),
-                tooltip: rec.get('text'),
-                ui: 'role-item-button',
-                glyph: 0xf493,
-                textAlign: 'left',
-                listeners: {
-                    scope: this,
-                    click: this.onModeButtonClick
+            if (rec.get('alias') != 'RA')
+                return {
+                    xtype: 'button',
+                    itemId: rec.get('id'),
+                    text: rec.get('text'),
+                    tooltip: rec.get('text'),
+                    ui: 'role-item-button',
+                    glyph: 0xf493,
+                    textAlign: 'left',
+                    listeners: {
+                        scope: this,
+                        click: this.onModeButtonClick
+                    }
                 }
-            }
         }, this);
 
         Ext.suspendLayouts();

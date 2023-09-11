@@ -91,7 +91,9 @@ def get_parameters(**kwargs):
     timestamp_field = pendulum.now().strftime("%Y%m%d%H%M%S")
     
     client_promo_dir = Variable.get("ClientPromoDir")
-    upload_path = f'{raw_path}/{ client_promo_dir}/{client_prefix}_{timestamp_field}'   
+    scenario_type = dag_run.conf.get('scenario_type')
+    scenario_name = dag_run.conf.get('scenario_name')
+    upload_path = f'{raw_path}/{client_promo_dir}/{scenario_type}/{scenario_name}'   
 
     parameters = {"RawPath": raw_path,
                   "ProcessPath": process_path,

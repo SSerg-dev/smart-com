@@ -141,12 +141,8 @@ namespace Module.Frontend.TPM.Controllers
         {
             if (clientTree == null)
                 return "";
-            if (clientTree.DemandCode == null)
-            {
-                return "";
-            }
-            if (!string.IsNullOrEmpty(clientTree.DemandCode.Trim()))
-                return clientTree.DemandCode;
+            if (!string.IsNullOrEmpty(clientTree.DemandCode))
+                return clientTree.DemandCode.Trim();
 
             return GetDemandCode(GetParent(clientTree, context), context);
         }

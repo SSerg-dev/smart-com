@@ -1,5 +1,5 @@
 UserRoles = {
-    KeyAccountManager: 'KAM',
+    KeyAccountManager: 'KeyAccountManager',
     CustomerMarketingManager: 'CMManager',
     DemandPlanning: 'DemandPlanning',
     DemandFinance: 'DemandFinance',

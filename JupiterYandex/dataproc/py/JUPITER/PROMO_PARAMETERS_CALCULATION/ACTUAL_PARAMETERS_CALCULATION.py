@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-07-17_scheduled__2023-07-16T21%3A20%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-07-17", "Schema": "Jupiter", "HandlerId": '
- '"4db45a0a-d88a-496f-9e1b-0d4bbbef98ee"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-01-09_scheduled__2023-01-08T22%3A30%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-01-09", "Schema": "Jupiter", "HandlerId": '
+ '"f18a98f9-3b2e-449a-ba96-e247d63d5b7c"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -253,7 +253,7 @@ actualCogsDF = actualCogsDF\
 actualCogsTnDF = actualCogsTnDF\
   .withColumn('StartDate', date_add(to_date(actualCogsTnDF.StartDate, 'yyyy-MM-dd'), 1))\
   .withColumn('EndDate', date_add(to_date(actualCogsTnDF.EndDate, 'yyyy-MM-dd'), 1))
-  
+
 #tpm modes for recalculation: Current, RS, RA
 calcTPMmodes = [0, 1, 2]
 

@@ -257,7 +257,7 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
             List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
                 .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
-            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount, g.PromoType }).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount, g.PromoType, g.Subrange }).ToList();
             var promos2 = promos1.Distinct().ToList();
             if (promos2.Count != sourceRecords.Count)
             {
@@ -277,17 +277,17 @@ namespace Module.Host.TPM.Actions
             List<Guid> promoStatuses = context.Set<PromoStatus>().Where(g => !g.Disabled && g.SystemName != "Cancelled").Select(g => g.Id).ToList();
             var promosPresent = context.Set<Promo>()
                 .Where(g => promoStatuses.Contains((Guid)g.PromoStatusId) && !g.Disabled && g.TPMmode == TPMmode.Current)
-                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId })
+                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList })
                 .ToList();
             List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId }).ToList();
+            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList }).ToList();
             foreach (var promoImport in promoImports)
             {
                 var present = promosPresent
-                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount && g.PromoTypesId == promoImport.PromoTypesId);
+                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount && g.PromoTypesId == promoImport.PromoTypesId && g.ProductSubrangesList == promoImport.ProductSubrangesList);
                 if (present != null)
                 {
-                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount);
+                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount && g.Subrange == promoImport.ProductSubrangesList);
                     errors.Add("Duplicate present in client:" + dublicate.Client + ", startdate:" + dublicate.PromoStartDate + " enddate:" + dublicate.PromoEndDate);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == dublicate.Client && g.PromoStartDate == dublicate.PromoStartDate && g.PromoEndDate == dublicate.PromoEndDate), string.Join(", ", errors)));
@@ -351,11 +351,19 @@ namespace Module.Host.TPM.Actions
             foreach (ImportRpaTLCdraft import in sourceTemplateRecords)
             {
                 ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == import.ClientHierarchyCode).FirstOrDefault();
+                if (clientTree == null)
+                {
+                    errors.Add("Client not found: " + clientTree.FullPathName);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
                 if (!existingClientTreeIds.Any(x => x.ObjectId == clientTree.ObjectId))
                 {
                     errors.Add("No access to the client " + clientTree.FullPathName);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
                 }
                 var user = users.FirstOrDefault(x => !String.IsNullOrEmpty(x.Email) && x.Email.Equals(import.Email, StringComparison.CurrentCultureIgnoreCase));
                 if (user == null) 
@@ -363,7 +371,7 @@ namespace Module.Host.TPM.Actions
                     errors.Add($"User '{import.Email}' not found");
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
-                    //break?
+                    break;
                 }
                 var promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
                 if (promoEvent == null)
@@ -371,9 +379,30 @@ namespace Module.Host.TPM.Actions
                     throw new Exception("Event 'Standard promo' not found");
                 }
 
-                var btId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).Id;
-                var brandId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).BrandId;
-                var techId = brandTeches.FirstOrDefault(g => g.Name == import.BrandTech).TechnologyId;
+                var btId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.Id;
+                if (btId == null)
+                {
+                    errors.Add("BrandTech not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
+                var brandId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.BrandId;
+                if (brandId == null)
+                {
+                    errors.Add("Brand not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
+                var techId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.TechnologyId;
+                if (techId == null)
+                {
+                    errors.Add("Technology not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
 
                 Guid? colorId = null;
                 var color = colors.Where(x => !x.Disabled && x.BrandTechId == btId).ToList();
@@ -394,7 +423,7 @@ namespace Module.Host.TPM.Actions
                     ProductHierarchy = "",
                     PromoTypesId = promoTypes.FirstOrDefault(g => g.Name == import.PromoType).Id,
                     DeviationCoefficient = 0,
-                    IsApolloExport = true, //??
+                    IsApolloExport = true,
                     ProductSubrangesListRU = "",
                     PromoStatusId = promoStatus.Id,
                     ClientHierarchy = clientTree.FullPathName,
@@ -407,7 +436,7 @@ namespace Module.Host.TPM.Actions
                     EndDate = import.PromoEndDate,
                     TechnologyId = techId,
                     InOutProductIds = "",
-                    InOut = import.PromoType == "InOut", // add to closed import
+                    InOut = import.PromoType == "InOut",
                     BrandId = brandId,
                     BudgetYear = import.BudgetYear,
                     CalendarPriority = 3,
@@ -421,14 +450,23 @@ namespace Module.Host.TPM.Actions
                     errors.Add("Wrong BudgetYear " + import.BudgetYear);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
                 }
                 if (TimeHelper.TodayStartDay() > promo.StartDate)
                 {
                     errors.Add("Start date earlier than the current day " + import.PromoStartDate);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
+                    break;
                 }
                 Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == import.Mechanic && g.PromoTypesId == promo.PromoTypesId);
+                if (mechanic == null)
+                {
+                    errors.Add("Mechanic not available: " + import.Mechanic);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
                 promo.MarsMechanicId = mechanic.Id;
                 promo.MarsMechanicDiscount = import.Discount;
                 promo.Mechanic = "";

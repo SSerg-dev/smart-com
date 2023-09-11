@@ -396,6 +396,7 @@
     <Compile Include="Actions\RestartMainNightProcessingActions.cs" />
     <Compile Include="Actions\FullXLSXRPAPromoSupportImportAction.cs" />
     <Compile Include="Actions\FullXLSXRPANonPromoSupportImportAction.cs" />
+    <Compile Include="Actions\ScenarioClientUploadCheckAction.cs" />
     <Compile Include="Actions\SendingFilesToBlobAction.cs" />
     <Compile Include="Actions\SetCOGSPercentValuesAction.cs" />
     <Compile Include="Actions\SetTIBasePercentValuesAction.cs" />
@@ -437,6 +438,7 @@
     <Compile Include="Handlers\ReapprovingHandler.cs" />
     <Compile Include="Handlers\RollingVolumeQTYRecalculationHandler.cs" />
     <Compile Include="Handlers\RSperiodExpiredHandler.cs" />
+    <Compile Include="Handlers\ScenarioClientUploadCheckHandler.cs" />
     <Compile Include="Handlers\SellOutBaselineQtyCalculationHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\NightProcessingMainHandler.cs" />
     <Compile Include="Handlers\Interface\Outcoming\OutputIncrementalProcessHandler.cs" />
