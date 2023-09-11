@@ -208,9 +208,7 @@
             UserRoles.DemandFinance,
             UserRoles.CustomerMarketingManager,
             UserRoles.CustomerMarketing,
-            UserRoles.FunctionalExpert,
-            UserRoles.GrowthAccelerationManager,
-            UserRoles.SuperReader
+            UserRoles.FunctionalExpert
         ],
         widget: 'rpa'
     },
