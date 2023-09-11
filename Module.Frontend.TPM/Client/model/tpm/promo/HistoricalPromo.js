@@ -194,6 +194,10 @@
         { name: 'ActualPromoIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
         { name: 'ActualPromoNetIncrementalCOGSTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
 
+        { name: 'PlanPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'PlanPromoNSVTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+        { name: 'ActualPromoNSVTn', useNull: true, type: 'float', hidden: false, isDefault: false, defaultValue: null },
+
         // Growth Acceleration
         { name: 'IsGrowthAcceleration', useNull: true, type: 'boolean', hidden: false, isDefault: false, defaultValue: null },
 
