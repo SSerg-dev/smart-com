@@ -351,10 +351,11 @@ namespace Module.Frontend.TPM.Controllers
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettings), data, visible: false, throwIfNotExists: false);
             }
-            if (tPMmode == TPMmode.RS)
+            if (tPMmode == TPMmode.RS || tPMmode == TPMmode.RA)
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(IncrementalPromoesController.GetExportSettingsRS), data, visible: false, throwIfNotExists: false);
             }
+            
 
             HandlerDataHelper.SaveIncomingArgument("SqlString", results.ToTraceQuery(), data, visible: false, throwIfNotExists: false);
 
