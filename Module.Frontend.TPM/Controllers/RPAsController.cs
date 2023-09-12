@@ -546,8 +546,8 @@ namespace Module.Frontend.TPM.Controllers
                     IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
                     DateTime dt = DateTime.Now;
-                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                    || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
+                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type != "root" && x.parentId != 5000000
+                        && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
 
                     List<ClientTree> clientsList = query.ToList();
 
@@ -584,6 +584,33 @@ namespace Module.Frontend.TPM.Controllers
                         sheet2.AutoSizeColumn(0);
                         sheet2.AutoSizeColumn(1);
                         sheet3.AutoSizeColumn(0);
+
+                        ISheet sheet6 = twb.GetSheet("Subrange");
+                        var brandtechsQuery = Context.Set<BrandTech>().Where(x => !x.Disabled);
+                        var productTree = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
+                        var productTree1 = Context.Set<ProductTree>().Where(x => !x.EndDate.HasValue);
+                        var pp = productTree.Join(productTree1,
+                            p => p.parentId,
+                            p1 => p1.ObjectId,
+                            (p, p1) => new { Subrange = p.Name, TechnologyId1 = p1.TechnologyId });
+
+                        var bp = pp.Join(brandtechsQuery,
+                            p =>  p.TechnologyId1,
+                            b => b.TechnologyId,
+                            (p, b) => new {BrandTechName = b.Name, p.Subrange}
+                        ).Distinct().OrderBy(x => x.BrandTechName).ToList();
+                        i = 0;
+                        foreach (var item in bp)
+                        {
+                            IRow subrangeRow = sheet6.CreateRow(i);
+                            ICell hcell = subrangeRow.CreateCell(0);
+                            hcell.SetCellValue(item.BrandTechName);
+                            hcell = subrangeRow.CreateCell(1);
+                            hcell.SetCellValue(item.Subrange);
+                            i++;
+                        }
+                        sheet6.AutoSizeColumn(0);
+                        sheet6.AutoSizeColumn(1);
 
                         ISheet sheet4 = twb.GetSheet("Mechanics");
                         i = 0;
@@ -651,8 +678,8 @@ namespace Module.Frontend.TPM.Controllers
                     IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
 
                     DateTime dt = DateTime.Now;
-                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type == "root"
-                        || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
+                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type != "root" && x.parentId != 5000000
+                        && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
 
                     List<ClientTree> clientsList = query.ToList();
 
@@ -689,6 +716,33 @@ namespace Module.Frontend.TPM.Controllers
                         sheet2.AutoSizeColumn(0);
                         sheet2.AutoSizeColumn(1);
                         sheet3.AutoSizeColumn(0);
+
+                        ISheet sheet6 = twb.GetSheet("Subrange");
+                        var brandtechsQuery = Context.Set<BrandTech>().Where(x => !x.Disabled);
+                        var productTree = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
+                        var productTree1 = Context.Set<ProductTree>().Where(x => !x.EndDate.HasValue);
+                        var pp = productTree.Join(productTree1,
+                            p => p.parentId,
+                            p1 => p1.ObjectId,
+                            (p, p1) => new { Subrange = p.Name, TechnologyId1 = p1.TechnologyId });
+
+                        var bp = pp.Join(brandtechsQuery,
+                            p =>  p.TechnologyId1,
+                            b => b.TechnologyId,
+                            (p, b) => new {BrandTechName = b.Name, p.Subrange}
+                            ).Distinct().OrderBy(x => x.BrandTechName).ToList();
+                        i = 0;
+                        foreach (var item in bp)
+                        {
+                            IRow subrangeRow = sheet6.CreateRow(i);
+                            ICell hcell = subrangeRow.CreateCell(0);
+                            hcell.SetCellValue(item.BrandTechName);
+                            hcell = subrangeRow.CreateCell(1);
+                            hcell.SetCellValue(item.Subrange);
+                            i++;
+                        }
+                        sheet6.AutoSizeColumn(0);
+                        sheet6.AutoSizeColumn(1);
 
                         ISheet sheet4 = twb.GetSheet("Mechanics");
                         i = 0;
