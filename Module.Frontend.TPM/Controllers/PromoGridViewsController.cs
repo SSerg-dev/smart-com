@@ -215,7 +215,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettings), data, visible: false, throwIfNotExists: false);
             }
-            if (tPMmode == TPMmode.RS)
+            if (tPMmode == TPMmode.RS || tPMmode == TPMmode.RA)
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoHelper.GetViewExportSettingsRS), data, visible: false, throwIfNotExists: false);
             }
