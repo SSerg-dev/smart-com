@@ -176,7 +176,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 results = results.Where(x => x.TPMmode == TPMmode.Current && !x.Disabled);
             }
-            else if (tPMmode == TPMmode.RS)
+            else if (tPMmode == TPMmode.RS || tPMmode == TPMmode.RA)
             {
                 results = results.GroupBy(x => new { x.Promo.Number, x.ZREP }, (key, g) => g.OrderByDescending(e => e.TPMmode).FirstOrDefault());
                 results = results.Where(x => !x.Disabled);

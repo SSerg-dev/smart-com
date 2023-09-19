@@ -107,7 +107,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStatic), data, visible: false, throwIfNotExists: false);
             }
-            if (tPMmode == TPMmode.RS)
+            if (tPMmode == TPMmode.RS || tPMmode == TPMmode.RA)
             {
                 HandlerDataHelper.SaveIncomingArgument("GetColumnMethod", nameof(PromoROIReportsController.GetPromoROIExportSettingsStaticRS), data, visible: false, throwIfNotExists: false);
             }
