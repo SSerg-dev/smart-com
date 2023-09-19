@@ -111,7 +111,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
 
         public static RollingScenario GetActiveScenario(int clientObjectId, DatabaseContext Context)
         {
-            List<string> activeStatuses = new List<string> { RSstateNames.DRAFT, RSstateNames.ON_APPROVAL };
+            List<string> activeStatuses = new List<string> { RSstateNames.DRAFT, RSstateNames.ON_APPROVAL, RSstateNames.CALCULATING };
             return Context.Set<RollingScenario>().Include(x => x.Promoes).SingleOrDefault(x => !x.Disabled
                         && activeStatuses.Contains(x.RSstatus)
                         && x.ClientTree.ObjectId == clientObjectId);
