@@ -304,7 +304,7 @@ namespace Module.Frontend.TPM.Controllers
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportBudgetItem), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportBudgetItem).Name, data, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(BudgetItem), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportBudgetItem), data, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<String>() { "Name", "BudgetId" }, data);
 
             LoopHandler handler = new LoopHandler()
