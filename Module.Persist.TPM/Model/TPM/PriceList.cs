@@ -25,9 +25,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_PriceList", 3, IsUnique = true)]
         public DateTimeOffset EndDate { get; set; }
-
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+                
         public DateTimeOffset? ModifiedDate { get; set; }
 
         public double Price { get; set; }
@@ -70,6 +68,23 @@ namespace Module.Persist.TPM.Model.TPM
                 x.ClientTreeId == y.ClientTreeId &&
                 x.ProductId == y.ProductId &&
                 x.FuturePriceMarker == y.FuturePriceMarker;
+        }
+
+        public class checkPriceListEqualityComparer : IEqualityComparer<PriceList>
+        {
+            public bool Equals(PriceList x, PriceList y)
+            {
+                return
+                    x.DeletedDate == y.DeletedDate &&
+                    x.StartDate == y.StartDate &&
+                    x.ClientTreeId == y.ClientTreeId &&
+                    x.ProductId == y.ProductId;
+            }
+
+            public int GetHashCode(PriceList obj)
+            {
+                return new { obj.DeletedDate, obj.StartDate, obj.ClientTreeId, obj.ProductId }.GetHashCode();
+            }
         }
 
         public int GetHashCode(PriceList obj)

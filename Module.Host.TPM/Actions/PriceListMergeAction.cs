@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Core.Dependency;
+using Core.Extensions;
 using Core.Settings;
 using Interfaces.Implementation.Action;
 using Looper.Core;
@@ -11,6 +12,7 @@ using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist;
 using Utility.LogWriter;
+using static Module.Persist.TPM.Model.TPM.PriceListEqualityComparer;
 
 namespace Module.Host.TPM.Actions
 {
@@ -30,8 +32,8 @@ namespace Module.Host.TPM.Actions
         public override void Execute()
         {
             var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
-            var dateSeparator = settingsManager.GetSetting<string>("PRICELIST_DATE_SEPARATOR", "2020-03-29 00:00:00.000");
-
+                
+            var dateSeparator = DateTime.Now.AddYears(-2).ToString("yyyy-MM-dd hh:mm:ss.fff");
             string dateSeparatorSqlString = $"CAST('{dateSeparator}' AS DATETIME)";
             string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE ([START_DATE] <= {dateSeparatorSqlString} AND {dateSeparatorSqlString} < [FINISH_DATE]) OR ({dateSeparatorSqlString} < [START_DATE])";
 
@@ -43,26 +45,24 @@ namespace Module.Host.TPM.Actions
             var priceListFDMsMaterialized = priceListFDMs.ToList();
             var priceListsMaterialized = priceLists.ToList();
             var clientTreesMaterialized = clientTrees.ToList();
-            var productsMaterialized = products.ToList();
+            var productsMaterialized = products.ToList();           
 
             FDMSync(ref priceListFDMsMaterialized, Convert.ToDateTime(dateSeparator));
             var validAfterClientsCheckPriceListFDMs = CheckClients(priceListFDMsMaterialized, clientTreesMaterialized);
-            var validAfterProductsCheckPriceListFDMs =  CheckProducts(priceListFDMsMaterialized, products);
-            var validAfterDublicatesCheckPriceListFDMs = CheckDublicates(priceListFDMsMaterialized);
-            //var validAfterIntersectionsCheckPriceListFDMs = CheckIntersections(priceListFDMsMaterialized);
+            var validAfterProductsCheckPriceListFDMs = CheckProducts(priceListFDMsMaterialized, products);
+            var validAfterDublicatesCheckPriceListFDMs = CheckDublicates(priceListFDMsMaterialized);            
 
             var validPriceListFDMs = validAfterClientsCheckPriceListFDMs
                                         .Intersect(validAfterProductsCheckPriceListFDMs)
-                                        .Intersect(validAfterDublicatesCheckPriceListFDMs); 
-                                        //.Intersect(validAfterIntersectionsCheckPriceListFDMs);
+                                        .Intersect(validAfterDublicatesCheckPriceListFDMs);           
 
-            var differentPriceLists = GetDifferentPriceList(validPriceListFDMs, clientTreesMaterialized, productsMaterialized);
+            var differentPriceLists = GetDifferentPriceList(validPriceListFDMs, priceListsMaterialized, clientTreesMaterialized, productsMaterialized);
             FillPriceListTable(differentPriceLists, priceListsMaterialized, clientTreesMaterialized, productsMaterialized);
         }
 
         private void FDMSync(ref List<PRICELIST_FDM> priceListFDMsMaterialized, DateTime dateSeparator)
         {
-            priceListFDMsMaterialized.ForEach(p => 
+            priceListFDMsMaterialized.ForEach(p =>
             {
                 if (p.START_DATE <= dateSeparator && p.FINISH_DATE > dateSeparator)
                     p.START_DATE = dateSeparator;
@@ -73,14 +73,6 @@ namespace Module.Host.TPM.Actions
         {
             var priceListFDMClientGroups = priceListFDMs.GroupBy(x => new { x.G_HIERARCHY_ID });
             var invalidClientGroups = priceListFDMClientGroups.Where(x => !clientTrees.Any(y => y.GHierarchyCode?.TrimStart('0') == x.Key.G_HIERARCHY_ID));
-
-            foreach (var invalidClientGroup in invalidClientGroups)
-            {
-                 var logString = $"Invalid client: ({invalidClientGroup.Count()}): \r\n {String.Join("\r\n", invalidClientGroup.Select(x => x.ToString()))}";
-                 Errors.Add(logString);
-                 _fileLogWriter.Write(true, logString, "Error");
-            }
-
             var validPriceListFDMs = priceListFDMClientGroups.SelectMany(x => x.ToList()).Except(invalidClientGroups.SelectMany(x => x.ToList()));
             return validPriceListFDMs;
         }
@@ -89,14 +81,6 @@ namespace Module.Host.TPM.Actions
         {
             var priceListFDMProductGroups = priceListFDMs.GroupBy(x => new { x.ZREP });
             var invalidProductGroups = priceListFDMProductGroups.Where(x => !products.Any(y => y.ZREP == x.Key.ZREP));
-
-            foreach (var invalidProductGroup in invalidProductGroups)
-            {
-                 var logString = $"Invalid product: ({invalidProductGroup.Count()}): \r\n {String.Join("\r\n", invalidProductGroup.Select(x => x.ToString()))}";
-                 Errors.Add(logString);
-                 _fileLogWriter.Write(true, logString, "Error");
-            }
-
             var validPriceListFDMs = priceListFDMProductGroups.SelectMany(x => x.ToList()).Except(invalidProductGroups.SelectMany(x => x.ToList()));
             return validPriceListFDMs;
         }
@@ -104,17 +88,7 @@ namespace Module.Host.TPM.Actions
         private IEnumerable<PRICELIST_FDM> CheckDublicates(IEnumerable<PRICELIST_FDM> priceListFDMs)
         {
             var priceListFDMClientProductGroups = priceListFDMs.GroupBy(x => new { x.G_HIERARCHY_ID, x.ZREP, x.START_DATE, x.FINISH_DATE });
-            var dupblicateGroups = priceListFDMClientProductGroups.Where(x => x.Count() > 1);
-
-            foreach (var dublicateGroup in dupblicateGroups)
-            {
-                if (dublicateGroup.Any())
-                {
-                    var logString = $"Dublicates ({dublicateGroup.Count()}): \r\n {String.Join("\r\n", dublicateGroup.Select(x => x.ToString()))}";
-                    Errors.Add(logString);
-                    _fileLogWriter.Write(true, logString, "Error");
-                }
-            }
+            var dupblicateGroups = priceListFDMClientProductGroups.Where(x => x.Count() > 1);       
 
             var validPriceListFDMs = priceListFDMClientProductGroups.SelectMany(x => x.ToList()).Except(dupblicateGroups.SelectMany(x => x.ToList()));
             return validPriceListFDMs;
@@ -124,7 +98,7 @@ namespace Module.Host.TPM.Actions
         {
             var priceListFDMClientProductGroups = priceListFDMs.GroupBy(x => new { x.G_HIERARCHY_ID, x.ZREP });
 
-            var intersectionGroups = priceListFDMClientProductGroups.Where(x => 
+            var intersectionGroups = priceListFDMClientProductGroups.Where(x =>
                 x.Any(y => x.Count(z => !((z.START_DATE >= y.START_DATE && z.START_DATE >= y.FINISH_DATE) || (z.FINISH_DATE <= y.START_DATE && z.FINISH_DATE <= y.FINISH_DATE))) > 1));
 
             foreach (var intersectionGroup in intersectionGroups)
@@ -143,64 +117,68 @@ namespace Module.Host.TPM.Actions
             return validPriceListFDMs;
         }
 
-        private IEnumerable<PriceList> GetDifferentPriceList(IEnumerable<PRICELIST_FDM> priceListFDMs, IEnumerable<ClientTree> clientTrees, IEnumerable<Product> products)
-        {
-            var currentPriceLists = _databaseContext.Set<PriceList>().ToList();
+        private IEnumerable<PriceList> GetDifferentPriceList(IEnumerable<PRICELIST_FDM> priceListFDMs,IEnumerable<PriceList> priceListsMaterialized, IEnumerable<ClientTree> clientTrees, IEnumerable<Product> products)
+        {        
             var newPriceLists = GetNewPriceListRecords(priceListFDMs, clientTrees, products);
-            var differentPriceLists = newPriceLists.Except(currentPriceLists, new PriceListEqualityComparer());
+            var differentPriceLists = newPriceLists.Except(priceListsMaterialized, new PriceListEqualityComparer());
             return differentPriceLists;
         }
 
-        private void FillPriceListTable(IEnumerable<PriceList> differentPriceLists, IEnumerable<PriceList> priceListMaterialized, IEnumerable<ClientTree> clientTrees, IEnumerable<Product> products)
+        private void FillPriceListTable(IEnumerable<PriceList> differentPriceLists, List<PriceList> priceListMaterialized, List<ClientTree> clientTrees, List<Product> products)
         {
             using (var context = new DatabaseContext())
             {
+              
                 var priceLists = context.Set<PriceList>();
+
+                var invalidPriceListRecords = differentPriceLists.Intersect(priceListMaterialized, new checkPriceListEqualityComparer());
+
+                if (invalidPriceListRecords.Count()>0)
+                {
+                    foreach (var invalidPriceListRecord in invalidPriceListRecords)
+                    {
+                        invalidPriceListRecord.Disabled = true;
+                        invalidPriceListRecord.DeletedDate = DateTimeOffset.Now;
+                    }
+                    CreateIncident(invalidPriceListRecords);
+                }
 
                 foreach (var differentPriceList in differentPriceLists)
                 {
-                    var currentPriceLists = priceListMaterialized.Where(x =>
-                        x.DeletedDate == differentPriceList.DeletedDate &&
-                        x.StartDate == differentPriceList.StartDate &&
-                        x.ClientTreeId == differentPriceList.ClientTreeId &&
-                        x.ProductId == differentPriceList.ProductId);
-
-                    foreach (var currentPriceList in currentPriceLists)
-                    {
-                        var currentPriceListFromDatabase = priceLists.FirstOrDefault(x => x.Id == currentPriceList.Id);
-                        if (currentPriceListFromDatabase != null)
-                        {
-                            currentPriceListFromDatabase.Disabled = true;
-                            currentPriceListFromDatabase.DeletedDate = DateTimeOffset.Now;
-                            CreateIncident(currentPriceList);
-                        }
-                    }
-
-                    var logLine = $"New {nameof(PriceList)}: {differentPriceList.ToString()}";
-                    _fileLogWriter.Write(true, logLine, "Message");
                     differentPriceList.Product = null;
                     differentPriceList.ClientTree = null;
+                    differentPriceList.ModifiedDate = DateTimeOffset.Now;           
                 }
-
-                priceLists.AddRange(differentPriceLists);
-                // Необходимо для дальнейшего сохранения ItemId в ChangesIncident
-                context.SaveChanges();
+                var logLine = $"New {nameof(PriceList)}: {differentPriceLists.Count()}";
+                _fileLogWriter.Write(true, logLine, "Message");
+             
+                foreach (IEnumerable<PriceList> items in differentPriceLists.Partition(1000))
+                {
+                    context.Set<PriceList>().AddRange(items);
+                    context.SaveChanges();
+                }
             }
-
-            var incidents = differentPriceLists.Select(d => new ChangesIncident() 
+            
+        }
+        
+        private void CreateIncident(IEnumerable<PriceList> invalidPriceListRecords)
+        {
+            _databaseContext.Set<ChangesIncident>();
+            var incidents = invalidPriceListRecords.Select(x => new ChangesIncident
             {
                 DirectoryName = nameof(PriceList),
-                ItemId = d.Id.ToString(),
+                ItemId = x.Id.ToString(),
                 CreateDate = DateTimeOffset.Now,
                 Disabled = false
             });
             _databaseContext.Set<ChangesIncident>().AddRange(incidents);
+
         }
 
         private void CreateIncident(PriceList priceList)
         {
             _databaseContext.Set<ChangesIncident>().Add(new ChangesIncident
-            { 
+            {
                 DirectoryName = nameof(PriceList),
                 ItemId = priceList.Id.ToString(),
                 CreateDate = DateTimeOffset.Now,
