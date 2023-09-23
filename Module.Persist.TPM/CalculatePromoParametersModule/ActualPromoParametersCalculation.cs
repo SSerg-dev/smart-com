@@ -255,8 +255,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoIncrementalCOGSTn = promo.ActualPromoIncrementalVolume * COGSTn;
                     promo.ActualPromoNetIncrementalCOGSTn = promo.ActualPromoNetIncrementalVolume * COGSTn;
 
-                    promo.ActualPromoNSVtn = promo.ActualPromoNSV / promo.ActualPromoVolumeSI;
-
                     if (promo.IsLSVBased)
                     {
                         promo.ActualPromoNetIncrementalMAC = (promo.ActualPromoNetIncrementalNSV ?? 0) - (promo.ActualPromoNetIncrementalCOGS ?? 0);
@@ -304,6 +302,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                     promo.ActualPromoNSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoBaseTI ?? 0);
 
+                    promo.ActualPromoNSVtn = promo.ActualPromoNSV / promo.ActualPromoVolumeSI;
 
                     // ищем RATIShopper
                     double? RATIShopperPercent;
