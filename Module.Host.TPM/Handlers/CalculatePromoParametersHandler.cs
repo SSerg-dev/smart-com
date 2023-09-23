@@ -68,7 +68,7 @@ namespace Module.Host.TPM.Handlers
                     {
                         var role = context.Set<Role>().FirstOrDefault(x => x.Id == RoleId);
                         bool isSupportAdmin = (role != null && role.SystemName == "SupportAdministrator");
-                        Promo promo = context.Set<Promo>().FirstOrDefault(x => x.Id == promoId);
+                        Promo promo = context.Set<Promo>().Include(x => x.PromoPriceIncrease).FirstOrDefault(x => x.Id == promoId);
                         promoCopy = AutomapperProfiles.PromoCopy(promo);
 
                         //добавление номера рассчитываемого промо в лог
