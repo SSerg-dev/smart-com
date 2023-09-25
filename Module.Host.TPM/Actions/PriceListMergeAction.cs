@@ -49,7 +49,7 @@ namespace Module.Host.TPM.Actions
 
             var activeCodes = priceListFDMs.Select(x => x.G_HIERARCHY_ID).Distinct().ToList();
 
-            FDMSync(ref priceListFDMsMaterialized, Convert.ToDateTime(dateSeparator));
+            //FDMSync(ref priceListFDMsMaterialized, Convert.ToDateTime(dateSeparator));
             var validAfterClientsCheckPriceListFDMs = CheckClients(priceListFDMsMaterialized, clientTreesMaterialized);
             var validAfterProductsCheckPriceListFDMs = CheckProducts(priceListFDMsMaterialized, products);
             var validAfterDublicatesCheckPriceListFDMs = CheckDublicates(priceListFDMsMaterialized);
