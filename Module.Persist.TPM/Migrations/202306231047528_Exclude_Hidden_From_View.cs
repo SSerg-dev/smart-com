@@ -10,7 +10,7 @@
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             //Sql(ViewMigrations.GetPromoRSViewString(defaultSchema));
-            Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
             Sql(ViewMigrations.UpdatePromoProductCorrectionViewString(defaultSchema));
         }
         

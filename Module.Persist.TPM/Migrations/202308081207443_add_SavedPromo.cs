@@ -33,7 +33,7 @@
 
             Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
             Sql(ViewMigrations.GetPromoRSViewString(defaultSchema));
-            Sql(ViewMigrations.UpdatePromoPriceIncreaseROIReportViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdatePromoPriceIncreaseROIReportViewString(defaultSchema));
         }
         
         public override void Down()

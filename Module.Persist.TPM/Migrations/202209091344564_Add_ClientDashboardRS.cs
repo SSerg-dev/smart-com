@@ -11,7 +11,7 @@ namespace Module.Persist.TPM.Migrations
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             Sql(ViewMigrations.UpdateClientDashboardViewString(defaultSchema));
-            Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
+            //Sql(ViewMigrations.UpdateClientDashboardRSViewString(defaultSchema));
         }
         
         public override void Down()

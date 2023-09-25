@@ -10,7 +10,7 @@
         public override void Up()
         {
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
-            Sql(ViewMigrations.GetPromoRSViewString(defaultSchema));
+            //Sql(ViewMigrations.GetPromoRSViewString(defaultSchema));
             Sql(ViewMigrations.GetPromoViewString(defaultSchema));
         }
         
