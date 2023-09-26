@@ -3704,6 +3704,10 @@
     <Compile Include="Migrations\202309200752169_Add_drop_OldPriceList.designer.cs">
       <DependentUpon>202309200752169_Add_drop_OldPriceList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309201221379_Empty_Merge_Price_List.cs" />
+    <Compile Include="Migrations\202309201221379_Empty_Merge_Price_List.designer.cs">
+      <DependentUpon>202309201221379_Empty_Merge_Price_List.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6948,6 +6952,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309200752169_Add_drop_OldPriceList.resx">
       <DependentUpon>202309200752169_Add_drop_OldPriceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309201221379_Empty_Merge_Price_List.resx">
+      <DependentUpon>202309201221379_Empty_Merge_Price_List.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

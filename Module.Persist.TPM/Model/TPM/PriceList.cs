@@ -25,7 +25,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [Index("Unique_PriceList", 3, IsUnique = true)]
         public DateTimeOffset EndDate { get; set; }
-                
+
         public DateTimeOffset? ModifiedDate { get; set; }
 
         public double Price { get; set; }
@@ -72,7 +72,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public int GetHashCode(PriceList obj)
         {
-            return new { obj.Disabled, obj.DeletedDate, obj.StartDate, obj.EndDate, obj.Price, obj.ClientTreeId, obj.ProductId }.GetHashCode();
+            return new { obj.Disabled, obj.DeletedDate, obj.StartDate, obj.EndDate, obj.Price, obj.ClientTreeId, obj.ProductId, obj.FuturePriceMarker }.GetHashCode();
         }
     }
 
@@ -84,12 +84,13 @@ namespace Module.Persist.TPM.Model.TPM
                 x.DeletedDate == y.DeletedDate &&
                 x.StartDate == y.StartDate &&
                 x.ClientTreeId == y.ClientTreeId &&
-                x.ProductId == y.ProductId;               
+                x.ProductId == y.ProductId &&
+                x.FuturePriceMarker == y.FuturePriceMarker;
         }
 
         public int GetHashCode(PriceList obj)
         {
-            return new { obj.DeletedDate, obj.StartDate,obj.ClientTreeId, obj.ProductId }.GetHashCode();
+            return new { obj.DeletedDate, obj.StartDate, obj.ClientTreeId, obj.ProductId, obj.FuturePriceMarker }.GetHashCode();
         }
     }
 }
