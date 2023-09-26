@@ -313,5 +313,5 @@
         query = proxy.applyExtendedFilter(operation, query);
         query = proxy.applySorting(operation, query);
         return query;
-    },
+    }
 });

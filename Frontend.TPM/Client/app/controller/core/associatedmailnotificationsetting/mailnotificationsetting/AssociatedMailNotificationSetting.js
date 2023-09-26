@@ -56,7 +56,7 @@ Ext.define('App.controller.core.associatedmailnotificationsetting.mailnotificati
                 },
                 'associatedmailnotificationsettingmailnotificationsetting #close': {
                     click: this.onCloseButtonClick
-                },
+                }
             }
         });
     }

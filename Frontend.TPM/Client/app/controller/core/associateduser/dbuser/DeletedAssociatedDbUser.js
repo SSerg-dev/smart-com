@@ -80,5 +80,5 @@ Ext.define('App.controller.core.associateduser.dbuser.DeletedAssociatedDbUser', 
                 }
             }
         }
-    },
+    }
 });

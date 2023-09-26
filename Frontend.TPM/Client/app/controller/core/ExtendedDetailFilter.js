@@ -341,5 +341,5 @@
                 masterFilterWindowApplyButton.fireEvent('click', false);
             }
         }
-    },
+    }
 });

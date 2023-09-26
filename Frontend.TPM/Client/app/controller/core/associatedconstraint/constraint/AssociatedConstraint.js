@@ -57,7 +57,7 @@ Ext.define('App.controller.core.associatedconstraint.constraint.AssociatedConstr
                 },
                 'constraint #close': {
                     click: this.onCloseButtonClick
-                },
+                }
             }
         });
     }

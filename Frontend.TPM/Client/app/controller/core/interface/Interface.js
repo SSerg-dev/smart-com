@@ -57,6 +57,5 @@ Ext.define('App.controller.core.interface.Interface', {
                 }
             }
         });
-    },
-
+    }
 });

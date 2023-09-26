@@ -15,7 +15,7 @@ Ext.define('App.model.core.loophandler.LoopHandler', {
 		{ name: 'Status', type: 'string', isDefault: true },
 		{ name: 'UserId', hidden: true },
 		{ name: 'UserName', type: 'string', isDefault: true, mapping: 'User.Name' },
-        { name: 'RoleId', hidden: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('LoopHandler', 'RoleId') },
+        { name: 'RoleId', hidden: true, extendedFilterEntry: App.extfilter.core.ConfigSource.getEntryConfig('LoopHandler', 'RoleId') }
 	],
     proxy: {
         type: 'breeze',

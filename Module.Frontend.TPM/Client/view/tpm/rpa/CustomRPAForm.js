@@ -57,8 +57,8 @@ Ext.define('App.view.tpm.rpa.RPAForm', {
                         },
                         listeners: {
                             select: function(t, o) {
-                                let e = Ext.getCmp("templateLink");
-                                let n, i;
+                                var e = Ext.getCmp("templateLink");
+                                var n, i;
                                 Ext.get("importLink").clearListeners();
                                 if (isJsonValid(o[0].data.Json)) {
                                     i = this.up("customrpaeditor");

@@ -8,7 +8,7 @@ Ext.define('App.model.core.report.ProductsHistoryReportModel', {
 				        allowedOperations: { date: ['Between'] }
 				        }
 				    , timeZone: +3, convert: dateConvertTimeZone
-				},
+				}
 	],
     proxy: {
         type: 'breeze',

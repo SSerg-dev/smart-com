@@ -247,6 +247,6 @@
                     nextfield.focus(true, 100);
                 }
             };
-        },
+        }
     }
 })
