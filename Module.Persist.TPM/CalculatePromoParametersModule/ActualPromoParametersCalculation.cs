@@ -181,7 +181,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
 
-                        if (promo.IsOnInvoice)
+                        if (promo.IsOnInvoice && (promo.PlanPromoPostPromoEffectLSV.HasValue && promo.PlanPromoPostPromoEffectLSV != 0))
                         {
                             promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW1 / promo.PlanPromoPostPromoEffectLSV);
                             promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW2 / promo.PlanPromoPostPromoEffectLSV);
@@ -301,8 +301,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.ActualPromoBaselineBaseTI = (promo.ActualPromoBaselineLSV ?? 0) * TIBasePercent / 100;
 
                     promo.ActualPromoNSV = (promo.ActualPromoLSV ?? 0) - (promo.ActualPromoTIShopper ?? 0) - (promo.ActualPromoTIMarketing ?? 0) - (promo.ActualPromoBaseTI ?? 0);
-
-                    promo.ActualPromoNSVtn = promo.ActualPromoNSV / promo.ActualPromoVolumeSI;
+                    if(promo.ActualPromoNSV.HasValue && promo.ActualPromoNSV != 0)
+                        promo.ActualPromoNSVtn = promo.ActualPromoNSV / promo.ActualPromoVolumeSI;
 
                     // ищем RATIShopper
                     double? RATIShopperPercent;
