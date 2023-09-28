@@ -6,16 +6,15 @@ using Frontend.Core.Controllers.Base;
 using Frontend.Core.Extensions;
 using Looper.Core;
 using Looper.Parameters;
+using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
+using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Frontend.TPM.Util;
-using Microsoft.Azure.Management.DataFactory;
-using Microsoft.Azure.Management.DataFactory.Models;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Rest;
+using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.DTO;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
-using Persist;
 using Persist.Model;
 using Persist.ScriptGenerator.Filter;
 using System;
@@ -32,10 +31,6 @@ using Thinktecture.IdentityModel.Authorization.WebApi;
 using Utility;
 using Utility.FileWorker;
 using UserInfo = Core.Security.Models.UserInfo;
-using Module.Persist.TPM.Enum;
-using Module.Frontend.TPM.FunctionalHelpers.Scenario;
-using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
-using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -613,7 +608,27 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
 
-            activeTree = GetConstraintedQuery();
+            activeTree = GetConstraintedQuery();           
+            ClientTree parentCheckCode = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
+            
+            //Проверяем на наличие DemandCode у Parents            
+            if (model.DemandCode == "" && model.IsBaseClient == true)
+            {
+                while (parentCheckCode != null)
+                {
+                    if (parentCheckCode.DemandCode != null)
+                    { 
+                        break; 
+                    }
+                    else if (parentCheckCode.DemandCode == null && parentCheckCode.Type == "root")
+                    {
+                        string msg = "This ClientTree not found DemandCode. Please add DemandCode!";
+                        return Json(new { success = false, message = msg });
+                    }
+                    parentCheckCode = activeTree.FirstOrDefault(x => x.ObjectId == parentCheckCode.parentId);
+                }
+            }
+
             ClientTree parent = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
             string fullPathClientName = model.Name;
             model.StartDate = DateTime.Now; // Устанавливаем время сервера
