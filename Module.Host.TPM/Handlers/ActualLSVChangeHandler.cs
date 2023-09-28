@@ -198,27 +198,35 @@ namespace Module.Host.TPM.Handlers
                 clientTree = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeId && !x.EndDate.HasValue).FirstOrDefault();
 
                 // Получаем все записи из таблицы PromoProduct для текущего промо.
-                var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);
-
-                foreach (PromoProduct promoProduct in promoProducts)
-                {
-                    promoProduct.ActualProductPostPromoEffectLSVW1 = promoProduct.PlanProductPostPromoEffectW1 * (promoProduct.ActualProductBaselineLSV ?? 0);
-                    promoProduct.ActualProductPostPromoEffectLSVW2 = promoProduct.PlanProductPostPromoEffectW2 * (promoProduct.ActualProductBaselineLSV ?? 0);
-                    promoProduct.ActualProductPostPromoEffectLSV = promoProduct.ActualProductPostPromoEffectLSVW1 + promoProduct.ActualProductPostPromoEffectLSVW2;
-                }
+                var promoProducts = context.Set<PromoProduct>().Where(x => x.PromoId == promo.Id && !x.Disabled);                
 
                 if (promo.IsOnInvoice)
                 {
-                    promo.ActualPromoPostPromoEffectLSV = (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0);
-                    promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW1 / promo.PlanPromoPostPromoEffectLSV);
-                    promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW2 / promo.PlanPromoPostPromoEffectLSV);
+                    foreach (PromoProduct promoProduct in promoProducts)
+                    {
+                        promoProduct.ActualProductPostPromoEffectLSVW1 = promoProduct.PlanProductPostPromoEffectW1 / 100 * promoProduct.ActualProductBaselineLSV +
+                           (promo.ActualPromoLSVSO * (promoProduct.ActualProductLSVByCompensation / promo.ActualPromoLSVByCompensation) - promoProduct.ActualProductLSV) *
+                           (promoProduct.PlanProductPostPromoEffectW1 / (promoProduct.PlanProductPostPromoEffectW1 + promoProduct.PlanProductPostPromoEffectW2));
+
+                        promoProduct.ActualProductPostPromoEffectLSVW2 = promoProduct.PlanProductPostPromoEffectW2 / 100 * promoProduct.ActualProductBaselineLSV +
+                           (promo.ActualPromoLSVSO * (promoProduct.ActualProductLSVByCompensation / promo.ActualPromoLSVByCompensation) - promoProduct.ActualProductLSV) *
+                           (promoProduct.PlanProductPostPromoEffectW2 / (promoProduct.PlanProductPostPromoEffectW1 + promoProduct.PlanProductPostPromoEffectW2));
+
+                        promoProduct.ActualProductPostPromoEffectLSV = promoProduct.ActualProductPostPromoEffectLSVW1 + promoProduct.ActualProductPostPromoEffectLSVW2;
+                    }                   
                 }
                 else
                 {
-                    promo.ActualPromoPostPromoEffectLSVW1 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW1);
-                    promo.ActualPromoPostPromoEffectLSVW2 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW2);
-                    promo.ActualPromoPostPromoEffectLSV = promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
+                    foreach (PromoProduct promoProduct in promoProducts)
+                    {
+                        promoProduct.ActualProductPostPromoEffectLSVW1 = promoProduct.PlanProductPostPromoEffectW1 * (promoProduct.ActualProductBaselineLSV ?? 0);
+                        promoProduct.ActualProductPostPromoEffectLSVW2 = promoProduct.PlanProductPostPromoEffectW2 * (promoProduct.ActualProductBaselineLSV ?? 0);
+                        promoProduct.ActualProductPostPromoEffectLSV = promoProduct.ActualProductPostPromoEffectLSVW1 + promoProduct.ActualProductPostPromoEffectLSVW2;
+                    }                   
                 }
+                promo.ActualPromoPostPromoEffectLSVW1 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW1);
+                promo.ActualPromoPostPromoEffectLSVW2 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW2);
+                promo.ActualPromoPostPromoEffectLSV = promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
                 //promo.ActualPromoPostPromoEffectLSV = promo.IsOnInvoice ? (promo.ActualPromoLSVSO ?? 0) - (promo.ActualPromoLSVSI ?? 0) : promo.ActualPromoPostPromoEffectLSVW1 + promo.ActualPromoPostPromoEffectLSVW2;
                 //Volume
                 promo.ActualPromoPostPromoEffectVolume = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSV / (g.Price / g.Product.UOM_PC2Case) * g.Product.PCVolume);
