@@ -38,6 +38,7 @@ namespace Module.Frontend.TPM.Controllers
     {
         private readonly IAuthorizationManager authorizationManager;
         private IQueryable<ClientTree> activeTree;
+        
 
         public ClientTreesController(IAuthorizationManager authorizationManager)
         {
@@ -696,6 +697,25 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 activeTree = GetConstraintedQuery();
+                var oldDemandCode = activeTree.Where(x => x.ObjectId == model.ObjectId && x.DemandCode !=null).Select(x=>x.DemandCode).First();
+                if (!string.IsNullOrEmpty(oldDemandCode) && model.DemandCode == null)
+                {
+                    var childsNull = activeTree.Where(x => x.parentId == model.ObjectId && x.DemandCode == null && x.IsBaseClient == true).Count();
+                    
+                    var oldRecordBrandTechDemandCode = Context.Set<ClientTreeBrandTech>().Where(x => x.ParentClientTreeDemandCode == oldDemandCode).ToList();
+                    if (childsNull > 0 && (model.Type == "Group chain" || model.Type == "Client"))
+                    {
+                        string msg = "This ClientTree not found DemandCode. The change is not possible!";
+                        return Json(new { success = false, message = msg });
+                    }
+                    else if(oldRecordBrandTechDemandCode.Count > 0 && (model.Type == "Group chain" || model.Type == "Client"|| model.Type== "Chain"))
+                    {
+                        
+                        Context.Set<ClientTreeBrandTech>().RemoveRange(oldRecordBrandTechDemandCode);
+                        await Context.SaveChangesAsync();
+                    }
+                }
+
                 ClientTree currentRecord = activeTree.FirstOrDefault(x => x.ObjectId == model.ObjectId);
 
                 if (currentRecord == null)

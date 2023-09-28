@@ -342,21 +342,17 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="promoId">ID промо</param>
         public static void UnLockPromo(Guid promoId)
         {
-            try
+            using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
             {
-                using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
+                BlockedPromo bp = contextOutOfTransaction.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == promoId && !n.Disabled);
+                if (bp != null)
                 {
-                    BlockedPromo bp = contextOutOfTransaction.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == promoId && !n.Disabled);
-                    if (bp != null)
-                    {
-                        bp.Disabled = true;
-                        bp.DeletedDate = DateTime.Now;
+                    bp.Disabled = true;
+                    bp.DeletedDate = DateTime.Now;
 
-                        contextOutOfTransaction.SaveChanges();
-                    }
+                    contextOutOfTransaction.SaveChanges();
                 }
             }
-            catch { }
         }
 
         /// <summary>

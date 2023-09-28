@@ -31,6 +31,7 @@
             model: 'App.model.tpm.promosupportpromo.PromoSupportPromoCostProd',
             storeId: 'promolinkedstore',
             autoLoad: false,
+            pageSize: 300,
             extendedFilter: {
                 xclass: 'App.ExtFilterContext',
                 supportedModels: [{
