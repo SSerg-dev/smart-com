@@ -14,7 +14,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         public double Share { get; set; }
         [Column(TypeName = "VARCHAR")]
-        [StringLength(20)]
+        [StringLength(60)]
         [Index("ClientTreeBrandTech__IDX", 3, IsUnique = true)]
         public string ParentClientTreeDemandCode { get; set; }
         public string CurrentBrandTechName { get; set; }

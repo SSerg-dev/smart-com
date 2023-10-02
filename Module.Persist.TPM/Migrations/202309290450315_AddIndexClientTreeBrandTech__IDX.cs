@@ -11,7 +11,7 @@
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
             DropIndex($"{defaultSchema}.ClientTreeBrandTech", new[] { "ClientTreeId" });
             DropIndex($"{defaultSchema}.ClientTreeBrandTech", new[] { "BrandTechId" });
-            AlterColumn($"{defaultSchema}.ClientTreeBrandTech", "ParentClientTreeDemandCode", c => c.String(maxLength: 20, unicode: false));
+            AlterColumn($"{defaultSchema}.ClientTreeBrandTech", "ParentClientTreeDemandCode", c => c.String(maxLength: 60, unicode: false));
             CreateIndex($"{defaultSchema}.ClientTreeBrandTech", new[] { "ClientTreeId", "BrandTechId", "ParentClientTreeDemandCode", "DeletedDate" }, unique: true, name: "ClientTreeBrandTech__IDX");
         }
         
