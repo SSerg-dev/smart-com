@@ -35,7 +35,7 @@ namespace Module.Host.TPM.Actions
 
             var dateSeparator = DateTime.Now.AddYears(-2).ToString("yyyy-MM-dd");
             string dateSeparatorSqlString = $"CAST('{dateSeparator}' AS DATETIME)";
-            string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE ([START_DATE] <= {dateSeparatorSqlString} AND {dateSeparatorSqlString} < [FINISH_DATE]) OR ({dateSeparatorSqlString} < [START_DATE])";
+            string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE {dateSeparatorSqlString} <= [FINISH_DATE]";
 
             var priceListFDMs = _databaseContext.SqlQuery<PRICELIST_FDM>(sql);
             var priceLists = _databaseContext.Set<PriceList>().Where(x => !x.Disabled);
@@ -132,7 +132,7 @@ namespace Module.Host.TPM.Actions
             {
                 var priceLists = context.Set<PriceList>();
 
-                var invalidPriceListRecords = differentPriceLists.Intersect(priceListMaterialized, new checkPriceListEqualityComparer());
+                var invalidPriceListRecords = priceListMaterialized.Intersect(differentPriceLists, new checkPriceListEqualityComparer());
                 //var invalidPriceListRecords = new List<PriceList>();
                 //foreach (var differentPriceList in differentPriceLists)
                 //{
