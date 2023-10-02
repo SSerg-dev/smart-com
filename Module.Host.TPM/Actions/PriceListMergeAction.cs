@@ -35,7 +35,7 @@ namespace Module.Host.TPM.Actions
 
             var dateSeparator = DateTime.Now.AddYears(-2).ToString("yyyy-MM-dd");
             string dateSeparatorSqlString = $"CAST('{dateSeparator}' AS DATETIME)";
-            string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE ([START_DATE] <= {dateSeparatorSqlString} AND {dateSeparatorSqlString} < [FINISH_DATE]) OR ({dateSeparatorSqlString} < [START_DATE])";
+            string sql = $"SELECT * FROM [DefaultSchemaSetting].[{nameof(PRICELIST_FDM)}] WHERE {dateSeparatorSqlString} <= [FINISH_DATE]";
 
             var priceListFDMs = _databaseContext.SqlQuery<PRICELIST_FDM>(sql);
             var priceLists = _databaseContext.Set<PriceList>().Where(x => !x.Disabled);
@@ -132,17 +132,17 @@ namespace Module.Host.TPM.Actions
             {
                 var priceLists = context.Set<PriceList>();
 
-                var invalidPriceListRecords = differentPriceLists.Intersect(priceListMaterialized, new checkPriceListEqualityComparer());
-                //var invalidPriceListRecords = new List<PriceList>();
-                //foreach (var differentPriceList in differentPriceLists)
-                //{
-                //    invalidPriceListRecords.AddRange(priceListMaterialized.Where(x =>
-                //        x.DeletedDate == differentPriceList.DeletedDate &&
-                //        x.StartDate == differentPriceList.StartDate &&
-                //        x.ClientTreeId == differentPriceList.ClientTreeId &&
-                //        x.ProductId == differentPriceList.ProductId &&
-                //        x.FuturePriceMarker == differentPriceList.FuturePriceMarker));
-                //}
+                //var invalidPriceListRecords = differentPriceLists.Intersect(priceListMaterialized, new checkPriceListEqualityComparer());
+                var invalidPriceListRecords = new List<PriceList>();
+                foreach (var differentPriceList in differentPriceLists)
+                {
+                    invalidPriceListRecords.AddRange(priceListMaterialized.Where(x =>
+                        x.DeletedDate == differentPriceList.DeletedDate &&
+                        x.StartDate == differentPriceList.StartDate &&
+                        x.ClientTreeId == differentPriceList.ClientTreeId &&
+                        x.ProductId == differentPriceList.ProductId &&
+                        x.FuturePriceMarker == differentPriceList.FuturePriceMarker));
+                }
                 if (invalidPriceListRecords.Count() > 0)
                 {
                     UpdateRecords(invalidPriceListRecords);
@@ -263,8 +263,8 @@ namespace Module.Host.TPM.Actions
                             FuturePriceMarker = priceListFDM.RELEASE_STATUS == "A"
                         };
 
-                        newPriceListRecord.StartDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.StartDate, 3).Value;
-                        newPriceListRecord.EndDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.EndDate, 3).Value;
+                        newPriceListRecord.StartDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.StartDate);
+                        newPriceListRecord.EndDate = ChangeTimeZoneUtil.ResetTimeZone(newPriceListRecord.EndDate);
 
                         newPriceListRecords.Add(newPriceListRecord);
                     }
