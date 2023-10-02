@@ -244,8 +244,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoIncrementalLSV', when((col('InOut') == False), isNullCheck(col('ActualPromoLSV')) - isNullCheck(col('ActualPromoBaselineLSV')))\
                                     .otherwise(when(isNullCheck(col('ActualPromoLSV')) - isNullCheck(col('ActualPromoBaselineLSV')) < 0, 0)
                                                .otherwise(col('ActualPromoLSV') - col('ActualPromoBaselineLSV'))).cast(DecimalType(30,6)))\
-      .withColumn('ActualPromoPostPromoEffectLSV', when(col('InOut') == False, when(col('IsOnInvoice') == False, col('ActualPromoPostPromoEffectLSVW1') \
-                                               + col('ActualPromoPostPromoEffectLSVW2')).otherwise(isNullCheck(col('ActualPromoLSVSO')) - isNullCheck(col('ActualPromoLSVSI'))))\
+      .withColumn('ActualPromoPostPromoEffectLSV', when(col('InOut') == False, col('ActualPromoPostPromoEffectLSVW1') + col('ActualPromoPostPromoEffectLSVW2'))\
                                                 .otherwise(col('ActualPromoPostPromoEffectLSV')).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetIncrementalLSV', when(col('InOut') == False, isNullCheck(col('ActualPromoIncrementalLSV'))\
                                                    + isNullCheck(col('ActualPromoPostPromoEffectLSV')))\

@@ -1631,7 +1631,8 @@
             model: 'App.model.tpm.baseclient.BaseClient',
             type: 'simplestore',
             idProperty: 'Id',
-            autoLoad: true
+            autoLoad: true,
+            pageSize: 300
         });
 
         breeze.EntityQuery
