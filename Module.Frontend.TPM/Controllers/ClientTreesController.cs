@@ -37,8 +37,8 @@ namespace Module.Frontend.TPM.Controllers
     public class ClientTreesController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
-        private IQueryable<ClientTree> activeTree;
-        
+        private IQueryable<ClientTree> activeTree;     
+
 
         public ClientTreesController(IAuthorizationManager authorizationManager)
         {
@@ -657,7 +657,24 @@ namespace Module.Frontend.TPM.Controllers
                 string msg = "There is a ClientTree with such DemandCode";
                 return Json(new { success = false, message = msg });
             }
-
+            var tt = (!string.IsNullOrEmpty(model.GHierarchyCode) ? model.GHierarchyCode : null);
+            var checkDouble = activeTree.Where(
+                x => x.Name == model.Name &&
+                x.Type == model.Type &&
+                x.IsOnInvoice == model.IsOnInvoice &&
+                x.IsBaseClient == model.IsBaseClient &&
+                x.DistrMarkUp == model.DistrMarkUp &&
+                x.parentId == model.parentId &&
+                x.DemandCode == (!string.IsNullOrEmpty(model.DemandCode) ? model.DemandCode : null) &&
+                x.GHierarchyCode == model.GHierarchyCode &&
+                x.DMDGroup==model.DMDGroup &&
+                x.SFAClientCode==model.SFAClientCode).Count();
+           
+            if (checkDouble > 0)
+            {
+                string msg = "There is already such a record!";
+                return Json(new { success = false, message = msg });
+            }
             result.ObjectId = new int();
             Context.Set<ClientTree>().Add(result);
             var resultSaveChanges = await Context.SaveChangesAsync();
@@ -693,27 +710,19 @@ namespace Module.Frontend.TPM.Controllers
                     model.DemandCode = null;
                 }
             }
-
             try
-            {
+            {               
                 activeTree = GetConstraintedQuery();
-                var oldDemandCode = activeTree.Where(x => x.ObjectId == model.ObjectId && x.DemandCode !=null).Select(x=>x.DemandCode).First();
+                var oldDemandCode = activeTree.Where(x => x.ObjectId == model.ObjectId && x.EndDate==null).Select(x=>x.DemandCode).First();
                 if (!string.IsNullOrEmpty(oldDemandCode) && model.DemandCode == null)
                 {
-                    var childsNull = activeTree.Where(x => x.parentId == model.ObjectId && x.DemandCode == null && x.IsBaseClient == true).Count();
-                    
-                    var oldRecordBrandTechDemandCode = Context.Set<ClientTreeBrandTech>().Where(x => x.ParentClientTreeDemandCode == oldDemandCode).ToList();
-                    if (childsNull > 0 && (model.Type == "Group chain" || model.Type == "Client"))
+                    var childsNull = activeTree.Where(x => x.parentId == model.ObjectId && x.DemandCode == null && x.IsBaseClient == true).Count();                    
+                
+                    if (childsNull > 0 && (model.Type == "Group chain" || model.Type == "Client" || model.Type == "Group"))
                     {
                         string msg = "This ClientTree not found DemandCode. The change is not possible!";
                         return Json(new { success = false, message = msg });
-                    }
-                    else if(oldRecordBrandTechDemandCode.Count > 0 && (model.Type == "Group chain" || model.Type == "Client"|| model.Type== "Chain"))
-                    {
-                        
-                        Context.Set<ClientTreeBrandTech>().RemoveRange(oldRecordBrandTechDemandCode);
-                        await Context.SaveChangesAsync();
-                    }
+                    }                   
                 }
 
                 ClientTree currentRecord = activeTree.FirstOrDefault(x => x.ObjectId == model.ObjectId);
@@ -804,6 +813,7 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                     await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+
                 }
 
                 return Created(currentRecord);
@@ -841,8 +851,8 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                     await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
-                }
-
+                    await ClientTreeBrandTechesController.DeleteInvalidClientBrandTech(key, Context);
+                } 
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)

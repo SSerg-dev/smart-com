@@ -95,8 +95,15 @@ namespace Module.Frontend.TPM.Controllers
                     var clients = databaseContext.Set<ClientTreeBrandTech>().Where(e => e.ClientTreeId == item.Id && !e.Disabled);
                     foreach (var client in clients)
                     {
-                        if (client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode))
+                        if (client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode) && !string.IsNullOrEmpty(demandCode))
+                        {
                             client.ParentClientTreeDemandCode = demandCode;
+                        }
+                        else if (client.ParentClientTreeDemandCode.Equals(oldClientTree.DemandCode) && string.IsNullOrEmpty(demandCode))
+                        {
+                            client.Disabled = true;
+                            client.DeletedDate = DateTime.Now;
+                        }
                     }
                 }
             }
@@ -135,6 +142,22 @@ namespace Module.Frontend.TPM.Controllers
             });
 
             return await context.SaveChangesAsync();
+        }
+
+        public static async Task DeleteInvalidClientBrandTech(int key, DatabaseContext databaseContext)
+        {
+            var invalidBrandTeches = databaseContext.Set<ClientTreeBrandTech>().Where(x => x.ClientTreeId == key && x.Disabled == false && x.DeletedDate == null);
+
+            if (invalidBrandTeches != null)
+            {
+
+                foreach (var invalidBrandTech in invalidBrandTeches)
+                {
+                    invalidBrandTech.Disabled = true;
+                    invalidBrandTech.DeletedDate = DateTime.Now;
+                }
+                await databaseContext.SaveChangesAsync();
+            }
         }
 
         private static string GetDemandCode(ClientTree clientTree, DatabaseContext context)
