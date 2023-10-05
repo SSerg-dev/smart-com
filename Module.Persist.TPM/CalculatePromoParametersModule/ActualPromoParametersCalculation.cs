@@ -183,8 +183,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
                         if (promo.IsOnInvoice && (promo.PlanPromoPostPromoEffectLSV.HasValue && promo.PlanPromoPostPromoEffectLSV != 0))
                         {
-                            promo.ActualPromoPostPromoEffectLSVW1 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW1 / promo.PlanPromoPostPromoEffectLSV);
-                            promo.ActualPromoPostPromoEffectLSVW2 = promo.ActualPromoPostPromoEffectLSV * (promo.PlanPromoPostPromoEffectLSVW2 / promo.PlanPromoPostPromoEffectLSV);
+                            promo.ActualPromoPostPromoEffectLSVW1 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW1);
+                            promo.ActualPromoPostPromoEffectLSVW2 = promoProducts.Sum(g => g.ActualProductPostPromoEffectLSVW2);
                         }
 
                         promo.ActualPromoNetIncrementalLSV = (promo.ActualPromoIncrementalLSV ?? 0) + (promo.ActualPromoPostPromoEffectLSV ?? 0);
