@@ -125,6 +125,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     foreach (Product product in resultProductList)
                     {
+                        context.Entry(product).Collection(p => p.PromoProducts).Load();
+                        context.Entry(product).Collection(p => p.IncrementalPromoes).Load();
+
                         if (changedProducts.Contains(product.ZREP) && createIncidents)
                         {
                             addedZREPs.Add(product.ZREP);
@@ -678,11 +681,6 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (filteredProductList.Count == 0)
                 {
                     throw new Exception("No suitable products were found for the current PROMO");
-                }
-                foreach (Product product in filteredProductList)
-                {
-                    context.Entry(product).Collection(p => p.PromoProducts).Load();
-                    context.Entry(product).Collection(p => p.IncrementalPromoes).Load();
                 }
             }
             catch (Exception e)
