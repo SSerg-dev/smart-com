@@ -189,6 +189,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<SavedPromo>().HasMany(g => g.Promoes).WithOptional(g => g.SavedPromo).WillCascadeOnDelete();
 
             modelBuilder.Entity<TLCImport>().ToTable("TLCImports");
+            modelBuilder.Entity<SavedSetting>().ToTable("SavedSettings");
         }
 
 

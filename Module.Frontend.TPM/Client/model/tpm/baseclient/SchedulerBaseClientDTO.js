@@ -32,6 +32,9 @@
             type: 'json',
             totalProperty: 'inlineCount',
             root: 'results'
+        },
+        extraParams: {
+            NoSettings: true
         }
     },
     getEvents: function (store) {

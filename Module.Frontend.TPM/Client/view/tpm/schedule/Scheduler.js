@@ -200,7 +200,7 @@
                 if (!model) {
                     return;
                 }
-
+                
                 model.commit();
                 this.filter = model.getFilter();
                 //this.reloadStore(suppressReload);

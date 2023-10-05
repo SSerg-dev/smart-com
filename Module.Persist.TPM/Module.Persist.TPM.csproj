@@ -3708,6 +3708,14 @@
     <Compile Include="Migrations\202309290450315_AddIndexClientTreeBrandTech__IDX.designer.cs">
       <DependentUpon>202309290450315_AddIndexClientTreeBrandTech__IDX.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309281127311_Add-SavedSettings.cs" />
+    <Compile Include="Migrations\202309281127311_Add-SavedSettings.designer.cs">
+      <DependentUpon>202309281127311_Add-SavedSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310051212049_Empty05102023.cs" />
+    <Compile Include="Migrations\202310051212049_Empty05102023.designer.cs">
+      <DependentUpon>202310051212049_Empty05102023.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3726,6 +3734,7 @@
     <Compile Include="Model\DTO\DemandDTO.cs" />
     <Compile Include="Model\DTO\PromoGridView.cs" />
     <Compile Include="Model\DTO\PromoPriceIncreaseROIReport.cs" />
+    <Compile Include="Model\DTO\SavedSettingDTO.cs" />
     <Compile Include="Model\DTO\SchedulerClientTreeDTO.cs" />
     <Compile Include="Model\History\HistoricalActualCOGSTn.cs" />
     <Compile Include="Model\History\HistoricalAssortmentMatrix.cs" />
@@ -3877,6 +3886,7 @@
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\SavedPromo.cs" />
     <Compile Include="Model\TPM\SavedScenario.cs" />
+    <Compile Include="Model\TPM\SavedSetting.cs" />
     <Compile Include="Model\TPM\TechnologyExport.cs" />
     <Compile Include="Model\TPM\ActualLsvModel.cs" />
     <Compile Include="Model\TPM\Competitor.cs" />
@@ -6955,6 +6965,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309290450315_AddIndexClientTreeBrandTech__IDX.resx">
       <DependentUpon>202309290450315_AddIndexClientTreeBrandTech__IDX.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309281127311_Add-SavedSettings.resx">
+      <DependentUpon>202309281127311_Add-SavedSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310051212049_Empty05102023.resx">
+      <DependentUpon>202310051212049_Empty05102023.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

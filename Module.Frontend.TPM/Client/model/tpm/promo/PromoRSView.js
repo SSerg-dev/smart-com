@@ -27,7 +27,7 @@
         { name: 'CalendarPriority', useNull: true, type: 'int', hidden: false, isDefault: false },
         { name: 'DispatchesStart', useNull: true, type: 'date', hidden: false, isDefault: true, timeZone: +3, convert: dateConvertTimeZone },
         { name: 'PromoStatusSystemName', type: 'string', hidden: true, isDefault: true },
-        { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: schedulerStatusFilter(), breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
+        { name: 'PromoStatusName', type: 'string', mapping: 'PromoStatusName', defaultFilterConfig: schedulerStatusFilterRS(), breezeEntityType: 'PromoStatus', hidden: false, isDefault: true },
 
 
         { name: 'CompetitorBrandTechName', type: 'string', persist: false, mapping: 'CompetitorBrandTechName', defaultFilterConfig: { valueField: 'BrandTech' }, breezeEntityType: 'CompetitorBrandTech', hidden: false, isDefault: true },
@@ -57,7 +57,7 @@
 
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'IsOnHold', type: 'boolean', hidden: false, isDefault: false },
-        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: true },
+        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: true, defaultFilterConfig: schedulerYearFilterRS() },
     ],
     proxy: {
         type: 'breeze',
@@ -73,11 +73,20 @@
     }
 });
 
-function schedulerStatusFilter() {
+function schedulerStatusFilterRS() {
     var result = {
         value: 'Cancelled',
         operation: 'NotEqual',
         valueField: 'Name'
+    };
+    return result;
+}
+
+function schedulerYearFilterRS() {
+    var prevousyear = new Date().getFullYear() - 1;
+    var result = {
+        value: prevousyear,
+        operation: 'GreaterOrEqual'
     };
     return result;
 }

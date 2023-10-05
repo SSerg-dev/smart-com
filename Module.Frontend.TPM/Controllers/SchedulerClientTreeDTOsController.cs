@@ -2,12 +2,14 @@
 using Core.Security;
 using Core.Security.Models;
 using Frontend.Core.Controllers.Base;
+using Module.Frontend.TPM.FunctionalHelpers.ClientTreeFunction;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using Persist.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -55,7 +57,7 @@ namespace Module.Frontend.TPM.Controllers {
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
-        public IQueryable<SchedulerClientTreeDTO> GetSchedulerClientTreeDTOs() {
+        public IQueryable<SchedulerClientTreeDTO> GetSchedulerClientTreeDTOs(bool NoSettings) {
             List<SchedulerClientTreeDTO> result = new List<SchedulerClientTreeDTO>();
             int sort = 1;
             foreach (ClientTree client in GetConstraintedQuery()) {
@@ -107,6 +109,16 @@ namespace Module.Frontend.TPM.Controllers {
                     result.Add(row);
                     prevRow = row;
                 }
+            }
+            if (NoSettings)
+            {
+                DateTime dt = DateTime.Now;
+                List<ClientTree> clients = Context.Set<ClientTree>().Where(x => DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)).ToList();
+                ClientTree clientTreeNA = clients.FirstOrDefault(g => g.ObjectId == 5000002);
+
+                List<ClientResult> clientArray = ClientTreeHelper.GetChildrenBaseClient(clientTreeNA, clients);
+                List<int> objIdArray = clientArray.Select(g => g.Id).ToList();
+                result = result.Where(g => g.TypeName != "Competitor" && objIdArray.Contains(g.ObjectId)).ToList();
             }
             return result.AsQueryable();
         }

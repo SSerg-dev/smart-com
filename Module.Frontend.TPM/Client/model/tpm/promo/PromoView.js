@@ -57,7 +57,7 @@
 
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: true },
         { name: 'IsOnHold', type: 'boolean', hidden: false, isDefault: false },
-        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: true },
+        { name: 'BudgetYear', type: 'int', hidden: true, isDefault: true, defaultFilterConfig: schedulerYearFilter() },
     ],
     proxy: {
         type: 'breeze',
@@ -78,6 +78,15 @@ function schedulerStatusFilter() {
         value: 'Cancelled',
         operation: 'NotEqual',
         valueField: 'Name'
+    };
+    return result;
+}
+
+function schedulerYearFilter() {
+    var prevousyear = new Date().getFullYear() - 1;
+    var result = {
+        value: prevousyear,
+        operation: 'GreaterOrEqual'
     };
     return result;
 }

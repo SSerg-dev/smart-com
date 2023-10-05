@@ -74,6 +74,7 @@
                 }
             };
             if (needReloadStore) {
+                this.saveSettings(clientsCheckboxes, typesCheckboxes, competitorsCheckboxes);
                 this.getController('tpm.schedule.SchedulerViewController').onResourceStoreLoad();
             };
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
@@ -224,7 +225,6 @@
         var store = Ext.StoreMgr.lookup('MyResources');
         var typevalue = me.getTypeValuesForFilter(typesCheckboxes);
         var competitorvalue = me.getCompetitorValuesForFilter(competitorsCheckboxes);
-
         me.clearFilter(store);
         if (!Ext.isEmpty(value)) {
             var filter = me.createFilter(value, 'Name');
@@ -551,5 +551,55 @@
             }
         }
     },
-
+    saveSettings: function (clientsCheckboxes, typesCheckboxes, competitorsCheckboxes) {
+        var me = this;
+        var clientData = me.getClientsData(clientsCheckboxes);
+        var typeData = me.getTypeData(typesCheckboxes);
+        var competitorData = me.getCompetitorData(competitorsCheckboxes);
+        var jsonarray = [];
+        jsonarray.push(clientData);
+        jsonarray.push(typeData);
+        jsonarray.push(competitorData);
+        this.getController('tpm.schedule.SchedulerViewController').clientSettings = jsonarray;
+        var jsonpost = JSON.stringify(jsonarray);
+        //var decodejson = Ext.JSON.decode(jsonpost);
+        Ext.Ajax.request({
+            method: "POST",
+            url: 'api/SavedSettings/SaveSettings',
+            scope: this,
+            params: {
+                Key: 'calendarfilter#',
+                Value: jsonpost
+            },
+            success: function (e) {
+            },
+            failure: function (e) {
+                App.Notify.pushError('Failure save settings');
+            }
+        })
+    },
+    getClientsData: function (clientsCheckboxes) {
+        var checkedArray = clientsCheckboxes.getChecked();
+        var value = [];
+        checkedArray.forEach(function (el) {
+            value.push({ id: el.objectId, name: el.name });
+        });
+        return value;
+    },
+    getTypeData: function (typesCheckboxes) {
+        var checkedArray = typesCheckboxes.getChecked();
+        var value = [];
+        checkedArray.forEach(function (el) {
+                value.push(el.name);
+        });
+        return value;
+    },
+    getCompetitorData: function (competitorsCheckboxes) {
+        var checkedArray = competitorsCheckboxes.getChecked();
+        var value = [];
+        checkedArray.forEach(function (el) {
+            value.push(el.name);
+        });
+        return value;
+    },
 })

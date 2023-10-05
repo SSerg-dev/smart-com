@@ -6,6 +6,8 @@
     rowCount: 3,
     startEndModel: null,
     canEditInRSmode: boolean = false,
+    clientSettings: null,
+    isFirstLoad: true,
 
     init: function () {
         this.listen({
@@ -17,9 +19,9 @@
                             if (App.UserInfo.getCurrentRole().SystemName === UserRoles.CustomerMarketingManager || App.UserInfo.getCurrentRole().SystemName === UserRoles.CustomerMarketing) {
                                 createButton.hide();
                             } else
-                            if (!this.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === createButton.action; })) {
-                                createButton.hide();
-                            }
+                                if (!this.getAllowedActionsForCurrentRoleAndResource('Promoes').some(function (action) { return action === createButton.action; })) {
+                                    createButton.hide();
+                                }
                         }
 
                         var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
@@ -29,6 +31,7 @@
                         if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
                             scenarioButton.hide();
                         }
+                        this.isFirstLoad = true;;
                     }
                 },
                 'schedulecontainer #shiftprevbutton': {
@@ -44,6 +47,7 @@
                     click: this.onShiftModeButtonClick
                 },
                 'schedulecontainer #nascheduler': {
+                    beforerender: this.onScheduleBeforeRender,
                     afterrender: this.onScheduleAfterRender,
                     eventclick: this.onEventClick,
                     eventdblclick: this.onEventdbClick,
@@ -1444,7 +1448,7 @@
         var container = Ext.ComponentQuery.query('schedulecontainer')[0];
         var clearButton = container.down('#extfilterclearbutton'),
             isFilterEmpty = ctx && ctx.isEmpty();
-
+        
         if (clearButton) {
             clearButton.setDisabled(isFilterEmpty);
 
@@ -1457,9 +1461,14 @@
         }
         var scheduler = container.down('scheduler');
         var store = scheduler.getEventStore();
-        if (store.uniqueObjectIds) {
-            this.eventStoreLoading(store);
-        };
+        if (!this.isFirstLoad) {
+            if (store.uniqueObjectIds) {
+                this.eventStoreLoading(store);
+            };
+        }
+        else {
+            this.isFirstLoad = false;
+        }
     },
 
     onFilterButtonClick: function (button) {
@@ -1622,6 +1631,10 @@
         this.doHighlight(field, '');
     },
 
+    onScheduleBeforeRender: function (scheduler) {
+        this.loadSettings();
+    },
+
     onScheduleAfterRender: function (scheduler) {
         var me = this;
 
@@ -1661,12 +1674,18 @@
                     } else {
                         scheduler.otherPromoTypes.push(el);
                     }
-
+                    var cheked = true;
+                    if (me.clientSettings) {
+                        var settingTypes = me.clientSettings[1];
+                        if (!settingTypes.includes(el.Name)) {
+                            cheked = false;
+                        }
+                    }
                     var beforeBoxLabelTextTpl = new Ext.Template('<span class="mdi filter-mark-icon">&#x{glyph}</span>');
                     scheduler.typesCheckboxesConfig.push({
                         name: el.Name,
                         inputValue: el.Name,
-                        checked: true,
+                        checked: cheked,
                         boxLabel: '<span style="vertical-align: text-top;">' + el.Name + '</span>',
                         xtype: 'checkbox',
                         beforeBoxLabelTextTpl: beforeBoxLabelTextTpl.apply({ glyph: el.Glyph }),
@@ -1687,10 +1706,17 @@
             .then(function (data) {
                 scheduler.competitorsCheckboxesConfig = [];
                 data.results.forEach(function (el) {
+                    var cheked = false;
+                    if (me.clientSettings) {
+                        var settingCompetitor = me.clientSettings[2];
+                        if (settingCompetitor.includes(el.Name)) {
+                            cheked = true;
+                        }
+                    }
                     scheduler.competitorsCheckboxesConfig.push({
                         name: el.Name,
                         inputValue: el.Name,
-                        checked: true,
+                        checked: cheked,
                         boxLabel: '<span style="vertical-align: text-top;">' + el.Name + '</span>',
                         xtype: 'checkbox',
                     })
@@ -1703,10 +1729,18 @@
         scheduler.baseClientsStore.on('load', function (store, records) {
             scheduler.clientsFilterConfig = [];
             records.forEach(function (el) {
+                var cheked = true;
+                if (me.clientSettings) {
+                    var settingClients = me.clientSettings[0];
+                    var clientIds = settingClients.map(function (item) { return item.id; });
+                    if (!clientIds.includes(el.data.ObjectId)) {
+                        cheked = false;
+                    }
+                }
                 scheduler.clientsFilterConfig.push({
                     name: el.data.Name,
                     inputValue: el.data.Name,
-                    checked: true,
+                    checked: cheked,
                     boxLabel: el.data.Name,
                     objectId: el.data.ObjectId,
                     xtype: 'checkbox'
@@ -1715,29 +1749,29 @@
             var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
             if (scenarioButton) {
                 var parameters = {};
-                    App.Util.makeRequestWithCallback('ClientTrees', 'GetUploadingClients', parameters, function (data2) {
-                        if (data2) {
-                            var result2 = Ext.JSON.decode(data2.httpResponse.data.value);
-                            if (result2.success) {
-                                var availableClients = result2.availableClients;
-                                var clientsFromConfig = jQuery.map(scheduler.clientsFilterConfig, function (n, i) {
-                                    return (n.objectId.toString());
-                                });
-                                var filteredArray = clientsFromConfig.filter(function (x) {
-                                    return availableClients.indexOf(x) >= 0;
-                                });
-                                scheduler.clientsAvailableForScenario = filteredArray;
-                                //scheduler.uploadingClients = uploadingClients;
-                                if (filteredArray.length > 0) {
-                                    scenarioButton.setDisabled(false);
-                                }
-                                else {
-                                    scenarioButton.setDisabled(true);
-                                }
-                            } else {
+                App.Util.makeRequestWithCallback('ClientTrees', 'GetUploadingClients', parameters, function (data2) {
+                    if (data2) {
+                        var result2 = Ext.JSON.decode(data2.httpResponse.data.value);
+                        if (result2.success) {
+                            var availableClients = result2.availableClients;
+                            var clientsFromConfig = jQuery.map(scheduler.clientsFilterConfig, function (n, i) {
+                                return (n.objectId.toString());
+                            });
+                            var filteredArray = clientsFromConfig.filter(function (x) {
+                                return availableClients.indexOf(x) >= 0;
+                            });
+                            scheduler.clientsAvailableForScenario = filteredArray;
+                            //scheduler.uploadingClients = uploadingClients;
+                            if (filteredArray.length > 0) {
+                                scenarioButton.setDisabled(false);
                             }
+                            else {
+                                scenarioButton.setDisabled(true);
+                            }
+                        } else {
                         }
-                    }, function (data) {});
+                    }
+                }, function (data) { });
             }
         });
 
@@ -1873,7 +1907,7 @@
         var ng = scheduler.normalGrid;
 
         scheduler.down('schedulergridview').preserveScrollOnRefresh = true;
-
+        
         var objectIds = this.getObjectIds(resourceStore);
         eventStore.uniqueObjectIds = [];
         for (var i = 0; i < objectIds.length; i++) {
@@ -2129,14 +2163,14 @@
                 ) &&
                 (
                     !rec.get("IsGrowthAcceleration") ||
-                    !rec.get("IsInExchange") 
+                    !rec.get("IsInExchange")
                 )
-            ) {                    
+            ) {
                 this.canEditInRSmode = true;
-            } else {                   
+            } else {
                 this.canEditInRSmode = false;
             }
-        }       
+        }
     },
 
     loopHandlerViewLogWindowCreate: function (record) {
@@ -2175,17 +2209,17 @@
     },
 
     //Для загрузки используйте функцию выше
-    loadingRecursion: function (store, clientId) {
+    loadingRecursion: function (store) {
+        var me = this;
         if (store.resetLoading) {
-            clientId = 0;
             store.data.clear();
             store.resetLoading = false;
         }
-        if (!clientId) clientId = 0;
+        var clientArray = store.uniqueObjectIds.map(function (item) { return item.objectId; });
         var newFilter = {
             property: 'ClientTreeId',
-            operation: 'Equals',
-            value: store.uniqueObjectIds[clientId].objectId
+            operation: 'In',
+            value: clientArray
         };
         var filter = store.fixedFilters || {};
         filter['clientfilter'] = newFilter;
@@ -2226,21 +2260,24 @@
                         return record
                     });
                 }
-
                 //Если закрыли календарь - перестаем грузить
                 var nascheduler = Ext.ComponentQuery.query('#nascheduler')[0];
                 if (nascheduler) {
-                    if (!store.resetLoading) {
-                        this.renderEvents(store.uniqueObjectIds[clientId].regPromoId, store.uniqueObjectIds[clientId].inoutPromoId, store.uniqueObjectIds[clientId].otherPromoId, store.uniqueObjectIds[clientId].competitorPromoIds);
-                        store.uniqueObjectIds[clientId].loaded = true;
-                        clientId = 0;
-                        while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
-                            clientId = clientId + 1;
-                        };
-                    };
-                    if (store.uniqueObjectIds.length > clientId) {
-                        this.loadingRecursion(store, clientId);
-                    }
+                    //if (!store.resetLoading) {
+                    //store.uniqueObjectIds.forEach(function (client) {
+                    //    me.renderEvents(client.regPromoId, client.inoutPromoId, client.otherPromoId, client.competitorPromoIds);
+                    //    return false;
+                    //    });
+                    me.renderEvents(store.uniqueObjectIds[0].regPromoId, store.uniqueObjectIds[0].inoutPromoId, store.uniqueObjectIds[0].otherPromoId, store.uniqueObjectIds[0].competitorPromoIds);
+                    //store.uniqueObjectIds[clientId].loaded = true;
+                    //clientId = 0;
+                    //while (store.uniqueObjectIds[clientId] && store.uniqueObjectIds[clientId].loaded) {
+                    //    clientId = clientId + 1;
+                    //};
+                    //};
+                    //if (store.uniqueObjectIds.length > clientId) {
+                    //    this.loadingRecursion(store, clientId);
+                    //}
                 }
             }
         });
@@ -2302,8 +2339,152 @@
             }
         }
     },
-    
+
     onSaveScenarioButtonClick: function (button) {
         Ext.widget('selectClientScenario').show();
+    },
+    loadSettings: function () {
+        Ext.Ajax.request({
+            method: "POST",
+            url: 'api/SavedSettings/LoadSettings',
+            scope: this,
+            params: {
+                Key: 'calendarfilter#'
+            },
+            success: function (data) {
+                if (data.responseText != '') {
+                    var value = Ext.JSON.decode(data.responseText);
+                    this.clientSettings = Ext.JSON.decode(value);
+                    this.filterClients();
+                    this.addSchedulerClientTreeDTOFilter();
+                }
+            },
+            failure: function (e) {
+                App.Notify.pushError('Failure save settings');
+            }
+        })
+    },
+    filterClients: function () {
+        var me = this;
+        var settings = me.clientSettings;
+        if (settings) {
+            var settingClients = settings[0];
+            var clientIds = me.getFixedValue(settingClients.map(function (item) { return item.name; }));
+            var store = Ext.StoreMgr.lookup('MyResources');
+            var typevalue = me.getTypeValuesForFilter(settings[1]);
+            var competitorvalue = me.getCompetitorValuesForFilter(settings[2]);
+            me.clearFilter(store);
+            if (!Ext.isEmpty(clientIds)) {
+                var filter = me.createFilter(clientIds, 'Name');
+                store.filter(filter);
+            }
+
+            if (!Ext.isEmpty(typevalue)) {
+                var filter = me.createFilter(typevalue, 'TypeName');
+                store.filter(filter);
+            }
+
+            if (!Ext.isEmpty(competitorvalue)) {
+                var filter = me.createFilter(competitorvalue, 'CompetitorName');
+                store.filter(filter);
+            }
+        }
+    },
+    clearFilter: function (store) {
+        store = store ? store : Ext.StoreMgr.lookup('MyResources');
+        store.clearFilter();
+    },
+    createFilter: function (value, property) {
+        var filterFn = function (item) {
+            var re = new RegExp(value, 'i');
+            return re.test(item.get(property));
+        };
+        var operator = 'like';
+        if (Ext.isArray(value)) {
+            if (value.length > 1) {
+                operator = 'in';
+                filterFn = function (item) {
+                    var re = new RegExp('^' + value.join('|') + '$', 'i');
+                    return re.test((Ext.isEmpty(property) ? me.autoStoresNullValue : item.get(property)));
+                }
+            } else if (value.length == 1) {
+                value = value[0];
+            }
+        }
+
+        var filter = Ext.create('Ext.util.Filter', {
+            property: property,
+            value: value,
+            type: 'string',
+            operator: operator,
+            filterFn: filterFn
+        })
+
+        return filter;
+    },
+    getTypeValuesForFilter: function (checkedArray) {
+        var value = [];
+        var name;
+        checkedArray.forEach(function (el) {
+            name = el.substr(0, el.indexOf(' '));
+            if (name == 'Loyalty' || name == 'Dynamic') {
+                value.push('Other');
+            } else {
+                value.push(name);
+            }
+        });
+
+        if (Ext.isArray(value)) {
+            if (value.length == 0) {
+                value = '';
+            } else if (value.length == 1) {
+                value = value[0].toLowerCase();
+            }
+        } else {
+            value = value.toLowerCase();
+        }
+        return value;
+    },
+
+    getCompetitorValuesForFilter: function (checkedArray) {
+        var value = [];
+        checkedArray.forEach(function (el) {
+            value.push(el);
+        });
+
+        value.push('mars');
+
+        if (Ext.isArray(value)) {
+            if (value.length == 0) {
+                value = '';
+            } else if (value.length == 1) {
+                value = value[0].toLowerCase();
+            }
+        } else {
+            value = value.toLowerCase();
+        }
+        return value;
+    },
+    getFixedValue: function (checkedArray) {
+        var value = [];
+        checkedArray.forEach(function (el) {
+            value.push(el);
+        });
+
+        if (Ext.isArray(value)) {
+            if (value.length == 0) {
+                value = '';
+            } else if (value.length == 1) {
+                value = value[0].toLowerCase();
+            }
+        } else {
+            value = value.toLowerCase();
+        }
+        return value;
+    },
+    addSchedulerClientTreeDTOFilter: function () {
+        var storeResource = Ext.StoreMgr.lookup('MyResources');
+        var proxy = storeResource.getProxy();
+        proxy.extraParams.NoSettings = false;
     }
 });
