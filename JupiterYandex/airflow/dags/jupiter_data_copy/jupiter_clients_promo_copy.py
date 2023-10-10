@@ -161,7 +161,8 @@ def create_dag_config_copy_from_adls(parameters:dict, db_conf:dict,clients):
     return conf_list
 
 @task
-def generate_entity_list(parameters:dict, db_conf:dict,clients):
+def generate_entity_list(parameters:dict, clients):
+#def generate_entity_list(**kwargs):
     #raw_path=parameters['RawPath']
     #dst_dir=parameters['DstDir']
     entities = []
@@ -207,14 +208,21 @@ with DAG(
                                                                      trigger_dag_id="jupiter_client_promo_copy",
                                                                     ).expand(conf=create_dag_config_copy_from_adls)
 
-    entities = generate_entity_list(parameters, create_dag_config_copy_from_db, get_clients_to_copy)
+    entities = generate_entity_list(parameters, get_clients_to_copy)
+
+    #entities = PythonOperator(
+    #    task_id='entities',
+    #    python_callable=generate_entity_list,
+    #    trigger_rule="all_done",
+    #    op_kwargs={'input': parameters, 'config': create_dag_config_copy_from_db, 'clients': get_clients_to_copy},
+    #)
 
     azure_copy_script = generate_azure_copy_script.partial(parameters=parameters).expand(entity=entities)
 
     copy_entities = BashOperator.partial(task_id="copy_entity",
                                       do_xcom_push=True,
+                                      trigger_rule="all_done",
                                      ).expand(bash_command=azure_copy_script)
 
-    parameters >> get_clients_to_copy >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls
-    trigger_jupiter_client_promo_copy_from_adls >> entities >> azure_copy_script >> copy_entities
-
+    parameters >> get_clients_to_copy >> entities >> azure_copy_script >> create_dag_config_copy_from_db >> trigger_jupiter_client_promo_copy_from_db >> create_dag_config_copy_from_adls >> trigger_jupiter_client_promo_copy_from_adls
+    [trigger_jupiter_client_promo_copy_from_db, trigger_jupiter_client_promo_copy_from_adls] >> copy_entities
