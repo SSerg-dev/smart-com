@@ -4,10 +4,12 @@ using Frontend.Core.Controllers.Base;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
+using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
@@ -29,7 +31,7 @@ namespace Module.Frontend.TPM.Controllers
             this.authorizationManager = authorizationManager;
         }
 
-        protected IQueryable<ClientTree> GetConstraintedQuery()
+        protected IQueryable<ClientTree> GetConstraintedQuery(bool onlyBaseClient)
         {
 
             UserInfo user = authorizationManager.GetCurrentUser();
@@ -39,7 +41,16 @@ namespace Module.Frontend.TPM.Controllers
                 .ToList() : new List<Constraint>();
             IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
             DateTime dt = DateTime.Now;
-            IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true);
+            IQueryable<ClientTree> query;
+            if (onlyBaseClient)
+            {
+                query = Context.Set<ClientTree>().Where(x => DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true);
+            }
+            else
+            {
+                query = Context.Set<ClientTree>().Where(x => DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0));
+            }
+            
             IQueryable<ClientTreeHierarchyView> hierarchy = Context.Set<ClientTreeHierarchyView>().AsNoTracking();
             query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
             return query;
@@ -49,21 +60,21 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public SingleResult<ClientTree> GetBaseClient([FromODataUri] System.Guid key)
         {
-            return SingleResult.Create(GetConstraintedQuery());
+            return SingleResult.Create(GetConstraintedQuery(true));
         }
 
         [ClaimsAuthorize]
         [EnableQuery(MaxNodeCount = int.MaxValue)]
         public IQueryable<ClientTree> GetBaseClients()
         {
-            return GetConstraintedQuery();
+            return GetConstraintedQuery(true);
         }
 
         [ClaimsAuthorize]
         [HttpPost]
         public IQueryable<ClientTree> GetFilteredData(ODataQueryOptions<ClientTree> options)
         {
-            var query = GetConstraintedQuery();
+            var query = GetConstraintedQuery(true);
 
             var querySettings = new ODataQuerySettings
             {
@@ -78,6 +89,18 @@ namespace Module.Frontend.TPM.Controllers
         private bool EntityExists(int key)
         {
             return Context.Set<ClientTree>().Count(e => e.ObjectId == key) > 0;
+        }
+        [ClaimsAuthorize]
+        
+        public IHttpActionResult GetCalendarClients()
+        {
+            List<ClientTree> clientTrees = GetConstraintedQuery(false).ToList();
+            List<ClientTree> clientGroup = clientTrees.Where(g => g.Type == "root").ToList();
+            foreach (var item in clientGroup)
+            {
+
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
         }
     }
 }

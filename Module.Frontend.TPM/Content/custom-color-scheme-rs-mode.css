@@ -1543,9 +1543,10 @@ tr[data-recordindex="0"] .container-icon {
 }
 
 .x-tree-elbow-img, .x-tree-icon {
-    margin-top: -5px;
+    margin-top: 3px;
     margin-bottom: -4px;
     margin-left: -5px;
+    margin-right: 15px;
 }
 
 .x-tree-checkbox {

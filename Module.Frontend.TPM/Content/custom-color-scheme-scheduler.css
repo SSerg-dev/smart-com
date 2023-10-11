@@ -50,7 +50,7 @@
     }
 
 .ClientPromoTypeFilter .client-checkboxgroup {
-    top: 75px !important
+    /*top: 75px !important*/
 }
 
     .ClientPromoTypeFilter .checkboxgroup .x-form-checkboxgroup-body {

@@ -37,23 +37,33 @@
                     fillerText: 'Search Client',
                     height: 30,
                 }, {
-                    xtype: 'checkboxfield',
-                    padding: 0,
-                    itemId: 'selectAllClients',
-                    cls: 'selectAllFilters selectAllClients',
-                    boxLabel: l10n.ns('tpm', 'ClientPromoTypeFilter').value('SelectAll'),
-                    height: 30,
-                }, {
                     // Место  для скролла
                     padding: '5 0 5 10',
                     autoScroll: true,
                     overflowY: 'scroll',
                     cls: 'scrollpanel client-checkboxgroup checkboxgroup',
-
-                    xtype: 'checkboxgroup',
-                    itemId: 'clientsCheckboxes',
-                    columns: 1,
-                    vertical: true,
+                    xtype: 'basetreegridview',
+                    itemId: 'calendarclientview',
+                    dispalyField: 'text',
+                    height: 320,
+                    store: {
+                        type: 'simpletreestore',
+                        model: 'App.model.tpm.baseclient.BaseClientView',
+                        storeId: 'clientbaseviewstore',
+                        //root: { expanded: true, text: "", "children": [] }
+                        //Autoload не работает для treestore
+                        //root: {
+                        //    text: 'en',
+                        //    id: 1,
+                        //    expanded: true,
+                        //    checked: false,
+                        //    leaf: false,
+                        //    objectId: 1,
+                        //}
+                    },
+                    //columns: [
+                    //    { xtype: 'treecolumn', header: 'Text', dataIndex: 'text', flex: 1 }
+                    //]
                 }]
             }]
         }, {

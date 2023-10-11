@@ -3716,6 +3716,10 @@
     <Compile Include="Migrations\202310051212049_Empty05102023.designer.cs">
       <DependentUpon>202310051212049_Empty05102023.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310061328438_Add_AP_GetCalendarClients.cs" />
+    <Compile Include="Migrations\202310061328438_Add_AP_GetCalendarClients.designer.cs">
+      <DependentUpon>202310061328438_Add_AP_GetCalendarClients.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6971,6 +6975,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310051212049_Empty05102023.resx">
       <DependentUpon>202310051212049_Empty05102023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310061328438_Add_AP_GetCalendarClients.resx">
+      <DependentUpon>202310061328438_Add_AP_GetCalendarClients.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -12,9 +12,8 @@
                     afterrender: this.typesCheckboxesAfterrender,
                     change: this.typesFilterChange
                 },
-                'clientPromoTypeFilter #clientsCheckboxes': {
-                    afterrender: this.clientsCheckboxesAfterrender,
-                    change: this.clientFilterChange
+                'clientPromoTypeFilter #calendarclientview': {
+                    //checkchange: this.clientFilterChange
                 },
                 'clientPromoTypeFilter #competitorsCheckboxes': {
                     afterrender: this.competitorsCheckboxesAfterrender,
@@ -24,10 +23,7 @@
                     click: this.onApplyButtonClick
                 },
                 'clientPromoTypeFilter #clientsFieldset': {
-                    resize: this.onClientsFieldsetResize
-                },
-                'clientPromoTypeFilter #selectAllClients': {
-                    change: this.onSelectAllClientsChange
+                    //resize: this.onClientsFieldsetResize
                 },
                 'clientPromoTypeFilter #textFilterByClients': {
                     change: this.onTextFilterByClientsChange
@@ -43,24 +39,39 @@
     },
 
     onApplyButtonClick: function (button) {
-        var clientsCheckboxes = button.up('clientPromoTypeFilter').down('#clientsCheckboxes');
+        var calendarclientview = button.up('clientPromoTypeFilter').down('#calendarclientview');
         var typesCheckboxes = button.up('clientPromoTypeFilter').down('#typesCheckboxes');
         var competitorsCheckboxes = button.up('clientPromoTypeFilter').down('#competitorsCheckboxes');
         $('#scrollScheduler').data('jsp').scrollToY(0);
-        if (clientsCheckboxes.getChecked().length == 0 || typesCheckboxes.getChecked().length == 0) {
+
+        if (calendarclientview.getChecked().length == 0 || typesCheckboxes.getChecked().length == 0) {
             Ext.MessageBox.alert(l10n.ns('tpm', 'ClientPromoTypeFilter').value('Error'), l10n.ns('tpm', 'ClientPromoTypeFilter').value('SelectOneFilter'));
         } else {
             var clientsFilterConfig = Ext.ComponentQuery.query('#nascheduler')[0].clientsFilterConfig;
             var typesCheckboxesConfig = Ext.ComponentQuery.query('#nascheduler')[0].typesCheckboxesConfig;
             var competitorsCheckboxesConfig = Ext.ComponentQuery.query('#nascheduler')[0].competitorsCheckboxesConfig;
+            var clientNode = calendarclientview.getStore().getRootNode().getChildAt(0);
+            var clientArray = [];
+            clientNode.cascadeBy(function (node) {
+                if (node.isLeaf()) {
+                    clientArray.push({ id: node.data.objectId, name: node.data.text, checked: node.data.checked });
+                };
+            });
             var needReloadStore = false;
-            this.filterClients(clientsCheckboxes, typesCheckboxes, competitorsCheckboxes);
-            for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
-                if (clientsFilterConfig[i].checked != clientsCheckboxes.items.items[i].value) {
-                    clientsFilterConfig[i].checked = clientsCheckboxes.items.items[i].value;
-                    needReloadStore = true;
+            this.filterClients(clientArray, typesCheckboxes, competitorsCheckboxes);
+            clientArray.forEach(function (client) {
+                var clientconfig = clientsFilterConfig.find(function (clientcfg) {
+                    if (clientcfg.name == client.name) {
+                        return clientcfg;
+                    }                    
+                });
+                if (clientconfig) {
+                    if (client.checked != clientconfig.checked) {
+                        clientconfig.checked = client.checked;
+                        needReloadStore = true;
+                    }
                 }
-            };
+            });
             for (i = 0; i < competitorsCheckboxes.items.items.length; i++) {
                 if (competitorsCheckboxesConfig[i].checked != competitorsCheckboxes.items.items[i].value) {
                     competitorsCheckboxesConfig[i].checked = competitorsCheckboxes.items.items[i].value;
@@ -73,13 +84,15 @@
                     needReloadStore = true;
                 }
             };
+            var checkedClientArray = clientArray.filter(function (client) {
+                return client.checked == true;
+            });
             if (needReloadStore) {
-                this.saveSettings(clientsCheckboxes, typesCheckboxes, competitorsCheckboxes);
+                this.saveSettings(checkedClientArray, typesCheckboxes, competitorsCheckboxes);
                 this.getController('tpm.schedule.SchedulerViewController').onResourceStoreLoad();
             };
             var text = l10n.ns('tpm', 'Schedule').value('Filtered');
-            if (button.up('clientPromoTypeFilter').down('#selectAllClients').checked
-                && button.up('clientPromoTypeFilter').down('#selectAllTypes').checked
+            if (button.up('clientPromoTypeFilter').down('#selectAllTypes').checked
                 && button.up('clientPromoTypeFilter').down('#selectAllCompetitors').checked
                 && button.up('clientPromoTypeFilter').down('#textFilterByClients').hasCls('fillerText')) {
                 text = l10n.ns('tpm', 'Schedule').value('AllSelected');
@@ -140,88 +153,57 @@
         //        me.setLoading(false);
         //        App.Notify.pushError('Ошибка при выполнении операции');
         //    });
-
+        var me = this;
+        var clientbaseviewstore = Ext.data.StoreManager.lookup('clientbaseviewstore');
+        clientbaseviewstore.on('load', function (store, node, records, success) {
+            var settingClients = me.getController('tpm.schedule.SchedulerViewController').clientSettings[0];
+            var clientIds = settingClients.map(function (item) { return item.id; });
+            var clientNode = store.getRootNode().getChildAt(0);
+            clientNode.cascadeBy(function (node) {
+                if (node.isLeaf()) {
+                    if (clientIds.includes(node.data.objectId)) {
+                        node.set('checked', true)
+                    };
+                };
+            });
+        })
+        //clientbaseviewstore.load();
+        var dddfff = clientbaseviewstore.getRootNode();
     },
-
     //CLIENTS FILTER
 
-    clientsCheckboxesAfterrender: function (clientsCheckboxes) {
-        var clientsFilterConfig = Ext.ComponentQuery.query('#nascheduler')[0].clientsFilterConfig;
-        clientsCheckboxes.add(clientsFilterConfig);
-
-        var selectAllClients = clientsCheckboxes.up('clientPromoTypeFilter').down('#selectAllClients');
-        if (clientsCheckboxes.getChecked().length === clientsFilterConfig.length) {
-            selectAllClients.setValue(true);
-        } else {
-            selectAllClients.setValue(false);
-        };
-    },
-
-    clientFilterChange: function (me) {
-        if (!me.up('clientPromoTypeFilter').selectAllClientsClicked) {
-            var selectAllClients = me.up('clientPromoTypeFilter').down('#selectAllClients');
-            if (this.isPartialyChecked(me) === 1) {
-                if (selectAllClients.value != true) {
-                    selectAllClients.setValue(true);
-                }
-            } else {
-                if (selectAllClients.value != false) {
-                    selectAllClients.setValue(false);
-                }
-            }
-        }
-    },
-
     onClientsFieldsetResize: function (me, width, height) {
-        me.down('#clientsCheckboxes').setHeight(height - 100);
-    },
-
-    onSelectAllClientsChange: function (me, newValue) {
-        var check = false;
-        if (newValue) {
-            check = true
-        };
-        var clientsCheckboxes = me.up('clientPromoTypeFilter').down('#clientsCheckboxes');
-        if (this.isPartialyChecked(clientsCheckboxes) != 0 || check === true) {
-            me.up('clientPromoTypeFilter').selectAllClientsClicked = true;
-            for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
-                if (!clientsCheckboxes.items.items[i].isHidden()) {
-                    clientsCheckboxes.items.items[i].setValue(check);
-                } else {
-                    //Если была фильтрация по клиенту - убираем галочку
-                    clientsCheckboxes.items.items[i].setValue(false);
-                };
-            };
-            me.up('clientPromoTypeFilter').selectAllClientsClicked = false;
-        }
+        me.down('#clientbaseviewstore').setHeight(height - 100);
     },
 
     onTextFilterByClientsChange: function (me, newValue) {
-        var clientsCheckboxes = me.up('clientPromoTypeFilter').down('#clientsCheckboxes');
+        var calendarclientview = me.up('clientPromoTypeFilter').down('#calendarclientview');
+        var clientStore = calendarclientview.getStore();
+        var clientNode = clientStore.getRootNode().getChildAt(0);
         if (newValue && newValue != me.fillerText) {
-            for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
-                if (!clientsCheckboxes.items.items[i].boxLabel.toLowerCase().startsWith(newValue.toLowerCase())) {
-                    clientsCheckboxes.items.items[i].hide();
-                } else {
-                    clientsCheckboxes.items.items[i].show();
-                }
-            };
+            var first = true;
+            clientNode.cascadeBy(function (node) {
+                if (node.isLeaf()) {
+                    if (node.data.text.toLowerCase().includes(newValue.toLowerCase())) {
+                        if (first) {
+                            calendarclientview.getSelectionModel().select([node]);
+                            first = false;
+                        }
+                    };
+                };
+            });
             me.focus(false);
         } else {
-            for (i = 0; i < clientsCheckboxes.items.items.length; i++) {
-                clientsCheckboxes.items.items[i].show();
-            };
+            if (clientNode) {
+                calendarclientview.getSelectionModel().select([clientNode]);
+            }
         };
-        var selectAllClients = me.up('clientPromoTypeFilter').down('#selectAllClients');
-        if (selectAllClients.value === true) {
-            this.onSelectAllClientsChange(selectAllClients, selectAllClients.value);
-        }
     },
 
     //private
-    filterClients: function (clientsCheckboxes, typesCheckboxes, competitorsCheckboxes) {
+    filterClients: function (clientArray, typesCheckboxes, competitorsCheckboxes) {
         var me = this;
-        var value = me.getFixedValue(clientsCheckboxes);
+        var value = me.getFixedValue(clientArray);
         var store = Ext.StoreMgr.lookup('MyResources');
         var typevalue = me.getTypeValuesForFilter(typesCheckboxes);
         var competitorvalue = me.getCompetitorValuesForFilter(competitorsCheckboxes);
@@ -271,8 +253,10 @@
         return filter;
     },
 
-    getFixedValue: function (clientsCheckboxes) {
-        var checkedArray = clientsCheckboxes.getChecked();
+    getFixedValue: function (clientArray) {
+        var checkedArray = clientArray.filter(function (client) {
+            return client.checked == true;
+        });
         var value = [];
         checkedArray.forEach(function (el) {
             value.push(el.name);
@@ -458,9 +442,9 @@
                 filterFn: filterFn
             })
             store.removeFilter('TypeFilter');
-           // store.remoteFilter = true;
+            // store.remoteFilter = true;
             store.addFilter(filter, false);
-           // store.remoteFilter = false;
+            // store.remoteFilter = false;
             this.getController('tpm.schedule.SchedulerViewController').eventStoreLoading(store);
         } else {
             store.removeFilter('TypeFilter');
@@ -551,9 +535,9 @@
             }
         }
     },
-    saveSettings: function (clientsCheckboxes, typesCheckboxes, competitorsCheckboxes) {
+    saveSettings: function (checkedClientArray, typesCheckboxes, competitorsCheckboxes) {
         var me = this;
-        var clientData = me.getClientsData(clientsCheckboxes);
+        var clientData = me.getClientsData(checkedClientArray);
         var typeData = me.getTypeData(typesCheckboxes);
         var competitorData = me.getCompetitorData(competitorsCheckboxes);
         var jsonarray = [];
@@ -578,11 +562,10 @@
             }
         })
     },
-    getClientsData: function (clientsCheckboxes) {
-        var checkedArray = clientsCheckboxes.getChecked();
+    getClientsData: function (checkedClientArray) {
         var value = [];
-        checkedArray.forEach(function (el) {
-            value.push({ id: el.objectId, name: el.name });
+        checkedClientArray.forEach(function (el) {
+            value.push({ id: el.id, name: el.name });
         });
         return value;
     },
@@ -590,7 +573,7 @@
         var checkedArray = typesCheckboxes.getChecked();
         var value = [];
         checkedArray.forEach(function (el) {
-                value.push(el.name);
+            value.push(el.name);
         });
         return value;
     },

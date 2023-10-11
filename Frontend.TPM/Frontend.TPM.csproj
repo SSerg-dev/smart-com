@@ -747,6 +747,7 @@
     <Content Include="Client\app\view\core\base\BaseReviewWindow.js" />
     <Content Include="Client\app\view\core\common\AssociatedDirectoryView.js" />
     <Content Include="Client\app\view\core\common\BaseTreeGrid.js" />
+    <Content Include="Client\app\view\core\common\BaseTreeGridView.js" />
     <Content Include="Client\app\view\core\common\BooleanCombobox.js" />
     <Content Include="Client\app\view\core\common\ColorField.js" />
     <Content Include="Client\app\view\core\common\CombinedDirectoryPanel.js" />

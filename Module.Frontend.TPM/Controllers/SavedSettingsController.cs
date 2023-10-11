@@ -4,8 +4,10 @@ using Frontend.Core.Controllers.Base;
 using Module.Frontend.TPM.FunctionalHelpers.ClientTreeFunction;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.Utils;
 using Newtonsoft.Json;
 using Persist;
+using Persist.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Thinktecture.IdentityModel.Authorization.WebApi;
+using Utility;
 
 namespace Module.Frontend.TPM.Controllers
 {
@@ -68,6 +71,13 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 else
                 {
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    string role = authorizationManager.GetCurrentRoleName();
+                    IList<Constraint> constraints = user.Id.HasValue ? context.Constraints
+                        .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                        .ToList() : new List<Constraint>();
+                    IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+
                     ArrayList promotypes = new ArrayList { "Regular Promo", "InOut Promo", "Loyalty Promo", "Dynamic Promo", "Competitor Promo" };
                     ArrayList competitors = new ArrayList { };
                     DateTime dt = DateTime.Now;
@@ -75,13 +85,42 @@ namespace Module.Frontend.TPM.Controllers
                     ClientTree clientTreeNA = clients.FirstOrDefault(g => g.ObjectId == 5000002);
 
                     List<ClientResult> clientArray = ClientTreeHelper.GetChildrenBaseClient(clientTreeNA, clients);
-                    ArrayList data = new ArrayList { clientArray, promotypes, competitors };
-                    string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
-                    return Content(HttpStatusCode.OK, dataStr);
-                    // [[{"id":5000004,"name":"Magnit MM"},{"id":5000005,"name":"Magnit HM"}],["Regular Promo","InOut Promo","Loyalty Promo","Dynamic Promo","Competitor Promo"],[]]
+                    if (constraints.Count == 0)
+                    {
+                        
+                        ArrayList data = new ArrayList { clientArray, promotypes, competitors };
+                        string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+                        return Content(HttpStatusCode.OK, dataStr);
+                        // [[{"id":5000004,"name":"Magnit MM"},{"id":5000005,"name":"Magnit HM"}],["Regular Promo","InOut Promo","Loyalty Promo","Dynamic Promo","Competitor Promo"],[]]
+                    }
+                    else
+                    {
+                        IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
+                        List<int> clientsIds = ApplyFilter(hierarchy, filters);
+                        clientArray = context.Set<ClientTree>().Where(g => clientsIds.Contains(g.ObjectId) && g.EndDate == null && g.IsBaseClient).Select(g => new ClientResult { Id = g.ObjectId, Name = g.Name }).ToList();
+                        ArrayList data = new ArrayList { clientArray, promotypes, competitors };
+                        string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+                        return Content(HttpStatusCode.OK, dataStr);
+                    }
+
                 }
             }
         }
-        
+        public static List<int> ApplyFilter(IQueryable<ClientTreeHierarchyView> hierarchy, IDictionary<string, IEnumerable<string>> filter = null)
+        {
+            List<string> clientFilter = FilterHelper.GetFilter(filter, ModuleFilterName.Client).ToList();
+            List<int> filteredId = new List<int>();
+            if (clientFilter.Any())
+            {
+                List<ClientTreeHierarchyView> hierarchyList = getFilteredHierarchy(hierarchy, clientFilter).ToList();
+                filteredId = hierarchyList.Select(n => n.Id).ToList();
+                
+            }
+            return filteredId;
+        }
+        private static IQueryable<ClientTreeHierarchyView> getFilteredHierarchy(IQueryable<ClientTreeHierarchyView> hierarchy, IEnumerable<string> clientFilter)
+        {
+            return hierarchy.Where(h => clientFilter.Contains(h.Id.ToString()) || clientFilter.Any(c => h.Hierarchy.Contains(c)));
+        }
     }
 }

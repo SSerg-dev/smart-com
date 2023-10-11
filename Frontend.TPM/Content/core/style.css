@@ -1164,3 +1164,27 @@ a.x-monthpicker-item-inner:hover,
     padding: 5px 4px !important;
     text-overflow: ellipsis
 }
+
+.base-client-tree {
+}
+/*
+    .hidden-icon .x-tree-node-collapsed .x-tree-node-icon {
+        background-image: none !important;
+        background-repeat: no-repeat;
+    }
+
+    .hidden-icon .x-tree-node-expanded .x-tree-node-icon {
+        background-image: none !important;
+        background-repeat: no-repeat;
+    }
+
+    .hidden-icon .x-tree-node-leaf .x-tree-node-icon {
+        background-image: none;
+    }*/
+
+    .base-client-tree .x-tree-icon-leaf {
+        display: none !important;
+    }
+    .base-client-tree .x-tree-icon-parent {
+        display: none !important;
+    }

@@ -357,6 +357,7 @@
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
     <Content Include="Client\model\tpm\assortmentmatrix2plu\AssortmentMatrix2Plu.js" />
+    <Content Include="Client\model\tpm\baseclient\BaseClientView.js" />
     <Content Include="Client\model\tpm\clientkpidata\ClientKPIDataRS.js" />
     <Content Include="Client\model\tpm\clienttreebrandtech\DeletedClientTreeBrandTech.js" />
     <Content Include="Client\model\tpm\competitorpromo\CompetitorPromo.js" />
@@ -491,6 +492,7 @@
     <Content Include="Client\view\tpm\coefficientsi2so\CustomMarsPeriodField.js" />
     <Compile Include="Controllers\ActualCOGSsController.cs" />
     <Compile Include="Controllers\ActualCOGSTnsController.cs" />
+    <Compile Include="Controllers\BaseClientViewsController.cs" />
     <Compile Include="Controllers\BTLPromoesController.cs" />
     <Compile Include="Controllers\BTLsController.cs" />
     <Compile Include="Controllers\ClientDashboardRSViewsController.cs" />
