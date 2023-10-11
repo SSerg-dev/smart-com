@@ -587,24 +587,19 @@ namespace Module.Frontend.TPM.Controllers
 
                         ISheet sheet6 = twb.GetSheet("Subrange");
                         var brandtechsQuery = Context.Set<BrandTech>().Where(x => !x.Disabled);
-                        var productTree = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
-                        var productTree1 = Context.Set<ProductTree>().Where(x => !x.EndDate.HasValue);
-                        var pp = productTree.Join(productTree1,
-                            p => p.parentId,
-                            p1 => p1.ObjectId,
-                            (p, p1) => new { Subrange = p.Name, TechnologyId1 = p1.TechnologyId });
-
-                        var bp = pp.Join(brandtechsQuery,
-                            p =>  p.TechnologyId1,
-                            b => b.TechnologyId,
-                            (p, b) => new {BrandTechName = b.Name, p.Subrange}
-                        ).Distinct().OrderBy(x => x.BrandTechName).ToList();
+                        var exitingSubRange = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
+                        var existingTechnology = Context.Set<ProductTree>().Where(x => x.Type == "Technology" && !x.EndDate.HasValue);
+                        var existingNameTechnology = existingTechnology.Join(exitingSubRange,
+                            p => p.ObjectId,
+                            p1 => p1.parentId,
+                            (p, p1) => new { Technology = p.Name, Subrange = p1.Name });                                
+                       
                         i = 0;
-                        foreach (var item in bp)
+                        foreach (var item in existingNameTechnology)
                         {
                             IRow subrangeRow = sheet6.CreateRow(i);
                             ICell hcell = subrangeRow.CreateCell(0);
-                            hcell.SetCellValue(item.BrandTechName);
+                            hcell.SetCellValue(item.Technology);
                             hcell = subrangeRow.CreateCell(1);
                             hcell.SetCellValue(item.Subrange);
                             i++;
@@ -719,24 +714,19 @@ namespace Module.Frontend.TPM.Controllers
 
                         ISheet sheet6 = twb.GetSheet("Subrange");
                         var brandtechsQuery = Context.Set<BrandTech>().Where(x => !x.Disabled);
-                        var productTree = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
-                        var productTree1 = Context.Set<ProductTree>().Where(x => !x.EndDate.HasValue);
-                        var pp = productTree.Join(productTree1,
-                            p => p.parentId,
-                            p1 => p1.ObjectId,
-                            (p, p1) => new { Subrange = p.Name, TechnologyId1 = p1.TechnologyId });
+                        var exitingSubRange = Context.Set<ProductTree>().Where(x => x.Type == "Subrange" && !x.EndDate.HasValue);
+                        var existingTechnology = Context.Set<ProductTree>().Where(x => x.Type == "Technology" && !x.EndDate.HasValue);
+                        var existingNameTechnology = existingTechnology.Join(exitingSubRange,
+                             p => p.ObjectId,
+                             p1 => p1.parentId,
+                             (p, p1) => new { Technology = p.Name, Subrange = p1.Name });
 
-                        var bp = pp.Join(brandtechsQuery,
-                            p =>  p.TechnologyId1,
-                            b => b.TechnologyId,
-                            (p, b) => new {BrandTechName = b.Name, p.Subrange}
-                            ).Distinct().OrderBy(x => x.BrandTechName).ToList();
                         i = 0;
-                        foreach (var item in bp)
+                        foreach (var item in existingNameTechnology)
                         {
                             IRow subrangeRow = sheet6.CreateRow(i);
                             ICell hcell = subrangeRow.CreateCell(0);
-                            hcell.SetCellValue(item.BrandTechName);
+                            hcell.SetCellValue(item.Technology);
                             hcell = subrangeRow.CreateCell(1);
                             hcell.SetCellValue(item.Subrange);
                             i++;
