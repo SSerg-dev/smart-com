@@ -599,11 +599,11 @@ print(promoWithChangedProductDF.collect())
 
 unlinkedPromoProductDF = notInOutCalcPlanPromoProductDF\
   .where(notInOutCalcPlanPromoProductDF.Disabled == True)\
-  .where(col('TPMmode').isin(*calcTPMmodes))
+  .where(col('TPMmode').isin(*calcTPMmodes) | col('TPMmode').isNull())
 
 notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
   .where(notInOutCalcPlanPromoProductDF.Disabled == False)\
-  .where(col('TPMmode').isin(*calcTPMmodes))\
+  .where(col('TPMmode').isin(*calcTPMmodes) | col('TPMmode').isNull())\
   .drop('Number', 'ResultFilteredProductId', 'ResultFilteredZREP', 'pId')
 
 inOutCalcPlanPromoProductDF = inOutCalcPlanPromoProductDF.withColumn('Action', lit(None))
