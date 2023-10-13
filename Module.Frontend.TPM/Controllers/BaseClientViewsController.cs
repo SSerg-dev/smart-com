@@ -145,7 +145,8 @@ namespace Module.Frontend.TPM.Controllers
                             }
                         }
                     }
-                    if (clientlist1.Count > 0)
+                    var isconstraints = clientTreesConstraint.Any(x => children1.Select(g => g.ObjectId).ToList().Contains(x));
+                    if (clientlist1.Count > 0 && isconstraints)
                     {
                         ChildExpand child = new ChildExpand
                         {
@@ -158,19 +159,19 @@ namespace Module.Frontend.TPM.Controllers
                         };
                         children.Children.Add(child);
                     }
-                    else
-                    {
-                        ChildLeaf child = new ChildLeaf
-                        {
-                            Id = client.Id,
-                            ObjectId = client.ObjectId,
-                            Checked = false,
-                            Text = client.Name,
-                            Leaf = true,
-                            Children = children1.OfType<ChildAbstract>().ToList()
-                        };
-                        children.Children.Add(child);
-                    }
+                    //else
+                    //{
+                    //    ChildLeaf child = new ChildLeaf
+                    //    {
+                    //        Id = client.Id,
+                    //        ObjectId = client.ObjectId,
+                    //        Checked = false,
+                    //        Text = client.Name,
+                    //        Leaf = true,
+                    //        Children = children1.OfType<ChildAbstract>().ToList()
+                    //    };
+                    //    children.Children.Add(child);
+                    //}
 
                 }
                 //root.Children.Add(childroot);
