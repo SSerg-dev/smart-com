@@ -76,7 +76,6 @@ Ext.define('App.view.core.security.ModesView', {
     refreshList: function (store) {
         var records = store.getRange();
         var buttons = records.map(function (rec) {
-            if (rec.get('alias') != 'RA')
                 return {
                     xtype: 'button',
                     itemId: rec.get('id'),
