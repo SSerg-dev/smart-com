@@ -139,11 +139,11 @@ def generate_entity_list_rs(parameters:dict):
     return entities
 
 @task
-def copy_hdfs_to_sftp(sftp_path, hdfs_path):
-    tmp_path=f'/tmp/'
+def copy_hdfs_to_sftp(sftp_path, hdfs_path, tmp_path):
+    #tmp_path=f'/tmp/'
 
-    sftp_path=f'{sftp_path}/'
-    dst_path = f'{hdfs_path}'
+    #sftp_path=f'{sftp_path}/'
+    #dst_path = f'{hdfs_path}'
     
     ssh_hook=SSHHook(SSH_CONNECTION_NAME)
     hdfs_hook = WebHDFSHook(HDFS_CONNECTION_NAME)
@@ -154,17 +154,20 @@ def copy_hdfs_to_sftp(sftp_path, hdfs_path):
     files=glob.glob(f'{tmp_path}/*.csv')
     #files = [f for f in files if os.path.isfile(f)]
     for src_file_path in files:
+      dst_sftp_path = os.path.join(sftp_path, os.path.basename(src_file_path))
+      print(dst_sftp_path)
       print(src_file_path)
-    
+      print(sftp_path)
+
       with ssh_hook.get_conn() as ssh_client:
        sftp_client = ssh_client.open_sftp()
-       sftp_client.put(src_file_path,sftp_path)
+       sftp_client.put(src_file_path,dst_sftp_path)
     
     return True
 
 with DAG(
     dag_id='jupiter_ml_calendar_copy',
-    schedule_interval=None,
+    schedule_interval='*/20 * * * *',
     start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
     catchup=False,
     tags=TAGS,
@@ -194,8 +197,8 @@ with DAG(
                                       ).expand(bash_command=copy_rs_script,
                                               )
 
-    move_sftp_ra = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RA", f"{parameters['DstDir']}/RA")
-    move_sftp_rs = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RS", f"{parameters['DstDir']}/Rolling")
+    move_sftp_ra = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RA", f"{parameters['DstDir']}/RA", f"/tmp/RA")
+    move_sftp_rs = copy_hdfs_to_sftp(f"{parameters['MLPath']}/RS", f"{parameters['DstDir']}/Rolling", f"/tmp/RS")
 
     remove_ra_entities = BashOperator.partial(task_id="remove_entity_ra",
                                        do_xcom_push=True,
@@ -208,6 +211,7 @@ with DAG(
                                               )
 
     #parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script >> copy_ra_entities >> copy_rs_entities >> remove_ra_entities >> remove_rs_entities
-    parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script
-    remove_rs_script >> move_sftp_ra >> remove_ra_entities
-    remove_rs_script >> move_sftp_rs >> remove_rs_entities
+    parameters >> [entities_ra >> remove_ra_script >> copy_ra_entities >> move_sftp_ra >> remove_ra_entities, entities_rs >> remove_rs_script >> copy_rs_entities >> move_sftp_rs >> remove_rs_entities]
+    #parameters >> entities_ra >> entities_rs >> remove_ra_script >> remove_rs_script
+    #remove_rs_script >> move_sftp_ra >> remove_ra_entities
+    #remove_ra_script >> move_sftp_rs >> remove_rs_entities
