@@ -257,7 +257,7 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
             List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
                 .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
-            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount, g.PromoType, g.Subrange }).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate,g.DispatchStartDate,g.DispatchEndDate, g.Discount, g.PromoType, g.Subrange }).ToList();
             var promos2 = promos1.Distinct().ToList();
             if (promos2.Count != sourceRecords.Count)
             {
@@ -265,7 +265,7 @@ namespace Module.Host.TPM.Actions
                     .SelectMany(grp => grp.Skip(1)).FirstOrDefault();
                 errors.Add("Duplicate present in client:" + duplicate.Client + ", startdate:" + duplicate.PromoStartDate + " enddate:" + duplicate.PromoEndDate + " promotype:" + duplicate.PromoType);
                 HasErrors = true;
-                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate), string.Join(", ", errors)));
+                errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == duplicate.Client && g.PromoStartDate == duplicate.PromoStartDate && g.PromoEndDate == duplicate.PromoEndDate  && g.DispatchStartDate==duplicate.DispatchStartDate && g.DispatchEndDate==duplicate.DispatchEndDate), string.Join(", ", errors)));
             }
         }
 
@@ -277,20 +277,20 @@ namespace Module.Host.TPM.Actions
             List<Guid> promoStatuses = context.Set<PromoStatus>().Where(g => !g.Disabled && g.SystemName != "Cancelled").Select(g => g.Id).ToList();
             var promosPresent = context.Set<Promo>()
                 .Where(g => promoStatuses.Contains((Guid)g.PromoStatusId) && !g.Disabled && g.TPMmode == TPMmode.Current)
-                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList })
+                .Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList,g.DispatchesStart,g.DispatchesEnd })
                 .ToList();
             List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList }).ToList();
+            var promoImports = promos.Select(g => new { g.Number, g.StartDate, g.EndDate, g.ClientTreeId, g.BrandTechId, g.MarsMechanicDiscount, g.PromoTypesId, g.ProductSubrangesList, g.DispatchesStart,g.DispatchesEnd }).ToList();
             foreach (var promoImport in promoImports)
             {
                 var present = promosPresent
-                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount && g.PromoTypesId == promoImport.PromoTypesId && g.ProductSubrangesList == promoImport.ProductSubrangesList);
+                    .FirstOrDefault(g => g.StartDate == promoImport.StartDate && g.EndDate == promoImport.EndDate && g.DispatchesStart==promoImport.DispatchesStart && g.DispatchesEnd==promoImport.DispatchesEnd  && g.ClientTreeId == promoImport.ClientTreeId && g.BrandTechId == promoImport.BrandTechId && g.MarsMechanicDiscount == promoImport.MarsMechanicDiscount && g.PromoTypesId == promoImport.PromoTypesId && g.ProductSubrangesList == promoImport.ProductSubrangesList);
                 if (present != null)
                 {
-                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount && g.Subrange == promoImport.ProductSubrangesList);
+                    var dublicate = sourceTemplateRecords.FirstOrDefault(g => g.PromoStartDate == promoImport.StartDate && g.PromoEndDate == promoImport.EndDate && g.DispatchStartDate == promoImport.DispatchesStart && g.DispatchEndDate == promoImport.DispatchesEnd && g.ClientHierarchyCode == promoImport.ClientTreeId && g.BrandTech == brandTeches.FirstOrDefault(j => j.Id == promoImport.BrandTechId).Name && g.Discount == promoImport.MarsMechanicDiscount && g.Subrange == promoImport.ProductSubrangesList);
                     errors.Add("Duplicate present in client:" + dublicate.Client + ", startdate:" + dublicate.PromoStartDate + " enddate:" + dublicate.PromoEndDate);
                     HasErrors = true;
-                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == dublicate.Client && g.PromoStartDate == dublicate.PromoStartDate && g.PromoEndDate == dublicate.PromoEndDate), string.Join(", ", errors)));
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceTemplateRecords.FirstOrDefault(g => g.Client == dublicate.Client && g.PromoStartDate == dublicate.PromoStartDate && g.PromoEndDate == dublicate.PromoEndDate && g.DispatchStartDate==dublicate.DispatchStartDate && g.DispatchEndDate==dublicate.DispatchEndDate), string.Join(", ", errors)));
                 }
             }
 
@@ -434,6 +434,8 @@ namespace Module.Host.TPM.Actions
                     ProductSubrangesList = import.Subrange,
                     StartDate = import.PromoStartDate,
                     EndDate = import.PromoEndDate,
+                    DispatchesStart = import.DispatchStartDate,
+                    DispatchesEnd = import.DispatchEndDate,
                     TechnologyId = techId,
                     InOutProductIds = "",
                     InOut = import.PromoType == "InOut",
@@ -455,6 +457,13 @@ namespace Module.Host.TPM.Actions
                 if (TimeHelper.TodayStartDay() > promo.StartDate)
                 {
                     errors.Add("Start date earlier than the current day " + import.PromoStartDate);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
+                    break;
+                }
+                if (promo.DispatchesStart > promo.DispatchesEnd)
+                {
+                    errors.Add("Dispatches End Date before Dispatches start Date " + import.DispatchStartDate);
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
                     break;

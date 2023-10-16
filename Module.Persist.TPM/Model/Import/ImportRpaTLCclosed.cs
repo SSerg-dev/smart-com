@@ -35,7 +35,7 @@ namespace Module.Persist.TPM.Model.Import
         public string MechanicComment { get; set; }
         [ImportCSVColumn(ColumnNumber = 8)]
         [Display(Name = "Discount %")]
-        public int Discount { get; set; }
+        public double Discount { get; set; }
         [ImportCSVColumn(ColumnNumber = 9)]
         [Display(Name = "Promo Start Date")]
         public DateTimeOffset PromoStartDate
@@ -368,6 +368,20 @@ namespace Module.Persist.TPM.Model.Import
         [ImportCSVColumn(ColumnNumber = 116)]
         [Display(Name = "Sum In Invoice")]
         public double? SumInInvoice { get; set; }
+        [ImportCSVColumn(ColumnNumber = 117)]
+        [Display(Name = "Promo Start Date")]
+        public DateTimeOffset DispatchStartDate
+        {
+            get { return startDate; }
+            set { startDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
 
+        [ImportCSVColumn(ColumnNumber = 118)]
+        [Display(Name = "Promo End Date")]
+        public DateTimeOffset DispatchEndDate
+        {
+            get { return endDate; }
+            set { endDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+        }
     }
 }
