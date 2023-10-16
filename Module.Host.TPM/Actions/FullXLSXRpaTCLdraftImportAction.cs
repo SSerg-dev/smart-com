@@ -98,6 +98,13 @@ namespace Module.Host.TPM.Actions
             }
             catch (Exception e)
             {
+                //string rpaStatus = "Error";
+                //using (DatabaseContext context = new DatabaseContext())
+                //{
+                //    RPA rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                //    rpa.Status = rpaStatus;
+                //    context.SaveChanges();
+                //}
                 HasErrors = true;
                 string message = string.Format("FullImportAction failed: {0}", e.ToString());
                 logger.Error(message);
@@ -257,7 +264,7 @@ namespace Module.Host.TPM.Actions
             errors = new List<string>();
             List<ImportRpaTLCdraft> sourceTemplateRecords = sourceRecords
                 .Select(sr => (sr as ImportRpaTLCdraft)).ToList();
-            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate, g.Discount, g.PromoType, g.Subrange }).ToList();
+            var promos1 = sourceTemplateRecords.Select(g => new { g.Client, g.BrandTech, g.PromoStartDate, g.PromoEndDate,g.DispatchStartDate,g.DispatchEndDate, g.Discount, g.PromoType, g.Subrange }).ToList();
             var promos2 = promos1.Distinct().ToList();
             if (promos2.Count != sourceRecords.Count)
             {
@@ -366,7 +373,7 @@ namespace Module.Host.TPM.Actions
                     break;
                 }
                 var user = users.FirstOrDefault(x => !String.IsNullOrEmpty(x.Email) && x.Email.Equals(import.Email, StringComparison.CurrentCultureIgnoreCase));
-                if (user == null) 
+                if (user == null)
                 {
                     errors.Add($"User '{import.Email}' not found");
                     HasErrors = true;

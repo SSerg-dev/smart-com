@@ -99,6 +99,14 @@ namespace Module.Host.TPM.Actions
             }
             catch (Exception e)
             {
+                var rpaStatus = "Error";
+                using (var context = new DatabaseContext())
+                {
+                    var rpa = context.Set<RPA>().FirstOrDefault(x => x.Id == RPAId);
+                    rpa.Status = rpaStatus;
+                    context.SaveChanges();
+                }
+
                 HasErrors = true;
                 string message = String.Format("FullImportAction failed: {0}", e.ToString());
                 logger.Error(message);
