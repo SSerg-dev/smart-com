@@ -34,7 +34,7 @@ namespace Module.Host.TPM.Actions.Notifications
 
             EmailGetterArgument eventArgument = new EmailGetterArgument();
 
-            bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", true);
+            bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", false);
             if (isAllowNotificationsSending)
             {
                 notifier.Notify(name, parameters, eventArgument);
@@ -55,7 +55,7 @@ namespace Module.Host.TPM.Actions.Notifications
 
             EmailGetterArgument eventArgument = new EmailGetterArgument();
 
-            bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", true);
+            bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", false);
             if (isAllowNotificationsSending)
             {
                 notifier.NotifyByEmails(emails, name, parameters, eventArgument);
