@@ -62,6 +62,31 @@ namespace Module.Persist.TPM.ElasticSearch
             }
         }
 
+        public async Task WriteAsync(IEnumerable<OperationDescriptor<TKey>> changes, UserInfo user, RoleInfo role)
+        {
+            var elastic = DocumentStoreHolder.GetConnection(elasticUri, elasticIndexName);
+            foreach (var batch in changes.Where(x => x != null).Partition(REQUESTS_PER_SESSION))
+            {
+                BulkDescriptor descriptor = new BulkDescriptor();
+
+                foreach (var item in batch)
+                {
+                    var typeName = GetElasticTypeName(item.EntityType);
+                    var historyEntity = CreateHistoryEntity(item, user, role);
+
+                    if (historyEntity != null)
+                    {
+                        descriptor.Index<object>(record => record
+                            .Index(elasticIndexName)
+                            .Type(typeName)
+                            .Document(historyEntity));
+                    }
+                }
+
+                await elastic.BulkAsync(descriptor);
+            }
+        }
+
         private Dictionary<string, string> CreateHistoryEntity
             (OperationDescriptor<TKey> opDescr, UserInfo user, RoleInfo role)
         {

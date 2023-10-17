@@ -398,7 +398,7 @@ namespace Module.Host.TPM.Actions.Notifications
                 mailMessage.Attachments.Add(CreateAttachmet(attachmentFileName));
                 mailMessage.To.Add(recipient);
 
-                bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", true);
+                bool isAllowNotificationsSending = AppSettingsManager.GetSetting<bool>("AllowNotificationsSending", false);
                 if (isAllowNotificationsSending)
                 {
                     smtpClient.Send(mailMessage);
