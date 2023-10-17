@@ -140,7 +140,7 @@
 
     isDraggable: function (rec) {
         var res = false;
-        if ((['Started', 'Finished', 'Planned'].includes(rec.get('PromoStatusSystemName')) && TpmModes.isRsRaMode(modeId))) {
+        if ((['Started', 'Finished', 'Planned'].includes(rec.get('PromoStatusSystemName')) && TpmModes.isRsRaMode())) {
             return false;
         }
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
@@ -349,6 +349,7 @@
                         budgetYear = dragContext.startDate.getFullYear();
                         record.set('BudgetYear', budgetYear);
                     }
+                    record.set('TPMmode', TpmModes.getSelectedMode().alias);
                     record.save({
                         callback: function (record, operation, success) {
                             if (success) {
@@ -1417,6 +1418,7 @@
                             budgetYear = resizeContext.start.getFullYear();
                             record.set('BudgetYear', budgetYear);
                         }
+                        record.set('TPMmode', TpmModes.getSelectedMode().alias);
                         record.save({
                             callback: function (record, operation, success) {
                                 if (success) {
