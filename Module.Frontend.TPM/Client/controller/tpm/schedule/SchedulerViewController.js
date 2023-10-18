@@ -1846,7 +1846,7 @@
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
         // RSmode
-        promoStore.getProxy().extraParams.TPMmode = TpmModes.getSelectedMode().alias;
+        promoStore.getProxy().extraParams.TPMmode = eventRecord.data.TPMmode;
         panel.up('schedulecontainer').setLoading(true);
         promoStore.load({
             id: eventRecord.data.Id,
