@@ -252,7 +252,7 @@
                 ISNULL(pr.ActualInStoreShelfPrice, 0) AS Price, 
                 ISNULL(pr.ActualInStoreDiscount, 0) AS Discount,
                 [DefaultSchemaSetting].[GetPromoSubrangesById](pr.Id) as Subranges,
-				CASE WHEN TPMmode < 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pr.TPMmode ORDER BY pr.TPMmode DESC) ELSE 0 END AS row_number
+				ROW_NUMBER() OVER(PARTITION BY pr.Number ORDER BY TPMmode DESC) AS row_number
 
             FROM
                 [DefaultSchemaSetting].Promo AS pr LEFT OUTER JOIN
@@ -262,7 +262,8 @@
                 [DefaultSchemaSetting].Mechanic AS mmc ON pr.MarsMechanicId = mmc.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].MechanicType AS mmt ON pr.MarsMechanicTypeId = mmt.Id LEFT OUTER JOIN
                 [DefaultSchemaSetting].Event AS ev ON pr.EventId = ev.Id LEFT OUTER JOIN
-                [DefaultSchemaSetting].BrandTech AS bt ON pr.BrandTechId = bt.Id) query
+                [DefaultSchemaSetting].BrandTech AS bt ON pr.BrandTechId = bt.Id
+				WHERE TPMmode < 3) query
 			WHERE 
 				row_number = 1
 
@@ -1618,7 +1619,7 @@
 				pr.IsInExchange AS IsInExchange,
 				pr.DispatchesStart AS PromoDispatchStartDate,
 				pr.BudgetYear AS PromoBudgetYear,
-				CASE WHEN ppc.TPMmode <> 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) ELSE 0 END AS row_number
+				ROW_NUMBER() OVER(PARTITION BY pr.Number, pp.ZREP ORDER BY ppc.TPMmode DESC) AS row_number
 
 			FROM 
 				[DefaultSchemaSetting].PromoProductsCorrection AS ppc INNER JOIN
@@ -1629,7 +1630,7 @@
                 [DefaultSchemaSetting].Mechanic AS mech ON pr.MarsMechanicId = mech.Id INNER JOIN
                 [DefaultSchemaSetting].BrandTech AS btech ON pr.BrandTechId = btech.Id INNER JOIN
                 [DefaultSchemaSetting].ClientTree AS cltr ON pr.ClientTreeKeyId = cltr.Id
-		
+			WHERE pr.TPMmode < 3
 		GO
 		";
 
@@ -2181,13 +2182,14 @@
 				pr.PlanPromoBranding,
 				pr.PlanPromoCostProduction,
 				pr.PlanPromoNSV,
+				pr.TPMmode,
 				CS.SystemName,
-				CASE WHEN TPMmode < 3 THEN ROW_NUMBER() OVER(PARTITION BY pr.Number, pr.TPMmode ORDER BY TPMmode DESC) ELSE 0 END AS row_number
+				ROW_NUMBER() OVER(PARTITION BY pr.Number, pr.TPMmode ORDER BY TPMmode DESC) AS row_number
 
 				FROM [DefaultSchemaSetting].[Promo] AS pr (NOLOCK)
 				LEFT JOIN [DefaultSchemaSetting].[PromoStatus] AS CS (NOLOCK) ON CS.Id = pr.PromoStatusId
 
-				WHERE pr.Disabled = 0 AND CS.SystemName IN ('Started', 'Approved', 'Closed', 'Finished', 'Planned')
+				WHERE pr.Disabled = 0 AND CS.SystemName IN ('Started', 'Approved', 'Closed', 'Finished', 'Planned') AND pr.TPMmode < 3
 				) query
 				WHERE row_number = 1),
 
