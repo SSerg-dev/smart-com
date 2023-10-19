@@ -55,6 +55,21 @@ namespace Module.Persist.TPM.MongoDB
             }
         }
 
+        public async Task WriteChangesAsync(OperationDescriptor<TKey> changes, UserInfo user, RoleInfo role)
+        {
+            var historicalModel = HistoricalEntityFactory.GetHistoryEntity(changes);
+            if (historicalModel?.GetType() != null)
+            {
+                var collection = DocumentStoreHolder.GetCollection(historicalModel.GetType().Name.ToLower());
+                var historyEntity = CreateHistoryEntity(changes, historicalModel, user, role);
+                var historyObject = GetObject(historyEntity, historicalModel.GetType());
+                if (historyEntity != null)
+                {
+                    await collection.InsertOneAsync(historyObject);
+                }
+            }
+        }
+
         public void WriteChangesFromImport(Tuple<IEntity<TKey>, IEntity<TKey>> changes, UserInfo user, RoleInfo role, OperationType operation)
         {
             var historicalModel = HistoricalEntityFactory.GetHistoryEntity(changes?.Item2);

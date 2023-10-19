@@ -7,6 +7,7 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UserInfo = Core.Security.Models.UserInfo;
 
 namespace Module.Persist.TPM.MongoDB
@@ -26,6 +27,17 @@ namespace Module.Persist.TPM.MongoDB
                 foreach (var item in batch)
                 {
                     MongoHelper.WriteChanges(item, user, role);
+                }
+            }
+        }
+
+        public async Task WriteAsync(IEnumerable<OperationDescriptor<TKey>> changes, UserInfo user, RoleInfo role)
+        {
+            foreach (var batch in changes.Where(x => x != null).Partition(1000))
+            {
+                foreach (var item in batch)
+                {
+                    await MongoHelper.WriteChangesAsync(item, user, role);
                 }
             }
         }

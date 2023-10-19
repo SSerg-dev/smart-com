@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-08-23_manual__2023-08-23T08%3A44%3A28.142273%2B00%3A00_", '
- '"ProcessDate": "2023-08-23", "Schema": "Jupiter", "HandlerId": '
- '"47fa610c-7508-480b-bbaa-715c56da7360"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-09-23_scheduled__2023-09-22T21%3A20%3A00%2B00%3A00_", '
+ '"ProcessDate": "2023-09-23", "Schema": "Jupiter", "HandlerId": '
+ '"c2a3a949-4ae1-481e-ac2e-28d368e2c6be"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -180,6 +180,7 @@ promoFilterDF = promoDF\
           ,promoDF.ClientTreeKeyId
           ,promoDF.ClientTreeId
           ,promoDF.InOut
+          ,promoDF.CalculateML
           ,date_add(to_date(promoDF.DispatchesStart, 'yyyy-MM-dd'), 1).alias('DispatchesStart')
           ,date_add(to_date(promoDF.StartDate, 'yyyy-MM-dd'), 1).alias('StartDate')
           ,date_add(to_date(promoDF.EndDate, 'yyyy-MM-dd'), 1).alias('EndDate')
@@ -727,6 +728,13 @@ promoByActualTiCiDF = actualCogsTiRecalculationPromoDF\
 
 promoByActualTiCiDF.show()
 
+#####Get promo numbers filtered by scenario incidents
+
+promoScenarioCiDF = promoFilterDF\
+  .where(col('CalculateML') == 'true')\
+  .select(promoFilterDF.Id, promoFilterDF.Number)\
+  .dropDuplicates()
+
 #####*Get promo numbers filtered by product changes incidents*
 
 promoByProductCiDF = promoFilterDF\
@@ -888,6 +896,11 @@ promoNumbersByActualTiCiDF = promoNumbersByActualTiCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
+promoNumbersByScenarioCiDF = promoScenarioCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Scenario incidents: '))
+promoNumbersByScenarioCiDF = promoNumbersByScenarioCiDF\
+  .groupBy('Title')\
+  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
+
 promoNumbersByProductCiDF = promoByProductCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Product incidents: '))
 promoNumbersByProductCiDF = promoNumbersByProductCiDF\
   .groupBy('Title')\
@@ -910,6 +923,7 @@ promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
   .union(promoNumbersByActualCogsCiDF)\
   .union(promoNumbersByActualCogsTnCiDF)\
   .union(promoNumbersByActualTiCiDF)\
+  .union(promoNumbersByScenarioCiDF)\
   .union(promoNumbersByProductCiDF)
 
 logMessageDF = promoNumbersFilteredByCiDF\
@@ -935,6 +949,7 @@ promoByCiDF = promoByAssortmentMatrixCiDF\
   .union(promoByActualCogsCiDF)\
   .union(promoByActualCogsTnCiDF)\
   .union(promoByActualTiCiDF)\
+  .union(promoScenarioCiDF)\
   .union(promoByProductCiDF)
 
 increasePromoByCiDF = promoByIncreaseBaselineCiDF\

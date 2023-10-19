@@ -1533,7 +1533,7 @@ tr[data-recordindex="0"] .container-icon {
     margin-right: 0px;
 }
 
-.x-tree-elbow-img, .x-tree-icon {
+.checkboxgroup .x-tree-elbow-img, .x-tree-icon {
     margin-top: 3px;
     margin-bottom: -4px;
     margin-left: -5px;

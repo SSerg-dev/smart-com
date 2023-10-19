@@ -140,13 +140,14 @@
 
     isDraggable: function (rec) {
         var res = false;
-        if ((['Started', 'Finished', 'Planned'].includes(rec.get('PromoStatusSystemName')) && TpmModes.isRsRaMode(modeId))) {
-            return false;
-        }
+
         if (App.UserInfo.getCurrentRole()['SystemName'] == 'SupportAdministrator' && rec.get('TypeName') != 'Competitor') {
             res = true;
         } else {
             res = rec.get('PromoStatusSystemName') && (['Draft', 'DraftPublished', 'OnApproval', 'Approved', 'Planned'].includes(rec.get('PromoStatusSystemName')) && rec.get('TypeName') != 'Competitor');
+        }
+        if ((['Started', 'Finished', 'Planned'].includes(rec.get('PromoStatusSystemName')) && TpmModes.isRsRaMode())) {
+            res = false;
         }
         if (rec.get('TypeName') != 'Competitor' && rec.get('MasterPromoId') != null) {
             res = false;
@@ -173,14 +174,16 @@
             RSmodeController.getRSPeriod(function (returnValue) {
                 StartDateRS = new Date(returnValue.StartDate);
                 EndDateRS = new Date(returnValue.EndDate);
-                BudgetYearRS = new Date(returnValue.BudgetYear);
+                BudgetYearRS = returnValue.BudgetYear;
             });
-
-            if ((calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) && record.get('BudgetYear') == BudgetYearRS) {
-                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
-                dragContext.finalize(false);
-                return false;
+            if (record.get('BudgetYear') != BudgetYearRS) {
+                if (!(calcDispatchesStart > StartDateRS && calcDispatchesStart < EndDateRS)) {
+                                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                                dragContext.finalize(false);
+                                return false;
+                }
             }
+            
         }
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
@@ -349,6 +352,7 @@
                         budgetYear = dragContext.startDate.getFullYear();
                         record.set('BudgetYear', budgetYear);
                     }
+                    record.set('TPMmode', TpmModes.getSelectedMode().alias);
                     record.save({
                         callback: function (record, operation, success) {
                             if (success) {
@@ -938,10 +942,9 @@
             RSmodeController.getRSPeriod(function (returnValue) {
                 StartDateRS = new Date(returnValue.StartDate);
                 EndDateRS = new Date(returnValue.EndDate);
-                BudgetYearRS = new Date(returnValue.BudgetYear);
+                BudgetYearRS = returnValue.BudgetYear;
             });
-
-            if ((calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) && createContext.resourceRecord.get('BudgetYear') == BudgetYearRS) {
+            if (!(calcDispatchesStart > StartDateRS && calcDispatchesStart < EndDateRS)) {
                 return me.finalizeContextWithError(createContext, l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
             }
         }
@@ -1231,17 +1234,19 @@
             RSmodeController.getRSPeriod(function (returnValue) {
                 StartDateRS = new Date(returnValue.StartDate);
                 EndDateRS = new Date(returnValue.EndDate);
-                BudgetYearRS = new Date(returnValue.BudgetYear);
+                BudgetYearRS = returnValue.BudgetYear;
             });
-
-            if ((calcDispatchesStart < StartDateRS || EndDateRS < calcDispatchesStart) && resizeContext.eventRecord.get('BudgetYear') == BudgetYearRS) {
-                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
-                resizeContext.finalize(false);
-                if (calendarGrid.length > 0) {
-                    calendarGrid[0].resourceStore.load();
+            if (resizeContext.eventRecord.get('BudgetYear') != BudgetYearRS) {
+                if (!(calcDispatchesStart > StartDateRS && calcDispatchesStart < EndDateRS)) {
+                    App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                    resizeContext.finalize(false);
+                    if (calendarGrid.length > 0) {
+                        calendarGrid[0].resourceStore.load();
+                    }
+                    return false;
                 }
-                return false;
             }
+
         }
 
         var system = Ext.ComponentQuery.query('system')[0];
@@ -1417,6 +1422,7 @@
                             budgetYear = resizeContext.start.getFullYear();
                             record.set('BudgetYear', budgetYear);
                         }
+                        record.set('TPMmode', TpmModes.getSelectedMode().alias);
                         record.save({
                             callback: function (record, operation, success) {
                                 if (success) {
@@ -1875,7 +1881,7 @@
         this.singleClickTask.cancel();
         var promoStore = this.getPromoStore();
         // RSmode
-        promoStore.getProxy().extraParams.TPMmode = TpmModes.getSelectedMode().alias;
+        promoStore.getProxy().extraParams.TPMmode = eventRecord.data.TPMmode;
         panel.up('schedulecontainer').setLoading(true);
         promoStore.load({
             id: eventRecord.data.Id,
@@ -2237,7 +2243,7 @@
             RSmodeController.getRSPeriod(function (returnValue) {
                 StartDateRS = new Date(returnValue.StartDate);
                 EndDateRS = new Date(returnValue.EndDate);
-                BudgetYearRS = new Date(returnValue.BudgetYear);
+                BudgetYearRS = returnValue.BudgetYear;
             });
         }
 
@@ -2248,7 +2254,10 @@
             callback: function (records, operation, success) {
                 if (StartDateRS) {
                     records = records.map(function (record) {
-                        if ((record.data.DispatchesStart < StartDateRS || EndDateRS < record.data.DispatchesStart) && BudgetYearRS == record.data.BudgetYear) {
+                        if (BudgetYearRS != record.data.BudgetYear) {
+                            record.set('IsOnHold', true);
+                        }
+                        if (!(record.data.DispatchesStart > StartDateRS && record.data.DispatchesStart < EndDateRS)) {
                             record.set('IsOnHold', true);
                         }
                         if (record.data.MasterPromoId) {
