@@ -54,7 +54,7 @@ Ext.define('App.controller.core.rpa.RPA', {
             calculatingInfoWindow.on({
                 beforeclose: function() {
                     if ($.connection.tasksLogHub)
-                        requestHub($.connection.tasksLogHub.server.unsubscribeLog);
+                        requestHub($.connection.tasksLogHub.server.unsubscribeLog, [selected.data.HandlerId]);
                 }
             });
 
