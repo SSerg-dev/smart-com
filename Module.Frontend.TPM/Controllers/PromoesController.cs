@@ -99,6 +99,12 @@ namespace Module.Frontend.TPM.Controllers
         [EnableQuery(MaxNodeCount = int.MaxValue, MaxExpansionDepth = 3)]
         public IQueryable<Promo> GetPromoes(bool canChangeStateOnly = false, TPMmode tPMmode = TPMmode.Current)
         {
+            string filter = HttpContext.Current.Request.QueryString["$filter"];
+            bool oneRecord = filter == null ? false : filter.Contains("Id eq guid");
+            if (oneRecord)
+            {
+                return Context.Set<Promo>();
+            }
             return GetConstraintedQuery(canChangeStateOnly, tPMmode);
         }
 
