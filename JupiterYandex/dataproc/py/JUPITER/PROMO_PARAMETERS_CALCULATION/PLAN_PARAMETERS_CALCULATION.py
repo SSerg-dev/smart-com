@@ -635,7 +635,7 @@ tempDF = calcPlanPromoProductDF\
 cols = notInOutCalcPlanPromoProductDF.columns
 
 notInOutCalcPlanPromoProductDF = notInOutCalcPlanPromoProductDF\
-  .join(tempDF, tempDF._promoIdCol == notInOutCalcPlanPromoProductDF.promoIdCol, 'left')\
+  .join(tempDF, tempDF._promoIdCol == notInOutCalcPlanPromoProductDF.PromoId, 'left')\
   .withColumn('promoIdCol', when(notInOutCalcPlanPromoProductDF.promoIdCol.isNull(),tempDF._promoIdCol)\
           .otherwise(notInOutCalcPlanPromoProductDF.promoIdCol))\
   .withColumn('promoBrandTechId', when(notInOutCalcPlanPromoProductDF.promoBrandTechId.isNull(),tempDF._promoBrandTechId)\

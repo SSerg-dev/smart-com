@@ -84,7 +84,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
                calcPlanPromoProductDF['*']
               ,planParamsSharesDF.Share.cast(DecimalType(30,6)).alias('productShare')
              )
-
+             
     #product share logging
     logSharePromoProductDF = calcPlanPromoProductDF\
       .select(\
@@ -154,7 +154,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
              ,planPostPromoEffectDF.PlanPostPromoEffectW1
              ,planPostPromoEffectDF.PlanPostPromoEffectW2
              )
-
+             
     # set product baseline
     planParamsBaselineDF = planParamsBaselineDF\
       .join(datesDF, planParamsBaselineDF.baselineStartDate == datesDF.OriginalDate, 'inner')\
@@ -226,7 +226,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
               ,when(planParamsCorrectionDF.correctionPlanProductUpliftPercentCorrected.isNull(), calcPlanPromoProductDF.PlanProductUpliftPercent)\
                     .otherwise(planParamsCorrectionDF.correctionPlanProductUpliftPercentCorrected).cast(DecimalType(30,6)).alias('productUpliftPercent')
              )
-
+    
     calcPlanPromoProductDF = calcPlanPromoProductDF\
       .join(planParamsIncrementalDF, 
             [\
@@ -290,7 +290,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
 
     sumPlanProductParamsList = calcPlanPromoProductDF\
       .select(\
-               col('promoIdCol')
+               col('PromoId')
               ,col('PlanProductIncrementalLSV')
               ,col('PlanProductBaselineLSV')
               ,col('PlanProductBaselineVolume')
@@ -301,7 +301,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
               ,col('PlanProductPostPromoEffectVolumeW1')
               ,col('PlanProductPostPromoEffectVolumeW2')
              )\
-      .groupBy('promoIdCol')\
+      .groupBy('PromoId')\
       .agg(sum('PlanProductIncrementalLSV').alias('calcPlanPromoIncrementalLSV'),
            sum('PlanProductBaselineLSV').alias('calcPlanPromoBaselineLSV'),
            sum('PlanProductIncrementalVolume').alias('calcPlanProductIncrementalVolume'),
@@ -322,7 +322,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
       .drop('tempPlanPromoIncrementalLSV','tempPlanPromoBaselineLSV')
     
     sumPlanProductParamsList = sumPlanProductParamsList.select(\
-               col('promoIdCol')
+               col('PromoId')
               ,col('calcPlanPromoIncrementalLSV')
               ,col('calcPlanPromoBaselineLSV')
               ,col('calcPlanProductIncrementalVolume')
@@ -337,7 +337,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
     sumPlanProductParamsList = sumPlanProductParamsList.collect()
 
     planParSchema = StructType([
-      StructField("promoIdCol", StringType(), True),
+      StructField("PromoId", StringType(), True),
       StructField("calcPlanPromoIncrementalLSV", DecimalType(30,6), True),
       StructField("calcPlanPromoBaselineLSV", DecimalType(30,6), True),
       StructField("calcPlanProductIncrementalVolume", DecimalType(30,6), True),
@@ -352,7 +352,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsBaselineDF,calcPl
     planParDF = spark.createDataFrame(sumPlanProductParamsList, planParSchema)
 
     calcPlanPromoDF = calcPlanPromoDF\
-      .join(planParDF, planParDF.promoIdCol == calcPlanPromoDF.Id, 'inner')
+      .join(planParDF, planParDF.PromoId == calcPlanPromoDF.Id, 'inner')
 
     allCalcPlanPromoDF = allCalcPlanPromoDF\
       .join(calcPlanPromoDF, 'Id', 'left')\

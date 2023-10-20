@@ -119,6 +119,9 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualProductQtySO', (col('ActualProductLSV') / (col('Price') /col('UOM_PC2Case'))).cast(DecimalType(30,6)))\
       .withColumn('PCPrice', (col('Price') / col('UOM_PC2Case')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductBaselineVolume', (col('ActualProductBaselineLSV') / col('PCPrice') * col('PCVolume')).cast(DecimalType(30,6)))\
+      .withColumn('ActualProductPostPromoEffectLSVW1', ((col('PlanProductPostPromoEffectW1') / 100) * col('ActualProductBaselineLSV')).cast(DecimalType(30,6)))\
+      .withColumn('ActualProductPostPromoEffectLSVW2', ((col('PlanProductPostPromoEffectW2') / 100) * col('ActualProductBaselineLSV')).cast(DecimalType(30,6)))\
+      .withColumn('ActualProductPostPromoEffectLSV', (col('ActualProductPostPromoEffectLSVW1') + col('ActualProductPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectVolume', (col('ActualProductPostPromoEffectLSV') / col('PCPrice') * col('PCVolume')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductVolumeByCompensation', (col('ActualProductPCQty') * col('PCVolume')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductVolume', (col('ActualProductQtySO') * col('PCVolume')).cast(DecimalType(30,6)))
@@ -132,6 +135,8 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
                ,col('ActualProductBaselineVolume')
                ,col('ActualProductPostPromoEffectVolume')
                ,col('ActualProductVolumeByCompensation')
+               ,col('ActualProductPostPromoEffectLSVW1')
+               ,col('ActualProductPostPromoEffectLSVW2')
                ,col('ActualProductVolume')
              )\
       .groupBy('promoIdCol')\
@@ -139,6 +144,8 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
            sum('ActualProductBaselineVolume').cast(DecimalType(30,6)).alias('calcActualPromoBaselineVolume'),
            sum('ActualProductPostPromoEffectVolume').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectVolume'),
            sum('ActualProductVolumeByCompensation').cast(DecimalType(30,6)).alias('calcActualPromoVolumeByCompensation'),
+           sum('ActualProductPostPromoEffectLSVW1').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectLSVW1'),
+           sum('ActualProductPostPromoEffectLSVW2').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectLSVW2'),
            sum('ActualProductVolume').cast(DecimalType(30,6)).alias('calcActualPromoVolume'))\
       .collect()
 
@@ -148,6 +155,8 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       StructField("calcActualPromoBaselineVolume", DecimalType(30,6), True),
       StructField("calcActualPromoPostPromoEffectVolume", DecimalType(30,6), True),
       StructField("calcActualPromoVolumeByCompensation", DecimalType(30,6), True),
+      StructField("calcActualPromoPostPromoEffectLSVW1", DecimalType(30,6), True),
+      StructField("calcActualPromoPostPromoEffectLSVW2", DecimalType(30,6), True),
       StructField("calcActualPromoVolume", DecimalType(30,6), True)
     ])
 
@@ -159,11 +168,14 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('InOut') == False, col('calcActualPromoPostPromoEffectVolume')).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoVolumeByCompensation', when(col('InOut') == False, col('calcActualPromoVolumeByCompensation')).otherwise(0).cast(DecimalType(30,6)))\
+      .withColumn('ActualPromoPostPromoEffectLSVW1',  when(col('IsOnInvoice') == False, col('calcActualPromoPostPromoEffectLSVW1')).otherwise(col('ActualPromoPostPromoEffectLSV') * (col('PlanPromoPostPromoEffectLSVW1') / col('PlanPromoPostPromoEffectLSV'))).cast(DecimalType(30,6)))\
+      .withColumn('ActualPromoPostPromoEffectLSVW2',  when(col('IsOnInvoice') == False, col('calcActualPromoPostPromoEffectLSVW2')).otherwise(col('ActualPromoPostPromoEffectLSV') * (col('PlanPromoPostPromoEffectLSVW2') / col('PlanPromoPostPromoEffectLSV'))).cast(DecimalType(30,6)))\
+      .withColumn('ActualPromoPostPromoEffectLSV',  when(col('IsOnInvoice') == False, col('ActualPromoPostPromoEffectLSVW1') + col('ActualPromoPostPromoEffectLSVW2')).otherwise(col('ActualPromoLSVSO') - col('ActualPromoLSVSI')).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoVolume',  when(col('IsOnInvoice') == False, col('calcActualPromoVolume')).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoVolume',  when(col('InOut') == True, col('calcActualPromoVolume')).otherwise(col('ActualPromoVolume')).cast(DecimalType(30,6)))
 
     calcActualPromoDF = calcActualPromoDF\
-      .select('Id', 'ActualPromoLSVByCompensation', 'ActualPromoLSVSI', 'calcActualPromoBaselineVolume', 'ActualPromoPostPromoEffectVolume', 'ActualPromoVolumeByCompensation', 'ActualPromoVolume')
+      .select('Id', 'ActualPromoLSVByCompensation', 'ActualPromoLSVSI', 'calcActualPromoBaselineVolume', 'ActualPromoPostPromoEffectVolume', 'ActualPromoVolumeByCompensation', 'ActualPromoPostPromoEffectLSVW1', 'ActualPromoPostPromoEffectLSVW2', 'ActualPromoPostPromoEffectLSV', 'ActualPromoVolume')
 
     allCalcActualPromoDF = allCalcActualPromoDF\
       .join(calcActualPromoDF, 'Id', 'left')\
@@ -174,6 +186,9 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
               ,calcActualPromoDF.calcActualPromoBaselineVolume.alias('calcActualPromoBaselineVolume')
               ,calcActualPromoDF.ActualPromoPostPromoEffectVolume.alias('calcActualPromoPostPromoEffectVolume')
               ,calcActualPromoDF.ActualPromoVolumeByCompensation.alias('calcActualPromoVolumeByCompensation')
+              ,calcActualPromoDF.ActualPromoPostPromoEffectLSVW1.alias('calcActualPromoPostPromoEffectLSVW1')
+              ,calcActualPromoDF.ActualPromoPostPromoEffectLSVW2.alias('calcActualPromoPostPromoEffectLSVW2')
+              ,calcActualPromoDF.ActualPromoPostPromoEffectLSV.alias('calcActualPromoPostPromoEffectLSV')
               ,calcActualPromoDF.ActualPromoVolume.alias('calcActualPromoVolume')
              )\
       .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation').isNull(), col('ActualPromoLSVByCompensation'))\
@@ -182,6 +197,9 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualPromoBaselineVolume', when(col('calcActualPromoBaselineVolume').isNull(), col('ActualPromoBaselineVolume')).otherwise(col('calcActualPromoBaselineVolume')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('calcActualPromoPostPromoEffectVolume').isNull(), col('ActualPromoPostPromoEffectVolume')).otherwise(col('calcActualPromoPostPromoEffectVolume')))\
       .withColumn('ActualPromoVolumeByCompensation', when(col('calcActualPromoVolumeByCompensation').isNull(), col('ActualPromoVolumeByCompensation')).otherwise(col('calcActualPromoVolumeByCompensation')))\
+      .withColumn('ActualPromoPostPromoEffectLSVW1', when(col('calcActualPromoPostPromoEffectLSVW1').isNull(), col('ActualPromoPostPromoEffectLSVW1')).otherwise(col('calcActualPromoPostPromoEffectLSVW1')))\
+      .withColumn('ActualPromoPostPromoEffectLSVW2', when(col('calcActualPromoPostPromoEffectLSVW2').isNull(), col('ActualPromoPostPromoEffectLSVW2')).otherwise(col('calcActualPromoPostPromoEffectLSVW2')))\
+      .withColumn('ActualPromoPostPromoEffectLSV', when(col('calcActualPromoPostPromoEffectLSV').isNull(), col('ActualPromoPostPromoEffectLSV')).otherwise(col('calcActualPromoPostPromoEffectLSV')))\
       .withColumn('ActualPromoVolume', when(col('calcActualPromoVolume').isNull(), col('ActualPromoVolume')).otherwise(col('calcActualPromoVolume')))\
       .drop('calcActualPromoLSVByCompensation','calcActualPromoLSVSI','calcActualPromoBaselineVolume','calcActualPromoPostPromoEffectVolume','calcActualPromoVolumeByCompensation','calcActualPromoVolume')
 
