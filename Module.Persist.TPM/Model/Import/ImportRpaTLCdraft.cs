@@ -9,6 +9,8 @@ namespace Module.Persist.TPM.Model.Import
     {
         private DateTimeOffset startDate;
         private DateTimeOffset endDate;
+        private DateTimeOffset? dispatchStartDate;
+        private DateTimeOffset? dispatchEndDate;
 
         [ImportCSVColumn(ColumnNumber = 0)]
         [Display(Name = "Promo Type")]
@@ -64,20 +66,40 @@ namespace Module.Persist.TPM.Model.Import
 
         [ImportCSVColumn(ColumnNumber = 11)]
         [Display(Name = "Dispatch Start Date")]
-        public DateTimeOffset DispatchStartDate
+        public DateTimeOffset? DispatchStartDate
         {
-            get { return startDate; }
-            set { startDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
+            get { return dispatchStartDate; }
+            set
+            {
+                if
+                  (value == null)
+
+                { dispatchStartDate = null; }
+                else
+                {
+                    dispatchStartDate = ChangeTimeZoneUtil.ResetTimeZone(value);
+                }
+            }
         }
 
         [ImportCSVColumn(ColumnNumber = 12)]
         [Display(Name = "Dispatch End Date")]
-        public DateTimeOffset DispatchEndDate
+        public DateTimeOffset? DispatchEndDate
         {
-            get { return endDate; }
-            set { endDate = ChangeTimeZoneUtil.ResetTimeZone(value); }
-        }
+            get { return dispatchEndDate; }
+            set
+            {
+                if
+                  (value == null)
 
+                { dispatchEndDate = null; }
+                else
+                {
+                    dispatchEndDate = ChangeTimeZoneUtil.ResetTimeZone(value);
+                }
+            }
+        }
+        
         [ImportCSVColumn(ColumnNumber = 13)]
         [Display(Name = "Budget Year")]
         public int BudgetYear { get; set; }
