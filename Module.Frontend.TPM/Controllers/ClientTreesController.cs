@@ -7,6 +7,7 @@ using Frontend.Core.Extensions;
 using Looper.Core;
 using Looper.Parameters;
 using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
+using Module.Frontend.TPM.FunctionalHelpers.RA;
 using Module.Frontend.TPM.FunctionalHelpers.Scenario;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Enum;
@@ -37,7 +38,7 @@ namespace Module.Frontend.TPM.Controllers
     public class ClientTreesController : EFContextController
     {
         private readonly IAuthorizationManager authorizationManager;
-        private IQueryable<ClientTree> activeTree;     
+        private IQueryable<ClientTree> activeTree;
 
 
         public ClientTreesController(IAuthorizationManager authorizationManager)
@@ -609,17 +610,17 @@ namespace Module.Frontend.TPM.Controllers
                 return BadRequest(ModelState);
             }
 
-            activeTree = GetConstraintedQuery();           
+            activeTree = GetConstraintedQuery();
             ClientTree parentCheckCode = activeTree.FirstOrDefault(x => x.ObjectId == model.parentId);
-            
+
             //Проверяем на наличие DemandCode у Parents            
             if (model.DemandCode == "" && model.IsBaseClient == true)
             {
                 while (parentCheckCode != null)
                 {
                     if (parentCheckCode.DemandCode != null)
-                    { 
-                        break; 
+                    {
+                        break;
                     }
                     else if (parentCheckCode.DemandCode == null && parentCheckCode.Type == "root")
                     {
@@ -667,9 +668,9 @@ namespace Module.Frontend.TPM.Controllers
                 x.parentId == model.parentId &&
                 x.DemandCode == (!string.IsNullOrEmpty(model.DemandCode) ? model.DemandCode : null) &&
                 x.GHierarchyCode == model.GHierarchyCode &&
-                x.DMDGroup==model.DMDGroup &&
-                x.SFAClientCode==model.SFAClientCode).Count();
-           
+                x.DMDGroup == model.DMDGroup &&
+                x.SFAClientCode == model.SFAClientCode).Count();
+
             if (checkDouble > 0)
             {
                 string msg = "There is already such a record!";
@@ -710,18 +711,18 @@ namespace Module.Frontend.TPM.Controllers
                 }
             }
             try
-            {               
+            {
                 activeTree = GetConstraintedQuery();
-                var oldDemandCode = activeTree.Where(x => x.ObjectId == model.ObjectId && x.EndDate==null).Select(x=>x.DemandCode).First();
+                var oldDemandCode = activeTree.Where(x => x.ObjectId == model.ObjectId && x.EndDate == null).Select(x => x.DemandCode).First();
                 if (!string.IsNullOrEmpty(oldDemandCode) && model.DemandCode == null)
                 {
-                    var childsNull = activeTree.Where(x => x.parentId == model.ObjectId && x.DemandCode == null && x.IsBaseClient == true).Count();                    
-                
+                    var childsNull = activeTree.Where(x => x.parentId == model.ObjectId && x.DemandCode == null && x.IsBaseClient == true).Count();
+
                     if (childsNull > 0 && (model.Type == "Group chain" || model.Type == "Client" || model.Type == "Group"))
                     {
                         string msg = "This ClientTree not found DemandCode. The change is not possible!";
                         return Json(new { success = false, message = msg });
-                    }                   
+                    }
                 }
 
                 ClientTree currentRecord = activeTree.FirstOrDefault(x => x.ObjectId == model.ObjectId);
@@ -851,7 +852,7 @@ namespace Module.Frontend.TPM.Controllers
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                     await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
                     await ClientTreeBrandTechesController.DeleteInvalidClientBrandTech(key, Context);
-                } 
+                }
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
             }
             catch (Exception e)
@@ -1233,7 +1234,44 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Create run failure " + ex.Message }));
             }
         }
+        [ClaimsAuthorize]
+        public async Task<IHttpActionResult> CopyYearScenario(string ObjectId, bool CheckedDate)
+        {
+            int objId = int.Parse(ObjectId);
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id ?? Guid.Empty);
 
+            HandlerData handlerData = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ObjectId", objId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("CheckedDate", CheckedDate, handlerData, visible: false, throwIfNotExists: false);
+
+            string clientTreeName = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == objId && g.EndDate == null).Name;
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Copy prevous year for client {clientTreeName}",
+                Name = "Module.Host.TPM.Handlers.CopyPrevousYearHandler",
+                ExecutionPeriod = null,
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(handlerData);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+
+        }
         /// <summary>
         /// Создание задачи на добавление новых записей коэффицициентов
         /// </summary>

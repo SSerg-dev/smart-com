@@ -82,6 +82,11 @@
             glyph: 0xf193,
             text: l10n.ns('core', 'toptoolbar').value('scenarioButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('scenarioButtonText')
+        }, {
+            itemId: 'yearcopybutton',
+            glyph: 0xf18f,
+            text: l10n.ns('core', 'toptoolbar').value('yearcopyButtonText'),
+            tooltip: l10n.ns('core', 'toptoolbar').value('yearcopyButtonText')
         }, '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',

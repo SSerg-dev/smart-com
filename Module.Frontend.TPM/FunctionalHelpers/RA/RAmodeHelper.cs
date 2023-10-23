@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Module.Frontend.TPM.FunctionalHelpers.Scenario;
-using Module.Persist.TPM.Enum;
 using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
@@ -530,5 +529,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RA
             EditToPromoRA(Context, promosToDeleteRA, true, DateTimeOffset.Now);
             return numbers;
         }
+
     }
 }

@@ -23,6 +23,8 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             try
             {
+                List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+                List<Product> products = context.Set<Product>().Where(x => !x.Disabled).ToList();
                 string[] statusesForIncidents = { "OnApproval", "Approved", "Planned" };
                 var addedZREPs = new List<string>();
                 var deletedZREPs = new List<string>();
@@ -35,7 +37,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var createdProducts = changeProductIncidents.Where(p => p.IsCreate && !p.IsChecked).Select(i => i.Product.ZREP);
                 bool createIncidents = statusesForIncidents.Any(s => s.ToLower() == promo.PromoStatus.SystemName.ToLower());
 
-                var productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
+                var productTreeArray = productTrees.Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
                 // добавление пустого PromoPriceIncrease к Promo если его нет
                 if (promo.PromoPriceIncrease is null)
                 {
@@ -50,18 +52,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     promo.PromoPriceIncrease.PlanPromoUpliftPercent = promo.PlanPromoUpliftPercentPI;
                 }
                 // добавление записей в таблицу PromoProduct может производиться и при сохранении промо (статус Draft) и при расчете промо (статус !Draft)
-                List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promoId, context, out error, promoProductTrees) : GetProductFiltered(promoId, context, out error);
+                List<Product> filteredProducts = (duringTheSave.HasValue && duringTheSave.Value) ? GetProductFiltered(promo, context, productTrees, out error, promoProductTrees) : GetProductFiltered(promo, context, productTrees, out error);
                 List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);
                 List<Product> resultProductList = null;
 
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    resultProductList = GetResultProducts(filteredProducts, promo, context);
+                    resultProductList = GetResultProducts(filteredProducts, promo, products);
                     DisableOldIncrementalPromo(context, promo, resultProductList);
                 }
                 else
                 {
-                    resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+                    resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, products);
                     DisablePromoProductCorrections(context, promo, resultProductList);
                 }
 
@@ -144,7 +146,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                 PromoProductPriceIncrease promoProductPriceIncrease = promo.PromoPriceIncrease.PromoProductPriceIncreases.FirstOrDefault(g => g.PromoProductId == promoProduct.Id);
                                 promoProductPriceIncrease.Disabled = false;
                                 promoProductPriceIncrease.DeletedDate = null;
-                            }                            
+                            }
                         }
                         else if (promoProduct == null)
                         {
@@ -235,7 +237,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 if (duringTheSave.HasValue && !duringTheSave.Value)
                 {
                     context.SaveChanges();
-                    PlanPostPromoEffectSelection.SelectPPEforPromoProduct(context.Set<PromoProduct>().Where(g=>g.PromoId == promo.Id).ToList(), promo, context);
+                    PlanPostPromoEffectSelection.SelectPPEforPromoProduct(context.Set<PromoProduct>().Where(g => g.PromoId == promo.Id).ToList(), promo, context);
                 }
 
                 return needReturnToOnApprovalStatus;
@@ -307,14 +309,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="eanPCs">Список EAN PC из ассортиментной матрицы</param>
         /// <param name="promo">Промо, для которого подбираются продукты</param>
         /// <param name="context">Текущий контекст</param>
-        public static List<Product> GetResultProducts(List<Product> filteredProducts, List<string> eanPCs, Promo promo, DatabaseContext context, IQueryable<Product> productQuery = null)
+        public static List<Product> GetResultProducts(List<Product> filteredProducts, List<string> eanPCs, Promo promo, List<Product> products)
         {
             List<Product> resultProductList = new List<Product>();
 
             if (filteredProducts != null)
             {
                 resultProductList = filteredProducts.Where(x => eanPCs.Any(y => y == x.EAN_PC)).ToList();
-                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo, productQuery)).ToList();
+                resultProductList = resultProductList.Intersect(GetCheckedProducts(promo, products)).ToList();
             }
 
             return resultProductList;
@@ -327,7 +329,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="filteredProducts">Список продуктов, подходящих по фильтрам</param>
         /// <param name="promo">Промо, для которого подбираются продукты</param>
         /// <param name="context">Текущий контекст</param>
-        public static List<Product> GetResultProducts(List<Product> filteredProducts, Promo promo, DatabaseContext context, IQueryable<Product> productQuery = null)
+        public static List<Product> GetResultProducts(List<Product> filteredProducts, Promo promo, List<Product> products = null)
         {
             List<Product> resultProductList = new List<Product>();
 
@@ -335,7 +337,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
                 resultProductList = filteredProducts.Where(x => productIds.Any(y => y == x.Id)).ToList();
-                resultProductList = resultProductList.Intersect(GetCheckedProducts(context, promo, productQuery)).ToList();
+                resultProductList = resultProductList.Intersect(GetCheckedProducts(promo, products)).ToList();
             }
 
             return resultProductList;
@@ -624,7 +626,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="context">Контекст БД</param>
         /// <param name="error">Сообщения об ошибках</param>
         /// <returns></returns>
-        public static List<Product> GetProductFiltered(Guid promoId, DatabaseContext context, out string error, List<PromoProductTree> promoProductTrees = null)
+        public static List<Product> GetProductFiltered(Promo promo, DatabaseContext context, List<ProductTree> productTrees, out string error, List<PromoProductTree> promoProductTrees = null)
         {
             // также используется в промо для проверки, если нет продуктов, то сохранение/редактирование отменяется
             // отдельно т.к. заполнение может оказаться очень долгой операцией
@@ -634,17 +636,15 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             try
             {
-                Promo promo = context.Set<Promo>().Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
-
                 // из-за отказа от множества SaveChanges приходиться возить с собой список узлов в прод. дереве
                 ProductTree[] productTreeArray;
                 if (promoProductTrees == null)
                 {
-                    productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
+                    productTreeArray = context.Set<ProductTree>().Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promo.Id && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
                 }
                 else
                 {
-                    productTreeArray = context.Set<ProductTree>().Where(x => !x.EndDate.HasValue).ToArray().Where(n => promoProductTrees.Any(p => p.ProductTreeObjectId == n.ObjectId)).ToArray();
+                    productTreeArray = productTrees.Where(x => !x.EndDate.HasValue).ToArray().Where(n => promoProductTrees.Any(p => p.ProductTreeObjectId == n.ObjectId)).ToArray();
                 }
 
                 //products = context.Set<Product>()
@@ -691,11 +691,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             return filteredProductList;
         }
-        public static bool IsProductListEmpty(Promo promo, DatabaseContext context, out string error, List<PromoProductTree> promoProductTrees = null)
+        public static bool IsProductListEmpty(Promo promo, DatabaseContext context, List<ProductTree> productTrees, List<Product> products, out string error, List<PromoProductTree> promoProductTrees)
         {
-            List<Product> filteredProducts = GetProductFiltered(promo.Id, context, out error, promoProductTrees);
+            List<Product> filteredProducts = GetProductFiltered(promo, context, productTrees, out error, promoProductTrees);
             List<string> eanPCs = GetProductListFromAssortmentMatrix(promo, context);
-            List<Product> resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, context);
+            List<Product> resultProductList = GetResultProducts(filteredProducts, eanPCs, promo, products);
             bool isProductListEmpty = !(resultProductList.Count() > 0);
 
             return isProductListEmpty;
@@ -784,18 +784,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
-        public static List<Product> GetCheckedProducts(DatabaseContext context, Promo promo, IQueryable<Product> productQuery = null)
+        public static List<Product> GetCheckedProducts(Promo promo, List<Product> products)
         {
-            List<Product> products = new List<Product>();
-            if (productQuery == null)
-            {
-                productQuery = context.Set<Product>().Where(x => !x.Disabled);
-            }
-
             if (!string.IsNullOrEmpty(promo.InOutProductIds))
             {
                 var productIds = promo.InOutProductIds.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToList();
-                products = productQuery.Where(x => productIds.Contains(x.Id)).ToList();
+                products = products.Where(x => productIds.Contains(x.Id)).ToList();
             }
 
             return products;

@@ -112,9 +112,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         public static RollingScenario GetActiveScenario(int clientObjectId, DatabaseContext Context)
         {
             List<string> activeStatuses = new List<string> { RSstateNames.DRAFT, RSstateNames.ON_APPROVAL, RSstateNames.CALCULATING };
-            return Context.Set<RollingScenario>().Include(x => x.Promoes).SingleOrDefault(x => !x.Disabled
-                        && activeStatuses.Contains(x.RSstatus)
-                        && x.ClientTree.ObjectId == clientObjectId);
+            return Context.Set<RollingScenario>().Include(x => x.Promoes).Include(x => x.ClientTree).SingleOrDefault(x => !x.Disabled
+                          && activeStatuses.Contains(x.RSstatus)
+                          && x.ClientTree.ObjectId == clientObjectId);
         }
         public static ClientTree UploadSavedScenario(Guid savedScenarioId, DatabaseContext Context)
         {
@@ -141,6 +141,20 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                 .Include(g => g.RollingScenario.ClientTree)
                 .FirstOrDefault(f => f.Id == savedScenarioId);
             ClientTree clientTree = savedScenario.RollingScenario.ClientTree;
+            RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
+            if (rollingScenario != null)
+            {
+                return new StatusScenarioResult
+                {
+                    ClientName = clientTree.FullPathName,
+                    RSId = (int)rollingScenario.RSId
+                };
+            }
+            return null;
+        }
+        public static StatusScenarioResult GetStatusScenario(int objectId, DatabaseContext Context)
+        {
+            ClientTree clientTree = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == objectId && g.EndDate != null);
             RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
             if (rollingScenario != null)
             {
@@ -202,7 +216,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             if (RS.ScenarioType == ScenarioType.RA)
             {
                 string weeks = Context.Set<Setting>().Where(g => g.Name == "RA_END_APPROVE_WEEKS").FirstOrDefault().Value;
-                if (Int32.TryParse(weeks, out int intweeks))
+                if (int.TryParse(weeks, out int intweeks))
                 {
                     RS.ExpirationDate = expirationDate.AddDays(intweeks * 7);
                 }
@@ -359,7 +373,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         private static List<Promo> GetCurrentPeriodPromoes(RollingScenario RS, DatabaseContext Context, PromoHelper.ClientDispatchDays clientDispatchDays)
         {
             DateTimeOffset DispatchesStart;
-            List<string> needStatuses = "OnApproval,Approved,DraftPublished".Split(',').ToList();            
+            List<string> needStatuses = "OnApproval,Approved,DraftPublished".Split(',').ToList();
             List<Promo> promos = new List<Promo>();
 
             if (RS.ScenarioType == ScenarioType.RS)
@@ -395,6 +409,37 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                     .ToList();
             }
             return promos;
+        }
+        public static bool CheckCogs(int objectId, DatabaseContext Context)
+        {
+            ClientTree clientTree = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == objectId && g.EndDate == null);
+            int thisYear = TimeHelper.ThisBuggetYear();
+            int nextYear = TimeHelper.NextBuggetYear();
+            TradeInvestment TradeInvestment = Context.Set<TradeInvestment>().FirstOrDefault(x => !x.Disabled && x.Year == nextYear && x.ClientTreeId == clientTree.Id);
+            if (TradeInvestment == null)
+            {
+                return true;
+            }
+            List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
+            List<Guid> brandTechIds = Context.Set<Promo>()
+                .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == thisYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsGrowthAcceleration && !g.IsInExchange)
+                .Select(g => (Guid)g.BrandTechId)
+                .Distinct()
+                .ToList();
+            List<Guid> COGSs = Context.Set<COGS>().Where(x => !x.Disabled && x.Year == nextYear && x.ClientTreeId == clientTree.Id).Select(g => (Guid)g.BrandTechId).ToList();
+            List<Guid> PlanCOGSTns = Context.Set<PlanCOGSTn>().Where(x => !x.Disabled && x.Year == nextYear && x.ClientTreeId == clientTree.Id).Select(g => (Guid)g.BrandTechId).ToList();
+            foreach (var item in brandTechIds)
+            {
+                if (!COGSs.Contains(item))
+                {
+                    return true;
+                }
+                if (!PlanCOGSTns.Contains(item))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

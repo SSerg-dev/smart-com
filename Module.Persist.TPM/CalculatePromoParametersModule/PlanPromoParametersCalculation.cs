@@ -20,6 +20,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             try
             {
+                List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+
                 Promo promo = context.Set<Promo>()
                     .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases)
                     .Include(g => g.PromoProducts)
@@ -62,9 +65,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 string message = null;
                 bool error;
 
-                IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+                List<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList();
                 SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
-                double? TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                double? TIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, new List<BaseTradeInvestment>(TIQuery), clientTrees, brandTeches, out message, out error);
                 promo.PlanTIBasePercent = TIBasePercent;
                 if (message == null)
                 {
@@ -74,11 +77,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     {
                         promo.PromoPriceIncrease.PlanPromoIncrementalBaseTI = promo.PromoPriceIncrease.PlanPromoIncrementalLSV * TIBasePercent / 100;
                     }
-                    IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+                    List<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled).ToList();
                     SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
-                    double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
-                    IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
-                    double? COGSTnTonCost = PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
+                    double? COGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, new List<BaseCOGS>(cogsQuery), clientTrees, brandTeches, out message);
+                    List<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList();
+                    double? COGSTnTonCost = PromoUtils.GetCOGSTonCost(simplePromoCOGS, new List<BaseCOGSTn>(cogsTnQuery), clientTrees, brandTeches, out message);
                     promo.PlanCOGSPercent = COGSPercent;
                     promo.PlanCOGSTn = COGSTnTonCost;
                     if (message == null)

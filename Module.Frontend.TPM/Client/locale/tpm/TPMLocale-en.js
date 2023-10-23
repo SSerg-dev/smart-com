@@ -1721,6 +1721,16 @@
         'SelectOneFilter': 'Select client'
     },
 
+    'SelectClientYearCopy': {
+        'SelectClientYearCopy': 'Сору previous year',
+        'Clients': 'Clients',
+        'Error': 'Error',
+        'SelectOneFilter': 'Select client',
+        'SaveYearCopyTaskCreated': 'Copy year scenario task was successfully created.',
+        'SaveYearCopyTaskError': 'Error occurred during copy year scenario task creation.',
+        'SaveYearCopySelectError': 'Select client to copy year scenario.',
+    },
+
     'ConfirmUploadScenario': {
         'ConfirmUploadScenario': 'Upload scenario',
         'SavedScenario': 'Saved Scenario',

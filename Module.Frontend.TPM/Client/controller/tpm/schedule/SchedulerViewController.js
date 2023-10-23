@@ -26,10 +26,12 @@
 
                         var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
                         scenarioButton.setDisabled(true);
+                        var yearcopyButton = Ext.ComponentQuery.query('#yearcopybutton')[0];
 
                         const tpmMode = TpmModes.getSelectedModeId();
                         if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
                             scenarioButton.hide();
+                            yearcopyButton.hide();
                         }
                         this.isFirstLoad = true;;
                     }
@@ -101,6 +103,9 @@
                 },
                 'schedulecontainer #scenariobutton': {
                     click: this.onSaveScenarioButtonClick
+                },
+                'schedulecontainer #yearcopybutton': {
+                    click: this.onYearCopyButtonClick
                 },
 
                 'promodetailtabpanel #historybutton': {
@@ -2351,6 +2356,9 @@
 
     onSaveScenarioButtonClick: function (button) {
         Ext.widget('selectClientScenario').show();
+    },
+    onYearCopyButtonClick: function (button) {
+        Ext.widget('selectClientYearCopy').show();
     },
     loadSettings: function () {
         Ext.Ajax.request({

@@ -24,6 +24,8 @@ namespace Module.Host.TPM.Actions.Notifications
 			{
 				using (DatabaseContext context = new DatabaseContext())
 				{
+					List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+					List<Product> products = context.Set<Product>().Where(x => !x.Disabled).ToList();
 					ISettingsManager settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
 					string statusesSetting = settingsManager.GetSetting<string>("CHECK_PRODUCT_CHANGE_PROMO_STATUS_LIST", "OnApproval,Approved,Planned");
 					string templateFileName = settingsManager.GetSetting<string>("PROMO_PRODUCT_CHANGE_NOTIFICATION_TEMPLATE_FILE", "PromoProductChangeTemplate.txt");
@@ -106,17 +108,17 @@ namespace Module.Host.TPM.Actions.Notifications
 									}
 
 									string error = null;
-									List<Product> filteredProducts = PlanProductParametersCalculation.GetProductFiltered(promoId, context, out error);
+									List<Product> filteredProducts = PlanProductParametersCalculation.GetProductFiltered(promo, context, productTrees, out error);
 									List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(promo, context);
 									List<Product> resultProductList = null;
 
 									if (promo.InOut.HasValue && promo.InOut.Value)
 									{
-										resultProductList = PlanProductParametersCalculation.GetCheckedProducts(context, promo);
+										resultProductList = PlanProductParametersCalculation.GetCheckedProducts(promo, products);
 									}
 									else
 									{
-										resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, promo, context);
+										resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, promo, products);
 									}
 
 									var promoProducts = allPromoProducts.Where(x => x.PromoId == promoId);

@@ -50,7 +50,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="query"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static double? GetTIBasePercent(SimplePromoTradeInvestment promo, DatabaseContext context, IQueryable<BaseTradeInvestment> query, out string message, out bool error)
+        public static double? GetTIBasePercent(SimplePromoTradeInvestment promo, List<BaseTradeInvestment> baseTradeInvestments, List<ClientTree> clientTrees, List<BrandTech> brandTeches, out string message, out bool error)
         {
             error = false;
             try
@@ -61,14 +61,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 double percentSum = 0;
 
                 // Получаем текущего клиента по ObjectId 
-                ClientTree currentClient = context.Set<ClientTree>()
+                ClientTree currentClient = clientTrees
                     .Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue)
                     .FirstOrDefault();
 
                 // Пока в отфильтрованном списке пусто и мы не достигли корневого элемента
-                while (query != null && (tradeInvestments == null || tradeInvestments.Count() == 0) && currentClient != null && currentClient.Type != "root")
+                while (baseTradeInvestments != null && (tradeInvestments == null || tradeInvestments.Count() == 0) && currentClient != null && currentClient.Type != "root")
                 {
-                    tradeInvestments = query
+                    tradeInvestments = baseTradeInvestments
                         // Фильтр по клиенту
                         .Where(x => x.ClientTreeId == currentClient.Id && !x.Disabled)
                         // Фильтр по брендтеху
@@ -78,13 +78,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                && DateTimeOffset.Compare(x.StartDate.Value, promo.StartDate.Value) <= 0
                                && DateTimeOffset.Compare(x.EndDate.Value, promo.StartDate.Value) >= 0).ToList();
 
-                    currentClient = context.Set<ClientTree>().Where(x => x.ObjectId == currentClient.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    currentClient = clientTrees.Where(x => x.ObjectId == currentClient.parentId && !x.EndDate.HasValue).FirstOrDefault();
                 }
 
                 if (tradeInvestments.Count() == 0)
                 {
                     error = true;
-                    message = GetMessageTiCogs("TI base was not found", promo, true, context);
+                    message = GetMessageTiCogs("TI base was not found", promo, true, brandTeches);
                     return null;
                 }
                 else
@@ -125,7 +125,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     if (tradeInvestmentGroups.Count() > 0)
                     {
                         error = true;
-                        message = GetMessageTiCogs("TI base duplicate record error", promo, true, context);
+                        message = GetMessageTiCogs("TI base duplicate record error", promo, true, brandTeches);
                         return null;
                     }
 
@@ -147,12 +147,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
         
-        public static double? GetCOGSPercent(SimplePromoCOGS promo, DatabaseContext context, IQueryable<BaseCOGS> query, out string message)
+        public static double? GetCOGSPercent(SimplePromoCOGS promo, List<BaseCOGS> query, List<ClientTree> clientTrees, List<BrandTech> brandTeches, out string message)
         {
             try
             {
                 List<BaseCOGS> cogsList = new List<BaseCOGS>();
-                ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                ClientTree clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
 
                 var notNullBrandtechCOGS = query.Where(x => x.BrandTech != null);
                 while (notNullBrandtechCOGS != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
@@ -164,13 +164,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
 
-                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                 }
 
                 //если не найдено COGS для конкретного BranTech, ищем COGS с пустым BrandTech(пустое=любое)
                 if (cogsList.Count == 0)
                 {
-                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                    clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
 
                     while (query != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
                     {
@@ -181,18 +181,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                    && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                    && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
 
-                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                     }
                 }
 
                 if (cogsList.Count == 0)
                 {
-                    message = GetMessageTiCogs("COGS was not found", promo, false, context);
+                    message = GetMessageTiCogs("COGS was not found", promo, false, brandTeches);
                     return null;
                 }
                 else if (cogsList.Count > 1)
                 {
-                    message = GetMessageTiCogs("COGS duplicate record error", promo, false, context);
+                    message = GetMessageTiCogs("COGS duplicate record error", promo, false, brandTeches);
                     return null;
                 }
                 else
@@ -208,12 +208,12 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             }
         }
 
-        public static double? GetCOGSTonCost(SimplePromoCOGS promo, DatabaseContext context, IQueryable<BaseCOGSTn> query, out string message)
+        public static double? GetCOGSTonCost(SimplePromoCOGS promo, List<BaseCOGSTn> query, List<ClientTree> clientTrees, List<BrandTech> brandTeches, out string message)
         {
             try
             {
                 List<BaseCOGSTn> cogsList = new List<BaseCOGSTn>();
-                ClientTree clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                ClientTree clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
 
                 var notNullBrandtechCOGS = query.Where(x => x.BrandTech != null);
                 while (notNullBrandtechCOGS != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
@@ -225,13 +225,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
 
-                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                    clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                 }
 
                 //если не найдено COGS/Tn для конкретного BranTech, ищем COGS/Tn с пустым BrandTech(пустое=любое)
                 if (cogsList.Count == 0)
                 {
-                    clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
+                    clientNode = clientTrees.Where(x => x.ObjectId == promo.ClientTreeObjectId && !x.EndDate.HasValue).FirstOrDefault();
 
                     while (query != null && (cogsList == null || cogsList.Count() == 0) && clientNode != null && clientNode.Type != "root")
                     {
@@ -242,18 +242,18 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                                    && DateTimeOffset.Compare(x.StartDate.Value, promo.DispatchesStart.Value) <= 0
                                    && DateTimeOffset.Compare(x.EndDate.Value, promo.DispatchesStart.Value) >= 0).ToList();
 
-                        clientNode = context.Set<ClientTree>().Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
+                        clientNode = clientTrees.Where(x => x.ObjectId == clientNode.parentId && !x.EndDate.HasValue).FirstOrDefault();
                     }
                 }
 
                 if (cogsList.Count == 0)
                 {
-                    message = GetMessageTiCogs("COGS/Tn was not found", promo, false, context);
+                    message = GetMessageTiCogs("COGS/Tn was not found", promo, false, brandTeches);
                     return null;
                 }
                 else if (cogsList.Count > 1)
                 {
-                    message = GetMessageTiCogs("COGS/Tn duplicate record error", promo, false, context);
+                    message = GetMessageTiCogs("COGS/Tn duplicate record error", promo, false, brandTeches);
                     return null;
                 }
                 else
@@ -316,9 +316,9 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         /// <param name="ti">True если TI, False если COGS</param>
         /// <param name="context">Контекст БД</param>
         /// <returns></returns>
-        private static string GetMessageTiCogs(string baseMessage, SimplePromoCOGSTI promo, bool ti, DatabaseContext context)
+        private static string GetMessageTiCogs(string baseMessage, SimplePromoCOGSTI promo, bool ti, List<BrandTech> brandTeches)
         {
-            BrandTech brandTech = context.Set<BrandTech>().FirstOrDefault(n => n.Id == promo.BrandTechId);
+            BrandTech brandTech = brandTeches.FirstOrDefault(n => n.Id == promo.BrandTechId);
             string result = baseMessage + " for client " + promo.ClientHierarchy;
 
             if (brandTech != null)

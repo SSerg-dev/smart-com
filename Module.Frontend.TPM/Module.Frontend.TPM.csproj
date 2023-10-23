@@ -353,6 +353,7 @@
     <Content Include="Client\controller\tpm\metricsdashboard\MetricsDashboard.js" />
     <Content Include="Client\controller\tpm\savedScenario\SavedScenario.js" />
     <Content Include="Client\controller\tpm\schedule\SelectClientScenario.js" />
+    <Content Include="Client\controller\tpm\schedule\SelectClientYearCopy.js" />
     <Content Include="Client\model\tpm\actualcogstn\ActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\DeletedActualCOGSTn.js" />
     <Content Include="Client\model\tpm\actualcogstn\HistoricalActualCOGSTn.js" />
@@ -1154,6 +1155,7 @@
     <Content Include="Client\view\tpm\schedule\SelectClientScenario.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
     <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
+    <Content Include="Client\view\tpm\schedule\SelectClientYearCopy.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />
     <Content Include="Client\view\tpm\tradeinvestment\ImportTradeInvestmentParamForm.js" />
     <Content Include="Client\view\tpm\metricsdashboard\MetricsDashboard.js" />

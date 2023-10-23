@@ -28,6 +28,8 @@ namespace Module.Host.TPM.Actions
                 IList<string> updatePromoScript = new List<string>();
                 using (DatabaseContext context = new DatabaseContext())
                 {
+                    List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                    List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
                     var currentYear = DateTimeOffset.Now.Year;
                     var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                     var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
@@ -39,8 +41,8 @@ namespace Module.Host.TPM.Actions
                         .Select(x => x.Id).ToList();
 
                     var promoes = context.Set<Promo>().Where(x => !x.Disabled);
-                    IQueryable<ActualCOGS> actualCOGSQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled);
-                    IQueryable<COGS> COGSQuery = context.Set<COGS>().Where(x => !x.Disabled);
+                    List<ActualCOGS> actualCOGSQuery = context.Set<ActualCOGS>().Where(x => !x.Disabled).ToList();
+                    List<COGS> COGSQuery = context.Set<COGS>().Where(x => !x.Disabled).ToList();
                     double? PlanCOGSPercent = null;
                     double? ActualCOGSPercent = null;
                     string message = null;
@@ -53,15 +55,15 @@ namespace Module.Host.TPM.Actions
                         SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
                         if (previousYearsPromoIds.Contains(promo.Id))
                         {
-                            ActualCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, actualCOGSQuery, out message);
+                            ActualCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, new List<BaseCOGS>(actualCOGSQuery), clientTrees, brandTeches, out message);
                             if (ActualCOGSPercent == null)
                             {
-                                ActualCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, COGSQuery, out message);
+                                ActualCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, new List<BaseCOGS>(COGSQuery), clientTrees, brandTeches, out message);
                             }
                         }
                         else
                         {
-                            PlanCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, context, COGSQuery, out message);
+                            PlanCOGSPercent = PromoUtils.GetCOGSPercent(simplePromoCOGS, new List<BaseCOGS>(COGSQuery), clientTrees, brandTeches, out message);
                         }
 
                         if (message != null)

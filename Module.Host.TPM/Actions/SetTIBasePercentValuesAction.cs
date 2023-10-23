@@ -28,6 +28,8 @@ namespace Module.Host.TPM.Actions
                 IList<string> updatePromoScript = new List<string>();
                 using (DatabaseContext context = new DatabaseContext())
                 {
+                    List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+                    List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
                     var currentYear = DateTimeOffset.Now.Year;
                     var settingsManager = (ISettingsManager)IoC.Kernel.GetService(typeof(ISettingsManager));
                     var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished,Closed");
@@ -39,8 +41,8 @@ namespace Module.Host.TPM.Actions
                         .Select(x => x.Id).ToList();
 
                     var promoes = context.Set<Promo>().Where(x => !x.Disabled);
-                    IQueryable<ActualTradeInvestment> actualTIQuery = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled);
-                    IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
+                    List<ActualTradeInvestment> actualTIQuery = context.Set<ActualTradeInvestment>().Where(x => !x.Disabled).ToList();
+                    List<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList();
                     double? PlanTIBasePercent = null;
                     double? ActualTIBasePercent = null;
                     string message = null;
@@ -54,15 +56,15 @@ namespace Module.Host.TPM.Actions
                         SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
                         if (previousYearsPromoIds.Contains(promo.Id))
                         {
-                            ActualTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, actualTIQuery, out message, out error);
+                            ActualTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, new List<BaseTradeInvestment>(actualTIQuery), clientTrees, brandTeches, out message, out error);
                             if (ActualTIBasePercent == null)
                             {
-                                ActualTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                                ActualTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, new List<BaseTradeInvestment>(TIQuery), clientTrees, brandTeches, out message, out error);
                             }
                         }
                         else
                         {
-                            PlanTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+                            PlanTIBasePercent = PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, new List<BaseTradeInvestment>(TIQuery), clientTrees, brandTeches, out message, out error);
                         }
 
                         if (message != null)

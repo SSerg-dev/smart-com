@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Core.History;
+using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.Model.Interfaces;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
+using Module.Persist.TPM.MongoDB;
 using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.History;
-using Module.Persist.TPM.MongoDB;
 
 namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
 {
@@ -405,6 +405,242 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                 OperationType.Created
             );
             return promoesRA;
+        }
+        public static CopyRAReturn CopyToPromoRA(DatabaseContext Context, List<Promo> promoes, int budgetYear, bool CheckedDate, PromoHelper.ClientDispatchDays clientDispatchDays, bool disabled = false, DateTimeOffset? deleteddate = null)
+        {
+            CopyRAReturn copyRAReturn = new CopyRAReturn { Promos = new List<Promo>(), Errors = new List<string>() };
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Promo, Promo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.BudgetYear, opt => opt.MapFrom(x => budgetYear))
+                    .ForMember(pTo => pTo.StartDate, opt => opt.ConvertUsing(new DateTimeTypeConverter(CheckedDate)))
+                    .ForMember(pTo => pTo.EndDate, opt => opt.ConvertUsing(new DateTimeTypeConverter(CheckedDate)))
+                    .ForMember(pTo => pTo.DispatchesStart, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.DispatchesEnd, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.BTLPromoes, opt => opt.MapFrom(f => f.BTLPromoes.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.Brand, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Technology, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ClientTree, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MarsMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PlanInstoreMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MarsMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PlanInstoreMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoTypes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Color, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Event, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PromoStatusChanges, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductTrees, opt => opt.MapFrom(f => f.PromoProductTrees.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PreviousDayIncrementals, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.IncrementalPromoes, opt => { opt.Condition(c => c.InOut == true); opt.MapFrom(f => f.IncrementalPromoes.Where(g => !g.Disabled)); })
+                    .ForMember(pTo => pTo.PromoProducts, opt => opt.MapFrom(f => f.PromoProducts.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.Promoes, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.SavedScenario, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.SavedScenarioId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RollingScenarioId, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.RollingScenario, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease));
+                cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoSupport, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductTree, PromoProductTree>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
+                cfg.CreateMap<PromoProduct, PromoProduct>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.MapFrom(f => f.PromoProductsCorrections.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
+                cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore());
+                cfg.CreateMap<IncrementalPromo, IncrementalPromo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Product, opt => opt.Ignore());
+                cfg.CreateMap<PromoPriceIncrease, PromoPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.MapFrom(f => f.PromoProductPriceIncreases.Where(g => !g.Disabled)));
+                cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ProductCorrectionPriceIncreases, opt => opt.MapFrom(f => f.ProductCorrectionPriceIncreases.Where(g => !g.Disabled)))//filter
+                    .ForMember(pTo => pTo.PromoProduct, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoProductId, opt => opt.Ignore());
+                //.AfterMap((src, dest) => dest.PromoProduct = dest.PromoPriceIncrease.Promo.PromoProducts.FirstOrDefault(g=>g.ZREP == dest.ZREP)); не работает не видит сущности EF6
+                cfg.CreateMap<PromoProductCorrectionPriceIncrease, PromoProductCorrectionPriceIncrease>()
+                    .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
+                    .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
+                    .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoProductPriceIncrease, opt => opt.Ignore());
+            }
+                );
+            var mapper = configuration.CreateMapper();
+            List<Promo> promoesRA = mapper.Map<List<Promo>>(promoes);
+            List<Promo> notCopyPromoes = new List<Promo>();
+            OneLoadModel oneLoad = new OneLoadModel
+            {
+                ClientTrees = Context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
+                BrandTeches = Context.Set<BrandTech>().Where(g => !g.Disabled).ToList(),
+                COGSs = Context.Set<COGS>().Where(x => !x.Disabled).ToList(),
+                PlanCOGSTns = Context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList(),
+                ProductTrees = Context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
+                TradeInvestments = Context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList(),
+                Products = Context.Set<Product>().Where(g => !g.Disabled).ToList()
+            };
+            //List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+            //List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            //List<TradeInvestment> tradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList();
+            //List<COGS> cogs = context.Set<COGS>().Where(x => !x.Disabled).ToList();
+            //List<PlanCOGSTn> cogsTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList();
+            //List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
+            foreach (Promo promoRA in promoesRA)
+            {
+                DateTimeOffset startDate = (DateTimeOffset)(promoRA.StartDate);
+                DateTimeOffset endDate = (DateTimeOffset)(promoRA.EndDate);
+                if (clientDispatchDays.IsStartAdd)
+                {
+                    promoRA.DispatchesStart = startDate.AddDays(clientDispatchDays.StartDays);
+                }
+                else
+                {
+                    promoRA.DispatchesStart = startDate.AddDays(-clientDispatchDays.StartDays);
+                }
+                if (clientDispatchDays.IsEndAdd)
+                {
+                    promoRA.DispatchesEnd = endDate.AddDays(clientDispatchDays.EndDays);
+                }
+                else
+                {
+                    promoRA.DispatchesEnd = endDate.AddDays(-clientDispatchDays.EndDays);
+                }
+                if (promoRA.PromoProducts.Count != 0)
+                {
+                    try
+                    {
+                        //List<PromoProductTree> promoProductTrees = PromoHelper.AddProductTrees(promoRA.ProductTreeObjectIds, promoRA, out bool isSubrangeChanged, Context);
+                        PromoHelper.CheckSupportInfo(promoRA, promoRA.PromoProductTrees.ToList(), oneLoad, Context);
+                    }
+                    catch (Exception ex)
+                    {
+                        copyRAReturn.Errors.Add("Promo:" + promoRA.Number.ToString() + " - " + ex.Message);
+                        notCopyPromoes.Add(promoRA);
+                        continue;
+                    }
+                }
+                else
+                {
+                    copyRAReturn.Errors.Add("Promo:" + promoRA.Number.ToString() + " - " + " Not present products in promo");
+                    notCopyPromoes.Add(promoRA);
+                }
+            }
+            foreach (var item in notCopyPromoes)
+            {
+                promoesRA.Remove(item);
+            }
+            if (promoesRA.Count == 0)
+            {
+                copyRAReturn.Errors.Add("No promoes to copy");
+                return copyRAReturn;
+            }
+            Context.Set<Promo>().AddRange(promoesRA);
+            Context.SaveChanges();
+            foreach (Promo promoRA in promoesRA)
+            {
+                if (promoRA.PromoPriceIncrease != null)
+                {
+                    foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRA.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
+                    {
+                        PromoProduct promoProduct = promoRA.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
+                        promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                    }
+                }
+            }
+            Context.SaveChanges();
+            copyRAReturn.Promos = promoesRA;
+            return copyRAReturn;
+
+        }
+        public class DateTimeTypeConverter : IValueConverter<DateTimeOffset?, DateTimeOffset?>
+        {
+            public DateTimeTypeConverter(bool dayweek)
+            {
+                this.Dayweek = dayweek;
+            }
+
+            private bool Dayweek { get; set; }
+            public DateTimeOffset? Convert(DateTimeOffset? source, ResolutionContext context)
+            {
+                DateTimeOffset addYaer = ((DateTimeOffset)source).AddYears(1);
+                if (Dayweek)
+                {
+                    int dayWeekSource = (int)((DateTimeOffset)source).DayOfWeek;
+                    int dayWeekaddYear = (int)addYaer.DayOfWeek;
+                    if (dayWeekSource == dayWeekaddYear)
+                    {
+                        return addYaer;
+                    }
+                    else if (dayWeekSource > dayWeekaddYear)
+                    {
+                        if ((dayWeekSource - dayWeekaddYear) > 3)
+                        {
+                            return addYaer.AddDays(dayWeekSource - dayWeekaddYear - 7);
+                        }
+                        else
+                        {
+                            return addYaer.AddDays(dayWeekSource - dayWeekaddYear);
+                        }
+                    }
+                    else if (dayWeekSource < dayWeekaddYear)
+                    {
+                        if ((dayWeekaddYear - dayWeekSource) < 3)
+                        {
+                            return addYaer.AddDays(dayWeekSource - dayWeekaddYear);
+                        }
+                        else
+                        {
+                            return addYaer.AddDays(dayWeekSource - dayWeekaddYear + 7);
+                        }
+                    }
+                    return addYaer;
+                }
+                else
+                {
+                    return addYaer;
+                }
+            }
         }
     }
 }

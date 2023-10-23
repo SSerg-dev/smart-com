@@ -270,7 +270,8 @@
     'toptoolbar': {
         'deletedButtonText': 'Deleted',
         'filterButtonText': 'Extended filter',
-        'scenarioButtonText': 'Save scenario'
+        'scenarioButtonText': 'Save scenario',
+        'yearcopyButtonText': 'Сору previous year'
     },
 
     'filter': {

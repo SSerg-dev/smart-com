@@ -344,6 +344,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AutoResetPromoAction.cs" />
+    <Compile Include="Actions\CopyPrevousYearAction.cs" />
     <Compile Include="Actions\CreateCoefficientSI2SOAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsProductsCheckAction.cs" />
     <Compile Include="Actions\DataLakeIntegrationActions\MarsCustomersCheckAction.cs" />
@@ -422,6 +423,7 @@
     <Compile Include="Actions\Notifications\PromoUpliftFailNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoDemandChangeNotificationAction.cs" />
     <Compile Include="Actions\Notifications\PromoProductChangeNotificationAction.cs" />
+    <Compile Include="Handlers\CopyPrevousYearHandler.cs" />
     <Compile Include="Handlers\Interface\Incoming\InputMLProcessHandler.cs" />
     <Compile Include="Handlers\MassApproveHandler.cs" />
     <Compile Include="Handlers\CalculateBTLBudgetsHandler.cs" />

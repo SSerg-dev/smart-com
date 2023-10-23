@@ -1154,21 +1154,29 @@ namespace Module.Frontend.TPM.Util
 
             List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
             List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
-            List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
             List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
             List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
             List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
-            List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
             List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
+            OneLoadModel oneLoad = new OneLoadModel
+            {
+                ClientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
+                BrandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList(),
+                COGSs = context.Set<COGS>().Where(x => !x.Disabled).ToList(),
+                PlanCOGSTns = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList(),
+                ProductTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
+                TradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList(),
+                Products = context.Set<Product>().Where(g => !g.Disabled).ToList()
+            };
             // Добавление продуктов
             List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
 
             //Установка полей по дереву ProductTree
-            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
+            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, oneLoad.BrandTeches, colors);
             //Установка дат в Mars формате
             SetPromoMarsDates(result);
             //Установка полей по дереву ClientTree
-            SetPromoByClientTree(result, clientTrees);
+            SetPromoByClientTree(result, oneLoad.ClientTrees);
             //Установка механик
             SetMechanic(result, mechanics, mechanicTypes);
             SetMechanicIA(result, mechanics, mechanicTypes);
@@ -1194,8 +1202,7 @@ namespace Module.Frontend.TPM.Util
                 if (result.PromoStatus.SystemName.ToLower() != "draft")
                 {
                     // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                    List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                    CheckSupportInfo(result, promoProductTrees, out filteredProducts, context);
+                    CheckSupportInfo(result, promoProductTrees, oneLoad, context);// продукты, подобранные по фильтрам
                     //создание отложенной задачи, выполняющей подбор аплифта и расчет параметров
                     CalculatePromo(result, context, (Guid)user.Id, (Guid)role.Id, false, false, false, true);
                 }
@@ -1586,18 +1593,25 @@ namespace Module.Frontend.TPM.Util
         /// <param name="promo">Проверяемое промо</param>
         /// <param name="promoProductTrees">Список узлов продуктового дерева</param>
         /// <exception cref="Exception">Исключение генерируется при отсутсвии одного из проверяемых параметров</exception>
-        public static void CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, out List<Product> products, DatabaseContext context, IQueryable<Product> productQuery = null)
+        public static List<Product> CheckSupportInfo(Promo promo, List<PromoProductTree> promoProductTrees, OneLoadModel oneLoad, DatabaseContext context)
         {
             List<string> messagesError = new List<string>();
             string message = null;
             bool error;
             bool isProductListEmpty = false;
-            products = null;
+            List<Product> filteredProducts = null;
+
+
+            //List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
+            //List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
+            //List<TradeInvestment> tradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList();
+            //List<COGS> cogs = context.Set<COGS>().Where(x => !x.Disabled).ToList();
+            //List<PlanCOGSTn> cogsTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList();
+            //List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
 
             // проверка на наличие TI
-            IQueryable<TradeInvestment> TIQuery = context.Set<TradeInvestment>().Where(x => !x.Disabled);
             SimplePromoTradeInvestment simplePromoTradeInvestment = new SimplePromoTradeInvestment(promo);
-            PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, context, TIQuery, out message, out error);
+            PromoUtils.GetTIBasePercent(simplePromoTradeInvestment, new List<BaseTradeInvestment>(oneLoad.TradeInvestments), oneLoad.ClientTrees, oneLoad.BrandTeches, out message, out error);
             if (message != null && error)
             {
                 messagesError.Add(message);
@@ -1610,20 +1624,18 @@ namespace Module.Frontend.TPM.Util
 
             // проверка на наличие COGS
             //if (promo.IsLSVBased)
-            //{
-            IQueryable<COGS> cogsQuery = context.Set<COGS>().Where(x => !x.Disabled);
+            //{            
             SimplePromoCOGS simplePromoCOGS = new SimplePromoCOGS(promo);
-            PromoUtils.GetCOGSPercent(simplePromoCOGS, context, cogsQuery, out message);
+            PromoUtils.GetCOGSPercent(simplePromoCOGS, new List<BaseCOGS>(oneLoad.COGSs), oneLoad.ClientTrees, oneLoad.BrandTeches, out message);
             //}
             if (message != null)
             {
                 messagesError.Add(message);
                 message = null;
             }
-
-            IQueryable<PlanCOGSTn> cogsTnQuery = context.Set<PlanCOGSTn>().Where(x => !x.Disabled);
+                        
             simplePromoCOGS = new SimplePromoCOGS(promo);
-            PromoUtils.GetCOGSTonCost(simplePromoCOGS, context, cogsTnQuery, out message);
+            PromoUtils.GetCOGSTonCost(simplePromoCOGS, new List<BaseCOGSTn>(oneLoad.PlanCOGSTns), oneLoad.ClientTrees, oneLoad.BrandTeches, out message);
 
             if (message != null)
             {
@@ -1636,11 +1648,11 @@ namespace Module.Frontend.TPM.Util
             {
                 if (promo.InOut.HasValue && promo.InOut.Value)
                 {
-                    products = PlanProductParametersCalculation.GetCheckedProducts(context, promo, productQuery);
+                    filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(promo, oneLoad.Products);
                 }
                 else
                 {
-                    isProductListEmpty = PlanProductParametersCalculation.IsProductListEmpty(promo, context, out message, promoProductTrees);
+                    isProductListEmpty = PlanProductParametersCalculation.IsProductListEmpty(promo, context, oneLoad.ProductTrees, oneLoad.Products, out message, promoProductTrees);
                 }
                 if (message != null)
                 {
@@ -1665,6 +1677,7 @@ namespace Module.Frontend.TPM.Util
 
                 throw new Exception(messageError);
             }
+            return filteredProducts;
         }
         /// <summary>
         /// Создание отложенной задачи, выполняющей подбор аплифта и расчет параметров промо и продуктов

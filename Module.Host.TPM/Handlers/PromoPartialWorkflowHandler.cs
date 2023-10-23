@@ -4,6 +4,7 @@ using Looper.Core;
 using Module.Frontend.TPM.Controllers;
 using Module.Frontend.TPM.Util;
 using Module.Persist.TPM.CalculatePromoParametersModule;
+using Module.Persist.TPM.Model.SimpleModel;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.PromoStateControl;
 using Module.Persist.TPM.Utils;
@@ -76,6 +77,17 @@ namespace Module.Host.TPM.Handlers
                         var draftStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName.ToLower() == "draft");
                         var startedStatus = context.Set<PromoStatus>().FirstOrDefault(x => x.SystemName.ToLower() == "started");
 
+                        OneLoadModel oneLoad = new OneLoadModel
+                        {
+                            ClientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
+                            BrandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList(),
+                            COGSs = context.Set<COGS>().Where(x => !x.Disabled).ToList(),
+                            PlanCOGSTns = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList(),
+                            ProductTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
+                            TradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList(),
+                            Products = context.Set<Product>().Where(g => !g.Disabled).ToList()
+                        };
+
                         foreach (var promo in promoes)
                         {
                             if (promo.PromoStatusId == draftStatus.Id)
@@ -92,8 +104,7 @@ namespace Module.Host.TPM.Handlers
 
                                 try
                                 {
-                                    List<Product> filteredProducts;
-                                    PromoHelper.CheckSupportInfo(promo, promoProductTrees, out filteredProducts, context);
+                                    PromoHelper.CheckSupportInfo(promo, promoProductTrees, oneLoad, context);
                                 }
                                 catch (Exception e)
                                 {

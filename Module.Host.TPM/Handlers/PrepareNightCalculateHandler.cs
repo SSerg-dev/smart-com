@@ -48,7 +48,23 @@ namespace Module.Host.TPM.Handlers
                             HiddenModeHelper.SetTypePromoes(rs.Promoes.ToList(), TPMmode.RA);
                         }
                     }
+                    RSperiods = context.Set<RollingScenario>()
+                        .Include(g => g.Promoes)
+                        .Where(g => g.RSstatus == RSstateNames.CALCULATING && g.TaskStatus == TaskStatusNames.INPROGRESS && !g.Disabled)
+                        .ToList();
                     context.SaveChanges();
+                    RSperiods = RSperiods.Where(g => g.Promoes.Any(f => f.TPMmode == TPMmode.Hidden)).ToList();
+                    foreach (RollingScenario rs in RSperiods)
+                    {
+                        if (rs.ScenarioType == ScenarioType.RS)
+                        {
+                            HiddenModeHelper.SetTypePromoes(rs.Promoes.ToList(), TPMmode.RS);
+                        }
+                        if (rs.ScenarioType == ScenarioType.RA)
+                        {
+                            HiddenModeHelper.SetTypePromoes(rs.Promoes.ToList(), TPMmode.RA);
+                        }
+                    }
                 }
             }
             catch (Exception e)

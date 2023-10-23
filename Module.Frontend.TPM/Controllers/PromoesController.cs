@@ -466,8 +466,8 @@ namespace Module.Frontend.TPM.Controllers
                         promoProductTrees = PromoHelper.AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged, Context);
                     }
 
-                    var productQuery = Context.Set<Product>().Where(x => !x.Disabled);
-                    bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy, productQuery);
+                    List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
+                    bool needRecalculatePromo = NeedRecalculatePromo(model, promoCopy, products);
                     bool needResetUpliftCorrections = false;
                     bool needResetUpliftCorrectionsPI = false;
                     if (model.NeedRecountUplift != null && promoCopy.NeedRecountUplift != null && model.NeedRecountUplift != promoCopy.NeedRecountUplift)
@@ -553,9 +553,19 @@ namespace Module.Frontend.TPM.Controllers
                     // для draft не проверяем и не считаем
                     if (statusName.ToLower() != "draft")
                     {
+                        OneLoadModel oneLoad = new OneLoadModel
+                        {
+                            ClientTrees = await Context.Set<ClientTree>().Where(g => g.EndDate == null).ToListAsync(),
+                            BrandTeches = await Context.Set<BrandTech>().Where(g => !g.Disabled).ToListAsync(),
+                            COGSs = await Context.Set<COGS>().Where(x => !x.Disabled).ToListAsync(),
+                            PlanCOGSTns = await Context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToListAsync(),
+                            ProductTrees = await Context.Set<ProductTree>().Where(g => g.EndDate == null).ToListAsync(),
+                            TradeInvestments = await Context.Set<TradeInvestment>().Where(x => !x.Disabled).ToListAsync(),
+                            Products = await Context.Set<Product>().Where(g => !g.Disabled).ToListAsync()
+                        };
                         // если нет TI, COGS или продукты не подобраны по фильтрам, запретить сохранение (будет исключение)
-                        List<Product> filteredProducts; // продукты, подобранные по фильтрам
-                        PromoHelper.CheckSupportInfo(model, promoProductTrees, out filteredProducts, Context);
+
+                        List<Product> filteredProducts = PromoHelper.CheckSupportInfo(model, promoProductTrees, oneLoad, Context); // продукты, подобранные по фильтрам
 
                         // в статусе On Approval проверяем изменился ли список фильтруемых продуктов (и соответсвенно если узел остался тот же)
                         // проверяем предыдущий на случай, когда утвердил последний и промо перешло в Approved
@@ -567,12 +577,12 @@ namespace Module.Frontend.TPM.Controllers
                             if (!model.InOut.HasValue || !model.InOut.Value)
                             {
                                 List<string> eanPCs = PlanProductParametersCalculation.GetProductListFromAssortmentMatrix(model, Context);
-                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, model, productQuery);
-                                resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, Context, productQuery);
+                                filteredProducts = PlanProductParametersCalculation.GetCheckedProducts(model, products);
+                                resultProductList = PlanProductParametersCalculation.GetResultProducts(filteredProducts, eanPCs, model, products);
                             }
                             else
                             {
-                                resultProductList = PlanProductParametersCalculation.GetCheckedProducts(Context, model, productQuery);
+                                resultProductList = PlanProductParametersCalculation.GetCheckedProducts(model, products);
                             }
 
                             changedProducts = CheckChangesInProductList(model, resultProductList);
@@ -1941,7 +1951,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo, IQueryable<Product> products)
+        private bool NeedRecalculatePromo(Promo newPromo, Promo oldPromo, List<Product> products)
         {
             bool needReacalculate = false;
 
@@ -1981,8 +1991,8 @@ namespace Module.Frontend.TPM.Controllers
 
             //if (newPromo.InOut.HasValue && newPromo.InOut.Value)
             //{
-            List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, oldPromo, products);
-            List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(Context, newPromo, products);
+            List<Product> oldInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(oldPromo, products);
+            List<Product> newInOutProducts = PlanProductParametersCalculation.GetCheckedProducts(newPromo, products);
 
             needReacalculate = needReacalculate || oldInOutProducts.Count != newInOutProducts.Count || !oldInOutProducts.All(x => newInOutProducts.Any(y => y.Id == x.Id));
             //} 

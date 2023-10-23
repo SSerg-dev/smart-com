@@ -146,6 +146,7 @@
     'tpm.schedule.ClientPromoTypeFilter',
 
     'tpm.schedule.SelectClientScenario',
+    'tpm.schedule.SelectClientYearCopy',
 
     'tpm.demand.Demand',
     'tpm.demand.DeletedDemand',

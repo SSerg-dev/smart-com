@@ -390,5 +390,31 @@ namespace Module.Frontend.TPM.Controllers
                 return InternalServerError(GetExceptionMessage.GetInnerException(e));
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public IHttpActionResult GetStatusScenario(int objectId)
+        {
+            try
+            {
+                if (ScenarioHelper.CheckCogs(objectId, Context))
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, gogs = true, message = $"Error. There are no COGSs for (Brandtech) by (Client)." }));
+                }
+                ScenarioHelper.StatusScenarioResult statusScenarioResult = ScenarioHelper.GetStatusScenario(objectId, Context);
+                if (statusScenarioResult != null)
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = $"The client {statusScenarioResult.ClientName} has an active RA scenario id № {statusScenarioResult.RSId}. Change the active scenario to Cancelled?" }));
+                }
+                else
+                {
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+                }
+
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(GetExceptionMessage.GetInnerException(e));
+            }
+        }
     }
 }

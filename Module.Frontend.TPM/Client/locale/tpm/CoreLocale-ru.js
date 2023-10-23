@@ -227,7 +227,8 @@
     'toptoolbar': {
         'deletedButtonText': 'Удалённые',
         'filterButtonText': 'Расширенный фильтр',
-        'scenarioButtonText': 'Сохранить сценарий'
+        'scenarioButtonText': 'Сохранить сценарий',
+        'yearcopyButtonText': 'Копировать предыдущий год'
     },
 
     'filter': {
