@@ -33,8 +33,8 @@
                        (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetFilteredData', NULL, 1),
                        (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFAType', NULL, 1),
                        (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFATypes', NULL, 1),
-                       (NEWID(), 0, NULL, 'HistoricalRetailTypes', 'GetFilteredData', NULL, 1),
-                       (NEWID(), 0, NULL, 'HistoricalRetailTypes', 'GetHistoricalRetailTypes', NULL, 1)
+                       (NEWID(), 0, NULL, 'HistoricalSFATypes', 'GetFilteredData', NULL, 1),
+                       (NEWID(), 0, NULL, 'HistoricalSFATypes', 'GetHistoricalSFATypes', NULL, 1)
                 GO
 
                 DECLARE @RoleId uniqueidentifier = (SELECT [Id] FROM [DefaultSchemaSetting].[Role] where SystemName='Administrator');

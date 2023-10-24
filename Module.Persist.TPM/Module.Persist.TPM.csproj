@@ -3732,6 +3732,10 @@
     <Compile Include="Migrations\202310131156109_Add_AP_CopyYearScenario.designer.cs">
       <DependentUpon>202310131156109_Add_AP_CopyYearScenario.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310241242123_Add_SFATypename_To_ClientTree.cs" />
+    <Compile Include="Migrations\202310241242123_Add_SFATypename_To_ClientTree.designer.cs">
+      <DependentUpon>202310241242123_Add_SFATypename_To_ClientTree.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -6996,7 +7000,7 @@
     <EmbeddedResource Include="Migrations\202310061328438_Add_AP_GetCalendarClients.resx">
       <DependentUpon>202310061328438_Add_AP_GetCalendarClients.cs</DependentUpon>
     </EmbeddedResource>
-      <EmbeddedResource Include="Migrations\202310201331092_Add_table_SFAType.resx">
+    <EmbeddedResource Include="Migrations\202310201331092_Add_table_SFAType.resx">
       <DependentUpon>202310201331092_Add_table_SFAType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310231108031_AddRulesSFAType.resx">
@@ -7004,7 +7008,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310131156109_Add_AP_CopyYearScenario.resx">
       <DependentUpon>202310131156109_Add_AP_CopyYearScenario.cs</DependentUpon>
-    </EmbeddedResource>   
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310241242123_Add_SFATypename_To_ClientTree.resx">
+      <DependentUpon>202310241242123_Add_SFATypename_To_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLInitialize\20190610_2000_CM_AP.sql" />
