@@ -31,9 +31,9 @@
                        (NEWID(), 0, NULL, 'SFATypes', 'FullImportXLSX', NULL, 0),
                        (NEWID(), 0, NULL, 'SFATypes', 'DownloadTemplateXLSX', NULL, 0),
                        (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetFilteredData', NULL, 1),
-                       (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFAType', NULL, 1)
-                       (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFATypes', NULL, 1)
-                       (NEWID(), 0, NULL, 'HistoricalRetailTypes', 'GetFilteredData', NULL, 1)
+                       (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFAType', NULL, 1),
+                       (NEWID(), 0, NULL, 'DeletedSFATypes', 'GetDeletedSFATypes', NULL, 1),
+                       (NEWID(), 0, NULL, 'HistoricalRetailTypes', 'GetFilteredData', NULL, 1),
                        (NEWID(), 0, NULL, 'HistoricalRetailTypes', 'GetHistoricalRetailTypes', NULL, 1)
                 GO
 
@@ -42,8 +42,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Put' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Post' AND Resource = 'SFATypes')),
@@ -59,8 +59,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Put' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Post' AND Resource = 'SFATypes')),
@@ -76,8 +76,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Put' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'Post' AND Resource = 'SFATypes')),
@@ -93,8 +93,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
@@ -104,8 +104,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
@@ -115,8 +115,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
@@ -126,8 +126,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
@@ -137,8 +137,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
@@ -148,8 +148,8 @@
                 INSERT INTO [DefaultSchemaSetting].[AccessPointRole]
                 ([Id],[RoleId],[AccessPointId])
                 VALUES
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSAType' AND Resource = 'SFATypes')),
-                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFSATypes' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFAType' AND Resource = 'SFATypes')),
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetSFATypes' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'GetFilteredData' AND Resource = 'SFATypes')),
                     (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [DefaultSchemaSetting].[AccessPoint] WHERE Action = 'ExportXLSX' AND Resource = 'SFATypes'))
                 GO
