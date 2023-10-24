@@ -48,6 +48,7 @@
         'BaseClientTreeView': 'Base clients',
         'NoneNego': 'No Nego',
         'RetailType': 'Retail type',
+        'SFAType': 'SFA type',
         'PromoProductItem': 'Promo Product',
 
         'PromoProductCorection': 'Promo product correction',
@@ -148,6 +149,7 @@
         'ClientTreeSharesView': 'Clients',
         'NoneNego': 'No Nego',
         'RetailType': 'Retail type',
+        'SFAType': 'SFA type',
         'PromoProduct': 'Promo Product',
         'BaseLine': 'Base Line',
         'IncreaseBaseLine': 'Increase Base Line',
@@ -1179,6 +1181,7 @@
         'IsBaseClient': 'Base client',
         'WarningChangeIsBase': 'Change in customer basicity may welcome problems with settlements',
         'RetailTypeName': 'Retail Type Name',
+        'SFATypeName': 'SFA Type Name',
         'FullPathName': 'Full PathName',
         'IsOnInvoice': 'On Invoice',
         'InvoiceType': 'Invoice Type',
@@ -1562,6 +1565,12 @@
     },
     'HistoricalRetailType': ['.tpm.RetailType', '.core.BaseHistoryEntity'],
     'DeletedRetailType': ['.tpm.RetailType', '.core.BaseDeletedEntity'],
+
+    'SFAType': {
+        'Name': 'SFA type'
+    },
+    'HistoricalSFAType': ['.tpm.SFAType', '.core.BaseHistoryEntity'],
+    'DeletedSFAType': ['.tpm.SFAType', '.core.BaseDeletedEntity'],
 
     'PromoProduct': {
         'ZREP': 'ZREP',

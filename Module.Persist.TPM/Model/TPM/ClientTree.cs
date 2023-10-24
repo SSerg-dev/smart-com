@@ -46,6 +46,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? DistrMarkUp { get; set; }
 
         public string SFAClientCode { get; set; }
+        public string SFATypeName { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTimeOffset? ModifiedDate { get; set; }

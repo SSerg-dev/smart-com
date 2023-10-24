@@ -62,7 +62,35 @@
             regex: /^\S*$/,
             allowBlank: true,
             allowOnlyWhitespace: true
-        }, {
+            },
+            {
+                xtype: 'searchcombobox',
+                fieldLabel: l10n.ns('tpm', 'SFAType').value('Name'),
+                name: 'SFATypeName',
+                selectorWidget: 'sfatype',
+                valueField: 'Name',
+                displayField: 'Name',
+                entityType: 'SFAType',
+                allowBlank: true,
+                allowOnlyWhitespace: true,
+                store: {
+                    type: 'simplestore',
+                    model: 'App.model.tpm.sfatype.SFAType',
+                    extendedFilter: {
+                        xclass: 'App.ExtFilterContext',
+                        supportedModels: [{
+                            xclass: 'App.ExtSelectionFilterModel',
+                            model: 'App.model.tpm.sfatype.SFAType',
+                            modelId: 'efselectionmodel'
+                        }]
+                    }
+                },
+                mapping: [{
+                    from: 'Name',
+                    to: 'SFATypeName'
+                }]
+            },
+            {
             xtype: 'booleancombobox',
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('IsBaseClient'),
             name: 'IsBaseClient',
@@ -153,7 +181,8 @@
                 from: 'Name',
                 to: 'RetailTypeName'
             }]
-        }, {
+            },            
+            {
             xtype: 'numberfield',
             fieldLabel: l10n.ns('tpm', 'ClientTree').value('DistrMarkUp'),
             name: 'DistrMarkUp',

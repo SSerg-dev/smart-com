@@ -199,6 +199,11 @@
     'tpm.retailtype.DeletedRetailType',
     'tpm.retailtype.HistoricalRetailType',
 
+
+    'tpm.sfatype.SFAType',
+    'tpm.sfatype.DeletedSFAType',
+    'tpm.sfatype.HistoricalSFAType',
+
     //PromoProducts
     'tpm.promoproduct.PromoProduct',
     'tpm.promoproduct.DeletedPromoProduct',

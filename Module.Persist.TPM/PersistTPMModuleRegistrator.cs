@@ -153,7 +153,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<InputBaseline>();
 
             modelBuilder.Entity<UserTokenCache>();
-
+            
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
             modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
@@ -190,6 +190,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<TLCImport>().ToTable("TLCImports");
             modelBuilder.Entity<SavedSetting>().ToTable("SavedSettings");
+            modelBuilder.Entity<SFAType>().ToTable("SFATypes");
         }
 
 
@@ -855,6 +856,15 @@ namespace Module.Persist.TPM
             builder.Entity<RetailType>().Collection.Action("DownloadTemplateXLSX");
             builder.Entity<RetailType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<RetailType>("RetailTypes");
             builder.Entity<HistoricalRetailType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalRetailType>("HistoricalRetailTypes");
+
+            builder.EntitySet<SFAType>("SFATypes");
+            builder.EntitySet<SFAType>("DeletedSFATypes");
+            builder.EntitySet<HistoricalSFAType>("HistoricalSFATypes");
+            builder.Entity<SFAType>().Collection.Action("ExportXLSX");
+            builder.Entity<SFAType>().Collection.Action("FullImportXLSX");
+            builder.Entity<SFAType>().Collection.Action("DownloadTemplateXLSX");
+            builder.Entity<SFAType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<SFAType>("SFATypes");
+            builder.Entity<HistoricalSFAType>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<HistoricalSFAType>("HistoricalSFATypes");
 
             builder.EntitySet<ProductChangeIncident>("ProductChangeIncidents").HasRequiredBinding(e => e.Product, "Products");
             builder.Entity<ProductChangeIncident>().HasRequired(e => e.Product, (e, te) => e.ProductId == te.Id);

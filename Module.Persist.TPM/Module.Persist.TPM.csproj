@@ -3720,6 +3720,14 @@
     <Compile Include="Migrations\202310061328438_Add_AP_GetCalendarClients.designer.cs">
       <DependentUpon>202310061328438_Add_AP_GetCalendarClients.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310201331092_Add_table_SFAType.cs" />
+    <Compile Include="Migrations\202310201331092_Add_table_SFAType.designer.cs">
+      <DependentUpon>202310201331092_Add_table_SFAType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202310231108031_AddRulesSFAType.cs" />
+    <Compile Include="Migrations\202310231108031_AddRulesSFAType.designer.cs">
+      <DependentUpon>202310231108031_AddRulesSFAType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202310131156109_Add_AP_CopyYearScenario.cs" />
     <Compile Include="Migrations\202310131156109_Add_AP_CopyYearScenario.designer.cs">
       <DependentUpon>202310131156109_Add_AP_CopyYearScenario.cs</DependentUpon>
@@ -3802,6 +3810,7 @@
     <Compile Include="Model\History\HistoricalRegion.cs" />
     <Compile Include="Model\History\HistoricalCOGS.cs" />
     <Compile Include="Model\History\HistoricalActualTradeInvestment.cs" />
+    <Compile Include="Model\History\HistoricalSFAType.cs" />
     <Compile Include="Model\History\HistoricalTradeInvestment.cs" />
     <Compile Include="Model\History\HistoricalRetailType.cs" />
     <Compile Include="Model\History\HistoricalSale.cs" />
@@ -3838,6 +3847,7 @@
     <Compile Include="Model\Import\ImportPromoProductsUplift.cs" />
     <Compile Include="Model\Import\ImportPromoProductsCorrection.cs" />
     <Compile Include="Model\Import\ImportRATIShopper.cs" />
+    <Compile Include="Model\Import\ImportSFAType.cs" />
     <Compile Include="Model\Import\ImportRetailType.cs" />
     <Compile Include="Model\Import\ImportRejectReason.cs" />
     <Compile Include="Model\Import\ImportPromoStatus.cs" />
@@ -3893,6 +3903,7 @@
     <Compile Include="Model\TPM\PromoPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductPriceIncrease.cs" />
+    <Compile Include="Model\TPM\SFAType.cs" />
     <Compile Include="Model\TPM\RollingScenario.cs" />
     <Compile Include="Model\TPM\SavedPromo.cs" />
     <Compile Include="Model\TPM\SavedScenario.cs" />
@@ -6985,9 +6996,15 @@
     <EmbeddedResource Include="Migrations\202310061328438_Add_AP_GetCalendarClients.resx">
       <DependentUpon>202310061328438_Add_AP_GetCalendarClients.cs</DependentUpon>
     </EmbeddedResource>
+      <EmbeddedResource Include="Migrations\202310201331092_Add_table_SFAType.resx">
+      <DependentUpon>202310201331092_Add_table_SFAType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310231108031_AddRulesSFAType.resx">
+      <DependentUpon>202310231108031_AddRulesSFAType.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310131156109_Add_AP_CopyYearScenario.resx">
       <DependentUpon>202310131156109_Add_AP_CopyYearScenario.cs</DependentUpon>
-    </EmbeddedResource>
+    </EmbeddedResource>   
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLInitialize\20190610_2000_CM_AP.sql" />

@@ -346,6 +346,9 @@
     <Content Include="Client\controller\tpm\ratishopper\DeletedRATIShopper.js" />
     <Content Include="Client\controller\tpm\ratishopper\HistoricalRATIShopper.js" />
     <Content Include="Client\controller\tpm\clienttreebrandtech\HistoricalClientTreeBrandTech.js" />
+    <Content Include="Client\controller\tpm\sfatype\DeletedSFAType.js" />
+    <Content Include="Client\controller\tpm\sfatype\HistoricalSFAType.js" />
+    <Content Include="Client\controller\tpm\sfatype\SFAType.js" />
     <Content Include="Client\controller\tpm\rollingvolume\RollingVolume.js" />
     <Content Include="Client\controller\tpm\rsmode\ConfirmUploadScenario.js" />
     <Content Include="Client\controller\tpm\rsmode\DeletedRSmode.js" />
@@ -406,6 +409,9 @@
     <Content Include="Client\model\tpm\rsmode\DeletedRSmode.js" />
     <Content Include="Client\model\tpm\rsmode\RSmode.js" />
     <Content Include="Client\model\tpm\savedScenario\SavedScenario.js" />
+    <Content Include="Client\model\tpm\sfatype\DeletedSFAType.js" />
+    <Content Include="Client\model\tpm\sfatype\HistoricalSFAType.js" />
+    <Content Include="Client\model\tpm\sfatype\SFAType.js" />
     <Content Include="Client\store\tpm\scenariotype\ScenarioType.js" />
     <Content Include="Client\util\MinHeightColumn.js" />
     <Content Include="Client\view\tpm\actualcogstn\ActualCOGSTnEditor.js" />
@@ -507,6 +513,7 @@
     <Compile Include="Controllers\DeletedPlanCOGSTnsController.cs" />
     <Compile Include="Controllers\DeletedPlanPostPromoEffectsController.cs" />
     <Compile Include="Controllers\DeletedPromoProductCorrectionPriceIncreasesController.cs" />
+    <Compile Include="Controllers\DeletedSFATypesController.cs" />
     <Compile Include="Controllers\DeletedRollingScenariosController.cs" />
     <Compile Include="Controllers\DiscountRangesController.cs" />
     <Compile Include="Controllers\DurationRangesController.cs" />
@@ -534,6 +541,7 @@
     <Compile Include="Controllers\HistoricalPLUDictionariesController.cs" />
     <Compile Include="Controllers\HistoricalPromoProductCorrectionPriceIncreasesController.cs" />
     <Compile Include="Controllers\HistoricalRATIShoppersController.cs" />
+    <Compile Include="Controllers\HistoricalSFATypesController.cs" />
     <Compile Include="Controllers\MetricsLiveHistoriesController.cs" />
     <Compile Include="Controllers\IncreaseBaseLinesController.cs" />
     <Compile Include="Controllers\PlanCOGSTnsController.cs" />
@@ -550,6 +558,7 @@
     <Compile Include="Controllers\PromoPriceIncreaseROIReportsController.cs" />
     <Compile Include="Controllers\PromoRSViewsController.cs" />
     <Compile Include="Controllers\RATIShoppersController.cs" />
+    <Compile Include="Controllers\SFATypesController.cs" />
     <Compile Include="Controllers\RollingVolumesController.cs" />
     <Compile Include="Controllers\RPAsController.cs" />
     <Compile Include="Controllers\RPASettingsController.cs" />
@@ -1155,6 +1164,12 @@
     <Content Include="Client\view\tpm\schedule\SelectClientScenario.js" />
     <Content Include="Client\view\tpm\schedule\ScheduleType.js" />
     <Content Include="Client\view\tpm\schedule\SelectBudgetYearWindow.js" />
+    <Content Include="Client\view\tpm\sfatype\DeletedSFAType.js" />
+    <Content Include="Client\view\tpm\sfatype\DeletedSFATypeDetail.js" />
+    <Content Include="Client\view\tpm\sfatype\HistoricalSFAType.js" />
+    <Content Include="Client\view\tpm\sfatype\HistoricalSFATypeDetail.js" />
+    <Content Include="Client\view\tpm\sfatype\SFAType.js" />
+    <Content Include="Client\view\tpm\sfatype\SFATypeEditor.js" />
     <Content Include="Client\view\tpm\schedule\SelectClientYearCopy.js" />
     <Content Include="Client\view\tpm\toolbar\calculatinglog\CustomLogTopToolbar.js" />
     <Content Include="Client\view\tpm\tradeinvestment\ImportTradeInvestmentParamForm.js" />
@@ -1838,6 +1853,7 @@
       <Name>Module.Persist.TPM</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

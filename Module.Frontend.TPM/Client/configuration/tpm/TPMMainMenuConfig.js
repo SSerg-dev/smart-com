@@ -269,7 +269,7 @@
                 raMode: false,
                 currentMode: true,
                 widget: 'retailtype'
-            },
+            },            
             {
                 text: l10n.ns('tpm', 'mainmenu').value('ClientTreeBrandTech'),
                 tooltip: l10n.ns('tpm', 'mainmenu').value('ClientTreeBrandTech'),
@@ -519,6 +519,15 @@
                 raMode: false,
                 currentMode: true,
                 widget: 'budget'
+            },
+            {
+                text: l10n.ns('tpm', 'mainmenu').value('SFAType'),
+                tooltip: l10n.ns('tpm', 'mainmenu').value('SFAType'),
+                glyph: 0xf110,
+                rsMode: false,
+                raMode: false,
+                currentMode: true,
+                widget: 'sfatype'
             },
             {
                 text: l10n.ns('tpm', 'mainmenu').value('PromoTypes'),

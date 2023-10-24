@@ -232,7 +232,14 @@
                             name: 'SFAClientCode',
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'ClientTree').value('SFAClientCode')
-                        }, {
+                        },
+                        {
+                            xtype: 'singlelinedisplayfield',
+                            name: 'SFATypeName',
+                            width: 280,
+                            fieldLabel: l10n.ns('tpm', 'SFAType').value('Name')
+                        },
+                        {
                             xtype: 'singlelinedisplayfield',
                             name: 'IsBaseClient',
                             renderer: App.RenderHelper.getBooleanRenderer('Yes', 'No'),

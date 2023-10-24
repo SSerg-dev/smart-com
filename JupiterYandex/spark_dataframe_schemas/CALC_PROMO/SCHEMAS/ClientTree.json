@@ -178,6 +178,13 @@
     {
       "metadata": {
       },
+      "name": "SFAType",
+      "nullable": true,
+      "type": "string"
+    },
+    {
+      "metadata": {
+      },
       "name": "#QCCount",
       "nullable": true,
       "type": "integer"

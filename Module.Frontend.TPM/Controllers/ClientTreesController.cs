@@ -667,9 +667,11 @@ namespace Module.Frontend.TPM.Controllers
                 x.DistrMarkUp == model.DistrMarkUp &&
                 x.parentId == model.parentId &&
                 x.DemandCode == (!string.IsNullOrEmpty(model.DemandCode) ? model.DemandCode : null) &&
-                x.GHierarchyCode == model.GHierarchyCode &&
+                x.GHierarchyCode == model.GHierarchyCode &&                                        
+                x.SFATypeName == model.SFATypeName &&
                 x.DMDGroup == model.DMDGroup &&
-                x.SFAClientCode == model.SFAClientCode).Count();
+                x.SFAClientCode == model.SFAClientCode &&
+                 x.SFATypeName == model.SFATypeName).Count();           
 
             if (checkDouble > 0)
             {
@@ -1344,6 +1346,7 @@ namespace Module.Frontend.TPM.Controllers
         public bool? IsDaysEnd { get; set; }
         public double? DistrMarkUp { get; set; }
         public string SFAClientCode { get; set; }
+        public string SFATypeName { get; set; }
         public double? DeviationCoefficient { get; set; }
         public string LogoFileName { get; set; }
 
@@ -1373,6 +1376,7 @@ namespace Module.Frontend.TPM.Controllers
             DMDGroup = treeNode.DMDGroup;
             DistrMarkUp = treeNode.DistrMarkUp;
             SFAClientCode = treeNode.SFAClientCode;
+            SFATypeName = treeNode.SFATypeName;
             DeviationCoefficient = treeNode.DeviationCoefficient;
 
             this.leaf = leaf;
