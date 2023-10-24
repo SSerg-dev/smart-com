@@ -39,3 +39,11 @@ resource "yandex_resourcemanager_folder_iam_binding" "admins-group-folder-bindin
    "group:${yandex_organizationmanager_group.admins-group.id}",
   ]
 }
+
+resource "yandex_resourcemanager_folder_iam_binding" "admins-group-folder-binding-4" {
+ folder_id = yandex_resourcemanager_folder.folder.id
+ role      = "container-registry.images.pusher"
+ members   = [
+   "group:${yandex_organizationmanager_group.admins-group.id}"
+ ]
+}
