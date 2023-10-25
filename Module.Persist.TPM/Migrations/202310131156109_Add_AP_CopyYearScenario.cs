@@ -32,6 +32,12 @@
                 SET @RoleId = (SELECT [Id] FROM [{defaultSchema}].[Role] where SystemName='FunctionalExpert');
 				INSERT INTO [{defaultSchema}].[AccessPointRole] (RoleId, AccessPointId) values
 				(@RoleId, (SELECT [Id] FROM [{defaultSchema}].[AccessPoint] where [Resource]='ClientTrees' and [Action]='CopyYearScenario'))
+
+                INSERT INTO [{defaultSchema}].[AccessPointRole]
+                    ([Id],[RoleId],[AccessPointId])
+                VALUES
+                    (NEWID(), @RoleId, (SELECT TOP(1) Id FROM [{defaultSchema}].[AccessPoint] WHERE Action = 'GetStatusScenario' AND Resource = 'RollingScenarios'))
+                GO
 				";
             Sql(SqlString);
         }
