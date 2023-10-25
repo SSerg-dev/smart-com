@@ -276,10 +276,11 @@
 
     updateTreeDetail: function (editorform, record) {
         editorform.loadRecord(record);
-        if (record.get('Type') == 'Technology') {
-            var technologyDescription = record.raw.Technology.Description_ru;
-            editorform.down('[name=Description_ru]').setValue(technologyDescription);
-        }
+        //TO DO убрать после тестирования
+        //if (record.get('Type') == 'Technology') {
+            //var technologyDescription = record.get('Description_ru');
+            //technologyDescription && editorform.down('[name=Description_ru]').setValue(technologyDescription);
+        //}
         this.setLogoImage(editorform.up('producttree').down('[name=treeLogoPanel]'), record.data.LogoFileName);
     },
 
