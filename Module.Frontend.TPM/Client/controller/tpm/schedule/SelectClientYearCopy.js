@@ -49,7 +49,10 @@
                             }
                         });
                     }
-
+                    else {
+                        debugger;
+                        App.Notify.pushError(result.message);
+                    }
                 } else {
                     me.onConfirmSuccessButtonClick(button);
                 }
