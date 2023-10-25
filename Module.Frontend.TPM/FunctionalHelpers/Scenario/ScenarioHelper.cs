@@ -154,7 +154,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
         }
         public static StatusScenarioResult GetStatusScenario(int objectId, DatabaseContext Context)
         {
-            ClientTree clientTree = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == objectId && g.EndDate != null);
+            ClientTree clientTree = Context.Set<ClientTree>().FirstOrDefault(g => g.ObjectId == objectId && g.EndDate == null);
             RollingScenario rollingScenario = GetActiveScenario(clientTree.ObjectId, Context);
             if (rollingScenario != null)
             {
