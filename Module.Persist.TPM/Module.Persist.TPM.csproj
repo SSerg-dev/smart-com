@@ -3736,6 +3736,10 @@
     <Compile Include="Migrations\202310241242123_Add_SFATypename_To_ClientTree.designer.cs">
       <DependentUpon>202310241242123_Add_SFATypename_To_ClientTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310241354004_Add_sfa_accesPoint.cs" />
+    <Compile Include="Migrations\202310241354004_Add_sfa_accesPoint.designer.cs">
+      <DependentUpon>202310241354004_Add_sfa_accesPoint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7011,6 +7015,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310241242123_Add_SFATypename_To_ClientTree.resx">
       <DependentUpon>202310241242123_Add_SFATypename_To_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310241354004_Add_sfa_accesPoint.resx">
+      <DependentUpon>202310241354004_Add_sfa_accesPoint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
