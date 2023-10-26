@@ -286,10 +286,9 @@
 
             this.down('[name=PromoProductBrand]').setValue(this.promoProductRecord.Brand);
             this.down('[name=PromoProductTechnology]').setValue(this.promoProductRecord.Technology);
-        } else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {
-            var brandTechName = record.data.BrandTechName;
+        } else if (record.data.BrandTechName != null && record.data.BrandTechName != '') {            
             var brandName = record.data.BrandName;
-            var techName = brandTechName.replace(brandName + ' ', '');
+            var technologyName = record.data.TechnologyName
 
             chooseBtn.setText('<b>' + brandName + '<br/>...</b>');
             chooseBtn.setGlyph();
@@ -297,7 +296,7 @@
             chooseBtn.setIconCls('promoClientChooseBtnIcon');
 
             this.down('[name=PromoProductBrand]').setValue(brandName);
-            this.down('[name=PromoProductTechnology]').setValue(techName);
+            this.down('[name=PromoProductTechnology]').setValue(technologyName);
         } else {
             chooseBtn.setText('<b>' + l10n.ns('tpm', 'PromoBasicProducts').value('ChooseProduct') + '<br/>...</b>');
             chooseBtn.setIcon();
