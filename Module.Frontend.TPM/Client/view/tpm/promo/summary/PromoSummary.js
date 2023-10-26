@@ -182,6 +182,7 @@
                                         //Activity
                                         title: l10n.ns('tpm', 'PromoSummary').value('Activity'),
                                         minWidth: 159,
+                                        name: 'activityFieldsetContainer',
                                         flex: 1,
                                         cls: 'borderright',
                                         header: {
@@ -197,16 +198,16 @@
                                             }]
                                         },
                                         layout: {
-                                            type: 'fit',
+                                            type: 'vbox',
                                             align: 'stretch'
                                         },
                                         items: [{
                                             name: 'activityFieldset',
-                                            style: 'padding-left: 10px; padding-right: 20px',
-                                            layout: {
-                                                type: 'fit',
-                                                align: 'stretch'
-                                            },
+                                            //style: 'padding-left: 10px; padding-right: 20px',
+                                            //layout: {
+                                            //    type: 'fit',
+                                            //    align: 'stretch'
+                                            //},                                            
                                         }]
                                     },
                                     {
