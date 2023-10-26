@@ -24,6 +24,7 @@ Ext.define('App.view.tpm.promo.PromoActivityChart', {
     insetPadding: 5,
     theme: 'activityTheme',
     shadow: false,
+    resizable: false,
     legend: {
         position: 'bottom',
         boxStroke: 'none',
@@ -36,6 +37,7 @@ Ext.define('App.view.tpm.promo.PromoActivityChart', {
         type: 'category',
         position: 'bottom',
         fields: 'name',
+        minimum: 0
     }],
     series: [{
         type: 'column',

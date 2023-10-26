@@ -863,6 +863,7 @@
         me.setButtonsState(button);
 
         var budgetsFieldset = summary.down('panel[name=budgetsFieldset]'),
+            activityFieldsetContainer = summary.down('panel[name=activityFieldsetContainer]'),
             activityFieldset = summary.down('panel[name=activityFieldset]'),
             roiFieldset = summary.down('panel[name=roiFieldset]');
         // activity Data
@@ -972,9 +973,11 @@
             budgetsChartStore.loadData(budgetData);
         } else {
             // Добавляем графики в дашборд, если их ещё нет там
+            var conWidth = activityFieldsetContainer.getWidth() - 3;
+            var conHeight = activityFieldsetContainer.getHeight() - 10;
             activityFieldset.add({
-                width: 500,
-                height: 300,
+                width: conWidth,
+                height: conHeight,
                 xtype: activityChartName,
                 store: Ext.create('Ext.data.Store', {
                     storeId: 'planpromoactivitystore',
