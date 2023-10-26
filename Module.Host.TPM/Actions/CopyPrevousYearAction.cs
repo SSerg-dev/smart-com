@@ -17,6 +17,7 @@ using Module.Persist.TPM.Model.SimpleModel;
 using Module.Frontend.TPM.FunctionalHelpers.HiddenMode;
 using Module.Persist.TPM.Enum;
 using Persist.Model.Settings;
+using Module.Persist.TPM.Model.Interfaces;
 
 namespace Module.Host.TPM.Actions
 {
@@ -68,7 +69,7 @@ namespace Module.Host.TPM.Actions
                             .Include(g => g.IncrementalPromoes)
                             .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                             .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
-                            .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsGrowthAcceleration && !g.IsInExchange)
+                            .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsGrowthAcceleration && !g.IsInExchange && g.TPMmode == TPMmode.Current)
                             .ToList();
                         CopyRAReturn copyRAReturn = HiddenModeHelper.CopyToPromoRA(Context, promos, budgetYear, CheckedDate, clientDispatchDays);
 
