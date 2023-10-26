@@ -507,7 +507,7 @@ namespace Module.Host.TPM.Actions
                     ActualAddTIShopper = import.ActualAddTIShopper,
                     ActualAddTIMarketing = import.ActualAddTIMarketing,
                     SumInvoice = import.SumInInvoice,
-                    InOut = import.PromoType == "InOut",
+                    InOut = import.PromoType == "InOut Promo",                  
                 };
                 promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
                 if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (int)promo.BudgetYear))
