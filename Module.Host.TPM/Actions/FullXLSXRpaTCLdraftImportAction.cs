@@ -453,8 +453,10 @@ namespace Module.Host.TPM.Actions
                     NeedRecountUplift = true
                 };
                 CreatePromoProductTree(promo, context.Set<ProductTree>().Where(x => x.EndDate == null).ToList(), context);
-                
-                promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                if (import.DispatchStartDate == null && import.DispatchEndDate == null)
+                {
+                    promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                }
                 SetPromoMarsDates(promo);
                 
                 if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (int)promo.BudgetYear))
