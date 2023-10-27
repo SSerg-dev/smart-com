@@ -446,7 +446,7 @@ namespace Module.Host.TPM.Actions
                     DispatchesEnd = import.DispatchEndDate,
                     TechnologyId = techId,
                     InOutProductIds = "",
-                    InOut = import.PromoType == "InOut",
+                    InOut = import.PromoType == "InOut Promo",
                     BrandId = brandId,
                     BudgetYear = import.BudgetYear,
                     CalendarPriority = 3,
