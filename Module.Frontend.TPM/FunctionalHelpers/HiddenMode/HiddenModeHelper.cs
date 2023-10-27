@@ -406,12 +406,15 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             );
             return promoesRA;
         }
-        public static CopyRAReturn CopyToPromoRA(DatabaseContext Context, List<Promo> promoes, int budgetYear, bool CheckedDate, PromoHelper.ClientDispatchDays clientDispatchDays, bool disabled = false, DateTimeOffset? deleteddate = null)
+        public static CopyRAReturn CopyToPromoRA(DatabaseContext Context, List<Promo> promoes, int budgetYear, bool CheckedDate, PromoHelper.ClientDispatchDays clientDispatchDays, Guid draftPublish, bool disabled = false, DateTimeOffset? deleteddate = null)
         {
             CopyRAReturn copyRAReturn = new CopyRAReturn { Promos = new List<Promo>(), Errors = new List<string>() };
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Promo, Promo>()
+                    .ForMember(pTo => pTo.Number, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.PromoStatusId, opt => opt.MapFrom(x => draftPublish))
+                    .ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
@@ -433,8 +436,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Color, opt => opt.Ignore())
                     .ForMember(pTo => pTo.RejectReason, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Event, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
                     .ForMember(pTo => pTo.MasterPromo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoUpliftFailIncidents, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoSupportPromoes, opt => opt.MapFrom(f => f.PromoSupportPromoes.Where(g => !g.Disabled)))//filter
@@ -448,7 +449,65 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.SavedScenarioId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.RollingScenarioId, opt => opt.Ignore())
                     .ForMember(pTo => pTo.RollingScenario, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease));
+                    .ForMember(pTo => pTo.PromoPriceIncrease, opt => opt.MapFrom(f => f.PromoPriceIncrease))
+                    .ForMember(pTo => pTo.UseActualTI, opt => opt.MapFrom(x => false))
+                    .ForMember(pTo => pTo.UseActualCOGS, opt => opt.MapFrom(x => false))
+                    .ForMember(pTo => pTo.ActualPromoXSites, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCatalogue, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoPOSMInClient, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCostProdXSites, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCostProdCatalogue, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCostProdPOSMInClient, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoBaselineLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreDiscount, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreShelfPrice, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalBaseTI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalBaseTI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalCOGS, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalCOGS, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoTotalCost, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalMAC, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalEarnings, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalEarnings, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetROIPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetUpliftPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualTIBasePercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualCOGSPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualCOGSTn, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoBaselineBaseTI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetBaseTI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoBaseTI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetNSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalMACLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalMACLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalEarningsLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalEarningsLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoROIPercentLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetROIPercentLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoTIShopper, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoTIMarketing, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoBranding, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoBTL, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCostProduction, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoCost, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoUpliftPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoLSVByCompensation, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoLSVSI, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoLSVSO, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoPostPromoEffectLSVW1, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoPostPromoEffectLSVW2, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoPostPromoEffectLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoROIPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalNSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoNetIncrementalNSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualPromoIncrementalMAC, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanicType, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualInStoreMechanic, opt => opt.Ignore());
                 cfg.CreateMap<PromoSupportPromo, PromoSupportPromo>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
@@ -471,7 +530,29 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Product, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoProductsCorrections, opt => opt.MapFrom(f => f.PromoProductsCorrections.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore())
-                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore());
+                    .ForMember(pTo => pTo.Plu, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductBaselineLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPCQty, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductCaseQty, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductUOM, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductSellInPrice, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductShelfDiscount, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPCLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductUpliftPercent, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductIncrementalPCQty, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductIncrementalPCLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductIncrementalLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductLSV, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectQtyW1, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectQtyW2, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectQty, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductLSVByCompensation, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductBaselineCaseQty, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductQtySO, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectLSVW1, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.ActualProductPostPromoEffectLSVW2, opt => opt.Ignore())
+                    ;
                 cfg.CreateMap<PromoProductsCorrection, PromoProductsCorrection>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.TPMmode, opt => opt.MapFrom(x => TPMmode.Hidden))
@@ -581,11 +662,20 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             {
                 if (promoRA.PromoPriceIncrease != null)
                 {
+                    List<PromoProductPriceIncrease> promoProductsPIdelete = new List<PromoProductPriceIncrease>();
                     foreach (PromoProductPriceIncrease promoProductPriceIncrease in promoRA.PromoPriceIncrease.PromoProductPriceIncreases) // костыль
                     {
                         PromoProduct promoProduct = promoRA.PromoProducts.FirstOrDefault(g => g.ZREP == promoProductPriceIncrease.ZREP);
-                        promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                        if (promoProduct != null)
+                        {
+                            promoProductPriceIncrease.PromoProductId = promoProduct.Id;
+                        }
+                        else
+                        {
+                            promoProductsPIdelete.Add(promoProductPriceIncrease);
+                        }
                     }
+                    Context.Set<PromoProductPriceIncrease>().RemoveRange(promoProductsPIdelete);
                 }
             }
             Context.SaveChanges();
