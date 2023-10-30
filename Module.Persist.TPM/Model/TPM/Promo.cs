@@ -345,6 +345,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("RollingScenario")]
         public Guid? RollingScenarioId { get; set; }
         public RollingScenario RollingScenario { get; set; }
+        [Index("Unique_PromoNumber", 4, IsUnique = true)]
         [ForeignKey("SavedScenario")]
         public Guid? SavedScenarioId { get; set; }
         public SavedScenario SavedScenario { get; set; }
