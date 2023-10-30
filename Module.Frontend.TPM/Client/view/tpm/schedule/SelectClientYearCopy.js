@@ -54,7 +54,7 @@
                         autoScroll: true,
                         overflowY: 'scroll',
                         cls: 'scrollpanel radiogroup',
-
+                        wasValid: true,
                         xtype: 'radiogroup',
                         itemId: 'clientsRadioGroup',
                         columns: 1,
