@@ -221,6 +221,11 @@ namespace Module.Host.TPM.Actions
                                 HandlerLogger.Write(true, string.Format("Promo {0} processing has started", promo.MLPromoId), "Message");
                                 promo.TPMmode = TPMmode.Hidden;
                                 promo = PromoHelper.SaveMLPromo(promo, context, user, role, mechanics, mechanicTypes, clientTrees, productTrees, brands, technologies, brandTeches, colors);
+                                promo.PromoInfo = new PromoInfo
+                                {
+                                    CreatedFrom = rollingScenario.ScenarioType == ScenarioType.RS ? CreatedFrom.RSML : CreatedFrom.RAML,
+                                    CreatedDate = TimeHelper.Now()
+                                };
                                 rollingScenario.Promoes.Add(promo);
                             }
                         }

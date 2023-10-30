@@ -335,6 +335,7 @@
     <Compile Include="ElasticSearch\LocalElasticHistoryReader.cs" />
     <Compile Include="ElasticSearch\LocalElasticHistoryWriter.cs" />
     <Compile Include="ElasticSearch\InsteadHistoricalAttribute.cs" />
+    <Compile Include="Enum\CreatedFrom.cs" />
     <Compile Include="Enum\RSstateNames.cs" />
     <Compile Include="Enum\SavedPromoType.cs" />
     <Compile Include="Enum\ScenarioType.cs" />
@@ -3744,6 +3745,10 @@
     <Compile Include="Migrations\202310251305215_Add_accessPoint_SFAType_CMManager.designer.cs">
       <DependentUpon>202310251305215_Add_accessPoint_SFAType_CMManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310301018255_Add_PromoInfo.cs" />
+    <Compile Include="Migrations\202310301018255_Add_PromoInfo.designer.cs">
+      <DependentUpon>202310301018255_Add_PromoInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3912,6 +3917,7 @@
     <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\IncreaseBaseLine.cs" />
     <Compile Include="Model\TPM\PlanPostPromoEffect.cs" />
+    <Compile Include="Model\TPM\PromoInfo.cs" />
     <Compile Include="Model\TPM\PromoPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductPriceIncrease.cs" />
@@ -7025,6 +7031,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310251305215_Add_accessPoint_SFAType_CMManager.resx">
       <DependentUpon>202310251305215_Add_accessPoint_SFAType_CMManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310301018255_Add_PromoInfo.resx">
+      <DependentUpon>202310301018255_Add_PromoInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

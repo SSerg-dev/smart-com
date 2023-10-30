@@ -17,6 +17,7 @@ namespace Module.Persist.TPM.Model.TPM
         public string TempId { get; set; }
 
         public Guid? UserId { get; set; }
+        [StringLength(128)]
         public string UserName { get; set; }
 
         public DateTimeOffset? CreateDate { get; set; }

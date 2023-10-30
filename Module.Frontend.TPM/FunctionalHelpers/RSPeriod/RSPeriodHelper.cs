@@ -120,6 +120,9 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     //.ForMember(pTo => pTo.DeletedDate, opt => opt.Ignore())
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.Ignore());
+                cfg.CreateMap<PromoInfo, PromoInfo>()
+                    .ForMember(pTo => pTo.Id, opt => opt.Ignore())
+                    .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
             });
             var mapperPromoBack = cfgPromoBack.CreateMapper();
             //var cfgBTLPromoBack = new MapperConfiguration(cfg =>
@@ -283,6 +286,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     .Include(g => g.PromoCancelledIncidents)
                     .Include(g => g.PromoApprovedIncidents)
                     .Include(g => g.CurrentDayIncrementals)
+                    .Include(g => g.PromoInfo)
                     .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                     .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
                 .Where(x => promoRSids.Contains(x.Id)).ToList();
@@ -303,6 +307,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                 {
                     Promo promo = promos.FirstOrDefault(g => g.Number == promoRS.Number);
                     mapperPromoBack.Map(promoRS, promo);
+                    if (promo.PromoInfo == null)
+                    {
+                        promo.PromoInfo = new PromoInfo
+                        {
+                            CreatedDate = TimeHelper.Now(),
+                            CreatedFrom = promoRS.TPMmode == TPMmode.RS ? CreatedFrom.RS : CreatedFrom.RA
+                        };
+                    }
                     //foreach (BTLPromo bTLPromoRS in promoRS.BTLPromoes)
                     //{
                     //    if (promo.BTLPromoes.Select(g => g.BTLId).Contains(bTLPromoRS.BTLId)) // существующий btlpromo
@@ -484,7 +496,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     promo.PromoStatusId = promoStatusOnApproval;
                     //promoesRS.Remove(promoRS); - нельзя сделать
                     //Context.Set<Promo>().Remove(promoRS); // не отследит EF
-                                                          //ChangeStatusOnApproval(Context, promo);
+                    //ChangeStatusOnApproval(Context, promo);
                     //Context.SaveChanges();
                     promoIds.Add(promo.Id);
                 }
@@ -532,6 +544,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
             {
                 item.ItemId = id.ToString();
             }
-        }        
+        }
     }
 }
