@@ -64,7 +64,8 @@ namespace Module.Host.TPM.Actions
                         int budgetYear = TimeHelper.ThisBuggetYear();
                         int nextYear = TimeHelper.NextBuggetYear();
                         List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
-                        List<Promo> promos = Context.Set<Promo>()
+                        Guid draftPublish = Context.Set<PromoStatus>().FirstOrDefault(f => f.SystemName == "DraftPublished").Id;
+                        List <Promo> promos = Context.Set<Promo>()
                             .Include(g => g.PromoSupportPromoes)
                             .Include(g => g.PromoProductTrees)
                             .Include(g => g.IncrementalPromoes)
@@ -72,7 +73,7 @@ namespace Module.Host.TPM.Actions
                             .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
                             .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsGrowthAcceleration && !g.IsInExchange && g.TPMmode == TPMmode.Current)
                             .ToList();
-                        CopyRAReturn copyRAReturn = HiddenModeHelper.CopyToPromoRA(Context, promos, nextYear, CheckedDate, clientDispatchDays);
+                        CopyRAReturn copyRAReturn = HiddenModeHelper.CopyToPromoRA(Context, promos, nextYear, CheckedDate, clientDispatchDays, draftPublish);
 
                         if (copyRAReturn.Promos.Count > 0)
                         {

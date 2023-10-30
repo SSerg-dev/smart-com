@@ -509,7 +509,10 @@ namespace Module.Host.TPM.Actions
                     SumInvoice = import.SumInInvoice,
                     InOut = import.PromoType == "InOut Promo",                  
                 };
-                promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                if (import.DispatchStartDate == null && import.DispatchEndDate == null)
+                {
+                    promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
+                }
                 if (!CheckBudgetYear((DateTimeOffset)promo.DispatchesStart, (int)promo.BudgetYear))
                 {
                     errors.Add("Wrong BudgetYear " + import.BudgetYear);
