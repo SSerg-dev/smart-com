@@ -3749,6 +3749,10 @@
     <Compile Include="Migrations\202310301018255_Add_PromoInfo.designer.cs">
       <DependentUpon>202310301018255_Add_PromoInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310301245407_Change_Unique_PromoNumber.cs" />
+    <Compile Include="Migrations\202310301245407_Change_Unique_PromoNumber.designer.cs">
+      <DependentUpon>202310301245407_Change_Unique_PromoNumber.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7034,6 +7038,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310301018255_Add_PromoInfo.resx">
       <DependentUpon>202310301018255_Add_PromoInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202310301245407_Change_Unique_PromoNumber.resx">
+      <DependentUpon>202310301245407_Change_Unique_PromoNumber.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

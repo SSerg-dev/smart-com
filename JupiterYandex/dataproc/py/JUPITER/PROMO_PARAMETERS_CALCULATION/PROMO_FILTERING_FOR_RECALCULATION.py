@@ -54,9 +54,9 @@ inputLogMessageSchema = StructType([
 
 if is_notebook():
  sys.argv=['','{"MaintenancePathPrefix": '
- '"/JUPITER/RAW/#MAINTENANCE/2023-09-23_scheduled__2023-09-22T21%3A20%3A00%2B00%3A00_", '
- '"ProcessDate": "2023-09-23", "Schema": "Jupiter", "HandlerId": '
- '"c2a3a949-4ae1-481e-ac2e-28d368e2c6be"}']
+ '"/JUPITER/RAW/#MAINTENANCE/2023-10-17_manual__2023-10-17T09%3A04%3A59.632218%2B00%3A00_", '
+ '"ProcessDate": "2023-10-17", "Schema": "Jupiter", "HandlerId": '
+ '"35750357-0380-4bf6-833f-b8fc0535ab03"}']
  
  sc.addPyFile("hdfs:///SRC/SHARED/EXTRACT_SETTING.py")
  sc.addPyFile("hdfs:///SRC/SHARED/SUPPORT_FUNCTIONS.py")
@@ -517,6 +517,11 @@ promoByPPECiDF = ppeCiDF\
   .select(promoFilterDF.Id, promoFilterDF.Number)\
   .dropDuplicates()
 
+promoByScenarioCiDF = promoDF\
+  .join(promoScenarioIdsDF, 'Id', 'inner')\
+  .select(promoDF.Id, promoDF.Number)\
+  .dropDuplicates()
+
 #####*Get promo numbers filtered by correction changes incidents*
 
 correctionCiDF = correctionCiIdsDF\
@@ -855,6 +860,11 @@ promoNumbersByPpeCiDF = promoByPPECiDF.select(col('Number')).withColumn('Title',
 promoNumbersByPpeCiDF = promoNumbersByPpeCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
+  
+promoNumbersByPromoCiDF = promoByScenarioCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Promo incidents: '))
+promoNumbersByPromoCiDF = promoNumbersByPromoCiDF\
+  .groupBy('Title')\
+  .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
 promoNumbersByCorrectionCiDF = promoByCorrectionCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Correction incidents: '))
 promoNumbersByCorrectionCiDF = promoNumbersByCorrectionCiDF\
@@ -896,7 +906,7 @@ promoNumbersByActualTiCiDF = promoNumbersByActualTiCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
 
-promoNumbersByScenarioCiDF = promoScenarioCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by Scenario incidents: '))
+promoNumbersByScenarioCiDF = promoScenarioCiDF.select(col('Number')).withColumn('Title', lit('[INFO]: Promo filtered by RA Scenario incidents: '))
 promoNumbersByScenarioCiDF = promoNumbersByScenarioCiDF\
   .groupBy('Title')\
   .agg(concat_ws(';', collect_list(col('Number'))).alias('Number'))
@@ -915,6 +925,7 @@ promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
   .union(promoNumbersByClientTreeCiDF)\
   .union(promoNumbersByProductTreeCiDF)\
   .union(promoNumbersByPpeCiDF)\
+  .union(promoNumbersByScenarioCiDF)\
   .union(promoNumbersByCorrectionCiDF)\
   .union(promoNumbersByIncrementalCiDF)\
   .union(promoNumbersByCogsCiDF)\
@@ -923,7 +934,7 @@ promoNumbersFilteredByCiDF = promoNumbersByAssortmentMatrixCiDF\
   .union(promoNumbersByActualCogsCiDF)\
   .union(promoNumbersByActualCogsTnCiDF)\
   .union(promoNumbersByActualTiCiDF)\
-  .union(promoNumbersByScenarioCiDF)\
+  .union(promoNumbersByPromoCiDF)\
   .union(promoNumbersByProductCiDF)
 
 logMessageDF = promoNumbersFilteredByCiDF\
@@ -941,6 +952,7 @@ promoByCiDF = promoByAssortmentMatrixCiDF\
   .union(promoByClientTreeCiDF)\
   .union(promoByProductTreeCiDF)\
   .union(promoByPPECiDF)\
+  .union(promoByScenarioCiDF)\
   .union(promoByCorrectionCiDF)\
   .union(promoByIncrementalCiDF)\
   .union(promoByCogsCiDF)\

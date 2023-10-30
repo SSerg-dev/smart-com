@@ -18,7 +18,7 @@ k8s-sa-name = "jupiter-app-2-dev-k8s-sa"
 k8s-nsa-name = "jupiter-app-2-dev-k8sn-sa"
 k8s-kms-key-name = "jupiter-app-2-dev-k8s-kms"
 k8s-name = "jupiter-app-2-dev-k8s"
-k8s-version = "1.24"
+k8s-version = "1.27"
 k8s-cluster-cidr = "10.112.0.0/16"
 k8s-services-cidr = "10.96.0.0/16"
 k8s-vault-namespace = "vault"
@@ -33,18 +33,6 @@ k8s-nodes = {
     max = 3
     initial = 1
 }
-
-# k8s-nodes = {
-#     name = "jupiter-app-2-dev-k8s-nodes"
-#     platform = "standard-v3"
-#     cpu = 4
-#     cpu_fraction = 100
-#     memory = 16
-#     disk = 128
-#     min = 2
-#     max = 3
-#     initial = 3
-# }
 
 vault-sa-name = "jupiter-app-2-dev-vault-sa"
 vault-kms-name = "jupiter-app-2-dev-vault-kms"
@@ -70,18 +58,6 @@ dataproc = {
     compute_max = 3
     ssh-key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhs734/KlEdJyOl6I2EmzvLDOdTrnrMuj7LTIwQSL5RjG+HEVr6yCBCeWRrNkBU2Lp2IdsN/FXtm4mZjNcezfhyJ+zcZCrgSyKYBpczXd22s54mXdNjjJ9nm1Xzzj9l7FyuZIFVb3Y5kcBqt6+XK3XQf46pEdLZqW3nUcFZPfbBnysKcgfLvQtFsmFSZjolbApH9B+6C+oi4y3Ls/YKwBTE+JkGy/MRaJkT9eyYzmAbQeretwHCsl83RwD90kNtIN9bidgdiA9R1H/V58l0376MUqmZHjjhMLgkezDLfpPM3EK9LSdH8mmt4198iYOkn24OfdoofwB3LGAUsVXAxy3 smartadmin"
 }
-# dataproc = {
-#     name = "jupiter-app-2-dev-dataproc"
-#     preset_id_master = "s2.medium"
-#     preset_id_data = "s2.medium"
-#     preset_id_compute = "s2.medium"
-#     disk_master = 64
-#     disk_data = 64
-#     disk_compute = 128
-#     compute_min = 2
-#     compute_max = 3
-#     ssh-key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhs734/KlEdJyOl6I2EmzvLDOdTrnrMuj7LTIwQSL5RjG+HEVr6yCBCeWRrNkBU2Lp2IdsN/FXtm4mZjNcezfhyJ+zcZCrgSyKYBpczXd22s54mXdNjjJ9nm1Xzzj9l7FyuZIFVb3Y5kcBqt6+XK3XQf46pEdLZqW3nUcFZPfbBnysKcgfLvQtFsmFSZjolbApH9B+6C+oi4y3Ls/YKwBTE+JkGy/MRaJkT9eyYzmAbQeretwHCsl83RwD90kNtIN9bidgdiA9R1H/V58l0376MUqmZHjjhMLgkezDLfpPM3EK9LSdH8mmt4198iYOkn24OfdoofwB3LGAUsVXAxy3 smartadmin"
-# }
 
 airflow-sa-name = "jupiter-app-2-dev-airflow-sa"
 airflow-image = "cr.yandex/crphfbb3tge0u19a9s58/airflow"
@@ -124,6 +100,6 @@ EOT
 }
 
 deploy-sa-name = "jupiter-app-2-dev-deploy-sa"
-admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeh1g5kg4fns2v8un96", "ajejp42omjeiha4liqmi" ]
+admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeh1g5kg4fns2v8un96", "ajejp42omjeiha4liqmi","aje1lft5tu15rloh741t" ]
 
 datasphere-sa-name = "jupiter-app-2-dev-datasphere-sa"
