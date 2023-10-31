@@ -107,6 +107,7 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Единица измерения (штуки или кейсы)
         /// </summary>
+        [StringLength(128)]
         public string ActualProductUOM { get; set; }
 
         /// <summary>
@@ -218,6 +219,7 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Имя продукта на EN
         /// </summary>
+        [StringLength(128)]
         public string ProductEN { get; set; }
 
         /// <summary>

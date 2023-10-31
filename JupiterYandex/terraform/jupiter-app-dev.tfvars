@@ -18,7 +18,7 @@ k8s-sa-name = "jupiter-app-dev-k8s-sa"
 k8s-nsa-name = "jupiter-app-dev-k8sn-sa"
 k8s-kms-key-name = "jupiter-app-dev-k8s-kms"
 k8s-name = "jupiter-app-dev-k8s"
-k8s-version = "1.24"
+k8s-version = "1.27"
 k8s-cluster-cidr = "10.111.0.0/16"
 k8s-services-cidr = "10.95.0.0/16"
 k8s-vault-namespace = "vault"
@@ -100,6 +100,6 @@ EOT
 }
 
 deploy-sa-name = "jupiter-app-dev-deploy-sa"
-admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeik7084rirbkajnjmh" ]
+admins = ["ajeehctfa42f65mi0vnl", "ajeh4495unpnso3pbctt", "ajeik7084rirbkajnjmh", "aje1lft5tu15rloh741t" ]
 
 datasphere-sa-name = "jupiter-app-dev-datasphere-sa"

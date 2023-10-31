@@ -77,27 +77,27 @@ resource "helm_release" "airflow-dags-pvc" {
   }
 }
 
-resource "helm_release" "airflow" {
-  namespace        = "airflow"
-  create_namespace = true
-  name             = "airflow"
-  repository       = "https://airflow.apache.org"
-  chart            = "airflow"
-  wait             = false
-  timeout    = 600
-  depends_on = [
-  helm_release.airflow-logs-pvc,
-  helm_release.airflow-dags-pvc,
-  null_resource.vault-policy
-  ]
-  values = [
-    templatefile("airflow-values.yaml", {
-        subnetId = yandex_vpc_subnet.subnet.id
-        image = var.airflow-image
-        tag = var.airflow-tag
-        pvName = var.airflow-dags-pv
-        pvcName = var.airflow-dags-pvc
-        dataprocUri = "hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
-        })
-  ]
-}
+# resource "helm_release" "airflow" {
+#   namespace        = "airflow"
+#   create_namespace = true
+#   name             = "airflow"
+#   repository       = "https://airflow.apache.org"
+#   chart            = "airflow"
+#   wait             = false
+#   timeout    = 600
+#   depends_on = [
+#   helm_release.airflow-logs-pvc,
+#   helm_release.airflow-dags-pvc,
+#   null_resource.vault-policy
+#   ]
+#   values = [
+#     templatefile("airflow-values.yaml", {
+#         subnetId = yandex_vpc_subnet.subnet.id
+#         image = var.airflow-image
+#         tag = var.airflow-tag
+#         pvName = var.airflow-dags-pv
+#         pvcName = var.airflow-dags-pvc
+#         dataprocUri = "hdfs://rc1b-dataproc-m-i8l6iml0qs1dx7o3.mdb.yandexcloud.net"
+#         })
+#   ]
+# }

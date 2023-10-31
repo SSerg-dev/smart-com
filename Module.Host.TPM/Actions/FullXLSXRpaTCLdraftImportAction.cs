@@ -202,7 +202,7 @@ namespace Module.Host.TPM.Actions
 
                 // Проверка на дубликаты из базы
                 promos = CheckForDuplicates(context, promos, sourceRecords, out validationErrors);
-
+                AddPromoInfo(promos);
                 logger.Trace("Persist models built");
 
                 int resultRecordCount = 0;
@@ -511,6 +511,17 @@ namespace Module.Host.TPM.Actions
             }
             return false;
         }
-
+        private void AddPromoInfo (List<Promo> promos)
+        {
+            PromoInfo promoInfo = new PromoInfo
+            {
+                CreatedDate = TimeHelper.Now(),
+                CreatedFrom = Persist.TPM.Enum.CreatedFrom.TLCDraft
+            };
+            foreach (Promo promo in promos)
+            {
+                promo.PromoInfo = promoInfo;
+            }            
+        }
     }
 }

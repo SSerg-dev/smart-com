@@ -191,6 +191,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<TLCImport>().ToTable("TLCImports");
             modelBuilder.Entity<SavedSetting>().ToTable("SavedSettings");
             modelBuilder.Entity<SFAType>().ToTable("SFATypes");
+            modelBuilder.Entity<PromoInfo>().HasRequired(g => g.Promo).WithOptional(g => g.PromoInfo).WillCascadeOnDelete();
         }
 
 
@@ -1376,6 +1377,8 @@ namespace Module.Persist.TPM
             builder.EntitySet<SavedPromo>("DeletedSavedPromoes").HasOptionalBinding(e => e.ClientTree, "ClientTrees");
             builder.EntitySet<SavedPromo>("SavedPromoes").HasManyBinding(e => e.Promoes, "Promoes");
             builder.EntitySet<SavedPromo>("DeletedSavedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
+
+            builder.EntitySet<PromoInfo>("PromoInfoes").HasRequiredBinding(g => g.Promo, "Promoes");
         }
 
 

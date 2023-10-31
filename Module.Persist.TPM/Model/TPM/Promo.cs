@@ -42,6 +42,7 @@ namespace Module.Persist.TPM.Model.TPM
         public int? ClientTreeId { get; set; }
 
         public Guid? CreatorId { get; set; }
+        [StringLength(128)]
         public string CreatorLogin { get; set; }
 
         public int? BaseClientTreeId { get; set; }
@@ -58,7 +59,9 @@ namespace Module.Persist.TPM.Model.TPM
         public int? Number { get; set; }
         [StringLength(255)]
         public string Name { get; set; }
+        [StringLength(128)]
         public string ClientHierarchy { get; set; }
+        [StringLength(128)]
         public string ProductHierarchy { get; set; }
         [StringLength(255)]
         public string MechanicComment { get; set; }
@@ -71,7 +74,9 @@ namespace Module.Persist.TPM.Model.TPM
         public int? BudgetYear { get; set; }
         public int? PromoDuration { get; set; }
         public int? DispatchDuration { get; set; }
+        [StringLength(256)]
         public string InvoiceNumber { get; set; }
+        [StringLength(128)]
         public string DocumentNumber { get; set; }
         public bool IsOnInvoice { get; set; }
 
@@ -93,6 +98,7 @@ namespace Module.Persist.TPM.Model.TPM
 
         [StringLength(255)]
         public string OtherEventName { get; set; }
+        [StringLength(128)]
         public string EventName { get; set; }
         public int? CalendarPriority { get; set; }
 
@@ -248,6 +254,7 @@ namespace Module.Persist.TPM.Model.TPM
         /// <summary>
         /// Информация какой обработчик блокировал промо и когда. Формат: HandlerId_BlockDateTime
         /// </summary>
+        [StringLength(128)]
         public string BlockInformation { get; set; }
 
         /// <summary>
@@ -267,6 +274,7 @@ namespace Module.Persist.TPM.Model.TPM
         public bool? InOut { get; set; }
         public string InOutProductIds { get; set; }
         public bool InOutExcludeAssortmentMatrixProductsButtonPressed { get; set; }
+        [StringLength(128)]
         public string RegularExcludedProductIds { get; set; }
 
         [StringLength(100)]
@@ -300,6 +308,7 @@ namespace Module.Persist.TPM.Model.TPM
         public double? PlanPromoNSVtn { get; set; }
         public double? ActualPromoNSVtn { get; set; }
 
+        [StringLength(255)]
         public string MLPromoId { get; set; }
         public bool CalculateML { get; set; }
 
@@ -348,10 +357,12 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("RollingScenario")]
         public Guid? RollingScenarioId { get; set; }
         public RollingScenario RollingScenario { get; set; }
+        [Index("Unique_PromoNumber", 4, IsUnique = true)]
         [ForeignKey("SavedScenario")]
         public Guid? SavedScenarioId { get; set; }
         public SavedScenario SavedScenario { get; set; }
         public PromoPriceIncrease PromoPriceIncrease { get; set; }
+        public PromoInfo PromoInfo { get; set; }
         [ForeignKey("SavedPromo")]
         public Guid? SavedPromoId { get; set; }
         public SavedPromo SavedPromo { get; set; }
