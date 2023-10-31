@@ -381,6 +381,22 @@ namespace Module.Host.TPM.Actions
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, string.Join(", ", errors)));
                 }
+                var brandId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.BrandId;
+                if (brandId == null)
+                {
+                    errors.Add("Brand not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
+                var techId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.TechnologyId;
+                if (techId == null)
+                {
+                    errors.Add("Technology not found: " + import.BrandTech);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
                 var btId = brandTeches.FirstOrDefault(g => g.BrandsegTechsub.Equals(import.BrandTech, StringComparison.OrdinalIgnoreCase))?.Id;
                 if (btId == null)
                 {
@@ -388,6 +404,11 @@ namespace Module.Host.TPM.Actions
                     HasErrors = true;
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
                     break;
+                }
+                var promoEvent = context.Set<Event>().FirstOrDefault(x => !x.Disabled && x.Name == "Standard promo");
+                if (promoEvent == null)
+                {
+                    throw new Exception("Event 'Standard promo' not found");
                 }
                 Promo promo = new Promo
                 {
@@ -400,6 +421,10 @@ namespace Module.Host.TPM.Actions
                     ClientTreeKeyId = clientTree.Id,
                     BrandTechId = btId,
                     ProductSubrangesList = import.Subrange,
+                    EventId = promoEvent.Id,
+                    EventName = promoEvent.Name,
+                    BrandId = brandId,
+                    TechnologyId = techId,
                     StartDate = import.PromoStartDate,
                     EndDate = import.PromoEndDate,
                     DispatchesStart= import.DispatchStartDate,
@@ -509,6 +534,8 @@ namespace Module.Host.TPM.Actions
                     SumInvoice = import.SumInInvoice,
                     InOut = import.PromoType == "InOut Promo",                  
                 };
+                SetPromoMarsDates(promo);
+                CreatePromoProductTree(promo, context.Set<ProductTree>().Where(x => x.EndDate == null).ToList(), context);
                 if (import.DispatchStartDate == null && import.DispatchEndDate == null)
                 {
                     promo = SetDispatchDates(clientTree, import.PromoStartDate, import.PromoEndDate, promo);
@@ -542,7 +569,16 @@ namespace Module.Host.TPM.Actions
                 }
                 promo.MarsMechanicId = mechanic.Id;
                 promo.MarsMechanicDiscount = import.Discount;
-                MechanicType mechanicType = mechanicTypes.FirstOrDefault(g => g.Name == import.MechanicType);
+                promo.MarsMechanic = mechanic;
+                var mechanicType = mechanicTypes.FirstOrDefault(g => g.Name == import.MechanicType);
+                if (mechanicType == null)
+                {
+                    errors.Add("Mechanic type not found: " + import.MechanicType);
+                    HasErrors = true;
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(import, String.Join(", ", errors)));
+                    break;
+                }
+                promo.MarsMechanicType = mechanicType;
                 promo.MarsMechanicTypeId = mechanicType.Id;
                 promo.MechanicComment = import.MechanicComment;
                 if (!string.IsNullOrEmpty(import.ActualInStoreMechanicName))
@@ -552,6 +588,9 @@ namespace Module.Host.TPM.Actions
                     promo.ActualInStoreDiscount = import.ActualInStoreMechanicDiscount;
                 }
 
+                SetMechanic(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
+                SetMechanicIA(promo, new List<Mechanic> { mechanic }, new List<MechanicType> { mechanicType });
+                promo.Name = GetPromoName(promo, context);
                 promos.Add(promo);
             }
 

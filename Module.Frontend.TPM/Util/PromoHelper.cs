@@ -1785,7 +1785,7 @@ namespace Module.Frontend.TPM.Util
             var currentNode = techNode;
             if (!promo.ProductSubrangesList.Contains(';'))
             {
-                var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.Id && x.Name == promo.ProductSubrangesList);
+                var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.ObjectId && x.Name == promo.ProductSubrangesList);
                 if (subrangeNode != null)
                 {
                     currentNode = subrangeNode;
@@ -1845,6 +1845,46 @@ namespace Module.Frontend.TPM.Util
             promo.InOutProductIds = String.Join(";", inOutProfuctIds.Where(x => x != null));
             if (promo.InOutProductIds.Length > 0)
                 promo.InOutProductIds += ";";
+        }
+
+        public static string GetPromoName(Promo promo, DatabaseContext context) 
+        {
+            var promoProductTree = promo.PromoProductTrees.OrderBy(x => x.Id).First();
+            var promoNameProductTreeAbbreviations = "";
+            if (promoProductTree != null)
+            {
+                var productTree = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == promoProductTree.ProductTreeObjectId);
+                if (productTree != null)
+                {
+                    if (productTree.Type != "Brand")
+                    {
+                        var currentTreeNode = productTree;
+                        while (currentTreeNode != null && currentTreeNode.Type != "Brand")
+                        {
+                            currentTreeNode = context.Set<ProductTree>().FirstOrDefault(x => x.ObjectId == currentTreeNode.parentId);
+                        }
+                        promoNameProductTreeAbbreviations = currentTreeNode.Abbreviation;
+                    }
+                    promoNameProductTreeAbbreviations = promoNameProductTreeAbbreviations + " " + productTree.Abbreviation;
+                }
+            }
+
+            var mechanic = promo.MarsMechanic;
+            var promoNameMechanic = "";
+            if (mechanic != null)
+            {
+                promoNameMechanic = mechanic.Name;
+                if (mechanic.SystemName == "TPR" || mechanic.SystemName == "Other")
+                {
+                    promoNameMechanic += " " + promo.MarsMechanicDiscount + "%";
+                }
+                else
+                {
+                    promoNameMechanic += " " + promo.MarsMechanicType.Name;
+                }
+            }
+
+            return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
         }
     }
 }
