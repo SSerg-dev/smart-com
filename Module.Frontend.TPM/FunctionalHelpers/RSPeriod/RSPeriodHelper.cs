@@ -515,6 +515,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.RSPeriod
                     promoRS.PromoStatusId = promoStatusOnApproval;
                     //ChangeStatusOnApproval(Context, promoRS);
                     promoIds.Add(promoRS.Id);
+                    promoesRS.Remove(promoRS);
                 }
 
             }
