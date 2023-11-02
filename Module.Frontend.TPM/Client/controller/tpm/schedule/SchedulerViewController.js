@@ -2175,7 +2175,6 @@
                     rec.get("PromoStatusName") != "Cancelled"
                 ) &&
                 (
-                    !rec.get("IsGrowthAcceleration") ||
                     !rec.get("IsInExchange")
                 )
             ) {
@@ -2270,7 +2269,7 @@
                         if (record.data.MasterPromoId) {
                             record.set('IsOnHold', true);
                         }
-                        if (record.data.IsGrowthAcceleration || record.data.IsInExchange) {
+                        if (record.data.IsInExchange) {
                             record.set('IsOnHold', true);
                         }
                         return record

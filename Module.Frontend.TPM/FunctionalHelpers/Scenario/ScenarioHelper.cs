@@ -422,7 +422,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             }
             List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
             List<Guid> brandTechIds = Context.Set<Promo>()
-                .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == thisYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsGrowthAcceleration && !g.IsInExchange)
+                .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == thisYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsInExchange)
                 .Select(g => (Guid)g.BrandTechId)
                 .Distinct()
                 .ToList();

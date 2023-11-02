@@ -2110,7 +2110,7 @@
         var promoActivityStep1 = promoActivity.down('container[name=promoActivity_step1]');
         var promoActivityStep2 = promoActivity.down('container[name=promoActivity_step2]');
         var promoBudgets = button.up('window').down('promobudgets');
-
+        
         me.setReadOnlyForChildrens(promoActivity, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
         me.setReadOnlyForChildrens(promoBudgets, promoeditorcustom.promoStatusSystemName, true, record.data.InOut);
 
@@ -2337,6 +2337,13 @@
         //    planPromoUpliftPercentPI.setReadOnly(true);
         //    promoUpliftLockedUpdateCheckboxPI.setReadOnly(true);
         //}
+
+        if (TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
+            var isInExchangeCheckbox = promoMechanic.down('[name=IsInExchangeCheckbox]');
+            var apolloExportCheckbox = promoMechanic.down('[name=ApolloExportCheckbox]');
+            isInExchangeCheckbox.setDisabled(true);
+            apolloExportCheckbox.setDisabled(true);
+        }
 
         me.checkLoadingComponents();
         promoeditorcustom.setLoading(false);
@@ -2920,7 +2927,7 @@
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();
                     }
-                    if (record.data.IsGrowthAcceleration || record.data.IsInExchange) {
+                    if (record.data.IsInExchange) {
                         record.data.PromoStatusSystemName = 'Cancelled';
                         var onHoldLabel = Ext.ComponentQuery.query('#btn_promoOnHold')[0];
                         onHoldLabel.show();
@@ -2933,8 +2940,10 @@
                 }
             });
             var promoMechanics = promoeditorcustom.down('promomechanic');
-            var panelGA = promoMechanics.down('[name=panelGA]');
-            panelGA.setDisabled(true);
+            var isInExchangeCheckbox = promoMechanics.down('[name=IsInExchangeCheckbox]');
+            var apolloExportCheckbox = promoMechanics.down('[name=ApolloExportCheckbox]');
+            isInExchangeCheckbox.setDisabled(true);
+            apolloExportCheckbox.setDisabled(true);
         }
         if (TpmModes.isRsMode(record.data.TPMmode)) {
             this.showRSmodeLabel(true);
@@ -6132,11 +6141,14 @@
                 instoreMechanicId.setDisabled(false);
                 actualMechanicId.setDisabled(false);
 
-                if (TpmModes.isProdMode(promoeditorcustom.TPMmode)) {
-                    var panelGA = promoMechanics.down('[name=panelGA]');
-                    panelGA.setDisabled(false);
+                var panelGA = promoMechanics.down('[name=panelGA]');
+                panelGA.setDisabled(false);
+                if (TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
+                    var isInExchangeCheckbox = promoMechanics.down('[name=IsInExchangeCheckbox]');
+                    var apolloExportCheckbox = promoMechanics.down('[name=ApolloExportCheckbox]');
+                    isInExchangeCheckbox.setDisabled(true);
+                    apolloExportCheckbox.setDisabled(true);
                 }
-
             }
         });
 
