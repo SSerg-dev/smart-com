@@ -167,7 +167,7 @@ def generate_entity_list(parameters:dict, clients):
     #dst_dir=parameters['DstDir']
     entities = []
     for client in clients:
-        entities.append({'SrcPath':f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}/','DstPath':f'https://marsanalyticsdevadls.dfs.core.windows.net/output/RUSSIA_PETCARE_JUPITER/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}'})
+        entities.append({'SrcPath':f'{parameters["RawPath"]}/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}/','DstPath':f'https://marsanalyticsprodadls.dfs.core.windows.net/output/RUSSIA_PETCARE_JUPITER/{parameters["ClientPromoDir"]}/{client["ScenarioType"]}/{client["ScenarioName"]}'})
     return entities
   
 @task
