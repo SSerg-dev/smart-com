@@ -866,7 +866,7 @@ namespace Module.Frontend.TPM.Util
         public static ReturnInputMLRS GetInputMLRSquick(string pathfile, string delimiter)
         {
             var Lines = File.ReadAllLines(pathfile, Encoding.UTF8).ToList();
-            
+
             List<InputMLRS> inputMLs = Lines
                    .Skip(1)
                    .Select(x => x.Split(char.Parse(delimiter)))
@@ -1633,7 +1633,7 @@ namespace Module.Frontend.TPM.Util
                 messagesError.Add(message);
                 message = null;
             }
-                        
+
             simplePromoCOGS = new SimplePromoCOGS(promo);
             PromoUtils.GetCOGSTonCost(simplePromoCOGS, new List<BaseCOGSTn>(oneLoad.PlanCOGSTns), oneLoad.ClientTrees, oneLoad.BrandTeches, out message);
 
@@ -1806,11 +1806,11 @@ namespace Module.Frontend.TPM.Util
                     PromoId = promo.Id
                 });
             }
-            else 
+            else
             {
                 var subranges = promo.ProductSubrangesList.Split(';');
 
-                foreach(var subrange in subranges)
+                foreach (var subrange in subranges)
                 {
                     var subrangeNode = productTrees.FirstOrDefault(x => x.parentId == currentNode.ObjectId && x.Name == subrange);
                     if (subrangeNode == null)
@@ -1847,7 +1847,7 @@ namespace Module.Frontend.TPM.Util
                 promo.InOutProductIds += ";";
         }
 
-        public static string GetPromoName(Promo promo, DatabaseContext context) 
+        public static string GetPromoName(Promo promo, DatabaseContext context)
         {
             var promoProductTree = promo.PromoProductTrees.OrderBy(x => x.Id).First();
             var promoNameProductTreeAbbreviations = "";
@@ -1885,6 +1885,46 @@ namespace Module.Frontend.TPM.Util
             }
 
             return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
+        }
+        public static string CheckCogs(Promo promo, ClientTree clientTree, List<TradeInvestment> tradeInvestments, List<COGS> COGSs, List<PlanCOGSTn> PlanCOGSTns)
+        {
+            TradeInvestment tradeInvestment = tradeInvestments.FirstOrDefault(x => !x.Disabled && x.Year == promo.BudgetYear && x.ClientTreeId == clientTree.Id);
+            if (tradeInvestment == null)
+            {
+                return $"TradeInvestment for promo number {promo.Number} not found. Year {promo.BudgetYear}";
+            }
+            List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
+            Guid brandTechId = (Guid)promo.BrandTechId;
+            List<Guid> COGSsYear = COGSs.Where(x => x.Year == promo.BudgetYear).Select(g => (Guid)g.BrandTechId).ToList();
+            List<Guid> PlanCOGSTnsYear = PlanCOGSTns.Where(x => x.Year == promo.BudgetYear).Select(g => (Guid)g.BrandTechId).ToList();
+
+            if (!COGSsYear.Contains(brandTechId))
+            {
+                return $"COGS for promo number {promo.Number} not found. Year {promo.BudgetYear}";
+            }
+            if (!PlanCOGSTnsYear.Contains(brandTechId))
+            {
+                return $"GOGStn for promo number {promo.Number} not found. Year {promo.BudgetYear}";
+            }
+            return "";
+        }
+        public static string CheckAssortmentMatrix(Promo promo, List<AssortmentMatrix> assortmentMatrices)
+        {
+            List<Guid> productIds = assortmentMatrices.Where(x => promo.DispatchesStart >= x.StartDate && promo.DispatchesStart <= x.EndDate).Select(f=>f.ProductId).ToList();
+            int count = 0;
+            foreach (PromoProduct promoProduct in promo.PromoProducts)
+            {
+                if (productIds.Contains(promoProduct.ProductId))
+                {
+                    count++;
+                }
+            }
+
+            if (count == 0)
+            {
+                return $"AssortmentMatrix for promo number {promo.Number} not found. Year {promo.BudgetYear}";
+            }
+            return "";
         }
     }
 }

@@ -111,7 +111,8 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXRpaTCLclosedImportHandler(),
                 new Handlers.FullXLSXRpaTCLdraftImportHandler(),
                 new Handlers.ScenarioClientUploadCheckHandler(),
-                new Handlers.CopyPrevousYearHandler()
+                new Handlers.CopyPrevousYearHandler(),
+                new Handlers.ClientTreeUpdateHandler()
             };
         }
     }

@@ -667,11 +667,11 @@ namespace Module.Frontend.TPM.Controllers
                 x.DistrMarkUp == model.DistrMarkUp &&
                 x.parentId == model.parentId &&
                 x.DemandCode == (!string.IsNullOrEmpty(model.DemandCode) ? model.DemandCode : null) &&
-                x.GHierarchyCode == model.GHierarchyCode &&                                        
+                x.GHierarchyCode == model.GHierarchyCode &&
                 x.SFATypeName == model.SFATypeName &&
                 x.DMDGroup == model.DMDGroup &&
                 x.SFAClientCode == model.SFAClientCode &&
-                 x.SFATypeName == model.SFATypeName).Count();           
+                 x.SFATypeName == model.SFATypeName).Count();
 
             if (checkDouble > 0)
             {
@@ -815,7 +815,39 @@ namespace Module.Frontend.TPM.Controllers
                 {
                     await ClientTreeBrandTechesController.FillClientTreeBrandTechTableAsync(Context);
                     await ClientTreeBrandTechesController.DisableNotActualClientTreeBrandTech(Context);
+                }
+                if (currentRecord.DaysStart != oldRecord.DaysStart || currentRecord.DaysEnd != oldRecord.DaysEnd ||
+                    currentRecord.IsBeforeEnd != oldRecord.IsBeforeEnd || currentRecord.IsBeforeStart != oldRecord.IsBeforeStart ||
+                    currentRecord.IsDaysEnd != oldRecord.IsDaysEnd || currentRecord.IsDaysStart != oldRecord.IsDaysStart)
+                {
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+                    RoleInfo role = authorizationManager.GetCurrentRole();
+                    Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+                    HandlerData handlerData = new HandlerData();
+                    HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+                    HandlerDataHelper.SaveIncomingArgument("ClientTreeId", currentRecord.Id, handlerData, visible: false, throwIfNotExists: false);
 
+
+                    LoopHandler handler = new LoopHandler()
+                    {
+                        Id = Guid.NewGuid(),
+                        ConfigurationName = "PROCESSING",
+                        Description = "Preparing scenario for calculation",
+                        Name = "Module.Host.TPM.Handlers.ClientTreeUpdateHandler",
+                        ExecutionPeriod = null,
+                        CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                        LastExecutionDate = null,
+                        NextExecutionDate = null,
+                        ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                        UserId = userId,
+                        RoleId = roleId
+                    };
+                    handler.SetParameterData(handlerData);
+                    Context.LoopHandlers.Add(handler);
+                    await Context.SaveChangesAsync();
                 }
 
                 return Created(currentRecord);
