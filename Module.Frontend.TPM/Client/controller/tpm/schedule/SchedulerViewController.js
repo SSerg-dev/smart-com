@@ -2365,6 +2365,7 @@
         Ext.Ajax.request({
             method: "POST",
             url: 'api/SavedSettings/LoadSettings',
+            async: false,
             scope: this,
             params: {
                 Key: 'calendarfilter#'
