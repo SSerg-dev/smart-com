@@ -3757,6 +3757,10 @@
     <Compile Include="Migrations\202310301316165_Empty30102023.designer.cs">
       <DependentUpon>202310301316165_Empty30102023.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311091130051_Add_RollingScenario_AP.cs" />
+    <Compile Include="Migrations\202311091130051_Add_RollingScenario_AP.designer.cs">
+      <DependentUpon>202311091130051_Add_RollingScenario_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7048,6 +7052,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310301316165_Empty30102023.resx">
       <DependentUpon>202310301316165_Empty30102023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311091130051_Add_RollingScenario_AP.resx">
+      <DependentUpon>202311091130051_Add_RollingScenario_AP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

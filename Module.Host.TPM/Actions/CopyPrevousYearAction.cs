@@ -71,7 +71,7 @@ namespace Module.Host.TPM.Actions
                             .Include(g => g.IncrementalPromoes)
                             .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
                             .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
-                            .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && !g.IsInExchange && g.TPMmode == TPMmode.Current)
+                            .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && g.TPMmode == TPMmode.Current)
                             .ToList();
                         CopyRAReturn copyRAReturn = HiddenModeHelper.CopyToPromoRA(Context, promos, nextYear, CheckedDate, clientDispatchDays, draftPublish);
 
