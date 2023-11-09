@@ -2376,6 +2376,22 @@
                     this.clientSettings = Ext.JSON.decode(value);
                     this.filterClients();
                     this.addSchedulerClientTreeDTOFilter();
+                    var scheduler = Ext.ComponentQuery.query('#nascheduler')[0];
+                    var resourceStore = scheduler.getResourceStore();
+                    var eventStore = scheduler.getEventStore();
+                    var objectIds = this.clientSettings[0];
+                    eventStore.uniqueObjectIds = [];
+                    for (var i = 0; i < objectIds.length; i++) {
+                        eventStore.uniqueObjectIds.push({
+                            objectId: objectIds[i],
+                            loaded: false,
+                            regPromoId: resourceStore.data.items[i * this.rowCount],
+                            inoutPromoId: resourceStore.data.items[i * this.rowCount + 1],
+                            otherPromoId: resourceStore.data.items[i * this.rowCount + 2],
+                            competitorPromoId: resourceStore.data.items[i * this.rowCount + 3],
+                            competitorPromoIds: resourceStore.data.items.slice(i * this.rowCount + 3, resourceStore.data.items.length),
+                        })
+                    };
                 }
             },
             failure: function (e) {
