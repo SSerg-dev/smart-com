@@ -111,14 +111,17 @@ namespace Module.Host.TPM.Actions
                 Guid PromoTypesId = context.Set<PromoTypes>().FirstOrDefault(g => g.SystemName == "Regular").Id;
                 Event Event = context.Set<Event>().FirstOrDefault(g => g.Name == "Standard promo");
                 Guid PromoStatusId = context.Set<PromoStatus>().FirstOrDefault(g => g.SystemName == "DraftPublished").Id;
-                List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
-                List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
-                List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
-                List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
-                List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
-                List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
-                List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-                List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
+                OneLoadModel oneLoad = new OneLoadModel
+                {
+                    BrandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList(),
+                    ClientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
+                    ProductTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
+                    Mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList(),
+                    MechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList(),
+                    Brands = context.Set<Brand>().Where(g => !g.Disabled).ToList(),
+                    Technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList(),
+                    Colors = context.Set<Color>().Where(g => !g.Disabled).ToList()
+                };
 
                 FileBuffer buffer = context.Set<FileBuffer>().FirstOrDefault(g => g.InterfaceId == interfaceId && g.Id == rollingScenario.FileBufferId && g.Status == Interfaces.Core.Model.Consts.ProcessResult.None);
                 string pathfile = Path.Combine(filesDir, fileCollectInterfaceSetting.SourcePath, buffer.FileName);
@@ -144,7 +147,7 @@ namespace Module.Host.TPM.Actions
 
                             promo.BudgetYear = startEndModel.BudgetYear;
 
-                            ClientTree clientTree = clientTrees.Where(x => x.EndDate == null && x.ObjectId == firstInputML.FormatCode).FirstOrDefault();
+                            ClientTree clientTree = oneLoad.ClientTrees.Where(x => x.EndDate == null && x.ObjectId == firstInputML.FormatCode).FirstOrDefault();
                             promo.ClientHierarchy = clientTree.FullPathName;
                             promo.ClientTreeId = clientTree.ObjectId;
                             promo.ClientTreeKeyId = clientTree.Id;
@@ -200,10 +203,10 @@ namespace Module.Host.TPM.Actions
                                 List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
                                 promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
 
-                                Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
+                                Mechanic mechanic = oneLoad.Mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
                                 promo.MarsMechanicId = mechanic.Id;
                                 promo.MarsMechanicDiscount = firstInputML.DiscountMars;
-                                Mechanic mechanicInstore = mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
+                                Mechanic mechanicInstore = oneLoad.Mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
                                 promo.PlanInstoreMechanicId = mechanicInstore.Id;
                                 promo.PlanInstoreMechanicDiscount = firstInputML.InstoreDiscount;
 
@@ -212,7 +215,7 @@ namespace Module.Host.TPM.Actions
                                 promo.PlanPromoUpliftPercentPI = firstInputML.PlannedUplift;
                                 promo.CalculateML = true;
 
-                                PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(mechanic, products.FirstOrDefault(), firstInputML.DiscountMars, productTrees, brands, technologies);
+                                PromoHelper.ReturnName returnName = PromoHelper.GetNamePromo(mechanic, products.FirstOrDefault(), firstInputML.DiscountMars, oneLoad);
                                 promo.Name = returnName.Name;
                                 promo.ProductHierarchy = returnName.ProductTree.FullPathName;
                                 promo.ProductTreeObjectIds = returnName.ProductTree.ObjectId.ToString();
@@ -220,7 +223,7 @@ namespace Module.Host.TPM.Actions
                                 promo.MLPromoId = buffer.FileName + "_" + firstInputML.PromoId;
                                 HandlerLogger.Write(true, string.Format("Promo {0} processing has started", promo.MLPromoId), "Message");
                                 promo.TPMmode = TPMmode.Hidden;
-                                promo = PromoHelper.SaveMLPromo(promo, context, user, role, mechanics, mechanicTypes, clientTrees, productTrees, brands, technologies, brandTeches, colors);
+                                promo = PromoHelper.SaveMLPromo(promo, context, user, role, oneLoad);
                                 promo.PromoInfo = new PromoInfo
                                 {
                                     CreatedFrom = rollingScenario.ScenarioType == ScenarioType.RS ? CreatedFrom.RSML : CreatedFrom.RAML,

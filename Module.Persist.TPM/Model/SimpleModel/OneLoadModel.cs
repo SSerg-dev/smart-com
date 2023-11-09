@@ -12,5 +12,10 @@ namespace Module.Persist.TPM.Model.SimpleModel
         public List<TradeInvestment> TradeInvestments { get; set; }
         public List<COGS> COGSs { get; set; }
         public List<PlanCOGSTn> PlanCOGSTns { get; set; }
+        public List<Mechanic> Mechanics { get; set; }
+        public List<MechanicType> MechanicTypes { get; set; }
+        public List<Brand> Brands { get; set; }
+        public List<Technology> Technologies { get; set; }
+        public List<Color> Colors { get; set; }
     }
 }

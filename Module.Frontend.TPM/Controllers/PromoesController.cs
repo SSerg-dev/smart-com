@@ -181,7 +181,7 @@ namespace Module.Frontend.TPM.Controllers
                 }
                 if (model.IsSplittable)//Split subranges
                 {
-                    Promo promo = SplitSubranges(model, false);
+                    Promo promo = SplitSubranges(model);
 
                     return Created(promo);
                 }
@@ -197,7 +197,7 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
-        private Promo SplitSubranges(Promo model, bool patch)
+        private Promo SplitSubranges(Promo model)
         {
             Promo promo = new Promo();
             List<string> productTreeObjectIds = model.ProductTreeObjectIds.Split(';').ToList();
@@ -264,7 +264,7 @@ namespace Module.Frontend.TPM.Controllers
                     model.Name = promo.Name ?? model.Name;
                     model.PromoStatusId = Context.Set<PromoStatus>().FirstOrDefault(s => s.SystemName == StateNames.DRAFT_PUBLISHED && !s.Disabled).Id;
                     model.ProductTreeObjectIds = promo.ProductTreeObjectIds;
-                    SplitSubranges(model, true);
+                    SplitSubranges(model);
                     await DeletePromo(key);
                     return Updated(model);
                 }
@@ -463,7 +463,7 @@ namespace Module.Frontend.TPM.Controllers
                     if (!model.LoadFromTLC)
                     {
                         // Добавление продуктов
-                        promoProductTrees = PromoHelper.AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged, Context);
+                        promoProductTrees = PromoHelper.AddProductTrees(model.ProductTreeObjectIds, model, out isSubrangeChanged);
                     }
 
                     List<Product> products = Context.Set<Product>().Where(x => !x.Disabled).ToList();
@@ -492,29 +492,32 @@ namespace Module.Frontend.TPM.Controllers
                     //для ускорения перехода в следующий статус (если нет изменений параметров промо, то пропускаем следующие действия)
                     if (needRecalculatePromo || statusName.ToLower() == "draft")
                     {
-                        List<Mechanic> mechanics = Context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
-                        List<MechanicType> mechanicTypes = Context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
-                        List<ClientTree> clientTrees = Context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
-                        List<ProductTree> productTrees = Context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
-                        List<Brand> brands = Context.Set<Brand>().Where(g => !g.Disabled).ToList();
-                        List<Technology> technologies = Context.Set<Technology>().Where(g => !g.Disabled).ToList();
-                        List<BrandTech> brandTeches = Context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-                        List<Color> colors = Context.Set<Color>().Where(g => !g.Disabled).ToList();
+                        OneLoadModel oneLoad = new OneLoadModel
+                        {
+                            Mechanics = Context.Set<Mechanic>().Where(g => !g.Disabled).ToList(),
+                            MechanicTypes = Context.Set<MechanicType>().Where(g => !g.Disabled).ToList(),
+                            ClientTrees = Context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
+                            ProductTrees = Context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
+                            Brands = Context.Set<Brand>().Where(g => !g.Disabled).ToList(),
+                            Technologies = Context.Set<Technology>().Where(g => !g.Disabled).ToList(),
+                            BrandTeches = Context.Set<BrandTech>().Where(g => !g.Disabled).ToList(),
+                            Colors = Context.Set<Color>().Where(g => !g.Disabled).ToList()
+                        };
                         //Установка полей по дереву ProductTree
-                        PromoHelper.SetPromoByProductTree(model, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
+                        PromoHelper.SetPromoByProductTree(model, promoProductTrees, oneLoad);
                         //Установка дат в Mars формате
                         PromoHelper.SetPromoMarsDates(model);
                         //Установка полей по дереву ClientTree
-                        PromoHelper.SetPromoByClientTree(model, clientTrees);
+                        PromoHelper.SetPromoByClientTree(model, oneLoad.ClientTrees);
                         //Установка механик
-                        PromoHelper.SetMechanic(model, mechanics, mechanicTypes);
-                        PromoHelper.SetMechanicIA(model, mechanics, mechanicTypes);
+                        PromoHelper.SetMechanic(model, oneLoad.Mechanics, oneLoad.MechanicTypes);
+                        PromoHelper.SetMechanicIA(model, oneLoad.Mechanics, oneLoad.MechanicTypes);
 
                         if (statusName.ToLower() == "draft")
                         {
                             string error;
                             // Прикрепление продуктов
-                            PlanProductParametersCalculation.SetPromoProduct(Context.Set<Promo>().First(x => x.Number == model.Number).Id, Context, out error, true, promoProductTrees);
+                            PlanProductParametersCalculation.SetPromoProduct(model.Id, Context, out error, true, promoProductTrees);
                         }
                     }
 

@@ -40,7 +40,6 @@ namespace Module.Frontend.TPM.Util
         {
             PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, isDelete) { };
             Context.Set<PromoDemandChangeIncident>().Add(change);
-            Context.SaveChanges();
         }
 
         /// <summary>
@@ -52,7 +51,6 @@ namespace Module.Frontend.TPM.Util
         {
             PromoDemandChangeIncident change = new PromoDemandChangeIncident(record, oldMarsMechanic, oldMarsMechanicDiscount, oldDispatchesStart, oldPlanPromoUpliftPercent, oldPlanPromoIncrementalLSV) { };
             Context.Set<PromoDemandChangeIncident>().Add(change);
-            Context.SaveChanges();
         }
 
         /// <summary>
@@ -68,7 +66,6 @@ namespace Module.Frontend.TPM.Util
             {
                 PromoDemandChangeIncident change = new PromoDemandChangeIncident(oldRecord, newRecord) { };
                 Context.Set<PromoDemandChangeIncident>().Add(change);
-                Context.SaveChanges();
             }
         }
 
@@ -961,31 +958,31 @@ namespace Module.Frontend.TPM.Util
 
             return promoNameProductTreeAbbreviations + " " + promoNameMechanic;
         }
-        public static ReturnName GetNamePromo(Mechanic mechanic, Product product, double MarsMechanicDiscount, List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies)
+        public static ReturnName GetNamePromo(Mechanic mechanic, Product product, double MarsMechanicDiscount, OneLoadModel oneLoad)
         {
             // доработать если нужен тип VP
             var promoNameProductTreeAbbreviations = "";
             ProductTree productTreeTech = new ProductTree();
             if (product != null)
             {
-                Brand brand = brands.FirstOrDefault(g => g.Brand_code == product.Brand_code);
+                Brand brand = oneLoad.Brands.FirstOrDefault(g => g.Brand_code == product.Brand_code);
 
                 Technology technology = new Technology();
                 string compositname;
                 if (string.IsNullOrEmpty(product.SubBrand_code))
                 {
-                    technology = technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
+                    technology = oneLoad.Technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand == null);
                     compositname = technology.Name;
                 }
                 else
                 {
-                    technology = technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
+                    technology = oneLoad.Technologies.FirstOrDefault(g => g.Tech_code == product.Tech_code && g.SubBrand_code == product.SubBrand_code);
                     compositname = technology.Name + " " + technology.SubBrand;
                 }
 
-                ProductTree productTreeBrand = productTrees.FirstOrDefault(g => g.BrandId == brand.Id);
+                ProductTree productTreeBrand = oneLoad.ProductTrees.FirstOrDefault(g => g.BrandId == brand.Id);
 
-                productTreeTech = productTrees.FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
+                productTreeTech = oneLoad.ProductTrees.FirstOrDefault(g => g.parentId == productTreeBrand.ObjectId && g.Name == compositname);
                 promoNameProductTreeAbbreviations = productTreeBrand.Abbreviation + " " + productTreeTech.Abbreviation;
             }
 
@@ -1152,12 +1149,6 @@ namespace Module.Frontend.TPM.Util
             context.Set<Promo>().Add(result);
             context.SaveChanges();
 
-            List<Mechanic> mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList();
-            List<MechanicType> mechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList();
-            List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
-            List<Brand> brands = context.Set<Brand>().Where(g => !g.Disabled).ToList();
-            List<Technology> technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList();
-            List<Color> colors = context.Set<Color>().Where(g => !g.Disabled).ToList();
             OneLoadModel oneLoad = new OneLoadModel
             {
                 ClientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList(),
@@ -1166,20 +1157,25 @@ namespace Module.Frontend.TPM.Util
                 PlanCOGSTns = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList(),
                 ProductTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList(),
                 TradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList(),
-                Products = context.Set<Product>().Where(g => !g.Disabled).ToList()
+                Products = context.Set<Product>().Where(g => !g.Disabled).ToList(),
+                Brands = context.Set<Brand>().Where(g => !g.Disabled).ToList(),
+                Colors = context.Set<Color>().Where(g => !g.Disabled).ToList(),
+                Technologies = context.Set<Technology>().Where(g => !g.Disabled).ToList(),
+                Mechanics = context.Set<Mechanic>().Where(g => !g.Disabled).ToList(),
+                MechanicTypes = context.Set<MechanicType>().Where(g => !g.Disabled).ToList()
             };
             // Добавление продуктов
-            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
+            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged);
 
             //Установка полей по дереву ProductTree
-            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, oneLoad.BrandTeches, colors);
+            SetPromoByProductTree(result, promoProductTrees, oneLoad);
             //Установка дат в Mars формате
             SetPromoMarsDates(result);
             //Установка полей по дереву ClientTree
             SetPromoByClientTree(result, oneLoad.ClientTrees);
             //Установка механик
-            SetMechanic(result, mechanics, mechanicTypes);
-            SetMechanicIA(result, mechanics, mechanicTypes);
+            SetMechanic(result, oneLoad.Mechanics, oneLoad.MechanicTypes);
+            SetMechanicIA(result, oneLoad.Mechanics, oneLoad.MechanicTypes);
 
             //Установка начального статуса
             PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -1209,7 +1205,7 @@ namespace Module.Frontend.TPM.Util
                 else
                 {
                     // Добавить запись в таблицу PromoProduct при сохранении.
-                    PlanProductParametersCalculation.SetPromoProduct(context.Set<Promo>().First(x => x.Id == result.Id).Id, context, out string error, true, promoProductTrees);
+                    PlanProductParametersCalculation.SetPromoProduct(result.Id, context, out string error, true, promoProductTrees);
                     // Создаём инцидент для draft сразу
                     WritePromoDemandChangeIncident(context, result);
                 }
@@ -1244,10 +1240,18 @@ namespace Module.Frontend.TPM.Util
         /// </summary>
         /// <param name="objectIds">Список ObjectId продуктов в иерархии</param>
         /// <param name="promo">Промо к которому прикрепляются продукты</param>
-        public static List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, out bool isSubrangeChanged, DatabaseContext context)
+        public static List<PromoProductTree> AddProductTrees(string objectIds, Promo promo, out bool isSubrangeChanged)
         {
             // сформированный список продуктов - приходится использовать из-за отказа SaveChanges
-            List<PromoProductTree> currentProducTrees = context.Set<PromoProductTree>().Where(n => n.PromoId == promo.Id && !n.Disabled).ToList();
+            List<PromoProductTree> currentProducTrees = new List<PromoProductTree>();
+            if (promo.PromoProductTrees != null)
+            {
+                currentProducTrees = promo.PromoProductTrees.ToList();
+            }
+            else
+            {
+                promo.PromoProductTrees = new List<PromoProductTree>();
+            }
             List<string> currentProducTreesIds = currentProducTrees.Select(x => x.ProductTreeObjectId.ToString()).ToList();
             List<string> newProductTreesIds = new List<string>();
 
@@ -1307,25 +1311,24 @@ namespace Module.Frontend.TPM.Util
                         TPMmode = promo.TPMmode
                     };
 
-                    currentProducTrees.Add(promoProductTree);
-                    context.Set<PromoProductTree>().Add(promoProductTree);
+                    promo.PromoProductTrees.Add(promoProductTree);
                 }
             }
-
-            return currentProducTrees.Where(n => !n.Disabled).ToList();
+            
+            return promo.PromoProductTrees.Where(n => !n.Disabled).ToList();
         }
         /// <summary>
         /// Установка в промо цвета, бренда и BrandTech на основании дерева продуктов
         /// </summary>
         /// <param name="promo"></param>
-        public static void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies, List<BrandTech> brandTeches, List<Color> colors)
+        public static void SetPromoByProductTree(Promo promo, List<PromoProductTree> promoProducts, OneLoadModel oneLoad)
         {
             PromoProductTree product = promoProducts.FirstOrDefault();
             DateTime dt = DateTime.Now;
             if (product != null)
             {
                 //Заполнение Subranges
-                IEnumerable<ProductTree> ptQuery = productTrees.Where(x => x.Type == "root"
+                IEnumerable<ProductTree> ptQuery = oneLoad.ProductTrees.Where(x => x.Type == "root"
                     || (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0)));
                 IEnumerable<int> promoProductsPTOIds = promoProducts.Select(z => z.ProductTreeObjectId);
                 IEnumerable<ProductTree> pts = ptQuery.Where(y => promoProductsPTOIds.Contains(y.ObjectId));
@@ -1333,7 +1336,7 @@ namespace Module.Frontend.TPM.Util
                 promo.ProductSubrangesListRU = string.Join(";", pts.Where(x => x.Type == "Subrange").Select(z => z.Description_ru));
 
                 int objectId = product.ProductTreeObjectId;
-                ProductTree pt = productTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
+                ProductTree pt = oneLoad.ProductTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == objectId);
                 if (pt != null)
                 {
                     Guid? BrandId = null;
@@ -1344,7 +1347,7 @@ namespace Module.Frontend.TPM.Util
                     {
                         if (pt.Type == "Brand")
                         {
-                            brandTo = brands.FirstOrDefault(x => x.Name == pt.Name);
+                            brandTo = oneLoad.Brands.FirstOrDefault(x => x.Name == pt.Name);
                             if (brandTo != null)
                             {
                                 BrandId = brandTo.Id;
@@ -1353,7 +1356,7 @@ namespace Module.Frontend.TPM.Util
                         }
                         if (pt.Type == "Technology")
                         {
-                            var tech = technologies.FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
+                            var tech = oneLoad.Technologies.FirstOrDefault(x => (x.Name + " " + x.SubBrand).Trim() == pt.Name.Trim());
                             if (tech != null)
                             {
                                 TechId = tech.Id;
@@ -1362,7 +1365,7 @@ namespace Module.Frontend.TPM.Util
                         }
                         if (pt.parentId != 1000000)
                         {
-                            pt = productTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
+                            pt = oneLoad.ProductTrees.FirstOrDefault(x => (x.StartDate < dt && (x.EndDate > dt || !x.EndDate.HasValue)) && x.ObjectId == pt.parentId);
                         }
                         else
                         {
@@ -1375,11 +1378,11 @@ namespace Module.Frontend.TPM.Util
                         promo.BrandId = null;
                     }
 
-                    BrandTech bt = brandTeches.FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
+                    BrandTech bt = oneLoad.BrandTeches.FirstOrDefault(x => !x.Disabled && x.TechnologyId == TechId && x.BrandId == BrandId);
                     if (bt != null)
                     {
                         promo.BrandTechId = bt.Id;
-                        var color = colors.Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
+                        var color = oneLoad.Colors.Where(x => !x.Disabled && x.BrandTechId == bt.Id).ToList();
                         if (color.Count() == 1)
                         {
                             promo.ColorId = color.First().Id;
@@ -1707,8 +1710,7 @@ namespace Module.Frontend.TPM.Util
             if (!success)
                 throw new Exception("Promo was blocked for calculation");
         }
-        public static Promo SaveMLPromo(Promo model, DatabaseContext context, UserInfo user, RoleInfo role, List<Mechanic> mechanics, List<MechanicType> mechanicTypes, List<ClientTree> clientTrees,
-            List<ProductTree> productTrees, List<Brand> brands, List<Technology> technologies, List<BrandTech> brandTeches, List<Color> colors)
+        public static Promo SaveMLPromo(Promo model, DatabaseContext context, UserInfo user, RoleInfo role, OneLoadModel oneLoad)
         {
             model.DeviationCoefficient /= 100;
             // делаем UTC +3
@@ -1743,17 +1745,17 @@ namespace Module.Frontend.TPM.Util
             //context.Set<Promo>().Add(result);
             //context.SaveChanges();
             // Добавление продуктов
-            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged, context);
+            List<PromoProductTree> promoProductTrees = AddProductTrees(model.ProductTreeObjectIds, result, out bool isSubrangeChanged);
 
             //Установка полей по дереву ProductTree
-            SetPromoByProductTree(result, promoProductTrees, productTrees, brands, technologies, brandTeches, colors);
+            SetPromoByProductTree(result, promoProductTrees, oneLoad);
             //Установка дат в Mars формате
             SetPromoMarsDates(result);
             //Установка полей по дереву ClientTree
-            SetPromoByClientTree(result, clientTrees);
+            SetPromoByClientTree(result, oneLoad.ClientTrees);
             //Установка механик
-            SetMechanic(result, mechanics, mechanicTypes);
-            SetMechanicIA(result, mechanics, mechanicTypes);
+            SetMechanic(result, oneLoad.Mechanics, oneLoad.MechanicTypes);
+            SetMechanicIA(result, oneLoad.Mechanics, oneLoad.MechanicTypes);
 
             //Установка начального статуса
             PromoStatusChange psc = context.Set<PromoStatusChange>().Create<PromoStatusChange>();
@@ -1910,7 +1912,7 @@ namespace Module.Frontend.TPM.Util
         }
         public static string CheckAssortmentMatrix(Promo promo, List<AssortmentMatrix> assortmentMatrices)
         {
-            List<Guid> productIds = assortmentMatrices.Where(x => promo.DispatchesStart >= x.StartDate && promo.DispatchesStart <= x.EndDate).Select(f=>f.ProductId).ToList();
+            List<Guid> productIds = assortmentMatrices.Where(x => promo.DispatchesStart >= x.StartDate && promo.DispatchesStart <= x.EndDate).Select(f => f.ProductId).ToList();
             int count = 0;
             foreach (PromoProduct promoProduct in promo.PromoProducts)
             {

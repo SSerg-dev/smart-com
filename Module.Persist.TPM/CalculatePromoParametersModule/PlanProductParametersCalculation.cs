@@ -30,6 +30,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var deletedZREPs = new List<string>();
                 bool needReturnToOnApprovalStatus = false;
                 var promo = context.Set<Promo>()
+                    .Include(g => g.PromoProductTrees)
                     .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(y => y.ProductCorrectionPriceIncreases))
                     .Where(x => x.Id == promoId && !x.Disabled).FirstOrDefault();
                 var changeProductIncidents = context.Set<ProductChangeIncident>().Where(x => x.NotificationProcessDate == null).ToList();
@@ -37,7 +38,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 var createdProducts = changeProductIncidents.Where(p => p.IsCreate && !p.IsChecked).Select(i => i.Product.ZREP);
                 bool createIncidents = statusesForIncidents.Any(s => s.ToLower() == promo.PromoStatus.SystemName.ToLower());
 
-                var productTreeArray = productTrees.Where(x => context.Set<PromoProductTree>().Where(p => p.PromoId == promoId && !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
+                var productTreeArray = productTrees.Where(x => promo.PromoProductTrees.Where(p => !p.Disabled).Any(p => p.ProductTreeObjectId == x.ObjectId && !x.EndDate.HasValue)).ToArray();
                 // добавление пустого PromoPriceIncrease к Promo если его нет
                 if (promo.PromoPriceIncrease is null)
                 {
