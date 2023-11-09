@@ -83,26 +83,29 @@ namespace Module.Frontend.TPM.Controllers
                     var obj = JsonConvert.DeserializeObject<List<List<object>>>(model.Value);
                     var oooo = obj[0];
                     List<IdName> idNames = new List<IdName>();
-                    foreach (var item in oooo)
+                    if (clientsIds.Count > 0)
                     {
-                        IdName idName = JsonConvert.DeserializeObject<IdName>(item.ToString());
-                        if (!clientsIds.Contains(idName.id))
+                        foreach (var item in oooo)
                         {
-                            List<ClientResult> clientArray = ClientTreeHelper.GetChildrenBaseClient(clientTreeNA, clients);
-                            if (constraints.Count == 0)
+                            IdName idName = JsonConvert.DeserializeObject<IdName>(item.ToString());
+                            if (!clientsIds.Contains(idName.id))
                             {
+                                List<ClientResult> clientArray = ClientTreeHelper.GetChildrenBaseClient(clientTreeNA, clients);
+                                if (constraints.Count == 0)
+                                {
 
-                                ArrayList data = new ArrayList { clientArray, promotypes, competitors };
-                                string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
-                                return Content(HttpStatusCode.OK, dataStr);
-                                // [[{"id":5000004,"name":"Magnit MM"},{"id":5000005,"name":"Magnit HM"}],["Regular Promo","InOut Promo","Loyalty Promo","Dynamic Promo","Competitor Promo"],[]]
-                            }
-                            else
-                            {
-                                clientArray = context.Set<ClientTree>().Where(g => clientsIds.Contains(g.ObjectId) && g.EndDate == null && g.IsBaseClient).Select(g => new ClientResult { Id = g.ObjectId, Name = g.Name }).ToList();
-                                ArrayList data = new ArrayList { clientArray, promotypes, competitors };
-                                string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
-                                return Content(HttpStatusCode.OK, dataStr);
+                                    ArrayList data = new ArrayList { clientArray, promotypes, competitors };
+                                    string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+                                    return Content(HttpStatusCode.OK, dataStr);
+                                    // [[{"id":5000004,"name":"Magnit MM"},{"id":5000005,"name":"Magnit HM"}],["Regular Promo","InOut Promo","Loyalty Promo","Dynamic Promo","Competitor Promo"],[]]
+                                }
+                                else
+                                {
+                                    clientArray = context.Set<ClientTree>().Where(g => clientsIds.Contains(g.ObjectId) && g.EndDate == null && g.IsBaseClient).Select(g => new ClientResult { Id = g.ObjectId, Name = g.Name }).ToList();
+                                    ArrayList data = new ArrayList { clientArray, promotypes, competitors };
+                                    string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+                                    return Content(HttpStatusCode.OK, dataStr);
+                                }
                             }
                         }
                     }
@@ -113,14 +116,14 @@ namespace Module.Frontend.TPM.Controllers
                     List<ClientResult> clientArray = ClientTreeHelper.GetChildrenBaseClient(clientTreeNA, clients);
                     if (constraints.Count == 0)
                     {
-                        
+
                         ArrayList data = new ArrayList { clientArray, promotypes, competitors };
                         string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
                         return Content(HttpStatusCode.OK, dataStr);
                         // [[{"id":5000004,"name":"Magnit MM"},{"id":5000005,"name":"Magnit HM"}],["Regular Promo","InOut Promo","Loyalty Promo","Dynamic Promo","Competitor Promo"],[]]
                     }
                     else
-                    {                        
+                    {
                         clientArray = context.Set<ClientTree>().Where(g => clientsIds.Contains(g.ObjectId) && g.EndDate == null && g.IsBaseClient).Select(g => new ClientResult { Id = g.ObjectId, Name = g.Name }).ToList();
                         ArrayList data = new ArrayList { clientArray, promotypes, competitors };
                         string dataStr = JsonConvert.SerializeObject(data, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
@@ -138,7 +141,7 @@ namespace Module.Frontend.TPM.Controllers
             {
                 List<ClientTreeHierarchyView> hierarchyList = getFilteredHierarchy(hierarchy, clientFilter).ToList();
                 filteredId = hierarchyList.Select(n => n.Id).ToList();
-                
+
             }
             return filteredId;
         }
