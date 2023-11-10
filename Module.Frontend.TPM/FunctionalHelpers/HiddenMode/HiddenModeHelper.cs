@@ -412,6 +412,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Promo, Promo>()
+                    .ForMember(pTo => pTo.PrevousNumber, opt => opt.MapFrom(x => x.Number))
                     .ForMember(pTo => pTo.Number, opt => opt.Ignore())
                     .ForMember(pTo => pTo.PromoStatusId, opt => opt.MapFrom(x => draftPublish))
                     .ForMember(pTo => pTo.PromoStatus, opt => opt.Ignore())
@@ -601,12 +602,6 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                 TradeInvestments = Context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList(),
                 Products = Context.Set<Product>().Where(g => !g.Disabled).ToList()
             };
-            //List<ClientTree> clientTrees = context.Set<ClientTree>().Where(g => g.EndDate == null).ToList();
-            //List<BrandTech> brandTeches = context.Set<BrandTech>().Where(g => !g.Disabled).ToList();
-            //List<TradeInvestment> tradeInvestments = context.Set<TradeInvestment>().Where(x => !x.Disabled).ToList();
-            //List<COGS> cogs = context.Set<COGS>().Where(x => !x.Disabled).ToList();
-            //List<PlanCOGSTn> cogsTn = context.Set<PlanCOGSTn>().Where(x => !x.Disabled).ToList();
-            //List<ProductTree> productTrees = context.Set<ProductTree>().Where(g => g.EndDate == null).ToList();
             foreach (Promo promoRA in promoesRA)
             {
                 DateTimeOffset startDate = (DateTimeOffset)(promoRA.StartDate);
@@ -636,14 +631,14 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     }
                     catch (Exception ex)
                     {
-                        copyRAReturn.Errors.Add("Promo:" + promoRA.Number.ToString() + " - " + ex.Message);
+                        copyRAReturn.Errors.Add("Promo:" + promoRA.PrevousNumber.ToString() + " - " + ex.Message);
                         notCopyPromoes.Add(promoRA);
                         continue;
                     }
                 }
                 else
                 {
-                    copyRAReturn.Errors.Add("Promo:" + promoRA.Number.ToString() + " - " + " Not present products in promo");
+                    copyRAReturn.Errors.Add("Promo:" + promoRA.PrevousNumber.ToString() + " - " + " Not present products in promo");
                     notCopyPromoes.Add(promoRA);
                 }
             }

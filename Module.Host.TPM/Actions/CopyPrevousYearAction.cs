@@ -53,13 +53,7 @@ namespace Module.Host.TPM.Actions
                 using (var transaction = Context.Database.BeginTransaction())
                 {
                     try
-                    {
-                        DateTimeOffset expirationDate = TimeHelper.TodayEndDay();
-                        string weeks = Context.Set<Setting>().Where(g => g.Name == "RA_END_APPROVE_WEEKS").FirstOrDefault().Value;
-                        if (int.TryParse(weeks, out int intweeks))
-                        {
-                            expirationDate = expirationDate.AddDays(intweeks * 7);
-                        }
+                    {                        
                         StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
                         int budgetYear = TimeHelper.ThisBuggetYear();
                         int nextYear = TimeHelper.NextBuggetYear();
@@ -87,7 +81,6 @@ namespace Module.Host.TPM.Actions
                                 RSstatus = RSstateNames.CALCULATING,
                                 TaskStatus = TaskStatusNames.INPROGRESS,
                                 ScenarioType = ScenarioType.RA,
-                                ExpirationDate = expirationDate,
                                 StartDate = startEndModel.StartDate,
                                 EndDate = startEndModel.EndDate,
                                 ClientTreeId = clientTree.Id
@@ -110,6 +103,7 @@ namespace Module.Host.TPM.Actions
                             Context.Set<RollingScenario>().Add(rollingScenario);
                             Context.SaveChanges();
                             HandlerLogger.Write(true, string.Format("Scenario: {0}. {1} added promo", rollingScenario.RSId, rollingScenario.Promoes.Count), "Message");
+                            HandlerLogger.Write(true, "Waiting to create and calculate copied promos at night", "Message");
                         }
 
                         foreach (var item in copyRAReturn.Errors)
