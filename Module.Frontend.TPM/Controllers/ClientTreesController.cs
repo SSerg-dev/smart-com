@@ -835,7 +835,7 @@ namespace Module.Frontend.TPM.Controllers
                     {
                         Id = Guid.NewGuid(),
                         ConfigurationName = "PROCESSING",
-                        Description = "Preparing scenario for calculation",
+                        Description = $"Update promo for client {currentRecord.FullPathName}",
                         Name = "Module.Host.TPM.Handlers.ClientTreeUpdateHandler",
                         ExecutionPeriod = null,
                         CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),

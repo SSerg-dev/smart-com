@@ -999,6 +999,7 @@
         'MasterPromoNumber': 'Master Promo Number',
 
         'TPMmode': 'Indicator',
+        'IsOnHold': 'On Hold',
         'IsPriceIncrease': 'PriceIncrease',
         'MLPromoId': 'MLPromo',
         'Source': 'Source',
