@@ -914,7 +914,7 @@ namespace Module.Frontend.TPM.Util
                        PlanInStoreShelfPrice = double.Parse(x[11], CultureInfo.InvariantCulture),
                        FormatCode = int.Parse(x[12]),
                        Source = x[13],
-                       Year = int.Parse(x[14], CultureInfo.InvariantCulture),
+                       Year = int.Parse(x[16], CultureInfo.InvariantCulture),
                    })
                    .Where(g => g.Source == "optimizer")
                    .ToList();
