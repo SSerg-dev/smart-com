@@ -581,6 +581,21 @@ namespace Module.Host.TPM.Handlers
             return new FullXLSXRpaTCLdraftImportAction(settings, rpaId, handlerId);
         }
     }
+    public class FullXLSXRpaActualShelfPriceImportHandler : FullXLSXImportHandler
+    {
+        private Guid rpaId;
+        private Guid handlerId;
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            rpaId = Looper.Parameters.HandlerDataHelper.GetIncomingArgument<Guid>("RPAId", info.Data, false);
+            handlerId = info.HandlerId;
+            base.Action(info, data);
+        }
+        protected override IAction GetAction(FullImportSettings settings, ExecuteData data)
+        {
+            return new FullXLSXRpaActualShelfPriceImportAction(settings, rpaId, handlerId);
+        }
+    }
     class FullXLSXUpdateImportEventHandler : FullXLSXImportHandler
     {
         private Guid RoleId;

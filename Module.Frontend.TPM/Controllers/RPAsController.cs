@@ -163,13 +163,16 @@ namespace Module.Frontend.TPM.Controllers
                         result.HandlerId = await CreateRPAActualEanPcTask(fileName, rpaId);
                         break;
                     case "Actuals_PLU":
-                        result.HandlerId = await CreateRpaActualPluTask (fileName, rpaId);
+                        result.HandlerId = await CreateRpaActualPluTask(fileName, rpaId);
                         break;
                     case "TLC_Draft":
                         result.HandlerId = await CreateRpaTLCdraftTask(fileName, rpaId);
                         break;
                     case "TLC_Closed":
                         result.HandlerId = await CreateRpaTLCclosedTask(fileName, rpaId);
+                        break;
+                    case "TLC_Actual_Shelf_Price_Discount":
+                        result.HandlerId = await CreateActualShelfPriceTask(fileName, rpaId);
                         break;
                 }
                 await Context.SaveChangesAsync();
@@ -473,6 +476,55 @@ namespace Module.Frontend.TPM.Controllers
             return handler.Id;
         }
 
+        private async Task<Guid> CreateActualShelfPriceTask(string fileName, Guid rpaId)
+        {
+            var handlerName = "FullXLSXRpaActualShelfPriceImportHandler";
+            UserInfoCore user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id.HasValue ? user.Id.Value : Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id.HasValue ? role.Id.Value : Guid.Empty);
+
+            ImportResultFilesModel resiltfile = new ImportResultFilesModel();
+            ImportResultModel resultmodel = new ImportResultModel();
+
+            HandlerData data = new HandlerData();
+            FileModel file = new FileModel()
+            {
+                LogicType = "Import",
+                Name = System.IO.Path.GetFileName(fileName),
+                DisplayName = System.IO.Path.GetFileName(fileName)
+            };
+
+            HandlerDataHelper.SaveIncomingArgument("File", file, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportType", typeof(ImportActualShelfPriceDiscount), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ImportTypeDisplay", typeof(ImportActualShelfPriceDiscount).Name, data, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("ModelType", typeof(ImportActualShelfPriceDiscount), data, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("UniqueFields", new List<string>() { "PromoId" }, data);
+            HandlerDataHelper.SaveIncomingArgument("RPAId", rpaId, data, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = "Загрузка шаблона из файла " + typeof(RPA).Name,
+                Name = "Module.Host.TPM.Handlers." + handlerName,
+                ExecutionPeriod = null,
+                RunGroup = typeof(PromoSupport).Name,
+                CreateDate = ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(data);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+            return handler.Id;
+        }
+
         private async Task<Guid> CreateRpaTLCdraftTask(string fileName, Guid rpaId)
         {
             var handlerName = "FullXLSXRpaTCLdraftImportHandler";
@@ -592,8 +644,8 @@ namespace Module.Frontend.TPM.Controllers
                         var existingNameTechnology = existingTechnology.Join(exitingSubRange,
                             p => p.ObjectId,
                             p1 => p1.parentId,
-                            (p, p1) => new { Technology = p.Name, Subrange = p1.Name });                                
-                       
+                            (p, p1) => new { Technology = p.Name, Subrange = p1.Name });
+
                         i = 0;
                         foreach (var item in existingNameTechnology)
                         {
@@ -773,6 +825,79 @@ namespace Module.Frontend.TPM.Controllers
             }
         }
 
+        private IHttpActionResult DownloadTLCActualShelfPriceTemplateXLSX()
+        {
+            try
+            {
+                string templateDir = AppSettingsManager.GetSetting("TEMPLATE_DIRECTORY", "Templates");
+                string templateFilePath = Path.Combine(templateDir, "ActualShelfPriceTemplate.xlsx");
+                using (FileStream templateStream = new FileStream(templateFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook twb = new XSSFWorkbook(templateStream);
+
+                    string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
+                    string filename = string.Format("{0}Template.xlsx", "ActualShelf");
+                    if (!Directory.Exists(exportDir))
+                    {
+                        Directory.CreateDirectory(exportDir);
+                    }
+                    string filePath = Path.Combine(exportDir, filename);
+                    string file = Path.GetFileName(filePath);
+
+                    UserInfo user = authorizationManager.GetCurrentUser();
+                    string role = authorizationManager.GetCurrentRoleName();
+                    IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
+                        .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
+                        .ToList() : new List<Constraint>();
+                    IDictionary<string, IEnumerable<string>> filters = FilterHelper.GetFiltersDictionary(constraints);
+
+                    DateTime dt = DateTime.Now;
+                    IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type != "root" && x.parentId != 5000000
+                    && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
+                    List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
+                    List<MechanicType> mecanicTypes = Context.Set<MechanicType>().Where(x => !x.Disabled).ToList();
+
+                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ICreationHelper cH = twb.GetCreationHelper();
+                        int i = 0;
+                        ISheet sheet4 = twb.GetSheet("Mechanics");
+                        i = 0;
+                        foreach (Mechanic m in mecanics)
+                        {
+                            IRow clientRow = sheet4.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet4.AutoSizeColumn(0);
+
+                        ISheet sheet5 = twb.GetSheet("Mechanics Type");
+                        i = 0;
+                        foreach (MechanicType m in mecanicTypes)
+                        {
+                            IRow clientRow = sheet5.CreateRow(i);
+                            ICell hcell = clientRow.CreateCell(0);
+                            hcell.SetCellValue(m.Name);
+                            i++;
+                        }
+                        sheet5.AutoSizeColumn(0);
+                        sheet5.AutoSizeColumn(1);
+
+                        twb.Write(stream);
+                        stream.Close();
+                    }
+                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
+                    return Content(HttpStatusCode.OK, file);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
         [ClaimsAuthorize]
         public IHttpActionResult DownloadTemplateXLSX()
         {
@@ -787,9 +912,14 @@ namespace Module.Frontend.TPM.Controllers
                 if (setting.Name == "TLC Draft Handler")
                 {
                     return DownloadTLCDraftTemplateXLSX();
-                } else if (setting.Name == "TLC Closed Handler")
+                }
+                else if (setting.Name == "TLC Closed Handler")
                 {
                     return DownloadTLCClosedTemplateXLSX();
+                }
+                else if (setting.Name == "Actual Shelf Price & Discount Handler")
+                {
+                    return DownloadTLCActualShelfPriceTemplateXLSX();
                 }
                 else
                 {

@@ -110,6 +110,7 @@ namespace Module.Host.TPM
                 new Handlers.PrepareNightCalculateHandler(),
                 new Handlers.FullXLSXRpaTCLclosedImportHandler(),
                 new Handlers.FullXLSXRpaTCLdraftImportHandler(),
+                new Handlers.FullXLSXRpaActualShelfPriceImportHandler(),
                 new Handlers.ScenarioClientUploadCheckHandler(),
                 new Handlers.CopyPrevousYearHandler(),
                 new Handlers.ClientTreeUpdateHandler()

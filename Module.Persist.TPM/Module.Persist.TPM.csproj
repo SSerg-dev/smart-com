@@ -3761,6 +3761,14 @@
     <Compile Include="Migrations\202311091130051_Add_RollingScenario_AP.designer.cs">
       <DependentUpon>202311091130051_Add_RollingScenario_AP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311080343003_Add_Actual_Shelf_Price.cs" />
+    <Compile Include="Migrations\202311080343003_Add_Actual_Shelf_Price.designer.cs">
+      <DependentUpon>202311080343003_Add_Actual_Shelf_Price.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311100642593_Empty_After_Merge_RPA_Price_Discount.cs" />
+    <Compile Include="Migrations\202311100642593_Empty_After_Merge_RPA_Price_Discount.designer.cs">
+      <DependentUpon>202311100642593_Empty_After_Merge_RPA_Price_Discount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -3876,6 +3884,7 @@
     <Compile Include="Model\Import\ImportPromoProductsUplift.cs" />
     <Compile Include="Model\Import\ImportPromoProductsCorrection.cs" />
     <Compile Include="Model\Import\ImportRATIShopper.cs" />
+    <Compile Include="Model\Import\ImportActualShelfPriceDiscount.cs" />
     <Compile Include="Model\Import\ImportSFAType.cs" />
     <Compile Include="Model\Import\ImportRetailType.cs" />
     <Compile Include="Model\Import\ImportRejectReason.cs" />
@@ -7055,6 +7064,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202311091130051_Add_RollingScenario_AP.resx">
       <DependentUpon>202311091130051_Add_RollingScenario_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311080343003_Add_Actual_Shelf_Price.resx">
+      <DependentUpon>202311080343003_Add_Actual_Shelf_Price.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311100642593_Empty_After_Merge_RPA_Price_Discount.resx">
+      <DependentUpon>202311100642593_Empty_After_Merge_RPA_Price_Discount.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
