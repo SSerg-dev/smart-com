@@ -836,7 +836,7 @@ namespace Module.Frontend.TPM.Controllers
                     IWorkbook twb = new XSSFWorkbook(templateStream);
 
                     string exportDir = AppSettingsManager.GetSetting("EXPORT_DIRECTORY", "~/ExportFiles");
-                    string filename = string.Format("{0}Template.xlsx", "ActualShelf");
+                    string filename = string.Format("{0}Template.xlsx", "ActualShelfPrice");
                     if (!Directory.Exists(exportDir))
                     {
                         Directory.CreateDirectory(exportDir);
@@ -844,8 +844,8 @@ namespace Module.Frontend.TPM.Controllers
                     string filePath = Path.Combine(exportDir, filename);
                     string file = Path.GetFileName(filePath);
 
-                    UserInfo user = authorizationManager.GetCurrentUser();
-                    string role = authorizationManager.GetCurrentRoleName();
+                    var user = authorizationManager.GetCurrentUser();
+                    var role = authorizationManager.GetCurrentRoleName();
                     IList<Constraint> constraints = user.Id.HasValue ? Context.Constraints
                         .Where(x => x.UserRole.UserId.Equals(user.Id.Value) && x.UserRole.Role.SystemName.Equals(role))
                         .ToList() : new List<Constraint>();
@@ -854,16 +854,15 @@ namespace Module.Frontend.TPM.Controllers
                     DateTime dt = DateTime.Now;
                     IQueryable<ClientTree> query = Context.Set<ClientTree>().Where(x => x.Type != "root" && x.parentId != 5000000
                     && (DateTime.Compare(x.StartDate, dt) <= 0 && (!x.EndDate.HasValue || DateTime.Compare(x.EndDate.Value, dt) > 0) && x.IsBaseClient == true));
-                    List<Mechanic> mecanics = Context.Set<Mechanic>().Where(x => !x.Disabled).ToList();
-                    List<MechanicType> mecanicTypes = Context.Set<MechanicType>().Where(x => !x.Disabled).ToList();
+                    List<Mechanic> mechanics = Context.Set<Mechanic>().Where(x => !x.Disabled && x.PromoTypes.SystemName == "Regular").ToList();
+                    List<MechanicType> mechanicTypes = Context.Set<MechanicType>().Where(x => !x.Disabled).ToList();
 
-                    using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                     {
                         ICreationHelper cH = twb.GetCreationHelper();
                         int i = 0;
                         ISheet sheet4 = twb.GetSheet("Mechanics");
-                        i = 0;
-                        foreach (Mechanic m in mecanics)
+                        foreach (var m in mechanics)
                         {
                             IRow clientRow = sheet4.CreateRow(i);
                             ICell hcell = clientRow.CreateCell(0);
@@ -874,7 +873,7 @@ namespace Module.Frontend.TPM.Controllers
 
                         ISheet sheet5 = twb.GetSheet("Mechanics Type");
                         i = 0;
-                        foreach (MechanicType m in mecanicTypes)
+                        foreach (var m in mechanicTypes)
                         {
                             IRow clientRow = sheet5.CreateRow(i);
                             ICell hcell = clientRow.CreateCell(0);
@@ -887,7 +886,7 @@ namespace Module.Frontend.TPM.Controllers
                         twb.Write(stream);
                         stream.Close();
                     }
-                    FileDispatcher fileDispatcher = new FileDispatcher();
+                    var fileDispatcher = new FileDispatcher();
                     fileDispatcher.UploadToBlob(Path.GetFileName(filePath), Path.GetFullPath(filePath), exportDir.Split('\\').Last());
                     return Content(HttpStatusCode.OK, file);
                 }
