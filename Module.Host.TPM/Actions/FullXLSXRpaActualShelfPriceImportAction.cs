@@ -399,7 +399,7 @@ namespace Module.Host.TPM.Actions
                     preparedPromo.ActualInStoreMechanicTypeId = existingMechanicType.Id;
                     preparedPromo.ActualInStoreDiscount = existingMechanicType.Discount;
                 }
-                else
+                else if (!String.IsNullOrEmpty(sourcePromo.MechanicType))
                 {
                     HasErrors = true;
                     errors.Add("Incorrect Mechanic Type:" + string.Join(",", sourcePromo.MechanicType + " Promo number :" + sourcePromo.PromoId.ToString()));
