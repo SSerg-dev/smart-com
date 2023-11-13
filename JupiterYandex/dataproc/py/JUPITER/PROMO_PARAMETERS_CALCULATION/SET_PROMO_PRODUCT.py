@@ -83,7 +83,7 @@ def run(notInOutCalcPlanPromoDF,notInOutCalcPlanPromoProductDF,promoProductTreeD
 
     for i, item in enumerate(setProductList):
     #   print(i, item.pNumber, item.promoId)
-      print(item.FilterQuery)
+    #  print(item.FilterQuery)
       productFilter = item.FilterQuery.replace('['+schema.lower()+'].[', '').replace('].[', '.').replace('[', '').replace(']', '').replace('*', 'id,ean_pc,zrep')
       filteredList = spark.sql(productFilter).collect()
     #   print(productFilter)
