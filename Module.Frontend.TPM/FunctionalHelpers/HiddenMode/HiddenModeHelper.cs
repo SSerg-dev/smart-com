@@ -135,6 +135,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))
                     .ForMember(pTo => pTo.Disabled, opt => opt.MapFrom(x => disabled))
                     .ForMember(pTo => pTo.DeletedDate, opt => opt.MapFrom(x => deleteddate))
+                    .ForMember(pTo => pTo.PromoProductPriceIncreases, opt => opt.MapFrom(f => f.PromoProductPriceIncreases.Where(g => !g.Disabled)))//filter
                     .ForMember(pTo => pTo.Promo, opt => opt.Ignore());
                 cfg.CreateMap<PromoProductPriceIncrease, PromoProductPriceIncrease>()
                     .ForMember(pTo => pTo.Id, opt => opt.MapFrom(x => Guid.NewGuid()))

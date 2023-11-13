@@ -1202,10 +1202,15 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult SaveScenario(string ClientName, string ObjectId, string ScenarioType)
         {
             UserInfo user = authorizationManager.GetCurrentUser();
-            var scenario = ScenarioHelper.GetActiveScenario(Int32.Parse(ObjectId), Context);
+            int clientObjectId = int.Parse(ObjectId);
+            var scenario = ScenarioHelper.GetActiveScenario(clientObjectId, Context);
 
             if (scenario == null) return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "RA scenario not found" }));
             List<Guid> PromoRSIds = scenario.Promoes.Select(f => f.Id).ToList();
+            int nextYear = TimeHelper.NextBuggetYear();
+            List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
+            var PromoPrIds = Context.Set<Promo>().Where(g => !g.Disabled && g.ClientTree.ObjectId == clientObjectId && g.BudgetYear == nextYear && !notStatus.Contains(g.PromoStatus.SystemName)).Select(g => new SmallPromo { Id = g.Id, Number = (int)g.Number }).ToList();
+            PromoRSIds.AddRange(PromoPrIds.Select(g => g.Id));
             if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "there is a blocked Promo" }));
@@ -1214,9 +1219,11 @@ namespace Module.Frontend.TPM.Controllers
             var defaultSchema = AppSettingsManager.GetSetting<string>("DefaultSchema", "dbo");
 
             var scenarioName = $"{ObjectId}_{DateTime.Now:yyyyMMddhhmmss}";
-            try
+            using (var transaction = Context.Database.BeginTransaction())
             {
-                var createRunScript = $@"
+                try
+                {
+                    var createRunScript = $@"
                     INSERT INTO [{defaultSchema}].[ScenarioCopyTask]
                             ([Disabled]
                             ,[DeletedDate]
@@ -1242,31 +1249,47 @@ namespace Module.Frontend.TPM.Controllers
                             ,'WAITING'
                             ,'{email ?? "NULL"}')
                 ";
-                //copy scenario
-                var newSavedScenario = new SavedScenario
+                    //copy scenario
+                    var newSavedScenario = new SavedScenario
+                    {
+                        RollingScenario = scenario,
+                        ScenarioName = scenarioName
+                    };
+                    Context.Set<SavedScenario>().Add(newSavedScenario);
+                    Context.SaveChanges();
+                    List<int> promoHiddennumbers = scenario.Promoes.Select(h => h.Number).Cast<int>().ToList();
+                    List<int> getNumbers = PromoPrIds.Select(g => g.Number).ToList();
+                    List<int> promoHiddenProdNumbers = getNumbers.Except(promoHiddennumbers).ToList();
+                    List<Promo> promos = Context.Set<Promo>()
+                            .Include(g => g.PromoSupportPromoes)
+                            .Include(g => g.PromoProductTrees)
+                            .Include(g => g.IncrementalPromoes)
+                            .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
+                            .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.RA).ToList();
+                    promos.AddRange(Context.Set<Promo>()
+                            .Include(g => g.PromoSupportPromoes)
+                            .Include(g => g.PromoProductTrees)
+                            .Include(g => g.IncrementalPromoes)
+                            .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
+                            .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
+                            .Where(x => promoHiddenProdNumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.Current).ToList());
+                    HiddenModeHelper.CopyPromoesToHidden(Context, promos, newSavedScenario);
+                    Context.ExecuteSqlCommand(createRunScript);
+                    transaction.Commit();
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
+                }
+                catch (Exception ex)
                 {
-                    RollingScenario = scenario,
-                    ScenarioName = scenarioName
-                };
-                Context.Set<SavedScenario>().Add(newSavedScenario);
-                Context.SaveChanges();
-                List<int> promoHiddennumbers = scenario.Promoes.Select(h => h.Number).Cast<int>().ToList();
-                List<Promo> promos = Context.Set<Promo>()
-                        //.Include(g => g.BTLPromoes)
-                        .Include(g => g.PromoSupportPromoes)
-                        .Include(g => g.PromoProductTrees)
-                        .Include(g => g.IncrementalPromoes)
-                        .Include(x => x.PromoProducts.Select(y => y.PromoProductsCorrections))
-                        .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
-                        .Where(x => promoHiddennumbers.Contains((int)x.Number) && x.TPMmode == TPMmode.RA).ToList();
-                HiddenModeHelper.CopyPromoesToHidden(Context, promos, newSavedScenario);
-                Context.ExecuteSqlCommand(createRunScript);
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, message = "Create run success" }));
+                    transaction.Rollback();
+                    return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Create run failure " + ex.Message }));
+                }
             }
-            catch (Exception ex)
-            {
-                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Create run failure " + ex.Message }));
-            }
+        }
+        private class SmallPromo
+        {
+            public Guid Id { get; set; }
+            public int Number { get; set; }
         }
         [ClaimsAuthorize]
         public async Task<IHttpActionResult> CopyYearScenario(string ObjectId, bool CheckedDate)

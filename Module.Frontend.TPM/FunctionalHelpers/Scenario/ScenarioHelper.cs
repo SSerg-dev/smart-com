@@ -127,11 +127,13 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             if (rollingScenario != null)
             {
                 DeleteRAPeriod(rollingScenario.Id, Context);
+                DeleteRAPeriodCurrentPromo(rollingScenario, clientTree, Context);
                 RestoreRAPeriod(savedScenario, Context, clientTree);
             }
             else
             {
-                RestoreRAPeriod(savedScenario, Context, clientTree);
+                DeleteRAPeriodCurrentPromo(rollingScenario, clientTree, Context);
+                RestoreRAPeriod(savedScenario, Context, clientTree);                
             }
             return clientTree;
         }
@@ -180,6 +182,16 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             rollingScenario.Disabled = true;
             rollingScenario.DeletedDate = DateTimeOffset.Now;
             rollingScenario.RSstatus = RSstateNames.CANCELLED;
+            Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g => g.TPMmode == TPMmode.RA));
+            Context.SaveChanges();
+        }
+        public static void DeleteRAPeriodCurrentPromo(RollingScenario rollingScenario, ClientTree clientTree, DatabaseContext Context)
+        {
+            int nextYear = TimeHelper.NextBuggetYear();
+            List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
+            List<Promo> promosRemove = Context.Set<Promo>()
+                .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == nextYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && g.TPMmode == TPMmode.Current)
+                .ToList();
             Context.Set<Promo>().RemoveRange(rollingScenario.Promoes.Where(g => g.TPMmode == TPMmode.RA));
             Context.SaveChanges();
         }
