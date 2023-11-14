@@ -1522,13 +1522,6 @@
     {
       "metadata": {
       },
-      "name": "#QCCount",
-      "nullable": true,
-      "type": "integer"
-    },
-    {
-      "metadata": {
-      },
       "name": "PlanPromoVolume",
       "nullable": true,
       "type": "double"
@@ -1546,6 +1539,13 @@
       "name": "ActualPromoNSVtn",
       "nullable": true,
       "type": "double"
+    },
+    {
+      "metadata": {
+      },
+      "name": "#QCCount",
+      "nullable": true,
+      "type": "integer"
     }
   ],
   "type": "struct"
