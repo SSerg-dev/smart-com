@@ -67,6 +67,10 @@ namespace Module.Host.TPM.Actions
                             .Include(g => g.PromoPriceIncrease.PromoProductPriceIncreases.Select(f => f.ProductCorrectionPriceIncreases))
                             .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == budgetYear && !notStatus.Contains(g.PromoStatus.SystemName) && !g.Disabled && g.TPMmode == TPMmode.Current)
                             .ToList();
+                        List<Promo> promosMarkDelete = Context.Set<Promo>()
+                            .Where(g => g.ClientTreeKeyId == clientTree.Id && g.BudgetYear == nextYear && g.TPMmode == TPMmode.Current)
+                            .ToList();
+                        List<Promo> markDeletePromoes = RAmodeHelper.EditToPromoRAMark(Context, promosMarkDelete, true, TimeHelper.Now());
                         CopyRAReturn copyRAReturn = HiddenModeHelper.CopyToPromoRA(Context, promos, nextYear, CheckedDate, clientDispatchDays, draftPublish);
 
                         if (copyRAReturn.Promos.Count > 0)
@@ -99,6 +103,7 @@ namespace Module.Host.TPM.Actions
                                 changesIncidents.Add(changesIncident);
                             }
                             Context.Set<ChangesIncident>().AddRange(changesIncidents);
+                            copyRAReturn.Promos.AddRange(markDeletePromoes);
                             rollingScenario.Promoes = copyRAReturn.Promos;
                             Context.Set<RollingScenario>().Add(rollingScenario);
                             Context.SaveChanges();
