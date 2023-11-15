@@ -204,6 +204,8 @@ namespace Module.Host.TPM.Actions
                                 promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
 
                                 Mechanic mechanic = oneLoad.Mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
+                                if (promo.InOutProductIds.Length > 0)
+                                    promo.InOutProductIds += ";";
                                 promo.MarsMechanicId = mechanic.Id;
                                 promo.MarsMechanicDiscount = firstInputML.DiscountMars;
                                 Mechanic mechanicInstore = oneLoad.Mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechInstore && g.PromoTypesId == promo.PromoTypesId);
