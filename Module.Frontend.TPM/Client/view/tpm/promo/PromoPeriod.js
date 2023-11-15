@@ -317,9 +317,15 @@
 
 
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
-                                startDateField.setMaxValue(newValue);
-                                startDateField.getPicker().setMaxDate();
-                                startDateField.validate();
+                                var promoeditorcustom = field.up('promoeditorcustom');
+                                if (promoeditorcustom.rsStartEnd) {
+                                    
+                                }
+                                else {
+                                    startDateField.setMaxValue(newValue);
+                                    startDateField.getPicker().setMaxDate();
+                                    startDateField.validate();
+                                }
 
                                 //Установка завершенности при promo в статусе Closed, Finished, Started
                                 var promoPeriodButton = Ext.ComponentQuery.query('button[itemId=btn_promo_step4]')[0];
@@ -593,9 +599,15 @@
                                 var startDateValue = startDateField.getValue();
 
                                 //startDateField.getPicker().setMaxDate(Ext.Date.add(newValue, Ext.Date.DAY, -1));
-                                startDateField.setMaxValue(newValue);
-                                startDateField.getPicker().setMaxDate();
-                                startDateField.validate();
+                                var promoeditorcustom = field.up('promoeditorcustom');
+                                if (promoeditorcustom.rsStartEnd) {
+                                    
+                                }
+                                else {
+                                    startDateField.setMaxValue(newValue);
+                                    startDateField.getPicker().setMaxDate();
+                                    startDateField.validate();
+                                }
 
                                 if (startDateValue /*&& startDateField.isValid()*/ && newValue) {
                                     validDates = true;
