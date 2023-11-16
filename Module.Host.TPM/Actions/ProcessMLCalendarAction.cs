@@ -199,7 +199,8 @@ namespace Module.Host.TPM.Actions
                                 List<string> zreps = inputMLs.Where(g => g.PromoId == inputMlId).Select(g => g.ZREP.ToString()).ToList();
                                 List<Product> products = context.Set<Product>().Where(g => zreps.Contains(g.ZREP)).ToList();
                                 promo.InOutProductIds = string.Join(";", products.Select(g => g.Id));
-
+                                if (promo.InOutProductIds.Length > 0)
+                                    promo.InOutProductIds += ";";
                                 Mechanic mechanic = mechanics.FirstOrDefault(g => g.SystemName == firstInputML.MechanicMars && g.PromoTypesId == promo.PromoTypesId);
                                 promo.MarsMechanicId = mechanic.Id;
                                 promo.MarsMechanicDiscount = firstInputML.DiscountMars;
