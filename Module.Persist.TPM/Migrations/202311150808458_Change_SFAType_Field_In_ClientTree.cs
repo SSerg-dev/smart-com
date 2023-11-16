@@ -30,7 +30,7 @@
         private string SqlString = $@"
             UPDATE [DefaultSchemaSetting].[ClientTree] 
             SET
-                SFATypeId = SELECT [Id] FROM [DefaultSchemaSetting].[SFATypes] WHERE [Name] = [SFATypeName]
+                SFATypeId = (SELECT [Id] FROM [DefaultSchemaSetting].[SFATypes] WHERE [Name] = [SFATypeName])
             WHERE 
                 [SFATypeName] IS NOT NULL
         ";
