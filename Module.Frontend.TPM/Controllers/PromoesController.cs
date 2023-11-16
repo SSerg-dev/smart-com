@@ -1124,7 +1124,7 @@ namespace Module.Frontend.TPM.Controllers
                 if (TPMmode == TPMmode.RA)
                 {
                     StartEndModel startEndModel = RAmodeHelper.GetRAPeriod();
-                    if (((DateTimeOffset)model.DispatchesStart) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.DispatchesStart || model.BudgetYear != startEndModel.StartDate.Year)
+                    if (((DateTimeOffset)model.DispatchesStart) < startEndModel.StartDate || startEndModel.EndDate < (DateTimeOffset)model.DispatchesStart || model.BudgetYear != startEndModel.BudgetYear)
                     {
                         return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo is not in the RA period" }));
                     }
@@ -1133,16 +1133,16 @@ namespace Module.Frontend.TPM.Controllers
                         List<string> blockStatuses = "Draft,Planned,Closed,Deleted,Finished,Started,Cancelled".Split(',').ToList();
                         if (blockStatuses.Contains(model.PromoStatus.SystemName))
                         {
-                            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RS mode" }));
+                            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "Promo in status: " + model.PromoStatus.Name + " cannot be deleted in the RA mode" }));
                         }
-                        Promo presentRsPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RS && g.Number == model.Number);
-                        if (presentRsPromo is null)
+                        Promo presentRaPromo = Context.Set<Promo>().FirstOrDefault(g => g.Disabled && g.TPMmode == TPMmode.RA && g.Number == model.Number);
+                        if (presentRaPromo is null)
                         {
-                            model = RSmodeHelper.EditToPromoRS(Context, model, true, System.DateTime.Now);
+                            model = RAmodeHelper.EditToPromoRA(Context, model, true, System.DateTime.Now);
                         }
                         //создавать удаленную копию PromoRS c сущностями, если ее нет
                     }
-                    else if (TPMmode == TPMmode.RS && model.TPMmode == TPMmode.RS)
+                    else if (TPMmode == TPMmode.RA && model.TPMmode == TPMmode.RA)
                     {
                         // удалить PromoRS  c сущностями
                         model = RAmodeHelper.DeleteToPromoRA(Context, model);
