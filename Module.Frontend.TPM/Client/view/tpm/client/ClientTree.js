@@ -235,7 +235,7 @@
                         },
                         {
                             xtype: 'singlelinedisplayfield',
-                            name: 'SFATypeName',
+                            name: 'SFAType.Name',
                             width: 280,
                             fieldLabel: l10n.ns('tpm', 'SFAType').value('Name')
                         },

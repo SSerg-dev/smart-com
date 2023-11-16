@@ -176,7 +176,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
                                               .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetUpliftPercent', when(col('PlanPromoBaselineLSV') != 0, (col('PlanPromoNetIncrementalLSV') / col('PlanPromoBaselineLSV')) * 100.0)\
                                               .otherwise(0).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoUpliftPercentPI', (col('PlanPromoUpliftPercent').cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoUpliftPercentPI', col('PlanPromoUpliftPercent').cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('PlanPromoNetIncrementalLSV')) * col('RATIShopperPercent') / 100)\
                   .cast(DecimalType(30,6)))\
       .withColumn('PlanAddTIShopperApproved', when(col('LastApprovedDate').isNull(), col('PlanAddTIShopperCalculated')).otherwise(col('PlanAddTIShopperApproved')))\
@@ -198,34 +198,31 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcPlanProm
                                               .otherwise(0)).otherwise(col('PlanPromoROIPercentLSV')).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoNetROIPercent', when(col('IsLSVBased') == False, when(col("PlanPromoCost") != 0, (col('PlanPromoNetIncrementalEarnings') / col('PlanPromoCost') + 1) * 100.0)\
                                               .otherwise(0)).otherwise(col('PlanPromoNetROIPercentLSV')).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoVolume', (isNullCheck(col('PlanPromoBaselineVolume')) + isNullCheck(col('PlanPromoIncrementalVolume')))\
-                  .cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoNSVtn', (isNullCheck(col('PlanPromoNSV')) / isNullCheck(col('PlanPromoVolume')))\
-                  .cast(DecimalType(30,6)))
+      .withColumn('PlanPromoVolume', (isNullCheck(col('PlanPromoBaselineVolume')) + isNullCheck(col('PlanPromoIncrementalVolume'))).cast(DecimalType(30,6)))\
+      .withColumn('PlanPromoNSVtn', (isNullCheck(col('PlanPromoNSV')) / isNullCheck(col('PlanPromoVolume'))).cast(DecimalType(30,6)))
 
-    if "MasterPromoId" in promoDF.schema.fieldNames():
-      inExchangeCalcPromoDF = promoDF\
-        .select(\
-                col('MasterPromoId').alias('MasterPromo')
-                ,col('PlanPromoTIShopper')
-                ,col('PlanPromoNetIncrementalLSV')
-               )\
-        .groupBy('MasterPromo')\
-        .agg(sum('PlanPromoTIShopper').alias('sumPlanPromoTIShopper'),
-             sum('PlanPromoNetIncrementalLSV').alias('sumPlanPromoNetIncrementalLSV'))
+    inExchangeCalcPromoDF = promoDF\
+    .select(\
+            col('MasterPromoId').alias('MasterPromo')
+            ,col('PlanPromoTIShopper')
+            ,col('PlanPromoNetIncrementalLSV')
+            )\
+    .groupBy('MasterPromo')\
+    .agg(sum('PlanPromoTIShopper').alias('sumPlanPromoTIShopper'),
+            sum('PlanPromoNetIncrementalLSV').alias('sumPlanPromoNetIncrementalLSV'))
 
-      calcPlanPromoDF = calcPlanPromoDF\
-        .join(inExchangeCalcPromoDF, inExchangeCalcPromoDF.MasterPromo == calcPlanPromoDF.Id, 'left')\
-        .select(\
-                 calcPlanPromoDF['*']
-                ,col('sumPlanPromoTIShopper')
-                ,col('sumPlanPromoNetIncrementalLSV')
-               )
+    calcPlanPromoDF = calcPlanPromoDF\
+    .join(inExchangeCalcPromoDF, inExchangeCalcPromoDF.MasterPromo == calcPlanPromoDF.Id, 'left')\
+    .select(\
+                calcPlanPromoDF['*']
+            ,col('sumPlanPromoTIShopper')
+            ,col('sumPlanPromoNetIncrementalLSV')
+            )
 
-      calcPlanPromoDF = calcPlanPromoDF\
-        .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('sumPlanPromoTIShopper')) - (isNullCheck(col('PlanPromoNetIncrementalLSV')) - isNullCheck(col('sumPlanPromoNetIncrementalLSV'))) * col('RATIShopperPercent') / 100)\
-                    .cast(DecimalType(30,6)))\
-        .drop('sumPlanPromoTIShopper', 'sumPlanPromoNetIncrementalLSV')
+    calcPlanPromoDF = calcPlanPromoDF\
+    .withColumn('PlanAddTIShopperCalculated', (isNullCheck(col('PlanPromoTIShopper')) - isNullCheck(col('sumPlanPromoTIShopper')) - (isNullCheck(col('PlanPromoNetIncrementalLSV')) - isNullCheck(col('sumPlanPromoNetIncrementalLSV'))) * col('RATIShopperPercent') / 100)\
+                .cast(DecimalType(30,6)))\
+    .drop('sumPlanPromoTIShopper', 'sumPlanPromoNetIncrementalLSV')
 
     #####*Get result*
 

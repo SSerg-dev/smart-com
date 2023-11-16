@@ -3769,6 +3769,14 @@
     <Compile Include="Migrations\202311100642593_Empty_After_Merge_RPA_Price_Discount.designer.cs">
       <DependentUpon>202311100642593_Empty_After_Merge_RPA_Price_Discount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311150808458_Change_SFAType_Field_In_ClientTree.cs" />
+    <Compile Include="Migrations\202311150808458_Change_SFAType_Field_In_ClientTree.designer.cs">
+      <DependentUpon>202311150808458_Change_SFAType_Field_In_ClientTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311161340483_Change_SFAType_Name.cs" />
+    <Compile Include="Migrations\202311161340483_Change_SFAType_Name.designer.cs">
+      <DependentUpon>202311161340483_Change_SFAType_Name.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7061,6 +7069,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202310301316165_Empty30102023.resx">
       <DependentUpon>202310301316165_Empty30102023.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311150808458_Change_SFAType_Field_In_ClientTree.resx">
+      <DependentUpon>202311150808458_Change_SFAType_Field_In_ClientTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311161340483_Change_SFAType_Name.resx">
+      <DependentUpon>202311161340483_Change_SFAType_Name.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202311091130051_Add_RollingScenario_AP.resx">
       <DependentUpon>202311091130051_Add_RollingScenario_AP.cs</DependentUpon>

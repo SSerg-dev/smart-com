@@ -188,6 +188,12 @@ namespace Module.Host.TPM.Actions
                 if (String.IsNullOrEmpty(typedRec.Number.ToString())) { errors.Add("BTL must have a value"); isSuitable = false; }
             }
 
+            if (TypeTo == typeof(SFAType))
+            {
+                SFAType typedRec = (SFAType)rec;
+                if (String.IsNullOrEmpty(typedRec.Name)) { errors.Add("Name must have a value"); isSuitable = false; }
+            }
+
             return isSuitable;
         }
 
@@ -356,6 +362,11 @@ namespace Module.Host.TPM.Actions
             {
                 query = context.Set<RetailType>().AsNoTracking();
             }
+            else if (TypeTo == typeof(SFAType))
+            {
+                query = context.Set<SFAType>().AsNoTracking();
+            }
+
 
             return query.ToList();
         }
