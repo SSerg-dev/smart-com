@@ -3777,6 +3777,10 @@
     <Compile Include="Migrations\202311161340483_Change_SFAType_Name.designer.cs">
       <DependentUpon>202311161340483_Change_SFAType_Name.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.cs" />
+    <Compile Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.designer.cs">
+      <DependentUpon>202311161503257_Add_Empty_After_SFA_Fix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7084,6 +7088,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202311100642593_Empty_After_Merge_RPA_Price_Discount.resx">
       <DependentUpon>202311100642593_Empty_After_Merge_RPA_Price_Discount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.resx">
+      <DependentUpon>202311161503257_Add_Empty_After_SFA_Fix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
