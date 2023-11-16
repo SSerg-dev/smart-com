@@ -5,6 +5,7 @@ using Persist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utility.LogWriter;
 
 namespace Module.Host.TPM.Actions
 {
@@ -13,12 +14,14 @@ namespace Module.Host.TPM.Actions
         private readonly List<string> BrandTechCode;
         private readonly string DemandCode;
         private readonly double CValue;
+        private LogWriter HandlerLogger { get; }
 
-        public CreateCoefficientSI2SOAction(List<string> brandTechCode, string demandCode, double cValue)
+        public CreateCoefficientSI2SOAction(List<string> brandTechCode, string demandCode, double cValue, LogWriter handlerLogger)
         {
             BrandTechCode = brandTechCode;
             DemandCode = demandCode;
             CValue = cValue;
+            HandlerLogger = handlerLogger;
         }
 
         public override void Execute()
@@ -91,7 +94,7 @@ namespace Module.Host.TPM.Actions
                         }
                         else 
                         {
-                            Errors.Add("Records with that Demand Code already exists");
+                            HandlerLogger.Write(true, "Records with that Demand Code already exists", "Message");
                         }
 
                     }
