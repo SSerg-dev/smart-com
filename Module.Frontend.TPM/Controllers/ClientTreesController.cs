@@ -668,10 +668,9 @@ namespace Module.Frontend.TPM.Controllers
                 x.parentId == model.parentId &&
                 x.DemandCode == (!string.IsNullOrEmpty(model.DemandCode) ? model.DemandCode : null) &&
                 x.GHierarchyCode == model.GHierarchyCode &&                                        
-                x.SFATypeName == model.SFATypeName &&
+                x.SFATypeId == model.SFATypeId &&
                 x.DMDGroup == model.DMDGroup &&
-                x.SFAClientCode == model.SFAClientCode &&
-                 x.SFATypeName == model.SFATypeName).Count();           
+                x.SFAClientCode == model.SFAClientCode).Count();           
 
             if (checkDouble > 0)
             {
@@ -735,7 +734,8 @@ namespace Module.Frontend.TPM.Controllers
                 }
 
                 DateTime dt = DateTime.Now;
-                ClientTree oldRecord = (ClientTree)currentRecord.Clone();
+                var oldRecord = activeTree.AsNoTracking().FirstOrDefault(x => x.ObjectId == model.ObjectId);
+                oldRecord.SFAType = currentRecord.SFAType;
                 oldRecord.EndDate = dt;
 
                 string oldFullPath = currentRecord.FullPathName;
@@ -1346,7 +1346,8 @@ namespace Module.Frontend.TPM.Controllers
         public bool? IsDaysEnd { get; set; }
         public double? DistrMarkUp { get; set; }
         public string SFAClientCode { get; set; }
-        public string SFATypeName { get; set; }
+        public Guid? SFATypeId { get; set; }
+        public SFAType SFAType { get; set; }
         public double? DeviationCoefficient { get; set; }
         public string LogoFileName { get; set; }
 
@@ -1376,7 +1377,8 @@ namespace Module.Frontend.TPM.Controllers
             DMDGroup = treeNode.DMDGroup;
             DistrMarkUp = treeNode.DistrMarkUp;
             SFAClientCode = treeNode.SFAClientCode;
-            SFATypeName = treeNode.SFATypeName;
+            SFATypeId = treeNode.SFATypeId;
+            SFAType = treeNode.SFAType;
             DeviationCoefficient = treeNode.DeviationCoefficient;
 
             this.leaf = leaf;

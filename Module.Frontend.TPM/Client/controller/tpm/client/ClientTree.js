@@ -232,6 +232,7 @@
 
     updateTreeDetail: function (editorform, record) {
         editorform.loadRecord(record);
+        !!record.raw.SFAType && editorform.up('clienttree').down('[name=SFAType.Name]').setValue(record.raw.SFAType.Name);
         this.setLogoImage(editorform.up('clienttree').down('[name=treeLogoPanel]'), record.data.LogoFileName);
     },
 
