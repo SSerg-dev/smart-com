@@ -261,7 +261,7 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoNetIncrementalBaseTI', (col('ActualPromoNetIncrementalLSV') * col('TIBasePercent') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoIncrementalCOGS', (col('ActualPromoIncrementalLSV') * col('COGSPercent') / 100).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetIncrementalCOGS', (col('ActualPromoNetIncrementalLSV') * col('COGSPercent') / 100.0).cast(DecimalType(30,6)))\
-      .withColumn('ActualPromoNSVtn', (isNullCheck(col('ActualPromoNSV')) / (isNullCheck(col('ActualPromoVolumeSI')).cast(DecimalType(30,6)))\
+      .withColumn('ActualPromoNSVtn', (isNullCheck(col('ActualPromoNSV')) / isNullCheck(col('ActualPromoVolumeSI'))).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetLSV', (isNullCheck(col('ActualPromoBaselineLSV')) + isNullCheck(col('ActualPromoNetIncrementalLSV'))).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoNetBaseTI', (col('ActualPromoNetLSV') * col('TIBasePercent') / 100.0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoTotalCost', (isNullCheck(col('ActualPromoCost')) + isNullCheck(col('ActualPromoBaseTI'))).cast(DecimalType(30,6)))\
@@ -314,29 +314,28 @@ def run(clientTreeDF,cogsDF,brandTechDF,cogsTnDF,tiDF,ratiShopperDF,calcActualPr
       .withColumn('ActualPromoNetROIPercent', when(col('IsLSVBased') == False, when(col("ActualPromoCost") != 0, (col('ActualPromoNetIncrementalEarnings') / col('ActualPromoCost') + 1) * 100.0)\
                                               .otherwise(0)).otherwise(col('ActualPromoNetROIPercentLSV')).cast(DecimalType(30,6)))      
 
-    if "MasterPromoId" in promoDF.schema.fieldNames():
-      inExchangeCalcPromoDF = promoDF\
-        .select(\
-                col('MasterPromoId').alias('MasterPromo')
-                ,col('PlanPromoTIShopper')
-                ,col('PlanPromoNetIncrementalLSV')
-               )\
-        .groupBy('MasterPromo')\
-        .agg(sum('PlanPromoTIShopper').alias('sumPlanPromoTIShopper'),
-             sum('PlanPromoNetIncrementalLSV').alias('sumPlanPromoNetIncrementalLSV'))
+    inExchangeCalcPromoDF = promoDF\
+    .select(\
+            col('MasterPromoId').alias('MasterPromo')
+            ,col('PlanPromoTIShopper')
+            ,col('PlanPromoNetIncrementalLSV')
+            )\
+    .groupBy('MasterPromo')\
+    .agg(sum('PlanPromoTIShopper').alias('sumPlanPromoTIShopper'),
+            sum('PlanPromoNetIncrementalLSV').alias('sumPlanPromoNetIncrementalLSV'))
 
-      calcActualPromoDF = calcActualPromoDF\
-        .join(inExchangeCalcPromoDF, inExchangeCalcPromoDF.MasterPromo == calcActualPromoDF.Id, 'left')\
-        .select(\
-                 calcActualPromoDF['*']
-                ,col('sumPlanPromoTIShopper')
-                ,col('sumPlanPromoNetIncrementalLSV')
-               )
+    calcActualPromoDF = calcActualPromoDF\
+    .join(inExchangeCalcPromoDF, inExchangeCalcPromoDF.MasterPromo == calcActualPromoDF.Id, 'left')\
+    .select(\
+                calcActualPromoDF['*']
+            ,col('sumPlanPromoTIShopper')
+            ,col('sumPlanPromoNetIncrementalLSV')
+            )
 
-      calcActualPromoDF = calcActualPromoDF\
-        .withColumn('ActualAddTIShopper', (isNullCheck(col('ActualPromoTIShopper')) - isNullCheck(col('sumPlanPromoTIShopper')) - (isNullCheck(col('ActualPromoNetIncrementalLSV')) - isNullCheck(col('sumPlanPromoNetIncrementalLSV'))) * col('RATIShopperPercent') / 100)\
-                    .cast(DecimalType(30,6)))\
-        .drop('sumPlanPromoTIShopper', 'sumPlanPromoNetIncrementalLSV')
+    calcActualPromoDF = calcActualPromoDF\
+    .withColumn('ActualAddTIShopper', (isNullCheck(col('ActualPromoTIShopper')) - isNullCheck(col('sumPlanPromoTIShopper')) - (isNullCheck(col('ActualPromoNetIncrementalLSV')) - isNullCheck(col('sumPlanPromoNetIncrementalLSV'))) * col('RATIShopperPercent') / 100)\
+                .cast(DecimalType(30,6)))\
+    .drop('sumPlanPromoTIShopper', 'sumPlanPromoNetIncrementalLSV')
 
     #####*Get result*
 

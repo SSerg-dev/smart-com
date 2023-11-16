@@ -369,7 +369,7 @@ def run(calcPlanPromoProductDF,planParamsPriceListDF,planParamsIncreasePriceList
                                              .otherwise(calcPlanPromoDF.calcPlanPromoBaselineLSV).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoLSV', when(calcPlanPromoDF.calcPlanPromoLSV.isNull(), calcPlanPromoDF.PlanPromoLSV)\
                                              .otherwise(calcPlanPromoDF.calcPlanPromoLSV).cast(DecimalType(30,6)))\
-      .withColumn('PlanPromoUpliftPercent', col('promoPlanPromoUpliftPercent').cast(DecimalType(30,6))\
+      .withColumn('PlanPromoUpliftPercent', col('promoPlanPromoUpliftPercent').cast(DecimalType(30,6)))\
       .withColumn('PlanPromoBaselineVolume', when(calcPlanPromoDF.calcPlanProductBaselineVolume.isNull(), calcPlanPromoDF.PlanPromoBaselineVolume)\
                                              .otherwise(calcPlanPromoDF.calcPlanProductBaselineVolume).cast(DecimalType(30,6)))\
       .withColumn('PlanPromoIncrementalVolume', when(col('promoInOut') == 'False', col('PlanPromoBaselineVolume') * col('PlanPromoUpliftPercent') / 100)\
