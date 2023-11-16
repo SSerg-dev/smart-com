@@ -12,7 +12,6 @@ using Module.Persist.TPM.Utils;
 using NLog;
 using Persist;
 using Persist.Model;
-using Raven.Abstractions.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,7 +22,6 @@ using System.Text.RegularExpressions;
 using Utility;
 using Utility.FileWorker;
 using Utility.Import;
-using static Module.Frontend.TPM.Util.PromoHelper;
 
 namespace Module.Host.TPM.Actions
 {
@@ -197,12 +195,17 @@ namespace Module.Host.TPM.Actions
                 IQueryable<ClientTreeHierarchyView> hierarchy = context.Set<ClientTreeHierarchyView>().AsNoTracking();
                 query = ModuleApplyFilterHelper.ApplyFilter(query, hierarchy, filters);
 
+                var existingClientTreeIds = query
+                    .Where(x => x.EndDate == null)
+                    .Select(x => x.ObjectId)
+                    .ToHashSet();
+
                 string username = context.Users.FirstOrDefault(g => g.Id == UserId).Name;
                 // проверка на дубликаты из файла
                 var existingDouble = CheckForDuplicatesImport(context, sourceRecords, out validationErrors);
                 var existingLetters = CheckForlettersImport(existingDouble, out validationErrors);
                 // Изменение промо
-                List<Promo> promos = UpdatePromoesFromActualShelfPriceDiscount(context, existingLetters, out validationErrors);
+                List<Promo> promos = UpdatePromoesFromActualShelfPriceDiscount(context, existingLetters, existingClientTreeIds, out validationErrors);
 
                 logger.Trace("Persist models built");
 
@@ -307,6 +310,13 @@ namespace Module.Host.TPM.Actions
                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceRecords.FirstOrDefault(g => g.PromoId == sourceRecord.PromoId), string.Join(", ", errors)));
                     invalidNumbers.Add(sourceRecord.PromoId.ToString());
                 }
+                if (sourceRecord.Mechanic == "VP" && String.IsNullOrEmpty(sourceRecord.MechanicType))
+                {
+                    HasErrors = true;
+                    errors.Add("Empty Mechanic type:" + string.Join(",", sourceRecord.Discount + " Promo number :" + sourceRecord.PromoId.ToString()));
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceRecords.FirstOrDefault(g => g.PromoId == sourceRecord.PromoId), string.Join(", ", errors)));
+                    invalidNumbers.Add(sourceRecord.PromoId.ToString());
+                }
                 if (sourceRecord.ShelfPrice == null || sourceRecord.ShelfPrice < 0)
                 {
                     HasErrors = true;
@@ -352,7 +362,7 @@ namespace Module.Host.TPM.Actions
             }
         }
 
-        private List<Promo> UpdatePromoesFromActualShelfPriceDiscount(DatabaseContext context, List<ImportActualShelfPriceDiscount> sourceRecords, out IList<string> errors)
+        private List<Promo> UpdatePromoesFromActualShelfPriceDiscount(DatabaseContext context, List<ImportActualShelfPriceDiscount> sourceRecords, HashSet<int> existingClientTreeIds, out IList<string> errors)
         {
             errors = new List<string>();
 
@@ -380,6 +390,13 @@ namespace Module.Host.TPM.Actions
 
                 if (sourcePromo == null)
                     continue;
+
+                if (preparedPromo.ClientTreeId.HasValue && !existingClientTreeIds.Contains(preparedPromo.ClientTreeId.Value))
+                {
+                    HasErrors = true;
+                    errors.Add($"No access to import data for {preparedPromo.ClientTreeId}");
+                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(sourceRecords.FirstOrDefault(g => g.PromoId == sourcePromo.PromoId), string.Join(", ", errors)));
+                }
 
                 var existingMechanic = mechanics.FirstOrDefault(x => x.Name == sourcePromo.Mechanic);
                 if (existingMechanic != null)
@@ -414,7 +431,8 @@ namespace Module.Host.TPM.Actions
                 preparedPromo.DocumentNumber = sourcePromo.DocumentNumber;
             }
 
-            context.SaveChanges();
+            if (!HasErrors)
+                context.SaveChanges();
 
             return preparedPromos;
         }
