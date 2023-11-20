@@ -24,7 +24,7 @@ namespace Module.Host.TPM.Handlers
                 handlerLogger = new LogWriter(info.HandlerId.ToString());
                 handlerLogger.Write(true, String.Format("Inserting began at {0:yyyy-MM-dd HH:mm:ss}", ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow)), "Message");
 
-                IAction action = GetAction(info);
+                IAction action = GetAction(info, handlerLogger);
                 action.Execute();
                 // Если в прцессе выполнения возникли ошибки, статус задачи устанавливаем ERROR
                 if (action.Errors.Any())
@@ -72,12 +72,12 @@ namespace Module.Host.TPM.Handlers
             }
         }
 
-        protected IAction GetAction(HandlerInfo info)
+        protected IAction GetAction(HandlerInfo info, LogWriter handlerLogger)
         {
             List<string> brandTechCode = HandlerDataHelper.GetIncomingArgument<List<string>>("brandTechCode", info.Data, false);
             string demandCode = HandlerDataHelper.GetIncomingArgument<string>("demandCode", info.Data, false);
             double cValue = HandlerDataHelper.GetIncomingArgument<double>("cValue", info.Data, false);
-            return new CreateCoefficientSI2SOAction(brandTechCode, demandCode, cValue);
+            return new CreateCoefficientSI2SOAction(brandTechCode, demandCode, cValue, handlerLogger);
         }
     }
 }

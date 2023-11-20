@@ -1,4 +1,5 @@
 using Core.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Module.Persist.TPM.Model.TPM
 {
-    public class ClientTree : IEntity<int>, ICloneable
+    public class ClientTree : IEntity<int>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -46,7 +47,11 @@ namespace Module.Persist.TPM.Model.TPM
         public double? DistrMarkUp { get; set; }
 
         public string SFAClientCode { get; set; }
-        public string SFATypeName { get; set; }
+
+        [ForeignKey("SFAType")]
+        public Guid? SFATypeId { get; set; }
+
+        public virtual SFAType SFAType { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTimeOffset? ModifiedDate { get; set; }

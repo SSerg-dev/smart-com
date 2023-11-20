@@ -1853,7 +1853,7 @@
                     $.ajax({
                         type: "POST",
                         cache: false,
-                        url: "/odata/Promoes/PromoRSDelete?key=" + record.data.Id + '&TPMmode=' + mode.data.value,
+                        url: "/odata/Promoes/PromoRSDelete?key=" + record.data.Id + '&TPMmode=' + TpmModes.getSelectedModeId(),
                         dataType: "json",
                         contentType: false,
                         processData: false,

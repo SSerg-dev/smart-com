@@ -62,7 +62,7 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<PromoSales>();
             modelBuilder.Entity<Demand>();
             modelBuilder.Entity<RejectReason>();
-            modelBuilder.Entity<ClientTree>();
+            modelBuilder.Entity<ClientTree>().HasOptional(x => x.SFAType);//.WithMany(x => x.ClientTrees);
             modelBuilder.Entity<ProductTree>();
             modelBuilder.Entity<Event>().HasMany(e => e.BTLs).WithRequired(e => e.Event);
             modelBuilder.Entity<EventType>().HasMany(e => e.Events).WithRequired(e => e.EventType);
@@ -190,7 +190,7 @@ namespace Module.Persist.TPM
 
             modelBuilder.Entity<TLCImport>().ToTable("TLCImports");
             modelBuilder.Entity<SavedSetting>().ToTable("SavedSettings");
-            modelBuilder.Entity<SFAType>().ToTable("SFATypes");
+            modelBuilder.Entity<SFAType>();
             modelBuilder.Entity<PromoInfo>().HasRequired(g => g.Promo).WithOptional(g => g.PromoInfo).WillCascadeOnDelete();
         }
 
@@ -689,6 +689,9 @@ namespace Module.Persist.TPM
             builder.EntitySet<ClientTree>("ClientTrees").HasManyBinding(g => g.SavedPromos, "SavedPromoes");
             builder.EntitySet<ClientTree>("BaseClients").HasManyBinding(g => g.SavedPromos, "SavedPromoes"); // Для получение только базовых клиентов из иерархии
             builder.EntitySet<ClientTree>("BaseClientViews").HasManyBinding(g => g.SavedPromos, "SavedPromoes");
+            builder.EntitySet<ClientTree>("ClientTrees").HasOptionalBinding(g => g.SFAType, "SFATypes");
+            builder.EntitySet<ClientTree>("BaseClients").HasOptionalBinding(g => g.SFAType, "SFATypes");
+            builder.EntitySet<ClientTree>("BaseClientViews").HasOptionalBinding(g => g.SFAType, "SFATypes");
             builder.Entity<ClientTree>().Collection.Action("Delete");
             builder.Entity<ClientTree>().Collection.Action("Move");
             ActionConfiguration updateClientNodeAction = builder.Entity<ClientTree>().Collection.Action("UpdateNode");
@@ -860,6 +863,8 @@ namespace Module.Persist.TPM
 
             builder.EntitySet<SFAType>("SFATypes");
             builder.EntitySet<SFAType>("DeletedSFATypes");
+            builder.EntitySet<SFAType>("SFATypes");//.HasManyBinding(e => e.ClientTrees, "ClientTrees");
+            builder.EntitySet<SFAType>("DeletedSFATypes");//.HasManyBinding(e => e.ClientTrees, "ClientTrees");
             builder.EntitySet<HistoricalSFAType>("HistoricalSFATypes");
             builder.Entity<SFAType>().Collection.Action("ExportXLSX");
             builder.Entity<SFAType>().Collection.Action("FullImportXLSX");

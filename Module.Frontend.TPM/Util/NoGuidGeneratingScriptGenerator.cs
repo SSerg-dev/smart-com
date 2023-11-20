@@ -363,7 +363,7 @@ namespace Module.Frontend.TPM.Util
         }
 
         private string GetTableName(Type type)
-        {
+        {   //TO DO need workaround for plural table names
             return String.Format("[{0}]", String.IsNullOrEmpty(RootTableName) ? type.Name : RootTableName);
         }
 

@@ -83,8 +83,56 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
     calcActualPromoProductDF = calcActualPromoProductDF\
       .withColumn('isActualPromoBaseLineLSVChangedByDemand', when((~col('ActualPromoBaselineLSV').isNull()) & (col('ActualPromoBaselineLSV') != col('PlanPromoBaselineLSV')), True).otherwise(False))\
       .withColumn('isActualPromoLSVChangedByDemand', when((~col('ActualPromoLSVSO').isNull()) & (col('ActualPromoLSVSO') != 0), True).otherwise(False))\
-      .withColumn('isActualPromoProstPromoEffectLSVChangedByDemand', when((~col('ActualPromoPostPromoEffectLSV').isNull()) & (col('ActualPromoPostPromoEffectLSV') != 0), True).otherwise(False))
+      .withColumn('isActualPromoProstPromoEffectLSVChangedByDemand', when((~col('ActualPromoPostPromoEffectLSV').isNull()) & (col('ActualPromoPostPromoEffectLSV') != 0), True).otherwise(False))\
+      .withColumn('ActualProductLSVByCompensation', (col('ActualProductPCQty') * col('ActualProductSellInPrice')).cast(DecimalType(30,6)))\
+      .withColumn('ActualProductLSVByCompensation', when(col('ActualProductLSVByCompensation').isNull(), 0)\
+                  .otherwise(col('ActualProductLSVByCompensation')).cast(DecimalType(30,6)))
 
+    sumActualProductParamsList = calcActualPromoProductDF\
+      .select(\
+                col('promoIdCol')
+               ,col('ActualProductLSVByCompensation')
+             )\
+      .groupBy('promoIdCol')\
+      .agg(sum('ActualProductLSVByCompensation').cast(DecimalType(30,6)).alias('calcActualPromoLSVByCompensation'))\
+      .collect()
+
+    actualParSchema = StructType([
+      StructField("promoIdCol", StringType(), True),
+      StructField("calcActualPromoLSVByCompensation", DecimalType(30,6), True)
+    ])
+
+    actualParDF = spark.createDataFrame(sumActualProductParamsList, actualParSchema)
+
+    calcActualPromo1DF = calcActualPromoDF\
+      .join(actualParDF, actualParDF.promoIdCol == calcActualPromoDF.Id, 'inner')\
+      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation') == 0, col('ActualPromoLSVByCompensation')).otherwise(col('calcActualPromoLSVByCompensation')))
+
+    calcActualPromo1DF = calcActualPromo1DF\
+      .select('Id', 'ActualPromoLSVByCompensation')
+
+    allCalcActualPromoDF = allCalcActualPromoDF\
+      .join(calcActualPromo1DF, 'Id', 'left')\
+      .select(\
+               allCalcActualPromoDF['*']
+              ,calcActualPromo1DF.ActualPromoLSVByCompensation.alias('calcActualPromoLSVByCompensation')
+             )\
+      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation').isNull(), col('ActualPromoLSVByCompensation'))\
+                  .otherwise(col('calcActualPromoLSVByCompensation')))\
+      .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
+      .drop('calcActualPromoLSVByCompensation')
+
+    calcActualPromoProductDF.show()
+
+    calcActualPromoProductDF = calcActualPromoProductDF.alias('pr')\
+      .join(allCalcActualPromoDF.alias('p'), col('pr.promoIdCol') == col('p.Id'), 'inner')\
+      .select(allCalcActualPromoDF.ActualPromoLSVByCompensation, col('p.ActualPromoLSVSO'), col('p.ActualPromoLSVSI'), calcActualPromoProductDF['*'])
+
+    #calcActualPromoProductDF = calcActualPromoProductDF\
+    #  .join(allCalcActualPromoDF, calcActualPromoProductDF.promoIdCol == allCalcActualPromoDF.Id, 'inner')\
+    #  .select(allCalcActualPromoDF.ActualPromoLSVByCompensation, allCalcActualPromoDF.ActualPromoLSVSO, calcActualPromoProductDF['*'])
+
+    #####*Get result*
     calcActualPromoProductDF = calcActualPromoProductDF\
       .withColumn('ActualProductBaselineLSV', when((col('promoInOut') == 'False') & (~col('isActualPromoBaseLineLSVChangedByDemand')), col('PlanProductBaselineLSV'))\
                                           .otherwise(col('ActualProductBaselineLSV')).cast(DecimalType(30,6)))\
@@ -109,9 +157,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
                                               .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectQty', when(col('promoInOut') == 'False', col('ActualProductPostPromoEffectQtyW1') + col('ActualProductPostPromoEffectQtyW2'))\
                                               .otherwise(0).cast(DecimalType(30,6)))\
-      .withColumn('ActualProductLSVByCompensation', (col('ActualProductPCQty') * col('ActualProductSellInPrice')).cast(DecimalType(30,6)))\
-      .withColumn('ActualProductLSVByCompensation', when(col('ActualProductLSVByCompensation').isNull(), 0)\
-                  .otherwise(col('ActualProductLSVByCompensation')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductIncrementalPCQty', when(col('ActualProductSellInPrice') != 0, col('ActualProductIncrementalLSV') / col('ActualProductSellInPrice'))\
                                                   .otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualProductIncrementalPCLSV', when(col('UOM_PC2Case') != 0, col('ActualProductIncrementalLSV') / col('UOM_PC2Case'))\
@@ -120,11 +165,11 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('PCPrice', (col('Price') / col('UOM_PC2Case')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductBaselineVolume', (col('ActualProductBaselineLSV') / col('PCPrice') * col('PCVolume')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectLSVW1', when((col('promoIsOnInvoice') == True), (col('PlanProductPostPromoEffectW1') / 100) * col('ActualProductBaselineLSV') +\
-                                          (col('ActualPromoLSVSO') * (col('ActualProductLSVByCompensation') / col('ActualPromoLSVByCompensation')) - col('ActualProductLSV')) *\
+                                          (col('p.ActualPromoLSVSO') * (col('ActualProductLSVByCompensation') / col('ActualPromoLSVByCompensation')) - col('ActualProductLSV')) *\
                                           (col('PlanProductPostPromoEffectW1') / (col('PlanProductPostPromoEffectW1') + col('PlanProductPostPromoEffectW2'))) )\
                                           .otherwise((col('PlanProductPostPromoEffectW1') / 100) * col('ActualProductBaselineLSV')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectLSVW2', when((col('promoIsOnInvoice') == True), (col('PlanProductPostPromoEffectW2') / 100) * col('ActualProductBaselineLSV') +\
-                                          (col('ActualPromoLSVSO') * (col('ActualProductLSVByCompensation') / col('ActualPromoLSVByCompensation')) - col('ActualProductLSV')) *\
+                                          (col('p.ActualPromoLSVSO') * (col('ActualProductLSVByCompensation') / col('ActualPromoLSVByCompensation')) - col('ActualProductLSV')) *\
                                           (col('PlanProductPostPromoEffectW2') / (col('PlanProductPostPromoEffectW1') + col('PlanProductPostPromoEffectW2'))) )\
                                           .otherwise((col('PlanProductPostPromoEffectW2') / 100) * col('ActualProductBaselineLSV')).cast(DecimalType(30,6)))\
       .withColumn('ActualProductPostPromoEffectLSV', (col('ActualProductPostPromoEffectLSVW1') + col('ActualProductPostPromoEffectLSVW2')).cast(DecimalType(30,6)))\
@@ -137,7 +182,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
     sumActualProductParamsList = calcActualPromoProductDF\
       .select(\
                 col('promoIdCol')
-               ,col('ActualProductLSVByCompensation')
                ,col('ActualProductBaselineVolume')
                ,col('ActualProductPostPromoEffectVolume')
                ,col('ActualProductVolumeByCompensation')
@@ -146,8 +190,7 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
                ,col('ActualProductVolume')
              )\
       .groupBy('promoIdCol')\
-      .agg(sum('ActualProductLSVByCompensation').cast(DecimalType(30,6)).alias('calcActualPromoLSVByCompensation'),
-           sum('ActualProductBaselineVolume').cast(DecimalType(30,6)).alias('calcActualPromoBaselineVolume'),
+      .agg(sum('ActualProductBaselineVolume').cast(DecimalType(30,6)).alias('calcActualPromoBaselineVolume'),
            sum('ActualProductPostPromoEffectVolume').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectVolume'),
            sum('ActualProductVolumeByCompensation').cast(DecimalType(30,6)).alias('calcActualPromoVolumeByCompensation'),
            sum('ActualProductPostPromoEffectLSVW1').cast(DecimalType(30,6)).alias('calcActualPromoPostPromoEffectLSVW1'),
@@ -157,7 +200,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
 
     actualParSchema = StructType([
       StructField("promoIdCol", StringType(), True),
-      StructField("calcActualPromoLSVByCompensation", DecimalType(30,6), True),
       StructField("calcActualPromoBaselineVolume", DecimalType(30,6), True),
       StructField("calcActualPromoPostPromoEffectVolume", DecimalType(30,6), True),
       StructField("calcActualPromoVolumeByCompensation", DecimalType(30,6), True),
@@ -170,8 +212,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
 
     calcActualPromoDF = calcActualPromoDF\
       .join(actualParDF, actualParDF.promoIdCol == calcActualPromoDF.Id, 'inner')\
-      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
-      .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVByCompensation') == 0, None).otherwise(col('calcActualPromoLSVByCompensation')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('InOut') == False, col('calcActualPromoPostPromoEffectVolume')).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoVolumeByCompensation', when(col('InOut') == False, col('calcActualPromoVolumeByCompensation')).otherwise(0).cast(DecimalType(30,6)))\
       .withColumn('ActualPromoPostPromoEffectLSVW1', when(col('calcActualPromoPostPromoEffectLSVW1') == 0, None).otherwise(col('calcActualPromoPostPromoEffectLSVW1')))\
@@ -181,14 +221,12 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualPromoVolume',  when(col('InOut') == True, col('calcActualPromoVolume')).otherwise(col('ActualPromoVolume')).cast(DecimalType(30,6)))
 
     calcActualPromoDF = calcActualPromoDF\
-      .select('Id', 'ActualPromoLSVByCompensation', 'ActualPromoLSVSI', 'calcActualPromoBaselineVolume', 'ActualPromoPostPromoEffectVolume', 'ActualPromoVolumeByCompensation', 'ActualPromoPostPromoEffectLSVW1', 'ActualPromoPostPromoEffectLSVW2', 'ActualPromoPostPromoEffectLSV', 'ActualPromoVolume')
+      .select('Id', 'calcActualPromoBaselineVolume', 'ActualPromoPostPromoEffectVolume', 'ActualPromoVolumeByCompensation', 'ActualPromoPostPromoEffectLSVW1', 'ActualPromoPostPromoEffectLSVW2', 'ActualPromoPostPromoEffectLSV', 'ActualPromoVolume')
 
     allCalcActualPromoDF = allCalcActualPromoDF\
       .join(calcActualPromoDF, 'Id', 'left')\
       .select(\
                allCalcActualPromoDF['*']
-              ,calcActualPromoDF.ActualPromoLSVByCompensation.alias('calcActualPromoLSVByCompensation')
-              ,calcActualPromoDF.ActualPromoLSVSI.alias('calcActualPromoLSVSI')
               ,calcActualPromoDF.calcActualPromoBaselineVolume.alias('calcActualPromoBaselineVolume')
               ,calcActualPromoDF.ActualPromoPostPromoEffectVolume.alias('calcActualPromoPostPromoEffectVolume')
               ,calcActualPromoDF.ActualPromoVolumeByCompensation.alias('calcActualPromoVolumeByCompensation')
@@ -197,9 +235,6 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
               ,calcActualPromoDF.ActualPromoPostPromoEffectLSV.alias('calcActualPromoPostPromoEffectLSV')
               ,calcActualPromoDF.ActualPromoVolume.alias('calcActualPromoVolume')
              )\
-      .withColumn('ActualPromoLSVByCompensation', when(col('calcActualPromoLSVByCompensation').isNull(), col('ActualPromoLSVByCompensation'))\
-                  .otherwise(col('calcActualPromoLSVByCompensation')))\
-      .withColumn('ActualPromoLSVSI', when(col('calcActualPromoLSVSI').isNull(), col('ActualPromoLSVSI')).otherwise(col('calcActualPromoLSVSI')))\
       .withColumn('ActualPromoBaselineVolume', when(col('calcActualPromoBaselineVolume').isNull(), col('ActualPromoBaselineVolume')).otherwise(col('calcActualPromoBaselineVolume')))\
       .withColumn('ActualPromoPostPromoEffectVolume', when(col('calcActualPromoPostPromoEffectVolume').isNull(), col('ActualPromoPostPromoEffectVolume')).otherwise(col('calcActualPromoPostPromoEffectVolume')))\
       .withColumn('ActualPromoVolumeByCompensation', when(col('calcActualPromoVolumeByCompensation').isNull(), col('ActualPromoVolumeByCompensation')).otherwise(col('calcActualPromoVolumeByCompensation')))\
@@ -207,7 +242,7 @@ def run(calcActualPromoProductDF,actualParamsPriceListDF,calcActualPromoDF,allCa
       .withColumn('ActualPromoPostPromoEffectLSVW2', when(col('calcActualPromoPostPromoEffectLSVW2').isNull(), col('ActualPromoPostPromoEffectLSVW2')).otherwise(col('calcActualPromoPostPromoEffectLSVW2')))\
       .withColumn('ActualPromoPostPromoEffectLSV', when(col('calcActualPromoPostPromoEffectLSV').isNull(), col('ActualPromoPostPromoEffectLSV')).otherwise(col('calcActualPromoPostPromoEffectLSV')))\
       .withColumn('ActualPromoVolume', when(col('calcActualPromoVolume').isNull(), col('ActualPromoVolume')).otherwise(col('calcActualPromoVolume')))\
-      .drop('calcActualPromoLSVByCompensation','calcActualPromoLSVSI','calcActualPromoBaselineVolume','calcActualPromoPostPromoEffectVolume','calcActualPromoVolumeByCompensation','calcActualPromoVolume')
+      .drop('calcActualPromoBaselineVolume','calcActualPromoPostPromoEffectVolume','calcActualPromoVolumeByCompensation','calcActualPromoVolume')
 
     #####*Get result*
 
