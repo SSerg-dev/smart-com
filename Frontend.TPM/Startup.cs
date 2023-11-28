@@ -3,7 +3,6 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Extensions;
 using Module.Persist.TPM.Session;
-//using Microsoft.Owin.Cors;
 using Owin;
 using System;
 
