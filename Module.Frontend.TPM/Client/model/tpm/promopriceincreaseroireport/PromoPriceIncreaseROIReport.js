@@ -92,6 +92,9 @@
         { name: 'ActualPromoIncrementalLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoLSVByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoLSV', useNull: true, defaultValue: 0, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSVSI', useNull: true, defaultValue: 0, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoLSVSO', useNull: true, defaultValue: 0, type: 'float', hidden: false, isDefault: false },
+
         { name: 'ActualPromoUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
@@ -151,9 +154,19 @@
         { name: 'PlanPromoBaselineVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectVolumeW1', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'PlanPromoPostPromoEffectVolumeW2', useNull: true, type: 'float', hidden: false, isDefault: false },
+
         { name: 'ActualPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoBaselineVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+
         { name: 'ActualPromoIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetIncrementalVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoPostPromoEffectVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoVolumeByCompensation', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'ActualPromoVolumeSI', useNull: true, type: 'float', hidden: false, isDefault: false },
+
         { name: 'TPMmode', type: 'string', hidden: false, isDefault: false },
         { name: 'IsPriceIncrease', type: 'bool', hidden: false, isDefault: true },
         { name: 'IsApolloExport', type: 'bool', hidden: false, isDefault: true },
@@ -164,10 +177,10 @@
     ],
     proxy: {
         type: 'breeze',
-        resourceName: 'PromoPriceIncreaseROIReports',
+        resourceName: 'PromoPriceIncreaseROIReports', 
         reader: {
             type: 'json',
-            totalProperty: 'inlineCount',
+            totalProperty: 'inlineCount',  
             root: 'results'
         },
         extraParams: {

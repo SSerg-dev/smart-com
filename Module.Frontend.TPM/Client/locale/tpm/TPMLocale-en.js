@@ -2216,7 +2216,9 @@
         'ActualPromoUpliftPercent': 'Actual Promo Uplift %',
         'ActualPromoIncrementalLSV': 'Actual Promo Incremental LSV',
         'ActualPromoLSV': 'Actual Promo LSV',
+        'ActualPromoLSVSI': 'Actual Promo LSV SI',
         'ActualPromoLSVSO': 'Actual Promo LSV SO',
+
         'ActualPromoLSVByCompensation': 'Actual Promo LSV by Compensation',
         'FactPostPromoEffect': 'Actual Post Promo Effect LSV',
         'FactPostPromoEffectTotal': 'Actual Post Promo Effect LSV',
@@ -2355,9 +2357,20 @@
         'PlanPromoBaselineVolume': 'Plan Promo Baseline Volume',
         'PlanPromoIncrementalVolume': 'Plan Promo Incremental Volume',
         'PlanPromoNetIncrementalVolume': 'Plan Promo Net Incremental Volume',
+        'PlanPromoPostPromoEffectVolume': 'Plan Promo Post Promo Effect Volume',
+        'PlanPromoPostPromoEffectVolumeW1': 'Plan Promo Post Promo Effect Volume W1',
+        'PlanPromoPostPromoEffectVolumeW2': 'Plan Promo Post Promo Effect Volume W2',
+
         'ActualPromoVolume': 'Actual Promo Volume',
+        'ActualPromoBaselineVolume': 'Actual Promo Baseline Volume',
+
         'ActualPromoIncrementalVolume': 'Actual Promo Incremental Volume',
         'ActualPromoNetIncrementalVolume': 'Actual Promo Net Incremental Volume',
+        'ActualPromoPostPromoEffectVolume': 'Actual Promo Post Promo Effect Volume',
+        'ActualPromoVolumeByCompensation': 'Actual Promo Volume By Compensation',
+        'ActualPromoVolumeSI': 'Actual Promo Volume SI',
+
+
         'TPMmode': 'Indicator',
         'IsPriceIncrease': 'Price Increase',
         'IsApolloExport': 'Anaplan Export',

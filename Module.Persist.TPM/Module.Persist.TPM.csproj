@@ -3781,6 +3781,14 @@
     <Compile Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.designer.cs">
       <DependentUpon>202311161503257_Add_Empty_After_SFA_Fix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311210658589_Add_New_Fields_ROI.cs" />
+    <Compile Include="Migrations\202311210658589_Add_New_Fields_ROI.designer.cs">
+      <DependentUpon>202311210658589_Add_New_Fields_ROI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs" />
+    <Compile Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.designer.cs">
+      <DependentUpon>202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
     <Compile Include="Migrations\Views\ViewMigrations.cs" />
@@ -7091,6 +7099,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.resx">
       <DependentUpon>202311161503257_Add_Empty_After_SFA_Fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311210658589_Add_New_Fields_ROI.resx">
+      <DependentUpon>202311210658589_Add_New_Fields_ROI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.resx">
+      <DependentUpon>202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -529,9 +529,12 @@
 					p.[ActualPromoVolume],
 					p.[ActualPromoIncrementalVolume],
 					p.[ActualPromoNetIncrementalVolume],
+					p.[IsApolloExport],
 					p.[PlanPromoVolume],
 					p.[PlanPromoNSVtn],
 					p.[ActualPromoNSVtn],
+					p.[Disabled],
+					MLmodel = CONVERT(bit, case when p.MLPromoId is not null then 1  else  0 end),
 					ct.[Name]						AS [ClientName],
 					e.[Name]						AS [EventName],
 					ps.[Name]						AS [PromoStatusName],
@@ -543,7 +546,20 @@
 					aM.[Name]						AS [ActualInStoreMechanicName],
 					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
 					pt.[Name]						AS [PromoTypesName],
-				
+
+					p.[PlanPromoPostPromoEffectVolume],
+					p.[PlanPromoPostPromoEffectVolumeW1],
+					p.[PlanPromoPostPromoEffectVolumeW2],
+
+					p.[ActualPromoBaselineVolume],
+
+					p.[ActualPromoPostPromoEffectVolume],
+					p.[ActualPromoVolumeByCompensation], 
+					p.[ActualPromoVolumeSI],
+
+					p.[ActualPromoLSVSI],
+					p.[ActualPromoLSVSO],
+
 					TRIM((SELECT TOP(1) 
 						[value] 
 					FROM STRING_SPLIT(p.[ClientHierarchy]
@@ -729,6 +745,7 @@
 				PromoROIReport
 			AS
 			(
+				
 				SELECT 
 					p.[ClientTreeKeyId],
 					p.[BaseClientTreeId],
@@ -904,6 +921,19 @@
 					aM.[Name]						AS [ActualInStoreMechanicName],
 					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
 					pt.[Name]						AS [PromoTypesName],
+						
+					p.[PlanPromoPostPromoEffectVolume],
+					p.[PlanPromoPostPromoEffectVolumeW1],
+					p.[PlanPromoPostPromoEffectVolumeW2],
+
+					p.ActualPromoBaselineVolume,
+
+					p.[ActualPromoPostPromoEffectVolume],
+					p.[ActualPromoVolumeByCompensation],
+					p.[ActualPromoVolumeSI],
+
+					p.[ActualPromoLSVSI],
+					p.[ActualPromoLSVSO],
 				
 					TRIM((SELECT TOP(1) 
 						[value] 
@@ -1011,7 +1041,7 @@
 				END
 			GO
 
-			CREATE   VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView] AS
+			CREATE   VIEW [DefaultSchemaSetting].[PromoPriceIncreaseROIReportView] AS 
 			WITH
 				CheckPromoStatuses
 			AS
@@ -1218,6 +1248,16 @@
 					aM.[Name]						AS [ActualInStoreMechanicName],
 					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
 					pt.[Name]						AS [PromoTypesName],
+
+					ppi.[PlanPromoPostPromoEffectVolume],
+					ppi.[PlanPromoPostPromoEffectVolumeW1],
+					ppi.[PlanPromoPostPromoEffectVolumeW2],
+					p.ActualPromoBaselineVolume,
+					p.[ActualPromoPostPromoEffectVolume],
+					p.[ActualPromoVolumeByCompensation],
+					p.[ActualPromoVolumeSI],
+					p.[ActualPromoLSVSI],
+					p.[ActualPromoLSVSO],
 				
 					TRIM((SELECT TOP(1) 
 						[value] 
@@ -1489,6 +1529,20 @@
 					aM.[Name]						AS [ActualInStoreMechanicName],
 					aMT.[Name]						AS [ActualInStoreMechanicTypeName],
 					pt.[Name]						AS [PromoTypesName],
+
+					p.[PlanPromoPostPromoEffectVolume],
+					p.[PlanPromoPostPromoEffectVolumeW1],
+					p.[PlanPromoPostPromoEffectVolumeW2],
+
+					p.ActualPromoBaselineVolume,
+
+					p.[ActualPromoPostPromoEffectVolume],
+					p.[ActualPromoVolumeByCompensation],
+					p.[ActualPromoVolumeSI],
+
+					p.[ActualPromoLSVSI],
+					p.[ActualPromoLSVSO], 
+				
 				
 					TRIM((SELECT TOP(1) 
 						[value] 

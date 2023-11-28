@@ -559,10 +559,6 @@
       <Project>{70de5780-2297-41fc-a861-d370f6fe631b}</Project>
       <Name>Module.Frontend.TPM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Module.Persist.TPM\Module.Persist.TPM.csproj">
-      <Project>{a4e76df0-0b6a-4848-a99c-b6bf261623f2}</Project>
-      <Name>Module.Persist.TPM</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />

@@ -212,5 +212,14 @@ namespace Module.Persist.TPM.Model.DTO
         public double? PlanPromoVolume { get; set; }
         public double? PlanPromoNSVtn { get; set; }
         public double? ActualPromoNSVtn { get; set; }
+        public double? PlanPromoPostPromoEffectVolume { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW1 { get; set; }
+        public double? PlanPromoPostPromoEffectVolumeW2 { get; set; }
+        public double? ActualPromoBaselineVolume { get; set; }
+        public double? ActualPromoPostPromoEffectVolume { get; set; }
+        public double? ActualPromoVolumeByCompensation { get; set; }
+        public double? ActualPromoVolumeSI { get; set; }
+        public double? ActualPromoLSVSI { get; set; }
+        public double? ActualPromoLSVSO { get; set; }
     }
 }

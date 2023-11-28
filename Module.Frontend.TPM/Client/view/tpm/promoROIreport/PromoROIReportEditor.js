@@ -60,6 +60,10 @@
             { xtype: 'numberfield', name: 'PlanPromoBaselineVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoBaselineVolume') },
             { xtype: 'numberfield', name: 'PlanPromoIncrementalVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalVolume') },
             { xtype: 'numberfield', name: 'PlanPromoNetIncrementalVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoNetIncrementalVolume') },
+            { xtype: 'numberfield', name: 'PlanPromoPostPromoEffectVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectVolume') },
+            { xtype: 'numberfield', name: 'PlanPromoPostPromoEffectVolumeW1', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectVolumeW1') },
+            { xtype: 'numberfield', name: 'PlanPromoPostPromoEffectVolumeW2', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoPostPromoEffectVolumeW2') },
+
             { xtype: 'numberfield', name: 'PlanPromoBaselineLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoBaselineLSV') },
             { xtype: 'numberfield', name: 'PlanPromoIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoIncrementalLSV') },
             { xtype: 'numberfield', name: 'PlanPromoLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('PlanPromoLSV') },
@@ -110,12 +114,21 @@
             { xtype: 'numberfield', name: 'ActualInStoreShelfPrice', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualInStoreShelfPrice') },
             { xtype: 'textfield', name: 'InvoiceNumber', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('InvoiceNumber') },
             { xtype: 'numberfield', name: 'ActualPromoVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoVolume') },
+            { xtype: 'numberfield', name: 'ActualPromoBaselineVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoBaselineVolume') },
+
             { xtype: 'numberfield', name: 'ActualPromoIncrementalVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalVolume') },
             { xtype: 'numberfield', name: 'ActualPromoNetIncrementalVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetIncrementalVolume') },
+            { xtype: 'numberfield', name: 'ActualPromoPostPromoEffectVolume', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoPostPromoEffectVolume') },
+            { xtype: 'numberfield', name: 'ActualPromoVolumeByCompensation', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoVolumeByCompensation') },
+            { xtype: 'numberfield', name: 'ActualPromoVolumeSI', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoVolumeSI') },
+
             { xtype: 'numberfield', name: 'ActualPromoBaselineLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoBaselineLSV') },
             { xtype: 'numberfield', name: 'ActualPromoIncrementalLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoIncrementalLSV') },
             { xtype: 'numberfield', name: 'ActualPromoLSVByCompensation', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSVByCompensation') },
             { xtype: 'numberfield', name: 'ActualPromoLSV', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSV') },
+            { xtype: 'numberfield', name: 'ActualPromoLSVSI', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSVSI') },
+            { xtype: 'numberfield', name: 'ActualPromoLSVSO', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoLSVSO') },
+
             { xtype: 'numberfield', name: 'ActualPromoUpliftPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoUpliftPercent') },
             { xtype: 'numberfield', name: 'ActualPromoNetUpliftPercent', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoNetUpliftPercent') },
             { xtype: 'numberfield', name: 'ActualPromoTIShopper', fieldLabel: l10n.ns('tpm', 'PromoROIReport').value('ActualPromoTIShopper') },

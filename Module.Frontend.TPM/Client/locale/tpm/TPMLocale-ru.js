@@ -677,6 +677,7 @@
         'PlanPromoUpliftPercent': 'Plan Promo Uplift, %',
         'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
         'PlanPromoLSV': 'Plan Promo LSV',
+
         'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
         'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV',
         'PlanPostPromoEffectTotal': 'Plan Post Promo Effect LSV',
@@ -1776,6 +1777,7 @@
         'PlanPromoUpliftPercent': 'Plan Promo Uplift %',
         'PlanPromoIncrementalLSV': 'Plan Promo Incremental LSV',
         'PlanPromoLSV': 'Plan Promo LSV',
+        
         'PlanPromoBaselineLSV': 'Plan Promo Baseline LSV',
         'PlanPromoPostPromoEffectLSV': 'Plan Post Promo Effect LSV',
         'PlanPostPromoEffectTotal': 'Plan Post Promo Effect LSV',
@@ -1913,6 +1915,16 @@
         'PlanPromoNetROIPercentLSV': 'Plan Promo Net ROI % LSV',
         'ActualPromoROIPercentLSV': 'Actual Promo ROI % LSV',
         'ActualPromoNetROIPercentLSV': 'Actual Promo Net ROI % LSV',
+        
+        'PlanPromoPostPromoEffectVolume': 'Plan Promo Post Promo Effect Volume',
+        'PlanPromoPostPromoEffectVolumeW1': 'Plan Promo Post Promo Effect Volume W1',
+        'PlanPromoPostPromoEffectVolumeW2': 'Plan Promo Post Promo Effect Volume W2',
+        'ActualPromoBaselineVolume': 'Actual Promo Baseline Volume',
+        'ActualPromoPostPromoEffectVolume': 'Actual Promo Post Promo Effect Volume',
+        'ActualPromoVolumeByCompensation': 'Actual Promo Volume By Compensation',
+        'ActualPromoVolumeSI': 'Actual Promo Volume SI',
+        'ActualPromoLSVSI': 'Actual Promo LSV SI',
+        'ActualPromoLSVSO': 'Actual Promo LSV SO',
     },
 
     'PromoActivity': {
