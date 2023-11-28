@@ -70,9 +70,9 @@ Ext.define('App.controller.tpm.actualcogs.ActualCOGS', {
                     click: this.onApplyImportButtonClick
                 },
 
-                'actualcogs #recalculateactualcogspreviousyearbutton': {
-                    click: this.onRecalculatePreviousYearButtonClick
-                },
+                //'actualcogs #recalculateactualcogspreviousyearbutton': {
+                //    click: this.onRecalculatePreviousYearButtonClick
+                //},
 
                 '#confirmPromoRecalculationCOGSWindow #confirm': {
                     click: this.onConfirmPromoRecalculationButtonClick
@@ -82,47 +82,47 @@ Ext.define('App.controller.tpm.actualcogs.ActualCOGS', {
     },
 
     onGridAfterrender: function (grid) {
-        this.callParent(arguments);
+        //this.callParent(arguments);
         
-        var resource = 'ActualCOGSs',
-            action = 'IsCOGSRecalculatePreviousYearButtonAvailable',
-            allowedActions = [];
+        //var resource = 'ActualCOGSs',
+        //    action = 'IsCOGSRecalculatePreviousYearButtonAvailable',
+        //    allowedActions = [];
 
-        var currentRoleAPs = App.UserInfo.getCurrentRole().AccessPoints.filter(function (point) {
-            return point.Resource === resource;
-        });
+        //var currentRoleAPs = App.UserInfo.getCurrentRole().AccessPoints.filter(function (point) {
+        //    return point.Resource === resource;
+        //});
 
-        currentRoleAPs.forEach(function (point) {
-            if (!allowedActions.some(function (action) { return action === point.Action })) {
-                allowedActions.push(point.Action);
-            }
-        });
+        //currentRoleAPs.forEach(function (point) {
+        //    if (!allowedActions.some(function (action) { return action === point.Action })) {
+        //        allowedActions.push(point.Action);
+        //    }
+        //});
 
-        if (Ext.Array.contains(allowedActions, action)) {
-            var store = grid.getStore();
-            store.on('load', function (store) {
-                parameters = {};
+        //if (Ext.Array.contains(allowedActions, action)) {
+        //    var store = grid.getStore();
+        //    store.on('load', function (store) {
+        //        parameters = {};
 
-                App.Util.makeRequestWithCallback(resource, action, parameters, function (data) {
-                    if (data) {
-                        var result = Ext.JSON.decode(data.httpResponse.data.value);
-                        if (result.success) {
-                            var recalculatePreviousYearButton = grid.up('panel').down('#recalculateactualcogspreviousyearbutton');
-                            this.recalculatePreviousYearButton = recalculatePreviousYearButton;
-                            if (result.isRecalculatePreviousYearButtonAvailable) {
-                                recalculatePreviousYearButton.setDisabled(false);
-                            } else {
-                                recalculatePreviousYearButton.setDisabled(true);
-                            }
-                        } else {
-                            App.Notify.pushError(data.message);
-                        }
-                    }
-                }, function (data) {
-                    App.Notify.pushError(data.message);
-                });
-            });
-        }
+        //        App.Util.makeRequestWithCallback(resource, action, parameters, function (data) {
+        //            if (data) {
+        //                var result = Ext.JSON.decode(data.httpResponse.data.value);
+        //                if (result.success) {
+        //                    var recalculatePreviousYearButton = grid.up('panel').down('#recalculateactualcogspreviousyearbutton');
+        //                    this.recalculatePreviousYearButton = recalculatePreviousYearButton;
+        //                    if (result.isRecalculatePreviousYearButtonAvailable) {
+        //                        recalculatePreviousYearButton.setDisabled(false);
+        //                    } else {
+        //                        recalculatePreviousYearButton.setDisabled(true);
+        //                    }
+        //                } else {
+        //                    App.Notify.pushError(data.message);
+        //                }
+        //            }
+        //        }, function (data) {
+        //            App.Notify.pushError(data.message);
+        //        });
+        //    });
+        //}
     },
 
     onRecalculatePreviousYearButtonClick: function (button) {

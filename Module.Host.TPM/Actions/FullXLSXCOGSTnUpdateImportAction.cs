@@ -11,6 +11,7 @@ using Looper.Parameters;
 using Module.Host.TPM.Util;
 using Module.Persist.TPM.Model.DTO;
 using Module.Persist.TPM.Model.Import;
+using Module.Persist.TPM.Model.Interfaces;
 using Module.Persist.TPM.Model.TPM;
 using Module.Persist.TPM.Utils;
 using NLog;
@@ -82,6 +83,7 @@ namespace Module.Host.TPM.Actions
             logger.Trace("Begin");
             try
             {
+
                 ResultStatus = null;
                 HasErrors = false;
 
@@ -474,7 +476,24 @@ namespace Module.Host.TPM.Actions
             var statusesSetting = settingsManager.GetSetting<string>("NOT_CHECK_PROMO_STATUS_LIST", "Draft,Cancelled,Deleted,Closed");
             var notCheckPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.DispatchesStart.HasValue && x.DispatchesStart.Value.Year == this.Year)
+            var notCheckPromoStatusIds = context.Set<PromoStatus>()
+                .Where(x => notCheckPromoStatuses.Contains(x.Name))
+                .ToList();
+
+            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
+            var allCOGSForCurrentYear = context.Set<PlanCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
+            var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
+
+            var clientsToCheck = importCOGS.Select(x => x.ClientTreeId).ToHashSet();    
+
+            var promoes = context.Set<Promo>()
+                .Where(x =>
+                    !x.Disabled &&
+                    x.DispatchesStart.HasValue &&
+                    x.DispatchesStart.Value.Year == this.Year &&
+                    !notCheckPromoStatuses.Contains(x.PromoStatus.Name) &&
+                    x.ClientTreeKeyId.HasValue && clientsToCheck.Contains((int)x.ClientTreeKeyId))
                 .Select(x => new PromoSimpleCOGS
                 {
                     PromoStatusName = x.PromoStatus.Name,
@@ -485,13 +504,7 @@ namespace Module.Host.TPM.Actions
                     ClientTreeObjectId = x.ClientTreeId,
                     BrandTechId = x.BrandTechId
                 })
-                .ToList()
-                .Where(x => !notCheckPromoStatuses.Contains(x.PromoStatusName));
-
-            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
-            var allCOGSForCurrentYear = context.Set<PlanCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
-            var clientTrees = context.Set<ClientTree>().ToList();
-            var brandTeches = context.Set<BrandTech>().ToList();
+                .ToList();
 
             foreach (var promo in promoes)
             {
@@ -603,9 +616,24 @@ namespace Module.Host.TPM.Actions
             var statusesSetting = settingsManager.GetSetting<string>("ACTUAL_COGSTI_CHECK_PROMO_STATUS_LIST", "Finished, Closed");
             var checkPromoStatuses = statusesSetting.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            var promoes = context.Set<Promo>().Where(x => !x.Disabled && x.DispatchesStart.HasValue && x.DispatchesStart.Value.Year == this.Year)
+            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
+            var allActualCOGSForYear = context.Set<ActualCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
+            var clientTrees = context.Set<ClientTree>().ToList();
+            var brandTeches = context.Set<BrandTech>().ToList();
+
+            var clientsToCheck = importCOGS.Select(x => x.ClientTreeId).ToHashSet();
+
+            var promoes = context.Set<Promo>()
+                .Where(x =>
+                    !x.Disabled &&
+                    x.DispatchesStart.HasValue &&
+                    x.DispatchesStart.Value.Year == this.Year &&
+                    checkPromoStatuses.Contains(x.PromoStatus.Name) &&
+                    x.ClientTreeKeyId.HasValue && clientsToCheck.Contains((int)x.ClientTreeKeyId))
                 .Select(x => new PromoSimpleCOGS
                 {
+                    Id = x.Id,
+                    TPMmode = x.TPMmode,
                     PromoStatusName = x.PromoStatus.Name,
                     Number = x.Number,
                     DispatchesStart = x.DispatchesStart,
@@ -614,13 +642,7 @@ namespace Module.Host.TPM.Actions
                     ClientTreeObjectId = x.ClientTreeId,
                     BrandTechId = x.BrandTechId
                 })
-                .ToList()
-                .Where(x => checkPromoStatuses.Contains(x.PromoStatusName));
-
-            var importCOGS = sourceRecords.Cast<ImportCOGSTn>().Where(x => x.StartDate.HasValue && x.EndDate.HasValue);
-            var allActualCOGSForYear = context.Set<ActualCOGSTn>().Where(x => !x.Disabled && x.Year == this.Year);
-            var clientTrees = context.Set<ClientTree>().ToList();
-            var brandTeches = context.Set<BrandTech>().ToList();
+                .ToList();
 
             foreach (var promo in promoes)
             {
@@ -678,7 +700,18 @@ namespace Module.Host.TPM.Actions
                     context.Set<ActualCOGSTn>().AddRange(items);
                 }
 
-                //инциденты при импорте ActualCOGS/Tn не создаются
+                var changeIncidents = promoes.Select(x =>
+                    new ChangesIncident
+                    {
+                        DirectoryName = "PromoActualCOGSTn",
+                        ItemId = x.Id.ToString(),
+                        CreateDate = DateTime.Now
+                    });
+
+                context.Set<ChangesIncident>().AddRange(changeIncidents);
+
+                foreach (var promo in promoes)
+                    Results.Add($"Incident created for night recalculation. Promo {promo.Number} Mode: {(promo.TPMmode == TPMmode.Current ? "Production" : promo.TPMmode.ToString())}", null);
             }
 
             context.SaveChanges();

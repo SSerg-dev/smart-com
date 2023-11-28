@@ -100,14 +100,16 @@
             glyph: 0xf258,
             text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
-        }, {
-            itemId: 'recalculateactualtipreviousyearbutton',
-            glyph: 0xf0ec,
-            action: 'PreviousYearPromoList',
-            text: l10n.ns('tpm', 'ActualTradeInvestment').value('recalculatePreviousYearButtonYearText'),
-            tooltip: l10n.ns('tpm', 'ActualTradeInvestment').value('recalculatePreviousYearButtonYearText'),
-            disabled: true
-        }, '-', '->', '-', {
+        },
+            //{
+            //itemId: 'recalculateactualtipreviousyearbutton',
+            //glyph: 0xf0ec,
+            //action: 'PreviousYearPromoList',
+            //text: l10n.ns('tpm', 'ActualTradeInvestment').value('recalculatePreviousYearButtonYearText'),
+            //tooltip: l10n.ns('tpm', 'ActualTradeInvestment').value('recalculatePreviousYearButtonYearText'),
+            //disabled: true
+            //},
+        '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,

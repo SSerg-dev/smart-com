@@ -1,4 +1,5 @@
 ﻿using Interfaces.Core.Common;
+using Interfaces.Implementation.Action;
 using Interfaces.Implementation.Import.FullImport;
 using Looper.Core;
 using Looper.Parameters;
@@ -8,6 +9,9 @@ using Moule.Host.TPM.Actions;
 using ProcessingHost.Handlers.Import;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Utility.LogWriter;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -49,6 +53,108 @@ namespace Module.Host.TPM.Handlers
             var importDestination = data.GetValue<string>("ImportDestination");
             return new FullXLSXCOGSUpdateImportAction(settings, year, importDestination);
         }
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            LogWriter handlerLogger = null;
+            Stopwatch sw = new Stopwatch();
+            try
+            {
+                logger.Debug("Begin '{0}'", info.HandlerId);
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+
+                sw.Start();
+                handlerLogger.Write(true, String.Format("Import started in {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                InitializeParameters(info.Data, data);
+                WriteParametersToLog(handlerLogger.CurrentLogWriter, data);
+
+                string separator = HandlerDataHelper.GetIncomingArgument<string>("Separator", info.Data, false) ?? ";";
+                string quote = HandlerDataHelper.GetIncomingArgument<string>("QuoteChar", info.Data, false) ?? "";
+                bool hasHeader = HandlerDataHelper.GetIncomingArgument<bool?>("HasHeader", info.Data, false) ?? true;
+                // Импортируемая модель
+                string importSubtypeName = HandlerDataHelper.GetIncomingArgument<string>("ImportSubtypeName", info.Data, false);
+
+                // Импортируемая модель
+                Type importType = HandlerDataHelper.GetIncomingArgument<Type>("ImportType", info.Data);
+                Type modelType = HandlerDataHelper.GetIncomingArgument<Type>("ModelType", info.Data);
+                // Название файла импорта
+                FileModel importFile = HandlerDataHelper.GetIncomingArgument<FileModel>("File", info.Data);
+                // Параметры импорта
+                // ИД пользователя и текущей роли
+                Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
+                Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
+                string telemetrickName = importType.Name;
+
+                FullImportSettings settings = new FullImportSettings()
+                {
+                    UserId = userId,
+                    RoleId = roleId,
+                    HasHeader = hasHeader,
+                    Quote = quote,
+                    Separator = separator,
+                    ImportFile = importFile,
+                    ImportSubtypeName = importSubtypeName,
+                    ImportType = importType,
+                    ModelType = modelType
+                };
+
+                IAction action = GetAction(settings, data);
+                action.Execute();
+
+                if (action.Results.Any())
+                {
+                    if (handlerLogger != null)
+                    {
+                        foreach (var result in action.Results.Where(x => x.Key.Contains("Promo")))
+                        {
+                            handlerLogger.Write(true, result.Key, "Message");
+                        }
+                    }
+                }
+
+                // TODO Обработка ошибок
+                if (action.Errors.Any())
+                {
+                    data.SetValue<bool>("HasErrors", true);
+
+                    if (handlerLogger != null)
+                    {
+                        // Записать в лог возникшие ошибки.
+                        foreach (var error in action.Errors)
+                        {
+                            handlerLogger.Write(true, error, "Error");
+                        }
+                    }
+                }
+
+                action.SaveResultToData<int>(info.Data, "ImportSourceRecordCount");
+                action.SaveResultToData<int>(info.Data, "ImportResultRecordCount");
+                HandlerDataHelper.SaveOutcomingArgument<int>("ErrorCount", action.GetResult<int>("ErrorCount", 0) + action.Errors.Count, info.Data, true, false);
+                action.SaveResultToData<int>(info.Data, "WarningCount");
+                action.SaveResultToData<ImportResultFilesModel>(info.Data, "ImportResultFilesModel");
+
+                string resultStatus = action.GetResult<string>("ImportResultStatus", null);
+                data.SetValue<string>("ImportResultStatus", resultStatus);
+            }
+            catch (Exception e)
+            {
+                data.SetValue<bool>("HasErrors", true);
+                logger.Error(e);
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, e.ToString(), "Error");
+                }
+            }
+            finally
+            {
+                logger.Debug("Finish '{0}'", info.HandlerId);
+                sw.Stop();
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, String.Format("Import completed in {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
+                }
+            }
+        }
     }
 
     class FullXLSXCOGSTnUpdateImportHandler : FullXLSXImportHandler
@@ -67,7 +173,110 @@ namespace Module.Host.TPM.Handlers
             var importDestination = data.GetValue<string>("ImportDestination");
             return new FullXLSXCOGSTnUpdateImportAction(settings, year, importDestination);
         }
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            LogWriter handlerLogger = null;
+            Stopwatch sw = new Stopwatch();
+            try
+            {
+                logger.Debug("Begin '{0}'", info.HandlerId);
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+
+                sw.Start();
+                handlerLogger.Write(true, String.Format("Import started in {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                InitializeParameters(info.Data, data);
+                WriteParametersToLog(handlerLogger.CurrentLogWriter, data);
+
+                string separator = HandlerDataHelper.GetIncomingArgument<string>("Separator", info.Data, false) ?? ";";
+                string quote = HandlerDataHelper.GetIncomingArgument<string>("QuoteChar", info.Data, false) ?? "";
+                bool hasHeader = HandlerDataHelper.GetIncomingArgument<bool?>("HasHeader", info.Data, false) ?? true;
+                // Импортируемая модель
+                string importSubtypeName = HandlerDataHelper.GetIncomingArgument<string>("ImportSubtypeName", info.Data, false);
+
+                // Импортируемая модель
+                Type importType = HandlerDataHelper.GetIncomingArgument<Type>("ImportType", info.Data);
+                Type modelType = HandlerDataHelper.GetIncomingArgument<Type>("ModelType", info.Data);
+                // Название файла импорта
+                FileModel importFile = HandlerDataHelper.GetIncomingArgument<FileModel>("File", info.Data);
+                // Параметры импорта
+                // ИД пользователя и текущей роли
+                Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
+                Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
+                string telemetrickName = importType.Name;
+
+                FullImportSettings settings = new FullImportSettings()
+                {
+                    UserId = userId,
+                    RoleId = roleId,
+                    HasHeader = hasHeader,
+                    Quote = quote,
+                    Separator = separator,
+                    ImportFile = importFile,
+                    ImportSubtypeName = importSubtypeName,
+                    ImportType = importType,
+                    ModelType = modelType
+                };
+
+                IAction action = GetAction(settings, data);
+                action.Execute();
+
+                if (action.Results.Any())
+                {
+                    if (handlerLogger != null)
+                    {
+                        foreach (var result in action.Results.Where(x => x.Key.Contains("Promo")))
+                        {
+                            handlerLogger.Write(true, result.Key, "Message");
+                        }
+                    }
+                }
+
+                // TODO Обработка ошибок
+                if (action.Errors.Any())
+                {
+                    data.SetValue<bool>("HasErrors", true);
+
+                    if (handlerLogger != null)
+                    {
+                        // Записать в лог возникшие ошибки.
+                        foreach (var error in action.Errors)
+                        {
+                            handlerLogger.Write(true, error, "Error");
+                        }
+                    }
+                }
+
+                action.SaveResultToData<int>(info.Data, "ImportSourceRecordCount");
+                action.SaveResultToData<int>(info.Data, "ImportResultRecordCount");
+                HandlerDataHelper.SaveOutcomingArgument<int>("ErrorCount", action.GetResult<int>("ErrorCount", 0) + action.Errors.Count, info.Data, true, false);
+                action.SaveResultToData<int>(info.Data, "WarningCount");
+                action.SaveResultToData<ImportResultFilesModel>(info.Data, "ImportResultFilesModel");
+
+                string resultStatus = action.GetResult<string>("ImportResultStatus", null);
+                data.SetValue<string>("ImportResultStatus", resultStatus);
+            }
+            catch (Exception e)
+            {
+                data.SetValue<bool>("HasErrors", true);
+                logger.Error(e);
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, e.ToString(), "Error");
+                }
+            }
+            finally
+            {
+                logger.Debug("Finish '{0}'", info.HandlerId);
+                sw.Stop();
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, String.Format("Import completed in {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
+                }
+            }
+        }
     }
+
     class FullXLSXPPEUpdateImportHandler : FullXLSXImportHandler
     {
         protected override void InitializeParameters(HandlerData handlerData, ExecuteData data)
@@ -161,6 +370,108 @@ namespace Module.Host.TPM.Handlers
             var year = data.GetValue<int>("Year");
             var importDestination = data.GetValue<string>("ImportDestination");
             return new FullXLSXTradeInvestmentUpdateImportAction(settings, year, importDestination);
+        }
+        public override void Action(HandlerInfo info, ExecuteData data)
+        {
+            LogWriter handlerLogger = null;
+            Stopwatch sw = new Stopwatch();
+            try
+            {
+                logger.Debug("Begin '{0}'", info.HandlerId);
+                handlerLogger = new LogWriter(info.HandlerId.ToString());
+
+                sw.Start();
+                handlerLogger.Write(true, String.Format("Import started in {0:yyyy-MM-dd HH:mm:ss}", DateTimeOffset.Now), "Message");
+                InitializeParameters(info.Data, data);
+                WriteParametersToLog(handlerLogger.CurrentLogWriter, data);
+
+                string separator = HandlerDataHelper.GetIncomingArgument<string>("Separator", info.Data, false) ?? ";";
+                string quote = HandlerDataHelper.GetIncomingArgument<string>("QuoteChar", info.Data, false) ?? "";
+                bool hasHeader = HandlerDataHelper.GetIncomingArgument<bool?>("HasHeader", info.Data, false) ?? true;
+                // Импортируемая модель
+                string importSubtypeName = HandlerDataHelper.GetIncomingArgument<string>("ImportSubtypeName", info.Data, false);
+
+                // Импортируемая модель
+                Type importType = HandlerDataHelper.GetIncomingArgument<Type>("ImportType", info.Data);
+                Type modelType = HandlerDataHelper.GetIncomingArgument<Type>("ModelType", info.Data);
+                // Название файла импорта
+                FileModel importFile = HandlerDataHelper.GetIncomingArgument<FileModel>("File", info.Data);
+                // Параметры импорта
+                // ИД пользователя и текущей роли
+                Guid userId = HandlerDataHelper.GetIncomingArgument<Guid>("UserId", info.Data);
+                Guid roleId = HandlerDataHelper.GetIncomingArgument<Guid>("RoleId", info.Data);
+                string telemetrickName = importType.Name;
+
+                FullImportSettings settings = new FullImportSettings()
+                {
+                    UserId = userId,
+                    RoleId = roleId,
+                    HasHeader = hasHeader,
+                    Quote = quote,
+                    Separator = separator,
+                    ImportFile = importFile,
+                    ImportSubtypeName = importSubtypeName,
+                    ImportType = importType,
+                    ModelType = modelType
+                };
+
+                IAction action = GetAction(settings, data);
+                action.Execute();
+
+                if (action.Results.Any())
+                {
+                    if (handlerLogger != null)
+                    {
+                        foreach (var result in action.Results.Where(x => x.Key.Contains("Promo")))
+                        {
+                            handlerLogger.Write(true, result.Key, "Message");
+                        }
+                    }
+                }
+
+                // TODO Обработка ошибок
+                if (action.Errors.Any())
+                {
+                    data.SetValue<bool>("HasErrors", true);
+
+                    if (handlerLogger != null)
+                    {
+                        // Записать в лог возникшие ошибки.
+                        foreach (var error in action.Errors)
+                        {
+                            handlerLogger.Write(true, error, "Error");
+                        }
+                    }
+                }
+
+                action.SaveResultToData<int>(info.Data, "ImportSourceRecordCount");
+                action.SaveResultToData<int>(info.Data, "ImportResultRecordCount");
+                HandlerDataHelper.SaveOutcomingArgument<int>("ErrorCount", action.GetResult<int>("ErrorCount", 0) + action.Errors.Count, info.Data, true, false);
+                action.SaveResultToData<int>(info.Data, "WarningCount");
+                action.SaveResultToData<ImportResultFilesModel>(info.Data, "ImportResultFilesModel");
+
+                string resultStatus = action.GetResult<string>("ImportResultStatus", null);
+                data.SetValue<string>("ImportResultStatus", resultStatus);
+            }
+            catch (Exception e)
+            {
+                data.SetValue<bool>("HasErrors", true);
+                logger.Error(e);
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, e.ToString(), "Error");
+                }
+            }
+            finally
+            {
+                logger.Debug("Finish '{0}'", info.HandlerId);
+                sw.Stop();
+                if (handlerLogger != null)
+                {
+                    handlerLogger.Write(true, String.Format("Import completed in {0:yyyy-MM-dd HH:mm:ss}. Duration: {1} seconds", DateTimeOffset.Now, sw.Elapsed.TotalSeconds), "Message");
+                    handlerLogger.UploadToBlob();
+                }
+            }
         }
     }
 

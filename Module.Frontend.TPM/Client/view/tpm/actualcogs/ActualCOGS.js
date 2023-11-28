@@ -100,14 +100,16 @@
             glyph: 0xf258,
             text: l10n.ns('core', 'toptoolbar').value('deletedButtonText'),
             tooltip: l10n.ns('core', 'toptoolbar').value('deletedButtonText')
-        }, {
-            itemId: 'recalculateactualcogspreviousyearbutton',
-            glyph: 0xf0ec,
-            action: 'PreviousYearPromoList',
-            text: l10n.ns('tpm', 'ActualCOGS').value('recalculatePreviousYearButtonYearText'),
-            tooltip: l10n.ns('tpm', 'ActualCOGS').value('recalculatePreviousYearButtonYearText'),
-            disabled: true
-        }, '-', '->', '-', {
+        },
+            //{
+            //itemId: 'recalculateactualcogspreviousyearbutton',
+            //glyph: 0xf0ec,
+            //action: 'PreviousYearPromoList',
+            //text: l10n.ns('tpm', 'ActualCOGS').value('recalculatePreviousYearButtonYearText'),
+            //tooltip: l10n.ns('tpm', 'ActualCOGS').value('recalculatePreviousYearButtonYearText'),
+            //disabled: true
+            //},
+        '-', '->', '-', {
             itemId: 'extfilterclearbutton',
             ui: 'blue-button-toolbar',
             disabled: true,
