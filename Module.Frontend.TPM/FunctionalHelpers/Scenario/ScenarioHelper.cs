@@ -132,7 +132,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
             }
             else
             {
-                DeleteRAPeriodCurrentPromo(rollingScenario, clientTree, Context);
+                //DeleteRAPeriodCurrentPromo(rollingScenario, clientTree, Context);
                 RestoreRAPeriod(savedScenario, Context, clientTree);                
             }
             return clientTree;
