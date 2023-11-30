@@ -1236,7 +1236,7 @@
         var me = this;
         var treeViewHtml = $('#' + tree.getView().id);
         me.setScroll(tree);
-        $('#' + tree.getView().id).on("DOMSubtreeModified", function () {
+        $('#' + tree.getView().id).on("MutationObserver", function () {
             var table = treeViewHtml.find('table');
             var heightTable = table.height();
             var widthTable = table.innerWidth();

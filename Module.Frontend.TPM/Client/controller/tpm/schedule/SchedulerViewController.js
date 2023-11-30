@@ -1952,7 +1952,7 @@
         this.eventStoreLoading(eventStore);
         // при изменении содержимого календаря меняем скролл
         var me = this;
-        $('#' + scheduler.down('schedulergridview').id).on("DOMSubtreeModified", function () {
+        $('#' + scheduler.down('schedulergridview').id).on("MutationObserver", function () {
             var table = $(this).find('table');
             var heightTable = table.height();
             var currentHeightScroll = $('#scrollSchedulerH').height();
