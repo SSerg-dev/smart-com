@@ -1112,7 +1112,8 @@
         'SaveScenarioTaskCreated': 'Save scenario task was successfully created.',
         'SaveScenarioTaskError': 'Error occurred during scenario task creation.',
         'SaveScenarioSelectError': 'Select client to save scenario.',
-        'SaveScenarioTypeError': 'Select type to save scenario.'
+        'SaveScenarioTypeError': 'Select type to save scenario.',
+        'MassPublish': 'Mass Promo Publication'
     },
 
     'Color': {
@@ -3158,4 +3159,9 @@
         'ClientTreeFullPathName': 'Client',
         'CreateDate': 'Save Date',
     },
+    'MassPromoPublish': {
+        'MessageConfirmation': 'Please be informed, all your unpublished promo will be published right now but you will be able to see calculations only tomorrow, after night recalculation.  \nIf you cannot wait till night process, you can calculate promo manually.Do you agree to publish filtered promo?',
+        'MassPublishTaskCreated': 'Mass Promo Publication Task Created',
+        'MassPublishTaskError': 'Mass Promo Publication Task Error'
+    }
 });

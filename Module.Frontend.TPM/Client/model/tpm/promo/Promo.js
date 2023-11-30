@@ -201,7 +201,8 @@
         { name: 'ProductTreeObjectIds', type: 'string', hidden: true, useNull: true },
 
         // Показывает, производится ли расчет по данному промо
-        { name: 'Calculating', type: "boolean", useNull: true, hidden: true, isDefault: false },
+        { name: 'Calculating', type: "boolean", mapping: 'PromoBlockedStatus.Blocked', defaultFilterConfig: { valueField: 'Blocked' }, hidden: true, isDefault: false },
+        { name: 'DraftToPublished', type: "boolean", mapping: 'PromoBlockedStatus.DraftToPublished', defaultFilterConfig: { valueField: 'DraftToPublished' }, hidden: true, isDefault: false },
         //
         { name: 'PlanPromoNetIncrementalBaseTI', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetIncrementalCOGS', useNull: true, type: 'float', hidden: false, isDefault: false },

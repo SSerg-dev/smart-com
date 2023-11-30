@@ -153,9 +153,8 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<InputBaseline>();
 
             modelBuilder.Entity<UserTokenCache>();
-            
+
             modelBuilder.Entity<Promo>().Ignore(n => n.ProductTreeObjectIds);
-            modelBuilder.Entity<Promo>().Ignore(n => n.Calculating);
             modelBuilder.Entity<Promo>().Ignore(n => n.PromoBasicProducts);
 
             // Calendar Competitor Entities
@@ -192,6 +191,9 @@ namespace Module.Persist.TPM
             modelBuilder.Entity<SavedSetting>().ToTable("SavedSettings");
             modelBuilder.Entity<SFAType>();
             modelBuilder.Entity<PromoInfo>().HasRequired(g => g.Promo).WithOptional(g => g.PromoInfo).WillCascadeOnDelete();
+
+            modelBuilder.Entity<PromoBlockedStatus>().HasRequired(g => g.Promo).WithOptional(g => g.PromoBlockedStatus).WillCascadeOnDelete();
+            modelBuilder.Entity<PromoBlockedStatus>().HasMany(g => g.BlockedPromoes).WithRequired(g => g.PromoBlockedStatus).WillCascadeOnDelete();
         }
 
 
@@ -704,6 +706,7 @@ namespace Module.Persist.TPM
             builder.Entity<ClientTree>().Collection.Action("GetUploadingClients");
             builder.Entity<ClientTree>().Collection.Action("SaveScenario");
             builder.Entity<ClientTree>().Collection.Action("CopyYearScenario");
+            builder.Entity<ClientTree>().Collection.Action("MassPublish");
             builder.Entity<BaseClientTreeView>().Collection.Action("ExportXLSX");
             builder.Entity<ClientTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ClientTree>("ClientTrees");
 
@@ -714,6 +717,7 @@ namespace Module.Persist.TPM
             builder.Entity<ProductTree>().Collection.Action("UploadLogoFile");
             builder.Entity<ProductTree>().Collection.Action("DownloadLogoFile");
             builder.Entity<ProductTree>().Collection.Action("DeleteLogo");
+            builder.Entity<ProductTree>().Collection.Action("GetPromoBasicProducts");
             ActionConfiguration updateProductNodeAction = builder.Entity<ProductTree>().Collection.Action("UpdateNode");
             updateProductNodeAction.ReturnsFromEntitySet<ProductTree>("ProductTrees"); //какого типа параметр принимает экшн.
             builder.Entity<ProductTree>().Collection.Action("GetFilteredData").ReturnsCollectionFromEntitySet<ProductTree>("ProductTrees");
@@ -1384,6 +1388,10 @@ namespace Module.Persist.TPM
             builder.EntitySet<SavedPromo>("DeletedSavedPromoes").HasManyBinding(e => e.Promoes, "DeletedPromoes");
 
             builder.EntitySet<PromoInfo>("PromoInfoes").HasRequiredBinding(g => g.Promo, "Promoes");
+
+            builder.EntitySet<PromoBlockedStatus>("PromoBlockedStatus").HasRequiredBinding(g => g.Promo, "Promoes");
+            builder.EntitySet<BlockedPromo>("BlockedPromoes").HasRequiredBinding(g => g.PromoBlockedStatus, "PromoBlockedStatus");
+            //builder.EntitySet<PromoBlockedStatus>("PromoBlockedStatus").HasRequiredBinding(g => g.BlockedPromoes, "BlockedPromoes");
         }
 
 

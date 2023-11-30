@@ -27,6 +27,7 @@
                         var scenarioButton = Ext.ComponentQuery.query('#scenariobutton')[0];
                         scenarioButton.setDisabled(true);
                         var yearcopyButton = Ext.ComponentQuery.query('#yearcopybutton')[0];
+                        var masspublishButton = Ext.ComponentQuery.query('#masspublishbutton')[0];
 
                         const tpmMode = TpmModes.getSelectedModeId();
                         if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
@@ -34,6 +35,12 @@
                         }
                         if (!['SupportAdministrator', 'Administrator', 'KeyAccountManager', 'FunctionalExpert', 'CMManager'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isRaMode(tpmMode)) {
                             yearcopyButton.hide();
+                        }
+                        if (!['Administrator', 'KeyAccountManager', 'FunctionalExpert', 'CMManager'].includes(App.UserInfo.getCurrentRole()['SystemName']) || !TpmModes.isProdMode()) {
+                            masspublishButton.hide();
+                        }
+                        else {
+                            masspublishButton.setDisabled(true);
                         }
                         this.isFirstLoad = true;;
                     }
@@ -108,6 +115,9 @@
                 },
                 'schedulecontainer #yearcopybutton': {
                     click: this.onYearCopyButtonClick
+                },
+                'schedulecontainer #masspublishbutton': {
+                    click: this.onMassPublishButtonClick
                 },
 
                 'promodetailtabpanel #historybutton': {
@@ -185,12 +195,12 @@
             });
             if (record.get('BudgetYear') != BudgetYearRS) {
                 if (!(calcDispatchesStart > StartDateRS && calcDispatchesStart < EndDateRS)) {
-                                App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
-                                dragContext.finalize(false);
-                                return false;
+                    App.Notify.pushInfo(l10n.ns('tpm', 'text').value('wrongRSPeriodDates'));
+                    dragContext.finalize(false);
+                    return false;
                 }
             }
-            
+
         }
         if (dragContext.timeDiff == 0) {
             dragContext.finalize(false);
@@ -688,6 +698,9 @@
             this.eventStoreLoading(store);
             button.up('custombigtoolbar').down('#schedulefilterdraftbutton').removeCls('sheduler_promostatusfilter_button_selected');
             button.addClass('sheduler_promostatusfilter_button_selected');
+            if (TpmModes.isProdMode()) {
+                button.up('custombigtoolbar').down('#masspublishbutton').setDisabled(false);
+            }
         } else {
             delete store.fixedFilters['PromoStatusfilter'];
             button.up('custombigtoolbar').down('#schedulefilterdraftbutton').removeCls('sheduler_promostatusfilter_button_selected');
@@ -695,6 +708,7 @@
             store.setSeveralFixedFilters(ids, nodes, false);
             this.eventStoreLoading(store);
             button.removeCls('sheduler_promostatusfilter_button_selected');
+            button.up('custombigtoolbar').down('#masspublishbutton').setDisabled(true);
         }
     },
 
@@ -724,6 +738,9 @@
             this.eventStoreLoading(store);
             button.up('custombigtoolbar').down('#schedulefilterdraftpublbutton').removeCls('sheduler_promostatusfilter_button_selected');
             button.addClass('sheduler_promostatusfilter_button_selected');
+            if (TpmModes.isProdMode()) {
+                button.up('custombigtoolbar').down('#masspublishbutton').setDisabled(false);
+            }
         } else {
             delete store.fixedFilters['PromoStatusfilter'];
             button.up('custombigtoolbar').down('#schedulefilterdraftpublbutton').removeCls('sheduler_promostatusfilter_button_selected');
@@ -731,6 +748,7 @@
             store.setSeveralFixedFilters(ids, nodes, false);
             this.eventStoreLoading(store);
             button.removeCls('sheduler_promostatusfilter_button_selected');
+            button.up('custombigtoolbar').down('#masspublishbutton').setDisabled(true);
         }
     },
     promoRightButtonClick: function (panel, rec, e) {
@@ -1461,7 +1479,7 @@
         var container = Ext.ComponentQuery.query('schedulecontainer')[0];
         var clearButton = container.down('#extfilterclearbutton'),
             isFilterEmpty = ctx && ctx.isEmpty();
-        
+
         if (clearButton) {
             clearButton.setDisabled(isFilterEmpty);
 
@@ -1920,7 +1938,7 @@
         var ng = scheduler.normalGrid;
 
         scheduler.down('schedulergridview').preserveScrollOnRefresh = true;
-        
+
         var objectIds = this.getObjectIds(resourceStore);
         eventStore.uniqueObjectIds = [];
         for (var i = 0; i < objectIds.length; i++) {
@@ -2521,5 +2539,43 @@
         var storeResource = Ext.StoreMgr.lookup('MyResources');
         var proxy = storeResource.getProxy();
         proxy.extraParams.NoSettings = false;
+    },
+    onMassPublishButtonClick: function (button) {
+        var panel = Ext.ComponentQuery.query('schedulecontainer')[0];
+        Ext.Msg.show({
+            title: l10n.ns('tpm', 'text').value('Confirmation'),
+            msg: l10n.ns('tpm', 'MassPromoPublish').value('MessageConfirmation'),
+            fn: function (btn) {
+                if (btn === 'yes') {
+                    var store = Ext.ComponentQuery.query('scheduler')[0].getEventStore();
+                    var arrayPromoes = store.data.keys;
+                    var jsonarray = JSON.stringify(arrayPromoes);
+                    var url = Ext.String.format("odata/{0}/{1}", "ClientTrees", "MassPublish");
+                    panel.setLoading('Create Task');
+                    Ext.Ajax.request({
+                        url: url,
+                        method: 'POST',
+                        params: {
+                            Jsonarray: jsonarray
+                        },
+                        success: function (data) {
+                            panel.setLoading(false);
+                            App.Notify.pushInfo(l10n.ns('tpm', 'MassPromoPublish').value('MassPublishTaskCreated'));
+                            App.System.openUserTasksPanel();
+                        },
+                        failure: function (data) {
+                            panel.setLoading(false);
+                            App.Notify.pushError(l10n.ns('tpm', 'MassPromoPublish').value('MassPublishTaskError'));
+                        }
+                    });
+                }
+            },
+            icon: Ext.Msg.WARNING,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                yes: l10n.ns('tpm', 'button').value('confirm'),
+                no: l10n.ns('tpm', 'button').value('cancel')
+            }
+        });
     }
 });

@@ -79,7 +79,7 @@ namespace Module.Host.TPM.Actions {
                     RoleId = roleId
                 };
 
-                BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoId == promoId && !n.Disabled);
+                BlockedPromo bp = context.Set<BlockedPromo>().First(n => n.PromoBlockedStatusId == promoId && !n.Disabled);
                 bp.HandlerId = handler.Id;
 
                 handler.SetParameterData(data);

@@ -2910,6 +2910,7 @@
         Ext.suspendLayouts();
         var me = this,
             calculating = isCopy ? false : record.get('Calculating');
+        var drafttopublish = record.get('DraftToPublished');
         // Кнопки для изменения состояний промо
         var promoActions = Ext.ComponentQuery.query('button[isPromoAction=true]');
         var mechanic = promoeditorcustom.down('container[name=promo_step3]');
@@ -3405,7 +3406,8 @@
         } else {
             promoClientForm.down('#choosePromoClientBtn').setDisabled(true);
         }
-
+        
+        this.getPromoBasicProducts(record);
         // product
         promoProductForm.fillFormJson(record.data.PromoBasicProducts, treesChangingBlockDate, record);
         if (record.data.PromoBasicProducts)
@@ -3807,6 +3809,7 @@
         if (calculating) {
             //planPromoUpliftPercent.up('container').setReadable(true);
             //planPromoUpliftPercent.changeEditable(false);
+            toolbar.removeCls('custom-top-panel-draft');
             toolbar.addCls('custom-top-panel-calculating');
             toolbarbutton.items.items.forEach(function (item, i, arr) {
                 //  item.el.setStyle('backgroundColor', '#B53333');
@@ -3821,15 +3824,38 @@
             }
 
             promoeditorcustom.down('#changePromo').setDisabled(true);
+            promoeditorcustom.down('#changePromo').setTooltip('');
             toolbar.down('#btn_showlog').addCls('showlog');
             //toolbar.down('#btn_showlog').show();
             toolbar.down('#btn_showlog').promoId = record.data.Id;
             promoeditorcustom.down('#btn_recalculatePromo').hide();
             promoeditorcustom.down('#btn_resetPromo').hide();
-
+            toolbar.tip = '';
             //me.createTaskCheckCalculation(promoeditorcustom);
         }
+        if (drafttopublish && !calculating) {
+            toolbar.addCls('custom-top-panel-draft');
+            toolbarbutton.items.items.forEach(function (item, i, arr) {
+                //  item.el.setStyle('backgroundColor', '#B53333');
+                if (item.xtype == 'button' && ['btn_publish', 'btn_undoPublish', 'btn_sendForApproval', 'btn_reject', 'btn_backToDraftPublished', 'btn_approve', 'btn_cancel', 'btn_plan', 'btn_close', 'btn_backToFinished'].indexOf(item.itemId) > -1) {
+                    item.setDisabled(true);
+                }
+            });
 
+            var label = toolbar.down('label[name=promoName]');
+            if (label) {
+                label.setText(label.text + ' — Promo is blocked for recalculations');
+            }
+
+            promoeditorcustom.down('#changePromo').setDisabled(true);
+            promoeditorcustom.down('#changePromo').setTooltip('If changes needed, press "Recalculate"');
+            toolbar.down('#btn_showlog').addCls('showlog');
+            //toolbar.down('#btn_showlog').show();
+            toolbar.down('#btn_showlog').promoId = record.data.Id;
+            promoeditorcustom.down('#btn_recalculatePromo').hide();
+            promoeditorcustom.down('#btn_resetPromo').hide();
+            toolbar.tip = 'If changes needed, press "Recalculate"';
+        }
         //вырубает кнопки в RS режиме
         if (TpmModes.isRsRaMode(promoeditorcustom.TPMmode)) {
             toolbarbutton.items.items.forEach(function (item, i, arr) {
@@ -5728,7 +5754,7 @@
         var toolbar = window.down('customtoptoolbar');
 
         rec.set('Calculating', true);
-
+        toolbar.removeCls('custom-top-panel-draft');
         toolbar.addCls('custom-top-panel-calculating');
 
         var label = toolbar.down('label[name=promoName]');
@@ -5747,7 +5773,6 @@
         var toolbar = window.down('customtoptoolbar');
         var toolbarbutton = window.down('button[itemId=btn_sendForApproval]').up();
         var me = this;
-
         if (toolbar && toolbarbutton) {
             toolbar.items.items.forEach(function (item, i, arr) {
                 //item.el.setStyle('backgroundColor', '#3f6895');
@@ -7105,5 +7130,26 @@
         costProductionBudgetActual.setDisabled(disable);
         actualInStoreFieldset.setDisabled(disable);
         activityActuals.setDisabled(disable);
-    }
+    },
+    getPromoBasicProducts: function (record) {
+        var url = Ext.String.format("odata/{0}/{1}", "ProductTrees", "GetPromoBasicProducts");
+        Ext.Ajax.request({
+            url: url,
+            method: 'POST',
+            async: false,
+            params: {
+                Id: record.data.Id
+            },
+            success: function (data) {
+                if (data.responseText != '') {
+                    var data = Ext.JSON.decode(data.responseText);
+                    var value = Ext.JSON.decode(data.value);
+                    record.set('PromoBasicProducts', Ext.JSON.encode(value.promoBasicProducts));
+                }
+            },
+            failure: function (data) {
+                App.Notify.pushError('Error has occured');
+            }
+        });
+    },
 });

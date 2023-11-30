@@ -1145,6 +1145,7 @@ namespace Module.Frontend.TPM.Util
                 result.CreatorId = user.Id;
                 result.CreatorLogin = user.Login;
             }
+            result.PromoBlockedStatus = new PromoBlockedStatus();
 
             context.Set<Promo>().Add(result);
             context.SaveChanges();

@@ -66,6 +66,11 @@
             tooltip: l10n.ns('tpm', 'Schedule').value('DraftFilter'),
             glyph: 0xf0ef,
         }, {
+            itemId: 'masspublishbutton',
+            text: l10n.ns('tpm', 'Schedule').value('MassPublish'),
+            tooltip: l10n.ns('tpm', 'Schedule').value('MassPublish'),
+            glyph: 0xf6a6,
+        }, {
             itemId: 'extfilterbutton',
             glyph: 0xf349,
             text: l10n.ns('core', 'toptoolbar').value('filterButtonText'),

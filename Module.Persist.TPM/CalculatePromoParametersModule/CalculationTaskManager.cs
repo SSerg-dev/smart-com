@@ -106,13 +106,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                     // при вызове patch/post идёт транзакция, для гарантии, что задача запустится только после изменения промо мы используем контекст этого метода
                     // чтобы другому потоку была видна блокировка используем другой контекст, который не входит в транзакцию
                     // иначе другой поток может просто её не увидеть
+                    // Update теперь в одном потоке сохраняет PromoBlockedStatus
                     using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
                     {
                         Guid handlerId = Guid.NewGuid();
 
                         foreach (Guid idPromo in promoIdsForBlock)
                         {
-                            promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, contextOutOfTransaction, safe);
+                            promoAvaible = promoAvaible && BlockPromo(idPromo, handlerId, context, safe);
 
                             if (!promoAvaible)
                                 break;
@@ -189,14 +190,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             try
             {
-                promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
+                promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoBlockedStatusId == promoId && !n.Disabled);
 
                 if (promoAvaible)
                 {
+                    PromoBlockedStatus promoBlockedStatus = context.Set<PromoBlockedStatus>().FirstOrDefault(g => g.Id == promoId);
+                    promoBlockedStatus.Blocked = true;
                     BlockedPromo bp = new BlockedPromo
                     {
                         Id = Guid.NewGuid(),
-                        PromoId = promoId,
+                        PromoBlockedStatusId = promoBlockedStatus.Id,
                         HandlerId = handlerId,
                         CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                         Disabled = false,
@@ -229,14 +232,16 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 {
                     using (DatabaseContext context = new DatabaseContext())
                     {
-                        promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
+                        promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoBlockedStatusId == promoId && !n.Disabled);
 
                         if (promoAvaible)
                         {
+                            PromoBlockedStatus promoBlockedStatus = context.Set<PromoBlockedStatus>().FirstOrDefault(g => g.Id == promoId);
+                            promoBlockedStatus.Blocked = true;
                             BlockedPromo bp = new BlockedPromo
                             {
                                 Id = Guid.NewGuid(),
-                                PromoId = promoId,
+                                PromoBlockedStatusId = promoBlockedStatus.Id,
                                 HandlerId = handlerId,
                                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                                 Disabled = false,
@@ -295,9 +300,11 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         private static void BlockPromoRangeDataFlow(DatabaseContext databaseContext, List<Guid> promoIds, Guid handlerId)
         {
             var blockedPromoes = new List<BlockedPromo>();
-            foreach (var promoId in promoIds)
+            List<PromoBlockedStatus> promoBlockedStatuses = databaseContext.Set<PromoBlockedStatus>().Where(g => promoIds.Contains(g.Id)).ToList();
+            foreach (PromoBlockedStatus blockedStatus in promoBlockedStatuses)
             {
-                blockedPromoes.Add(BlockPromoDataFlow(promoId, handlerId));
+                blockedStatus.Blocked = true;
+                blockedStatus.BlockedPromoes.Add(BlockPromoDataFlow(blockedStatus.Id, handlerId));
             }
             databaseContext.Set<BlockedPromo>().AddRange(blockedPromoes);
         }
@@ -309,7 +316,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
                 Id = Guid.NewGuid(),
                 Disabled = false,
                 DeletedDate = null,
-                PromoId = promoId,
+                PromoBlockedStatusId = promoId,
                 HandlerId = handlerId,
                 CreateDate = DateTimeOffset.Now
             };
@@ -331,7 +338,7 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         public static Promo[] GetBlockedPromo(Guid handlerId, DatabaseContext context)
         {
             // список блокировок
-            Guid[] blockedPromoIds = context.Set<BlockedPromo>().Where(n => n.HandlerId == handlerId && !n.Disabled).Select(n => n.PromoId).ToArray();
+            Guid[] blockedPromoIds = context.Set<BlockedPromo>().Where(n => n.HandlerId == handlerId && !n.Disabled).Select(n => n.PromoBlockedStatusId).ToArray();
             // список заблокированных промо
             return context.Set<Promo>().Where(n => blockedPromoIds.Contains(n.Id)).ToArray();
         }
@@ -344,11 +351,13 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
         {
             using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
             {
-                BlockedPromo bp = contextOutOfTransaction.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == promoId && !n.Disabled);
+                BlockedPromo bp = contextOutOfTransaction.Set<BlockedPromo>().Include(g => g.PromoBlockedStatus).FirstOrDefault(n => n.PromoBlockedStatusId == promoId && !n.Disabled);
                 if (bp != null)
                 {
                     bp.Disabled = true;
                     bp.DeletedDate = DateTime.Now;
+                    bp.PromoBlockedStatus.Blocked = false;
+                    bp.PromoBlockedStatus.DraftToPublished = false;
 
                     contextOutOfTransaction.SaveChanges();
                 }
@@ -365,12 +374,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
             {
                 using (DatabaseContext contextOutOfTransaction = new DatabaseContext())
                 {
-                    BlockedPromo[] blockedPromoes = contextOutOfTransaction.Set<BlockedPromo>().Where(n => n.HandlerId == handlerId && !n.Disabled).ToArray();
+                    BlockedPromo[] blockedPromoes = contextOutOfTransaction.Set<BlockedPromo>().Include(g => g.PromoBlockedStatus).Where(n => n.HandlerId == handlerId && !n.Disabled).ToArray();
 
                     foreach (BlockedPromo bp in blockedPromoes)
                     {
                         bp.Disabled = true;
                         bp.DeletedDate = DateTime.Now;
+                        bp.PromoBlockedStatus.Blocked = false;
+                        bp.PromoBlockedStatus.DraftToPublished = false;
                     }
 
                     contextOutOfTransaction.SaveChanges();

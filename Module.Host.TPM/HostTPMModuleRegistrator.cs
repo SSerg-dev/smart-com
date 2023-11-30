@@ -113,7 +113,8 @@ namespace Module.Host.TPM
                 new Handlers.FullXLSXRpaActualShelfPriceImportHandler(),
                 new Handlers.ScenarioClientUploadCheckHandler(),
                 new Handlers.CopyPrevousYearHandler(),
-                new Handlers.ClientTreeUpdateHandler()
+                new Handlers.ClientTreeUpdateHandler(),
+                new Handlers.MassPublishHandler()
             };
         }
     }

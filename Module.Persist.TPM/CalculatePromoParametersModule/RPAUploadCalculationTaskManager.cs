@@ -108,14 +108,14 @@ namespace Module.Persist.TPM.CalculatePromoParametersModule
 
             try
             {
-                promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoId == promoId && !n.Disabled);
+                promoAvaible = !context.Set<BlockedPromo>().Any(n => n.PromoBlockedStatusId == promoId && !n.Disabled);
 
                 if (promoAvaible)
                 {
                     BlockedPromo bp = new BlockedPromo
                     {
                         Id = Guid.NewGuid(),
-                        PromoId = promoId,
+                        PromoBlockedStatusId = promoId,
                         HandlerId = handlerId,
                         CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                         Disabled = false,

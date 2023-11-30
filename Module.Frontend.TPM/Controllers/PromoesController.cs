@@ -1599,7 +1599,7 @@ namespace Module.Frontend.TPM.Controllers
             try
             {
                 Guid? handlerGuid = null;
-                BlockedPromo bp = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == promoGuid && !n.Disabled);
+                BlockedPromo bp = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoBlockedStatusId == promoGuid && !n.Disabled);
 
                 Promo promo = Context.Set<Promo>().FirstOrDefault(x => x.Id == promoGuid && !x.Disabled);
                 if (promo != null)
@@ -1677,7 +1677,7 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult GetHandlerIdForBlockedPromo(string promoId)
         {
             var guidPromoId = Guid.Parse(promoId);
-            var blockedPromo = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoId == guidPromoId && !n.Disabled);
+            var blockedPromo = Context.Set<BlockedPromo>().FirstOrDefault(n => n.PromoBlockedStatusId == guidPromoId && !n.Disabled);
 
             if (blockedPromo != null)
             {
@@ -1702,7 +1702,7 @@ namespace Module.Frontend.TPM.Controllers
         public IHttpActionResult CheckIfLogHasErrors(string promoId)
         {
             var guidPromoId = Guid.Parse(promoId);
-            BlockedPromo calculatingInfo = Context.Set<BlockedPromo>().Where(n => n.PromoId == guidPromoId).OrderByDescending(n => n.CreateDate).FirstOrDefault();
+            BlockedPromo calculatingInfo = Context.Set<BlockedPromo>().Where(n => n.PromoBlockedStatusId == guidPromoId).OrderByDescending(n => n.CreateDate).FirstOrDefault();
             if (calculatingInfo != null)
             {
                 string contentOfLog = null;

@@ -1,6 +1,5 @@
 ﻿using Core.Dependency;
 using Core.Settings;
-using Looper;
 using Looper.Core;
 using Module.Persist.TPM.Model.TPM;
 using Persist;
@@ -8,13 +7,11 @@ using ProcessingHost.Handlers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Utility.LogWriter;
-using LoopHandler = Persist.Model.LoopHandler;
 
 namespace Module.Host.TPM.Handlers
 {
@@ -38,19 +35,19 @@ namespace Module.Host.TPM.Handlers
 
         public override void Action(HandlerInfo info, ExecuteData data)
         {
-            var stopWatch = Stopwatch.StartNew();
-            var handlerLogger = new LogWriter(info.HandlerId.ToString());
-            var databaseContext = new DatabaseContext();
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            LogWriter handlerLogger = new LogWriter(info.HandlerId.ToString());
+            DatabaseContext databaseContext = new DatabaseContext();
 
             handlerLogger.Write(true, $"The {nameof(UnblockPromoesHandler)} task start at {DateTimeOffset.Now}.", "Message");
 
             try
             {
-                var blockedPromoes = this.GetBlockedPromoes(databaseContext).Where(x => x.CreateDate.AddHours(this.UnblockPromoHours) < DateTimeOffset.Now);
+                List<BlockedPromo> blockedPromoes = GetBlockedPromoes(databaseContext).Where(x => x.CreateDate.AddHours(UnblockPromoHours) < DateTimeOffset.Now).ToList();
                 if (blockedPromoes.Any())
                 {
                     var realBlockedPromoesForUnblocking = this.GetRealBlockedPromoes(databaseContext, blockedPromoes);
-                    this.UnblockPromoes(databaseContext, blockedPromoes);
+                    UnblockPromoes(databaseContext, blockedPromoes);
                     handlerLogger.Write(true, $"Promoes were unblocked: {String.Join(", ", realBlockedPromoesForUnblocking.Select(x => x.Number))}", "Message");
                 }
             }
@@ -86,29 +83,28 @@ namespace Module.Host.TPM.Handlers
             }
         }
 
-        private IEnumerable<BlockedPromoSimple> GetBlockedPromoes(DatabaseContext databaseContext)
+        private List<BlockedPromo> GetBlockedPromoes(DatabaseContext databaseContext)
         {
-            var blockedPromoes = databaseContext.Set<BlockedPromo>().Where(x => x.Disabled == false);
-            return blockedPromoes.Select(x => new BlockedPromoSimple { Id = x.Id, PromoId = x.PromoId, CreateDate = x.CreateDate }).ToList();
+            return databaseContext.Set<BlockedPromo>().Include(g => g.PromoBlockedStatus).Where(x => x.Disabled == false).ToList();
         }
 
-        private IEnumerable<PromoSimple> GetRealBlockedPromoes(DatabaseContext databaseContext, IEnumerable<BlockedPromoSimple> blockedPromoes)
+        private IEnumerable<PromoSimple> GetRealBlockedPromoes(DatabaseContext databaseContext, List<BlockedPromo> blockedPromoes)
         {
-            var realBlockedPromoes = databaseContext.Set<Promo>().Select(x => new PromoSimple { Id = x.Id, Number = x.Number }).ToList().Where(x => blockedPromoes.Any(y => y.PromoId == x.Id));
+            var realBlockedPromoes = databaseContext.Set<Promo>().Select(x => new PromoSimple { Id = x.Id, Number = x.Number }).ToList().Where(x => blockedPromoes.Any(y => y.PromoBlockedStatusId == x.Id));
             return realBlockedPromoes;
         }
 
-        private void UnblockPromoes(DatabaseContext databaseContext, IEnumerable<BlockedPromoSimple> blockedPromoes)
+        private void UnblockPromoes(DatabaseContext databaseContext, List<BlockedPromo> blockedPromoes)
         {
             if (blockedPromoes.Any())
             {
-                var concurentBag = new ConcurrentBag<string>();
-                Parallel.ForEach(blockedPromoes, blockedPromo =>
+                foreach (BlockedPromo blocked in blockedPromoes)
                 {
-                    concurentBag.Add($"UPDATE [DefaultSchemaSetting].[{nameof(BlockedPromo)}] SET [{nameof(BlockedPromo.Disabled)}] = 1, [{nameof(BlockedPromo.DeletedDate)}] = '{DateTimeOffset.Now}' WHERE [Id] = '{blockedPromo.Id}';");
-                });
-                var updateScript = String.Join("\n", concurentBag);
-                databaseContext.ExecuteSqlCommand(updateScript);
+                    blocked.Disabled = true;
+                    blocked.DeletedDate = DateTimeOffset.Now;
+                    blocked.PromoBlockedStatus.Blocked = false;
+                }
+                databaseContext.SaveChanges();
             }
         }
     }
@@ -117,12 +113,5 @@ namespace Module.Host.TPM.Handlers
     {
         public Guid Id { get; set; }
         public int? Number { get; set; }
-    }
-
-    class BlockedPromoSimple
-    {
-        public Guid Id { get; set; }
-        public Guid PromoId { get; set; }
-        public DateTimeOffset CreateDate { get; set; }
     }
 }

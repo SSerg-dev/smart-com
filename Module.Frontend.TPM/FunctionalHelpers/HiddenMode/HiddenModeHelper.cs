@@ -652,6 +652,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.HiddenMode
                 copyRAReturn.Errors.Add("No promoes to copy");
                 return copyRAReturn;
             }
+
             Context.Set<Promo>().AddRange(promoesRA);
             Context.SaveChanges();
             foreach (Promo promoRA in promoesRA)

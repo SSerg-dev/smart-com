@@ -98,7 +98,7 @@ namespace Module.Persist.TPM
                     string contentLog;
                     string statusHandler;
                     DateTime? lastWriteDate;
-                    BlockedPromo calculatingInfo = context.Set<BlockedPromo>().Where(n => n.PromoId == subscriber.PromoID).OrderByDescending(n => n.CreateDate).FirstOrDefault();
+                    BlockedPromo calculatingInfo = context.Set<BlockedPromo>().Where(n => n.PromoBlockedStatusId == subscriber.PromoID).OrderByDescending(n => n.CreateDate).FirstOrDefault();
 
                     subscriber.NeedLog = true;
 
@@ -183,7 +183,7 @@ namespace Module.Persist.TPM
                         Parallel.ForEach(subscribersGrouped, (subscribersGroup) =>
                         {
                             DatabaseContext context = new DatabaseContext();
-                            BlockedPromo calculatingInfo = context.Set<BlockedPromo>().Where(n => n.PromoId == subscribersGroup.Key).OrderByDescending(n => n.CreateDate).FirstOrDefault();
+                            BlockedPromo calculatingInfo = context.Set<BlockedPromo>().Where(n => n.PromoBlockedStatusId == subscribersGroup.Key).OrderByDescending(n => n.CreateDate).FirstOrDefault();
 
                             if (calculatingInfo != null)
                             {

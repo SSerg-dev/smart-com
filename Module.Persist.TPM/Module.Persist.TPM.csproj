@@ -3781,6 +3781,22 @@
     <Compile Include="Migrations\202311161503257_Add_Empty_After_SFA_Fix.designer.cs">
       <DependentUpon>202311161503257_Add_Empty_After_SFA_Fix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202311201212243_Add_ClientTrees_MassPublish_AP.cs" />
+    <Compile Include="Migrations\202311201212243_Add_ClientTrees_MassPublish_AP.designer.cs">
+      <DependentUpon>202311201212243_Add_ClientTrees_MassPublish_AP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311270751549_Add_PromoBlockedStatus.cs" />
+    <Compile Include="Migrations\202311270751549_Add_PromoBlockedStatus.designer.cs">
+      <DependentUpon>202311270751549_Add_PromoBlockedStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311270950506_Add_PromoBlockedStatusWithBP.cs" />
+    <Compile Include="Migrations\202311270950506_Add_PromoBlockedStatusWithBP.designer.cs">
+      <DependentUpon>202311270950506_Add_PromoBlockedStatusWithBP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311280933234_Add_PT_GetPromoBasicProducts_AP.cs" />
+    <Compile Include="Migrations\202311280933234_Add_PT_GetPromoBasicProducts_AP.designer.cs">
+      <DependentUpon>202311280933234_Add_PT_GetPromoBasicProducts_AP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202311210658589_Add_New_Fields_ROI.cs" />
     <Compile Include="Migrations\202311210658589_Add_New_Fields_ROI.designer.cs">
       <DependentUpon>202311210658589_Add_New_Fields_ROI.cs</DependentUpon>
@@ -3788,6 +3804,10 @@
     <Compile Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs" />
     <Compile Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.designer.cs">
       <DependentUpon>202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202311301057401_Empty_After_Merge_MAss_Publish.cs" />
+    <Compile Include="Migrations\202311301057401_Empty_After_Merge_MAss_Publish.designer.cs">
+      <DependentUpon>202311301057401_Empty_After_Merge_MAss_Publish.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Procedures\StoredProcedureMigrations.cs" />
@@ -3958,6 +3978,7 @@
     <Compile Include="Model\TPM\MetricsLiveHistory.cs" />
     <Compile Include="Model\TPM\IncreaseBaseLine.cs" />
     <Compile Include="Model\TPM\PlanPostPromoEffect.cs" />
+    <Compile Include="Model\TPM\PromoBlockedStatus.cs" />
     <Compile Include="Model\TPM\PromoInfo.cs" />
     <Compile Include="Model\TPM\PromoPriceIncrease.cs" />
     <Compile Include="Model\TPM\PromoProductCorrectionPriceIncrease.cs" />
@@ -7105,6 +7126,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202311221153462_Empty_Migration_After_Add_New_ROI_Fields.resx">
       <DependentUpon>202311221153462_Empty_Migration_After_Add_New_ROI_Fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311201212243_Add_ClientTrees_MassPublish_AP.resx">
+      <DependentUpon>202311201212243_Add_ClientTrees_MassPublish_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311270751549_Add_PromoBlockedStatus.resx">
+      <DependentUpon>202311270751549_Add_PromoBlockedStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311270950506_Add_PromoBlockedStatusWithBP.resx">
+      <DependentUpon>202311270950506_Add_PromoBlockedStatusWithBP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311280933234_Add_PT_GetPromoBasicProducts_AP.resx">
+      <DependentUpon>202311280933234_Add_PT_GetPromoBasicProducts_AP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202311301057401_Empty_After_Merge_MAss_Publish.resx">
+      <DependentUpon>202311301057401_Empty_After_Merge_MAss_Publish.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

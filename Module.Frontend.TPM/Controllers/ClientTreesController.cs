@@ -26,6 +26,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -1211,7 +1212,7 @@ namespace Module.Frontend.TPM.Controllers
             List<string> notStatus = new List<string> { "Draft", "Cancelled", "Deleted" };
             var PromoPrIds = Context.Set<Promo>().Where(g => !g.Disabled && g.ClientTree.ObjectId == clientObjectId && g.BudgetYear == nextYear && !notStatus.Contains(g.PromoStatus.SystemName)).Select(g => new SmallPromo { Id = g.Id, Number = (int)g.Number }).ToList();
             PromoRSIds.AddRange(PromoPrIds.Select(g => g.Id));
-            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
+            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoBlockedStatusId)))
             {
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "there is a blocked Promo" }));
             }
@@ -1303,7 +1304,6 @@ namespace Module.Frontend.TPM.Controllers
             HandlerData handlerData = new HandlerData();
             HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
-            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("ObjectId", objId, handlerData, visible: false, throwIfNotExists: false);
             HandlerDataHelper.SaveIncomingArgument("CheckedDate", CheckedDate, handlerData, visible: false, throwIfNotExists: false);
 
@@ -1315,6 +1315,42 @@ namespace Module.Frontend.TPM.Controllers
                 ConfigurationName = "PROCESSING",
                 Description = $"Copy prevous year for client {clientTreeName}",
                 Name = "Module.Host.TPM.Handlers.CopyPrevousYearHandler",
+                ExecutionPeriod = null,
+                CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
+                LastExecutionDate = null,
+                NextExecutionDate = null,
+                ExecutionMode = Looper.Consts.ExecutionModes.SINGLE,
+                UserId = userId,
+                RoleId = roleId
+            };
+            handler.SetParameterData(handlerData);
+            Context.LoopHandlers.Add(handler);
+            await Context.SaveChangesAsync();
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true }));
+
+        }
+        [ClaimsAuthorize]
+        public async Task<IHttpActionResult> MassPublish()
+        {
+            string json = Helper.GetParamFromRequestBody(HttpContext.Current.Request, "Jsonarray");
+            List<Guid> PromoIds = JsonConvert.DeserializeObject<List<Guid>>(json);
+
+            UserInfo user = authorizationManager.GetCurrentUser();
+            Guid userId = user == null ? Guid.Empty : (user.Id ?? Guid.Empty);
+            RoleInfo role = authorizationManager.GetCurrentRole();
+            Guid roleId = role == null ? Guid.Empty : (role.Id ?? Guid.Empty);
+
+            HandlerData handlerData = new HandlerData();
+            HandlerDataHelper.SaveIncomingArgument("UserId", userId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("RoleId", roleId, handlerData, visible: false, throwIfNotExists: false);
+            HandlerDataHelper.SaveIncomingArgument("PromoIds", PromoIds, handlerData, visible: false, throwIfNotExists: false);
+
+            LoopHandler handler = new LoopHandler()
+            {
+                Id = Guid.NewGuid(),
+                ConfigurationName = "PROCESSING",
+                Description = $"Mass Promo Publication",
+                Name = "Module.Host.TPM.Handlers.MassPublishHandler",
                 ExecutionPeriod = null,
                 CreateDate = (DateTimeOffset)ChangeTimeZoneUtil.ChangeTimeZone(DateTimeOffset.UtcNow),
                 LastExecutionDate = null,

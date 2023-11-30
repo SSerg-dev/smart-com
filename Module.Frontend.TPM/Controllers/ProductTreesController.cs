@@ -11,11 +11,13 @@ using Newtonsoft.Json;
 using Persist.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.OData;
 using Thinktecture.IdentityModel.Authorization.WebApi;
@@ -742,7 +744,60 @@ namespace Module.Frontend.TPM.Controllers
                 return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false, message = "The logo is not exists for current client." }));
             }
         }
+        [ClaimsAuthorize]
+        [HttpPost]
+        public async Task<IHttpActionResult> GetPromoBasicProducts()
+        {
+            string id = Helper.GetParamFromRequestBody(HttpContext.Current.Request, "Id");
+            Guid promoId = Guid.Parse(id);
+            // Ищем в таблице, обеспечивающей связь М-М, затем в таблице продуктового дерева
+            int[] productObjectIds = await Context.Set<PromoProductTree>().Where(n => n.PromoId == promoId && !n.Disabled).Select(n => n.ProductTreeObjectId).ToArrayAsync();
+            ProductTree[] products = await Context.Set<ProductTree>().Where(n => productObjectIds.Contains(n.ObjectId) && !n.EndDate.HasValue).ToArrayAsync();
 
+            if (products.Length > 0)
+            {
+                PromoBasicProduct promoBasicProducts = new PromoBasicProduct
+                {
+                    // выбранные узлы
+                    ProductsChoosen = products.Select(n => new
+                    {
+                        n.ObjectId,
+                        n.Name,
+                        n.Type,
+                        n.FullPathName,
+                        n.Abbreviation,
+                        n.LogoFileName,
+                        n.Filter
+                    }).ToArray()
+                };
+
+                // формируем название Brand и Technology
+                ProductTree currentNode = products[0];
+                while (currentNode != null && currentNode.Type.IndexOf("root") < 0)
+                {
+                    if (currentNode.Type.IndexOf("Brand") >= 0)
+                    {
+                        promoBasicProducts.Brand = currentNode.Name;
+                        promoBasicProducts.BrandAbbreviation = currentNode.Abbreviation;
+
+                        // если есть технология, то и логотип уже есть
+                        if (promoBasicProducts.LogoFileName == null)
+                            promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+                    }
+                    else if (currentNode.Type.IndexOf("Technology") >= 0)
+                    {
+                        promoBasicProducts.Technology = currentNode.Name;
+                        promoBasicProducts.TechnologyAbbreviation = currentNode.Abbreviation;
+                        promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+                    }
+
+                    currentNode = await Context.Set<ProductTree>().FirstOrDefaultAsync(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
+                }
+
+                return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = true, promoBasicProducts }, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            }
+            return Content(HttpStatusCode.OK, JsonConvert.SerializeObject(new { success = false }));
+        }
         /// <summary>
         /// Список преобразованных в функции фильтров из узлов иерархии
         /// </summary>

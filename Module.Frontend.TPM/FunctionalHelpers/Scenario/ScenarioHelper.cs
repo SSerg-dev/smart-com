@@ -255,7 +255,7 @@ namespace Module.Frontend.TPM.FunctionalHelpers.Scenario
                     .Include(g => g.ClientTree)
                     .FirstOrDefault(g => g.Id == rollingScenarioId);
             List<Guid> PromoRSIds = RS.Promoes.Select(f => f.Id).ToList();
-            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoId)))
+            if (Context.Set<BlockedPromo>().Any(x => x.Disabled == false && PromoRSIds.Contains(x.PromoBlockedStatusId)))
             {
                 throw new System.Web.HttpException("there is a blocked Promo");
             }

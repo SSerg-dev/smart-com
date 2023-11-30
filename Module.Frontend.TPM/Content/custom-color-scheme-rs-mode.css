@@ -858,6 +858,11 @@ pre.code {
     background-color: #b53333 !important;
 }
 
+.custom-top-panel-draft,
+.custom-top-panel-draft .custom-top-panel-item {
+    background-color: #ffb74d !important;
+}
+
 .errorinside {
     background-color: #b53333 !important;
 }

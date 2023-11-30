@@ -16,7 +16,15 @@
         margin: { left: 0 },
         textAlign: 'left'
     },
-
+    tip: '',
+    listeners: {
+        render: function (c) {
+            Ext.create('Ext.tip.ToolTip', {
+                target: c.getEl(),
+                html: c.tip
+            });
+        }
+    },
     items: [
         {
             xtype: 'label',

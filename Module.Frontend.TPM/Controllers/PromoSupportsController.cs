@@ -170,7 +170,7 @@ namespace Module.Frontend.TPM.Controllers
                 model.EndDate = ChangeTimeZoneUtil.ResetTimeZone(model.EndDate);
 
                 var promoSupportPromoes = Context.Set<PromoSupportPromo>().Where(x => !x.Disabled && x.PromoSupportId == model.Id).Select(x => x.PromoId).ToList();
-                var blockedPromoSupportPromoes = Context.Set<BlockedPromo>().Where(x => !x.Disabled && promoSupportPromoes.Contains(x.PromoId)).ToList();
+                var blockedPromoSupportPromoes = Context.Set<BlockedPromo>().Where(x => !x.Disabled && promoSupportPromoes.Contains(x.PromoBlockedStatusId)).ToList();
 
                 if (blockedPromoSupportPromoes.Count == 0)
                 {

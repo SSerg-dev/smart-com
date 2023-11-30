@@ -11,7 +11,8 @@ namespace Module.Persist.TPM.Model.TPM
         public bool Disabled { get; set; }
         public DateTimeOffset? DeletedDate { get; set; }
 
-        public Guid PromoId { get; set; }
+        public Guid PromoBlockedStatusId { get; set; }
+        public PromoBlockedStatus PromoBlockedStatus { get; set; }
         public Guid HandlerId { get; set; }
         public DateTimeOffset CreateDate { get; set; }
 

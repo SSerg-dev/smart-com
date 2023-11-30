@@ -50,7 +50,6 @@
                         });
                     }
                     else {
-                        debugger;
                         App.Notify.pushError(result.message);
                     }
                 } else {

@@ -491,7 +491,7 @@
                                         splitPublishBtn.setDisabled(true);
                                     }
                                     //Activate button "Send for approval"
-                                    if (TpmModes.isProdMode(promoEditorCustom.TPMmode)) {
+                                    if (TpmModes.isProdMode(promoEditorCustom.TPMmode) && !record.data.DraftToPublished) {
                                         var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                                         sendForApproval.setDisabled(false);
                                     }
@@ -560,7 +560,7 @@
                         App.Notify.pushError(data.message);
                     })
                 //Activate button "Send for approval"
-                if (TpmModes.isProdMode(promoEditorCustom.TPMmode)) {
+                if (TpmModes.isProdMode(promoEditorCustom.TPMmode) && !record.data.DraftToPublished) {
                     var sendForApproval = Ext.ComponentQuery.query("#btn_sendForApproval")[0];
                     sendForApproval.setDisabled(false);
                 }

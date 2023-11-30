@@ -380,6 +380,7 @@
     <Compile Include="Actions\FullXLSXUpdateImportTechnologyAction.cs" />
     <Compile Include="Actions\Interface\Incoming\InputBaseLineCSVProcessorAction.cs" />
     <Compile Include="Actions\Interface\Outcoming\OutputIncrementalProcessAction.cs" />
+    <Compile Include="Actions\MassPublishAction.cs" />
     <Compile Include="Actions\MassSendForApprovalAction.cs" />
     <Compile Include="Actions\NightProcessingWaitAction.cs" />
     <Compile Include="Actions\Notifications\ProductSyncFailNotificationAction.cs" />
@@ -433,6 +434,7 @@
     <Compile Include="Handlers\CreateCoefficientSI2SOHandler.cs" />
     <Compile Include="Handlers\MainNightProcessing\MainNightProcessingHelper.cs" />
     <Compile Include="Handlers\MainNightProcessing\RestartMainNightProcessingHandler.cs" />
+    <Compile Include="Handlers\MassPublishHandler.cs" />
     <Compile Include="Handlers\MetricsLiveHistoryHandler.cs" />
     <Compile Include="Handlers\MassSendForApprovalHandler.cs" />
     <Compile Include="Handlers\NightProcessingWaitHandler.cs" />

@@ -22,8 +22,8 @@ namespace Module.Persist.TPM.Model.TPM
             set
             {
                 id = value;
-                GetCalculationStatus();
-                GetPromoBasicProducts();
+                //GetCalculationStatus();
+                //GetPromoBasicProducts();
             }
         }
 
@@ -248,10 +248,6 @@ namespace Module.Persist.TPM.Model.TPM
         public string ProductTreeObjectIds { get; set; }
 
         /// <summary>
-        /// Показывает, производится ли расчет по данному промо
-        /// </summary>
-        public bool? Calculating { get; set; }
-        /// <summary>
         /// Информация какой обработчик блокировал промо и когда. Формат: HandlerId_BlockDateTime
         /// </summary>
         [StringLength(128)]
@@ -368,6 +364,7 @@ namespace Module.Persist.TPM.Model.TPM
         [ForeignKey("SavedPromo")]
         public Guid? SavedPromoId { get; set; }
         public SavedPromo SavedPromo { get; set; }
+        public PromoBlockedStatus PromoBlockedStatus { get; set; }
 
         public virtual ICollection<Promo> Promoes { get; set; }
         public ICollection<PromoProduct> PromoProducts { get; set; }
@@ -384,77 +381,77 @@ namespace Module.Persist.TPM.Model.TPM
         public ICollection<PromoApprovedIncident> PromoApprovedIncidents { get; set; }
         public ICollection<CurrentDayIncremental> CurrentDayIncrementals { get; set; }
 
-        private void GetCalculationStatus()
-        {
-            try
-            {
-                using (DatabaseContext context = new DatabaseContext())
-                {
-                    Calculating = context.Set<BlockedPromo>().Any(n => n.PromoId == id && !n.Disabled);
-                }
-            }
-            catch { }
-        }
+        //private void GetCalculationStatus()
+        //{
+        //    try
+        //    {
+        //        using (DatabaseContext context = new DatabaseContext())
+        //        {
+        //            Calculating = context.Set<BlockedPromo>().Any(n => n.PromoBlockedStatusId == id && !n.Disabled);
+        //        }
+        //    }
+        //    catch { }
+        //}
 
         /// <summary>
         /// Поиск сведений о выбранных узлах в дереве продуктов
         /// </summary>
-        private void GetPromoBasicProducts()
-        {
-            try
-            {
-                using (DatabaseContext context = new DatabaseContext())
-                {
-                    // Ищем в таблице, обеспечивающей связь М-М, затем в таблице продуктового дерева
-                    int[] productObjectIds = context.Set<PromoProductTree>().Where(n => n.PromoId == id && !n.Disabled).Select(n => n.ProductTreeObjectId).ToArray();
-                    ProductTree[] products = context.Set<ProductTree>().Where(n => productObjectIds.Contains(n.ObjectId) && !n.EndDate.HasValue).ToArray();
+        //private void GetPromoBasicProducts()
+        //{
+        //    try
+        //    {
+        //        using (DatabaseContext context = new DatabaseContext())
+        //        {
+        //            // Ищем в таблице, обеспечивающей связь М-М, затем в таблице продуктового дерева
+        //            int[] productObjectIds = context.Set<PromoProductTree>().Where(n => n.PromoId == id && !n.Disabled).Select(n => n.ProductTreeObjectId).ToArray();
+        //            ProductTree[] products = context.Set<ProductTree>().Where(n => productObjectIds.Contains(n.ObjectId) && !n.EndDate.HasValue).ToArray();
 
-                    if (products.Length > 0)
-                    {
-                        PromoBasicProduct promoBasicProducts = new PromoBasicProduct
-                        {
-                            // выбранные узлы
-                            ProductsChoosen = products.Select(n => new
-                            {
-                                n.ObjectId,
-                                n.Name,
-                                n.Type,
-                                n.FullPathName,
-                                n.Abbreviation,
-                                n.LogoFileName,
-                                n.Filter
-                            }).ToArray()
-                        };
+        //            if (products.Length > 0)
+        //            {
+        //                PromoBasicProduct promoBasicProducts = new PromoBasicProduct
+        //                {
+        //                    // выбранные узлы
+        //                    ProductsChoosen = products.Select(n => new
+        //                    {
+        //                        n.ObjectId,
+        //                        n.Name,
+        //                        n.Type,
+        //                        n.FullPathName,
+        //                        n.Abbreviation,
+        //                        n.LogoFileName,
+        //                        n.Filter
+        //                    }).ToArray()
+        //                };
 
-                        // формируем название Brand и Technology
-                        ProductTree currentNode = products[0];
-                        while (currentNode != null && currentNode.Type.IndexOf("root") < 0)
-                        {
-                            if (currentNode.Type.IndexOf("Brand") >= 0)
-                            {
-                                promoBasicProducts.Brand = currentNode.Name;
-                                promoBasicProducts.BrandAbbreviation = currentNode.Abbreviation;
+        //                // формируем название Brand и Technology
+        //                ProductTree currentNode = products[0];
+        //                while (currentNode != null && currentNode.Type.IndexOf("root") < 0)
+        //                {
+        //                    if (currentNode.Type.IndexOf("Brand") >= 0)
+        //                    {
+        //                        promoBasicProducts.Brand = currentNode.Name;
+        //                        promoBasicProducts.BrandAbbreviation = currentNode.Abbreviation;
 
-                                // если есть технология, то и логотип уже есть
-                                if (promoBasicProducts.LogoFileName == null)
-                                    promoBasicProducts.LogoFileName = currentNode.LogoFileName;
-                            }
-                            else if (currentNode.Type.IndexOf("Technology") >= 0)
-                            {
-                                promoBasicProducts.Technology = currentNode.Name;
-                                promoBasicProducts.TechnologyAbbreviation = currentNode.Abbreviation;
-                                promoBasicProducts.LogoFileName = currentNode.LogoFileName;
-                            }
+        //                        // если есть технология, то и логотип уже есть
+        //                        if (promoBasicProducts.LogoFileName == null)
+        //                            promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+        //                    }
+        //                    else if (currentNode.Type.IndexOf("Technology") >= 0)
+        //                    {
+        //                        promoBasicProducts.Technology = currentNode.Name;
+        //                        promoBasicProducts.TechnologyAbbreviation = currentNode.Abbreviation;
+        //                        promoBasicProducts.LogoFileName = currentNode.LogoFileName;
+        //                    }
 
-                            currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
-                        }
+        //                    currentNode = context.Set<ProductTree>().FirstOrDefault(n => n.ObjectId == currentNode.parentId && !n.EndDate.HasValue);
+        //                }
 
-                        PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                    }
-                }
-            }
-            catch { }
-        }
+        //                PromoBasicProducts = JsonConvert.SerializeObject(promoBasicProducts, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+        //            }
+        //        }
+        //    }
+        //    catch { }
+        //}
     }
 
     // Класс обертка для формы выбора продуктов в форме PROMO

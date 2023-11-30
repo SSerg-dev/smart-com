@@ -73,5 +73,9 @@ namespace Module.Frontend.TPM.Util
             var secretName = AppSettingsManager.GetSetting(settingName, defaultValue);
             return keyVault.GetSecret(secretName, "");
         }
+        public static string GetParamFromRequestBody(HttpRequest request, string param)
+        {
+            return request.Params.Get(param);
+        }
     }
 }
