@@ -33,7 +33,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             if (!string.IsNullOrEmpty(role))
             {
@@ -102,7 +102,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId || h.Hierarchy.Contains(x.ClientTree.ObjectId.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
             }
             if (!String.IsNullOrEmpty(role))
             {
@@ -179,7 +179,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
@@ -263,7 +263,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             query = query.Where(x => !x.Disabled);
             return query;
@@ -837,7 +837,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
@@ -868,7 +868,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTreeId || h.Hierarchy.Contains(x.ClientTreeId.Value.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTreeId));
             }
             query = query.Where(x => x.TPMmode != TPMmode.Hidden && x.TPMmode != TPMmode.Archive);
             switch (mode)
@@ -1119,7 +1119,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId || h.Hierarchy.Contains(x.ClientTree.ObjectId.ToString())));
+                    hierarchy.Any(h => h.Id == x.ClientTree.ObjectId));
             }
             //if (!string.IsNullOrEmpty(role))
             //{
@@ -1144,7 +1144,7 @@ namespace Module.Persist.TPM.Utils
             {
                 hierarchy = getFilteredHierarchy(hierarchy, clientFilter);
                 query = query.Where(x =>
-                    hierarchy.Any(h => h.Id == x.RollingScenario.ClientTree.ObjectId || h.Hierarchy.Contains(x.RollingScenario.ClientTree.ObjectId.ToString())));
+                    hierarchy.Any(h => h.Id == x.RollingScenario.ClientTree.ObjectId));
             }
             return query;
         }
