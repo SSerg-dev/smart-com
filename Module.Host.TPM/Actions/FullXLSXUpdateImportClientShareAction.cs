@@ -267,15 +267,14 @@ namespace Module.Host.TPM.Actions
                     var groups = changedCTBTs
                         .GroupBy(y => new { y.ParentClientTreeDemandCode, y.CurrentBrandTechName });
 
-                    
                     var badGroups = groups.Where(y => y
                         .Sum(z => (parentDemandCodeOfChangedCTBTs.Contains(z.ParentClientTreeDemandCode)
                         && clientTreeOfChangedCTBTs.Contains(z.ClientTree.ObjectId) && brandtechOfChangedCTBTs.Contains(z.CurrentBrandTechName))
                         ? Math.Round(verifiedList.First(t =>
                         t.DemandCode == z.ParentClientTreeDemandCode && t.ClientTreeId == z.ClientTree.ObjectId && t.BrandTech == z.CurrentBrandTechName).LeafShare, 5, MidpointRounding.AwayFromZero)
                         : Math.Round(z.Share, 5, MidpointRounding.AwayFromZero)) > 100.0001);
-
-                        if (badGroups.Any())
+                    
+                    if (badGroups.Any())
                     {
                         
                         HasErrors = true;
