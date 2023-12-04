@@ -213,7 +213,7 @@ namespace Module.Host.TPM.Actions
                     .Where(z => z.Count() > 1)
                     .Select(t => new Tuple<int, string, string>(t.Key.ClientTreeId, t.Key.DemandCode, t.Key.BrandTech)).ToList();
 
-                // Тоьлько актуальные записи.
+                // Только актуальные записи.
                 IList<ClientTreeBrandTech> changedCTBTs = ClientTreeBrandTechesController.GetActualQuery(context);
 
                 //Стандартные проверки
@@ -266,14 +266,18 @@ namespace Module.Host.TPM.Actions
 
                     var groups = changedCTBTs
                         .GroupBy(y => new { y.ParentClientTreeDemandCode, y.CurrentBrandTechName });
+
+                    
                     var badGroups = groups.Where(y => y
                         .Sum(z => (parentDemandCodeOfChangedCTBTs.Contains(z.ParentClientTreeDemandCode)
                         && clientTreeOfChangedCTBTs.Contains(z.ClientTree.ObjectId) && brandtechOfChangedCTBTs.Contains(z.CurrentBrandTechName))
                         ? Math.Round(verifiedList.First(t =>
                         t.DemandCode == z.ParentClientTreeDemandCode && t.ClientTreeId == z.ClientTree.ObjectId && t.BrandTech == z.CurrentBrandTechName).LeafShare, 5, MidpointRounding.AwayFromZero)
                         : Math.Round(z.Share, 5, MidpointRounding.AwayFromZero)) > 100.0001);
-                    if (badGroups.Any())
+
+                        if (badGroups.Any())
                     {
+                        
                         HasErrors = true;
                         IList<string> badGroupsObjectIds = new List<string>();
                         foreach (var badGroup in badGroups)

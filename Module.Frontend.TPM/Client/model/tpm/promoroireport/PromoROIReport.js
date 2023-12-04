@@ -75,14 +75,12 @@
         { name: 'PlanPromoROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetROIPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNetUpliftPercent', useNull: true, type: 'float', hidden: false, isDefault: false },
-
         //Add TI
         { name: 'ActualAddTIMarketing', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualAddTIShopper', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanAddTIMarketingApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanAddTIShopperCalculated', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanAddTIShopperApproved', useNull: true, type: 'float', hidden: false, isDefault: false },
-
         { name: 'ActualInStoreMechanicName', type: 'string', hidden: true, isDefault: false },
         { name: 'ActualInStoreMechanicTypeName', type: 'string', hidden: true, isDefault: false },
         { name: 'ActualInStoreDiscount', type: 'float', hidden: false, isDefault: false },
@@ -143,7 +141,6 @@
         { name: 'PlanPromoNetROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNetROIPercentLSV', useNull: true, type: 'float', hidden: false, isDefault: false },
-
         { name: 'PromoTypesName', useNull: true, type: 'string', hidden: false, isDefault: false },
         { name: 'SumInvoice', useNull: true, type: 'float', hidden: false, isDefault: false },
         // add new prop
@@ -173,6 +170,7 @@
         { name: 'PlanPromoVolume', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'PlanPromoNSVtn', useNull: true, type: 'float', hidden: false, isDefault: false },
         { name: 'ActualPromoNSVtn', useNull: true, type: 'float', hidden: false, isDefault: false },
+        { name: 'BudgetYear', type: 'int', hidden: false, isDefault: true, defaultFilterConfig: getYearFilter() },
     ],
     proxy: {
         type: 'breeze',
@@ -187,3 +185,12 @@
         }
     },
 });
+
+function getYearFilter() {
+    var prevousyear = new Date().getFullYear() - 1;
+    var result = {
+        value: prevousyear,
+        operation: 'GreaterOrEqual'
+    };
+    return result;
+}

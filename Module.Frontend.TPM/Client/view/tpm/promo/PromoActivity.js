@@ -721,9 +721,11 @@ Ext.define('App.view.tpm.promo.PromoActivity', {
                                         }
                                     ]
                                 },
+
                                 {
-                                    // PlanPriceIncrease
+                                    // PlanPriceIncrease 
                                     xtype: 'fieldset',
+                                    itemId: 'promoActivity_step2_planPriceIncrease',
                                     flex: 1,
                                     title: l10n.ns('tpm', 'PromoActivity').value('PlanPriceIncrease'),
                                     layout: {

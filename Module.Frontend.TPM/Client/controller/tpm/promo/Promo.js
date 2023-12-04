@@ -2954,9 +2954,11 @@
         }
         if (record.data.IsPriceIncrease) {
             this.showIsPriceIncreaseWindowLabel(true);
+            this.showIsPriceIncrease(true);
         }
         else {
             this.showIsPriceIncreaseWindowLabel(false);
+            this.showIsPriceIncrease(false);
         }
         if (record.data.MLPromoId.length > 0) {
             var promoMLLabel = Ext.ComponentQuery.query('#btn_promoML')[0];
@@ -7065,12 +7067,14 @@
             }
         }
     },
-
+    
     getIsPriceIncreaseWindowLabel: function () {
         var isPriceIncreaseComponent = Ext.ComponentQuery.query('#btn_promoIsPriceIncrease')[0];
         return isPriceIncreaseComponent;
     },
-
+    getIsPriceIncrease: function () {
+        return Ext.ComponentQuery.query('#promoActivity_step2_planPriceIncrease')[0];
+    },
     showIsPriceIncreaseWindowLabel: function (value) {
         var isPriceIncreaseWindowLabel = this.getIsPriceIncreaseWindowLabel();
         if (value) {
@@ -7083,7 +7087,18 @@
             }
         }
     },
-
+    showIsPriceIncrease: function (value) {
+        var isPriceIncrease = this.getIsPriceIncrease();
+        if (value) {
+            if (isPriceIncrease) {
+                isPriceIncrease.show();
+            }
+        } else {
+            if (isPriceIncrease) {
+                isPriceIncrease.hide();
+            }
+        }
+    },
     onExportButtonClick: function (button) {
         var me = this;
         var grid = me.getGridByButton(button);
