@@ -16,6 +16,7 @@ using Persist.Model;
 using Persist.Model.Import;
 using Persist.ScriptGenerator;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -258,50 +259,39 @@ namespace Module.Host.TPM.Actions
                 {
                     //Проверка по сумме
                     IList<ImportClientsShare> verifiedList = records.Select(y => (ImportClientsShare)y).ToList();
-                    HashSet<string> changedCTBTObjIds = new HashSet<string>(verifiedList.Select(y => y.DemandCode));
-                    HashSet<int> changedCTBTclientIds = new HashSet<int>(verifiedList.Select(y => y.ClientTreeId));
-                    IList<string> parentDemandCodeOfChangedCTBTs = verifiedList.Select(y => y.DemandCode).ToList();
-                    IList<int> clientTreeOfChangedCTBTs = verifiedList.Select(y => y.ClientTreeId).ToList();
-                    IList<string> brandtechOfChangedCTBTs = verifiedList.Select(y => y.BrandTech).ToList();
 
-                    var groups = changedCTBTs
-                        .GroupBy(y => new { y.ParentClientTreeDemandCode, y.CurrentBrandTechName });
-
-                    var badGroups = groups.Where(group => group
-                    .Sum(item => (parentDemandCodeOfChangedCTBTs.Contains(item.ParentClientTreeDemandCode)
-                    && clientTreeOfChangedCTBTs.Contains(item.ClientTree.ObjectId)
-                    && brandtechOfChangedCTBTs.Contains(item.CurrentBrandTechName))
-                     ? Math.Round(verifiedList.FirstOrDefault(t =>
-                           t.DemandCode == item.ParentClientTreeDemandCode
-                           && t.ClientTreeId == item.ClientTree.ObjectId
-                           && t.BrandTech == item.CurrentBrandTechName)?.LeafShare ?? 0, 5, MidpointRounding.AwayFromZero)
-                     : Math.Round(item.Share, 5, MidpointRounding.AwayFromZero)) > 100.0001);
-
+                    var badGroups = BadGroup.GetBadGroups(verifiedList, changedCTBTs);
 
                     if (badGroups.Any())
                     {
-                        
                         HasErrors = true;
                         IList<string> badGroupsObjectIds = new List<string>();
+                        
                         foreach (var badGroup in badGroups)
                         {
-                            foreach (var item in badGroup)
-                                if (item != null)
+                            if (badGroup != null)
+                            {
+                                badGroupsObjectIds.Add(badGroup.ParentClientTreeDemandCode);
+                                
+                                var badItem = successList.FirstOrDefault(y => ((ImportClientsShare)y)
+                                    .DemandCode == badGroup.ParentClientTreeDemandCode && ((ImportClientsShare)y)
+                                    .BrandTech == badGroup.CurrentBrandTechName && ((ImportClientsShare)y)
+                                    .ClientTreeId == badGroup?.ClientTree?.ObjectId); 
+
+                                if (badItem != null)
                                 {
-                                    badGroupsObjectIds.Add(item.ParentClientTreeDemandCode);
-                                    var badItem = successList.FirstOrDefault(y => ((ImportClientsShare)y).DemandCode == item.ParentClientTreeDemandCode && ((ImportClientsShare)y).BrandTech == item.CurrentBrandTechName && ((ImportClientsShare)y).ClientTreeId == item.ClientTree.ObjectId);
-                                    if (badItem != null)
-                                    {
-                                        errorRecords.Add(new Tuple<IEntity<Guid>, string>(badItem,
-                                            "Clients with Demand Code " + item.ParentClientTreeDemandCode.ToString() + " and Brand Tech " + item.CurrentBrandTechName + " can't have more than 100 percents in total"));
-                                    }
+                                    errorRecords.Add(new Tuple<IEntity<Guid>, string>(badItem,
+                                        "Clients with Demand Code " + badGroup.ParentClientTreeDemandCode.ToString() 
+                                        + " and Brand Tech " + badGroup.CurrentBrandTechName 
+                                        + " can't have more than 100 percents in total"));
                                 }
+                            }
                         }
                         records = new ConcurrentBag<IEntity<Guid>>(records.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare)y).DemandCode)));
                         successList = new ConcurrentBag<IEntity<Guid>>(successList.Where(y => !badGroupsObjectIds.Contains(((ImportClientsShare)y).DemandCode)));
+
                     }
                 }
-
 
                 logger.Trace("Persist models built");
 
@@ -325,37 +315,49 @@ namespace Module.Host.TPM.Actions
                 errorCount = errorRecords.Count;
                 warningCount = warningRecords.Count;
                 successCount = successList.Count;
-                ImportResultFilesModel resultFilesModel = SaveProcessResultHelper.SaveResultToFile(
+
+                try
+                {
+                    ImportResultFilesModel resultFilesModel = SaveProcessResultHelper.SaveResultToFile(
                     importModel.Id,
                     hasSuccessList ? successList : null,
                     null,
                     errorRecords,
                     warningRecords);
 
-                if (errorCount > 0 || warningCount > 0)
-                {
-                    string errorsPath = "/api/File/ImportResultErrorDownload?filename=";
-                    string warningsPath = "/api/File/ImportResultWarningDownload?filename=";
+                    if (errorCount > 0 || warningCount > 0)
+                    {
+                        string errorsPath = "/api/File/ImportResultErrorDownload?filename=";
+                        string warningsPath = "/api/File/ImportResultWarningDownload?filename=";
 
-                    if (errorCount > 0)
-                    {
-                        foreach (var record in errorRecords)
+                        if (errorCount > 0)
                         {
-                            Errors.Add($"{ record.Item2 } <a href=\"{ errorsPath + resultFilesModel.TaskId }\">Download</a>");
+                            foreach (var record in errorRecords)
+                            {
+                                Errors.Add($"{ record.Item2 } <a href=\"{ errorsPath + resultFilesModel.TaskId }\">Download</a>");
+                            }
+                        }
+                        if (warningCount > 0)
+                        {
+                            foreach (var record in warningRecords)
+                            {
+                                Warnings.Add($"{ record.Item2 } <a href=\"{ warningsPath + resultFilesModel.TaskId }\">Download</a>");
+                            }
                         }
                     }
-                    if (warningCount > 0)
-                    {
-                        foreach (var record in warningRecords)
-                        {
-                            Warnings.Add($"{ record.Item2 } <a href=\"{ warningsPath + resultFilesModel.TaskId }\">Download</a>");
-                        }
-                    }
+                    return resultFilesModel;
                 }
-
-                return resultFilesModel;
+                catch (NullReferenceException ex)
+                {
+                    throw new ApplicationException("An error occurred while SaveProcessResultHelper.SaveResultToFile", ex);
+                }
+                catch (Exception ex)
+                {
+                    throw new ApplicationException("An error occurred while SaveProcessResultHelper.SaveResultToFile", ex);
+                }
             }
         }
+
 
         private string GetImportStatus() {
             if (HasErrors) {
@@ -368,6 +370,7 @@ namespace Module.Host.TPM.Actions
                 return ImportUtility.StatusName.COMPLETE;
             }
         }
+
 
         protected ScriptGenerator _generator { get; set; }
 
@@ -493,5 +496,154 @@ namespace Module.Host.TPM.Actions
                 DemandCode = demandCode;
             }
         }
+
+        static private class BadGroup
+        {
+            public class Verified
+            {
+                public string DemandCode;
+                public int ClientTreeId;
+                public string Client;
+                public string BrandTech;
+                public double LeafShare;
+            }
+            public class Group
+            {
+                public string DemandCode;
+                public int ClientTreeId;
+                public string Client;
+                public string BrandTech;
+                public double Share;
+            }
+
+            static List<Verified> GetVerifiedList(Verified[] verifiedArray)
+            {
+                List<Verified> verifiedList = new List<Verified>();
+
+                foreach (var v in verifiedArray)
+                {
+                    // Create a Verified object and add it to the List
+                    Verified verifiedItem = new Verified
+                    {
+                        DemandCode = v.DemandCode,
+                        ClientTreeId = v.ClientTreeId,
+                        Client = v.Client,
+                        BrandTech = v.BrandTech,
+                        LeafShare = v.LeafShare,
+                    };
+
+                    // Add the Verified object to the List
+                    verifiedList.Add(verifiedItem);
+                }
+
+                return verifiedList;
+            }
+            static List<Group> GetGroupList(List<Verified> verifiedList, Group[] groupArray)
+            {
+                List<Group> groupList = new List<Group>();
+                foreach (var g in groupArray)
+                {
+                    // Create a Group object and add it to the List
+                    Group groupItem = new Group
+                    {
+                        DemandCode = g.DemandCode,
+                        ClientTreeId = g.ClientTreeId,
+                        Client = g.Client,
+                        BrandTech = g.BrandTech,
+                        Share = g.Share,
+                    };
+
+                    // Add the Group object to the List
+                    groupList.Add(groupItem);
+                }
+
+                // Filter the groupList based on the criteria in verifiedList
+                var filteredGroups = groupList.Cast<Group>()
+                    .Where(group => verifiedList.Cast<Verified>()
+                        .Any(verified =>
+                            verified.DemandCode == group.DemandCode &&
+                            verified.BrandTech == group.BrandTech))
+                    .ToList();
+
+                return new List<Group>(filteredGroups);
+            }
+
+            static public List<ClientTreeBrandTech> GetBadGroups(IList<ImportClientsShare> _verified, IList<ClientTreeBrandTech> _groups)
+            {
+                Verified[] verified = _verified
+                    .Cast<ImportClientsShare>()
+                    .Select(v => new Verified
+                    {
+                        DemandCode = v.DemandCode,
+                        ClientTreeId = v.ClientTreeId,
+                        Client = v.Client,
+                        BrandTech = v.BrandTech,
+                        LeafShare = v.LeafShare,
+
+                    })
+                    .ToArray<Verified>();
+
+                Group[] groups = _groups
+                    .Cast<ClientTreeBrandTech>()
+                    .Select(g => new Group
+                    {
+                        DemandCode = g.ParentClientTreeDemandCode,
+                        ClientTreeId = g.ClientTreeId,
+                        Client = g.ClientTreeId.ToString(),
+                        BrandTech = g.CurrentBrandTechName,
+                        Share = g.Share
+                    })
+                    .ToArray<Group>();
+
+                // list from file xslx
+                List<Verified> _verifiedList = GetVerifiedList(verified);
+                var verifiedList = verified;
+
+                // list from db GroupBy DemandCode
+                List<Group> _groupedGroups = GetGroupList(_verifiedList, groups);
+                var groupedGroups = _groupedGroups.Cast<Group>();
+
+                // Combine verifiedList and groupedGroups
+                var combinedList = verifiedList
+                    .Select(v => new { v.DemandCode, v.ClientTreeId, v.Client, v.BrandTech, LeafShare = v.LeafShare })
+                    .Concat(groupedGroups
+                        .Select(g => new { g.DemandCode, g.ClientTreeId, g.Client, g.BrandTech, LeafShare = g.Share }))
+                    .OrderBy(item => item.DemandCode)
+                    .ThenBy(item => item.BrandTech)
+                    .ToList();
+
+                // Calculate the total LeafShare for each DemandCode and BrandTech group
+                var amountList = combinedList
+                    .GroupBy(item => new { item.DemandCode, item.BrandTech })
+                    .Select(group => new
+                    {
+                        DemandCode = group.Key.DemandCode,
+                        BrandTech = group.Key.BrandTech,
+                        Amount = group.Sum(item => item.LeafShare),
+                        ClientTreeId = group.FirstOrDefault().ClientTreeId
+                    })
+                    .ToList();
+
+                IList<ClientTreeBrandTech> badGroups = new List<ClientTreeBrandTech>();
+
+                foreach (var item in amountList)
+                {
+                    //Check if the amount is greater than 100 and print a message
+                    if (Math.Round(item.Amount, 5, MidpointRounding.AwayFromZero) > 100.0001)
+                    {
+                        // Console.WriteLine($"WARNING: DemandCode '{item.DemandCode}' BrandTech '{item.BrandTech}' Amount: '{item.Amount}' is greater than 100% ");
+                        badGroups.Add(
+                            new ClientTreeBrandTech
+                            {
+                                ParentClientTreeDemandCode = item.DemandCode,
+                                CurrentBrandTechName = item.BrandTech,
+                                ClientTreeId = item.ClientTreeId
+                            }
+                        );
+                    }
+                }
+                return (List<ClientTreeBrandTech>)badGroups;
+            } // end class BadGroup
+        }    
     }
 }
