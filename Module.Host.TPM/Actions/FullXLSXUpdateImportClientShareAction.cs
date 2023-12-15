@@ -276,9 +276,11 @@ namespace Module.Host.TPM.Actions
                                 var badItem = successList.FirstOrDefault(y => ((ImportClientsShare)y)
                                     .DemandCode == badGroup.ParentClientTreeDemandCode && ((ImportClientsShare)y)
                                     .BrandTech == badGroup.CurrentBrandTechName && ((ImportClientsShare)y)
-                                    .ClientTreeId == badGroup?.ClientTree?.ObjectId); 
+                                    .ClientTreeId == badGroup?.ClientTree?.ObjectId);
+                                if (badItem == null)
+                                    badItem = badGroup;
 
-                                if (badItem != null)
+                                if (badItem != null) 
                                 {
                                     errorRecords.Add(new Tuple<IEntity<Guid>, string>(badItem,
                                         "Clients with Demand Code " + badGroup.ParentClientTreeDemandCode.ToString() 
